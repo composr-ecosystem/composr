@@ -30,7 +30,7 @@ if (!addon_installed__messaged('cms_release_build', $error_msg)) {
 }
 
 if (post_param_integer('confirm', 0) == 0) {
-    $preview = 'Plug in missing GUIDs';
+    $preview = 'By proceeding, this tool will scan the code base and automatically: add missing GUIDs, replace duplicated GUIDs, and fix invalid GUIDs. This occurs on do_template calls and INTERNAL_ERROR lang string uses.';
     $title = get_screen_title($preview, false);
     $url = get_self_url(false, false);
     return do_template('CONFIRM_SCREEN', ['TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);

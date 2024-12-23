@@ -849,6 +849,7 @@ function make_database_manifest() // Builds db_meta.bin, which is used for datab
             continue;
         }
 
+        // NB: instead of using the database schema (which may be malformed in a development environment), we scan the code directly for db operations.
         $contents = cms_file_get_contents_safe(get_file_base() . '/' . $path);
         $matches = [];
         if (preg_match('#@package\s+(\w+)\r?\n#', $contents, $matches) != 0) {
