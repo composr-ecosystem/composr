@@ -16,14 +16,14 @@
 i_solemnly_declare(I_UNDERSTAND_SQL_INJECTION | I_UNDERSTAND_XSS | I_UNDERSTAND_PATH_INJECTION);
 
 if (!addon_installed('cms_homesite')) {
-    return do_template('RED_ALERT', ['_GUID' => 'ff30902212eb5ae1ac80ee8dc6ed6eb9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
+    return do_template('RED_ALERT', ['_GUID' => '0q6vvpwtbrnqw5y6wmpzn7kqechhxkv9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite'))]);
 }
 
 if (!addon_installed('downloads')) {
-    return do_template('RED_ALERT', ['_GUID' => 'a94c5b0b4a025fc78499134dd56789dd', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
+    return do_template('RED_ALERT', ['_GUID' => '033cdc5wtl2new7j2degs0lo2n2gbhwy', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('downloads'))]);
 }
 if (!addon_installed('news')) {
-    return do_template('RED_ALERT', ['_GUID' => 'e464e41181285391afb151cb1714627c', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
+    return do_template('RED_ALERT', ['_GUID' => 'c39eg9wtj29jb07b15zkmno460d6712y', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('news'))]);
 }
 
 if (!function_exists('mu_ui')) {
@@ -62,14 +62,17 @@ if (!function_exists('mu_result')) {
     function mu_result($path)
     {
         // Shorten path to be more readable
-        $normal_bore = get_file_base() . '/uploads/website_specific/composr.app/upgrades/tars/';
-        $shortened = get_file_base() . '/upgrades/';
-        if (!file_exists($shortened)) {
-            symlink($normal_bore, 'upgrades');
-        }
-        if (substr($path, 0, strlen($normal_bore)) == $normal_bore) {
-            $path = $shortened . substr($path, strlen($normal_bore));
-        }
+        // Actually let's not do that; some servers do not support symlinks and will throw an error
+        /*
+            $normal_bore = get_file_base() . '/uploads/website_specific/cms_homesite/upgrades/tars/';
+            $shortened = get_file_base() . '/upgrades/';
+            if (!file_exists($shortened)) {
+                symlink($normal_bore, 'upgrades');
+            }
+            if (substr($path, 0, strlen($normal_bore)) == $normal_bore) {
+                $path = $shortened . substr($path, strlen($normal_bore));
+            }
+        */
 
         $base_url = get_base_url();
         $url = $base_url . '/' . rawurldecode(substr($path, strlen(get_file_base()) + 1));
