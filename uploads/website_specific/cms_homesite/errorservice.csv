@@ -54,7 +54,6 @@ The PHP FTP extension on your server is needed to use this feature,Composr is tr
  - PHP to have the FTP extensions enabled, and an FTP server to be running
  - suEXEC to be enabled (this is a major change for a webhost to implement but the Composr core team strongly recommends it)
 If you are able, you can try enabling the FTP extension in PHP yourself (and restart)."
-"Nothing was selected/chosen, so no operation could be performed",You are trying to do a bulk action but selected nothing to do it on.,You probably did not tick (check) anything before clicking a button.,Go back and make sure you have ticked (checked) something.
 "You are using a shared install, which makes this action prohibited",You are trying to do a low-level administrative action but cannot as you are on a shared install.,"You cannot perform certain actions on shared installs, either for security reasons, or because it would impact all other websites.","There is no way around this. If it is a problem for you please discuss it on the Composr forums."
 The TAR file xxx is corrupt,"You tried to use a corrupted TAR file, such as a corrupted addon archive.",The file likely corrupted at some point when being downloaded/uploaded.,Try again or get a new copy of the file. If the problem persists then contact the creator of the file. If it was generated or download from Composr then make an issue on the issue tracker.
 A block file is missing: xxx,You have referenced a file that does not exist.,It is likely you used the Comcode or Tempcode block tag but you used the name of a block that is non-existent. It is also possible you referenced a real block but then later uninstalled the addon that contains that block.,"Correct the name of the block referenced, or remove the appropriate Comcode or Tempcode, or reinstall the block (or addon) in the Admin Zone > Structure > Addons > Module management."
@@ -104,7 +103,7 @@ Table 'xxx' is marked as crashed and ,There is a corrupt MySQL database table. C
 5) In the 'With selected' option list, choose 'Repair table'.
 5) You should see the page reload with a message stating the repair was successful.
 
-In in doubt or if the table will not repair, contact your webhost.
+If in doubt or if the table will not repair, contact your webhost.
 
 Composr also offers a database repair tool in the upgrader. Call up '/upgrader.php' to run it.
 "
@@ -226,7 +225,7 @@ You tried to upload a file xxx which was larger than the maximum allowed size (x
 
 It is unlikely you are being affected by a quota restriction, as by-default staff do not have any quota restrictions. You can see quotas when editing usergroups."
 A page (xxx) was referenced that does not exist,"A page was accessed by name, but there is no such page.",It is likely the page once existed but does not exist any more.,"Check the zone directory inside all html/comcode/modules sub-directories to see if it exists. Change/remove any broken links. Add URL redirects from broken links elsewhere if necessary."
-Error detected with respect to the upload of a file: unknown error,An error occurred when uploading a file.,The cause of the problem is unknown.,Try again. If the problem persists, contact your webhost.
+Error detected with respect to the upload of a file: unknown error,An error occurred when uploading a file.,The cause of the problem is unknown.,Try again.
 Error detected with respect to the upload of a file: the uploaded file was only partially uploaded,An error occurred when uploading a file.,There was a transmission error. This could be due to a network interruption.,"Please try again. If it keeps happening, your connection might be getting terminated due to size restrictions or other issues. You may need to diagnose your network or the network of the server."
 "Error detected with respect to the upload of a file: no file was selected, or a missing file was chosen ",A file was expected but was not received.,"You likely referred to an attachment via Comcode ([tt][attachment]new_1[/attachment][/tt]), but no file was actually attached.","This error is usually safe to ignore, but be aware when copying & pasting Comcode that references yet-unattached attachments, you would need to choose to re-attach the file also.
 
@@ -251,7 +250,7 @@ If you still have not been able to solve the problem contact your webhost and as
 Cannot write to xxx. File permissions for it (or the directory it is in) have not been set correctly,The server could not edit/create a file/directory.,Your file permissions aren't correct.,"There are tools in the upgrader script to check and repair permissions. 
 You can access the upgrader by calling up the '/upgrader.php' URL on your site."
 Cannot create a directory xxx. This file should have existed anyway,A directory was needed but missing. Composr tried to create it but failed.,This happens often when people upload a new language pack without adding it first by starting a translation via the language tools in the Style section of the Admin Zone.,"Create the directory manually via an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client, or some other file management tool if you prefer."
-Cannot create a xxx file. File permissions for the xxx directory likely have not been set correctly.,The server could not create a file.,Your file permissions aren't correct.,"There are tools in the upgrader script to check and repair permissions. 
+Cannot create a xxx file. File permissions for the xxx directory likely have not been set correctly.,The server could not create a file.,Your file permissions aren't correct.,"There are tools in the upgrader script to check and repair permissions.
 You can access the upgrader by calling up the '/upgrader.php' URL on your site."
 Could not save. Are you out of disk space or quota space? The file failed to save in a temporary directory,Composr failed to create a temporary file.,"It is likely either:
 1) the server is out of disk space on it's temporary directory (sometimes temporary directories are on different partitions/disks to website directories)
