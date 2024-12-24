@@ -53,7 +53,7 @@ class Hook_addon_registry_chat
 
     /**
      * Get the current version of this addon (usually software major, software minor, addon build).
-     * Put the comment "// addon_version_auto_update" to the right of the return if you want release tools to automatically update this according to software version and find_addon_effective_mtime.
+     * Put the comment "// addon_version_auto_update" to the right of the return if you want release tools to automatically update this according to software version and find_addon_effective_md5.
      *
      * @return SHORT_TEXT Version number
      */
