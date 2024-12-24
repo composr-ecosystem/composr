@@ -581,7 +581,7 @@ function step_2() : object
             $licence = cms_file_get_contents_safe(get_file_base() . '/docs/LICENSE.md', FILE_READ_LOCK | FILE_READ_BOM);
         }
     }
-    $licence = preg_replace('#\((\w+\.md)\)#', '(https://gitlab.com/composr-foundation/composr/-/blob/' . STABLE_BRANCH_NAME . '/docs/$1)', $licence);
+    $licence = preg_replace('#\((\w+\.md)\)#', '(https://gitlab.com/composr-foundation/composr/-/blob/' . VERSION_BRANCH_NAME . '/docs/$1)', $licence);
 
     $url = prepare_installer_url('install.php?step=3');
 

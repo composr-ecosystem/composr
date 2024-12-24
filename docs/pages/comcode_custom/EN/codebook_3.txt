@@ -426,7 +426,7 @@ Here is a good workflow for writing high-quality code for Composr:
 8) Test manually / debug.
 9) Add new files to Git, and Commit/push (actually you may do this a few times throughout the work, depending on task length).
 10) Come back the next day and check over your work. A fresh look often reveals some things you missed before. Also fix any issues that you already realised in the interim (often you will think of things later).
-11) If you created a branch, do whatever is appropriate for it. That might be merging it into the {$STABLE_BRANCH_NAME} branch, submitting a merge request on GitLab, or asking a senior developer to review then merge it.
+11) If you created a branch, do whatever is appropriate for it. That might be merging it into the {$VERSION_BRANCH_NAME} branch, submitting a merge request on GitLab, or asking a senior developer to review then merge it.
 
 Here are some general tips:
  - It's sometimes a good idea to program algorithms in complete isolation. Separate the complexities of integration from the complexities of implementation. This also leads to better quality code because you will have been forced to abstract the problem already.

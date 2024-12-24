@@ -709,7 +709,6 @@ class Module_admin_make_release
             'BRAND_DOMAIN' => cms_parse_url_safe(normalise_idn_url(get_brand_base_url()), PHP_URL_HOST),
             'TRACKER_URL' => post_param_string('tracker_url'),
             'PROJECT_ID' => post_param_string('project_id'),
-            'STABLE_BRANCH_NAME' => STABLE_BRANCH_NAME,
         ]);
     }
 }

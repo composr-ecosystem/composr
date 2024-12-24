@@ -44,7 +44,7 @@ function init__version()
         define('VERSION_LTM', 'Long-term maintenance');
         define('VERSION_EOL', 'EOL');
 
-        define('STABLE_BRANCH_NAME', 'master');
+        define('VERSION_BRANCH_NAME', 'v11');
     }
 }
 
