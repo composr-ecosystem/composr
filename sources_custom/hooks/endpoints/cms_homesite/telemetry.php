@@ -132,9 +132,9 @@ class Hook_endpoint_cms_homesite_telemetry
                 // Auto-resolve any errors matching what is in the error service spreadsheet
                 if ($auto_resolve === null) {
                     require_code('errorservice');
-                    $match = get_problem_match_nearest($error_message);
+                    $match = get_problem_match_nearest($error_message, false);
                     if ($match !== null) {
-                        $auto_resolve = $match . "\n\n\n\n" . '[b]If you strongly feel this is a software bug, please report to the tracker.[/b]'; // FUDGE
+                        $auto_resolve = $match . "\n\n" . '[b]If you strongly feel this is a software bug, please report to the tracker.[/b]'; // FUDGE
                     }
                 }
 

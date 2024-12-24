@@ -17,9 +17,10 @@
  * Find a match for a problem in the database.
  *
  * @param  string $error_message The error that occurred
+ * @param  boolean $evaluate_comcode Whether to evaluate the Comcode (false: return as a string of Comcode rather than HTML)
  * @return ?string The full Comcode (null: not found)
  */
-function get_problem_match_nearest(string $error_message) : ?string
+function get_problem_match_nearest(string $error_message, string $evaluate_comcode = true) : ?string
 {
     if (!defined('DEFAULT_BRAND_NAME')) {
         define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge
@@ -66,6 +67,10 @@ function get_problem_match_nearest(string $error_message) : ?string
 
     // Return best-match result
     $_output = array_pop($matches);
+    if ($evaluate_comcode === false) {
+        return $_output;
+    }
+
     $output = comcode_to_tempcode($_output, $GLOBALS['FORUM_DRIVER']->get_guest_id());
     return $output->evaluate();
 }

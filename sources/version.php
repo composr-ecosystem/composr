@@ -44,7 +44,7 @@ function init__version()
         define('VERSION_LTM', 'Long-term maintenance');
         define('VERSION_EOL', 'EOL');
 
-        define('STABLE_BRANCH_NAME', 'master');
+        define('VERSION_BRANCH_NAME', 'v11');
     }
 }
 
@@ -75,7 +75,7 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1734990283;
+    return 1734995840;
 }
 
 // cms_version_time_major() was removed in v11. This was never used in v10 and was also not planned for any use in v11.
