@@ -112,6 +112,7 @@ class Module_admin_cns_ldap
         require_css('cns_admin');
 
         set_helper_panel_tutorial('tut_ldap');
+        set_helper_panel_text(comcode_lang_string('LDAP_INTRO'));
 
         if ($type == 'actual') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('LDAP_SYNC')]]);
@@ -247,7 +248,16 @@ class Module_admin_cns_ldap
             $id = $row['id'];
 
             if (post_param_integer('delete_member_' . strval($id), 0) == 1) {
-                cns_delete_member($id);
+                require_code('tasks');
+                require_lang('cns');
+
+                // Queue the task
+                call_user_func_array__long_task(do_lang('DELETE_MEMBER'), null, 'cns_delete_member', [$id, get_member(), false], true, false, false); // No notification because the member will be deleted
+
+                // Security: Invalidate the session and prevent the member from logging in
+                require_code('users_active_actions');
+                delete_session_by_member_id($id);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'pending_deletion'], ['id' => $id]);
             }
         }
 

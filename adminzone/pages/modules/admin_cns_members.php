@@ -756,6 +756,8 @@ class Module_admin_cns_members
     public function __delurk() : object
     {
         require_lang('cns_lurkers');
+        require_code('tasks');
+        require_lang('cns');
 
         check_privilege('mass_import');
 
@@ -764,7 +766,14 @@ class Module_admin_cns_members
         foreach ($_POST as $key => $val) {
             if ((is_string($key)) && (substr($key, 0, 7) == 'lurker_')) {
                 $member_id = intval(substr($key, 7));
-                cns_delete_member($member_id);
+
+                // Queue the task
+                call_user_func_array__long_task(do_lang('DELETE_MEMBER'), null, 'cns_delete_member', [$member_id, get_member(), false], true, false, false); // No notification because the member will be deleted
+
+                // Security: Invalidate the session and prevent the member from logging in
+                require_code('users_active_actions');
+                delete_session_by_member_id($member_id);
+                $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'pending_deletion'], ['id' => $member_id]);
             }
         }
 
