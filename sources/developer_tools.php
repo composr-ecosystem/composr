@@ -552,11 +552,18 @@ function make_dummy_db_row(string $table, bool $allow_null = true, array $forced
             if ($primary_field === true) {
                 $primary_map[$field] = $value12;
             }
-        } else {
-            $value13 = uniqid('', false);
+        } elseif (strpos($type, 'SERIAL') !== false) {
+            $value13 = serialize([uniqid('', false)]);
             $map[$field] = $value13;
             if ($primary_field === true) {
                 $primary_map[$field] = $value13;
+            }
+        // } elseif (strpos($type, 'BGUID') !== false) { // TODO: Implement
+        } else {
+            $value_else = uniqid('', false);
+            $map[$field] = $value_else;
+            if ($primary_field === true) {
+                $primary_map[$field] = $value_else;
             }
         }
     }

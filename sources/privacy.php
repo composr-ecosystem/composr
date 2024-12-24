@@ -266,7 +266,7 @@ abstract class Hook_privacy_base
 
         if ($email_address != '') {
             foreach ($table_details['email_fields'] as $email_address_field) {
-                $conditions[] = '(' . db_string_equal_to($email_address_field, $email_address) . ' OR ' . $email_address_field . ' LIKE ' . db_encode_like('%"' . $email_address . '"%') . ')'; // We need to work with potentially serialised data
+                $conditions[] = '(' . db_string_equal_to($email_address_field, $email_address) . ' OR ' . $email_address_field . ' LIKE \'' . db_encode_like('%"' . $email_address . '%"') . '\')'; // We need to work with potentially serialised data
             }
         }
 
@@ -276,7 +276,7 @@ abstract class Hook_privacy_base
             }
 
             foreach ($table_details['additional_anonymise_fields'] as $other_field) {
-                $conditions[] = $other_field . ' LIKE ' . db_encode_like('%' . $other . '%'); // We need to work with potentially serialised data
+                $conditions[] = $other_field . ' LIKE \'' . db_encode_like('%' . $other . '%') . '\''; // We need to work with potentially serialised data
             }
         }
 
