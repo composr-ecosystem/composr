@@ -33,6 +33,7 @@ class Hook_page_groupings_achievements
 
         return [
             ['setup', 'spare/popular', ['admin_achievements', [], get_page_zone('admin_achievements', false, 'adminzone', 'minimodules')], make_string_tempcode('Achievements configuration')],
+            ['social', 'spare/popular', ['achievements', [], get_module_zone('achievements')], do_lang_tempcode('achievements:ACHIEVEMENTS')],
         ];
     }
 }
