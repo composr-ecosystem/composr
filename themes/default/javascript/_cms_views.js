@@ -1274,13 +1274,8 @@
 
         /* Software Chat */
         loadSoftwareChat: function () {
-            var url = 'https://kiwiirc.com/client/irc.composr.app/?nick='; // TODO: add configuration option for this, possibly in rebrand
-            if ($cms.getUsername() !== 'admin') {
-                url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
-            } else {
-                url += encodeURIComponent($cms.getSiteName().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
-            }
-            url += '#composrcms'; // TODO: add configuration option for this, possibly in rebrand
+            var url = 'https://composr.app/chat/global_room.htm?nick='; // TODO: add configuration option for this, possibly in rebrand
+            url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, '') + '@' + $cms.getSiteName().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
 
             var bi = document.getElementById('main-website-inner');
 
