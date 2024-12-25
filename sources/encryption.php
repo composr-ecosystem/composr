@@ -255,6 +255,8 @@ function get_private_key_telemetry(float $version)
  */
 function encrypt_data_telemetry(string $data) : array
 {
+    require_code('version');
+
     // Get and decode the public key
     $_public_key = get_public_key_telemetry();
     if ($_public_key === false) {
@@ -281,7 +283,8 @@ function encrypt_data_telemetry(string $data) : array
     return [
         'nonce' => $nonce_base64,
         'encrypted_data' => $encrypted_data_base64,
-        'encrypted_session_key' => $encrypted_session_key_base64
+        'encrypted_session_key' => $encrypted_session_key_base64,
+        'version' => cms_version_number(),
     ];
 }
 
@@ -386,4 +389,21 @@ function generate_telemetry_key_pair(float $version, bool $overwrite_existing = 
     // Save our keys
     cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+}
+
+/**
+ * Script to encrypt some data (with telemetry keys) and output the encrypted payload (from encrypt_data_telemetry) in JSON formatted base64.
+ *
+ */
+function encrypt_data_script() {
+    require_code('global2');
+
+    prepare_backend_response('text/plain');
+
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    $data = post_param_string('data');
+
+    $data = encrypt_data_telemetry($data);
+    echo base64_encode(json_encode($data));
 }

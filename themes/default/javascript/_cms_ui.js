@@ -1425,6 +1425,31 @@
     };
 
     /**
+     * Encrypt data using telemetry keys.
+     * @memberof $cms.ui
+     * @returns { Promise } - Resolves with the JSON base64 payload string, or blank on failure
+     */
+    $cms.ui.encryptData = function encryptData(dataToEncrypt) {
+        dataToEncrypt = 'data=' + encodeURIComponent(strVal(dataToEncrypt));
+        var scriptUrl = '{$FIND_SCRIPT_NOHTTP;,encrypt_data}';
+
+        return new Promise(function (resolvePromise) {
+            $cms.doAjaxRequest(scriptUrl, null, dataToEncrypt).then(function (xhr) {
+                var encryptedData = xhr.responseText;
+
+                if (encryptedData.search(" ") != -1) { // base64 would never return a whitespace, so an error probably occurred
+                    $util.fatal('$cms.ui.encryptedData(): {!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.', xhr);
+                    var alert = '{!JS_ERROR_OCCURRED;^}\n\n{!PROBLEM_AJAX;^}\n' + xhr.responseURL + '\n' + xhr.status + ': ' + xhr.statusText + '.';
+                    $cms.ui.alert(alert, '{!ERROR_OCCURRED;^}');
+                    resolvePromise('');
+                }
+
+                resolvePromise(encryptedData);
+            });
+        });
+    };
+
+    /**
      * @param urlStem
      * @param wrapper
      * @param recursive
