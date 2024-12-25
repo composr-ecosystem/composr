@@ -139,6 +139,7 @@ class Module_cms_downloads extends Standard_crud_module
         inform_non_canonical_parameter('cat');
 
         set_helper_panel_tutorial('tut_downloads');
+        set_helper_panel_text(comcode_lang_string('DOC_DOWNLOADS'));
 
         if ($type == 'import' || $type == '_import') {
             $this->title = get_screen_title('FTP_DOWNLOADS');

@@ -138,6 +138,7 @@ class Module_admin_karma
         require_lang('karma');
 
         set_helper_panel_tutorial('sup_adding_a_member_reputation_system');
+        set_helper_panel_text(comcode_lang_string('DOC_KARMA'));
 
         switch ($type) {
             case 'browse':

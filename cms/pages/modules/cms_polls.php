@@ -86,6 +86,7 @@ class Module_cms_polls extends Standard_crud_module
         $type = get_param_string('type', 'browse');
 
         set_helper_panel_tutorial('tut_feedback');
+        set_helper_panel_text(comcode_lang_string('DOC_POLLS'));
 
         return parent::pre_run($top_level);
     }

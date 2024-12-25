@@ -88,6 +88,7 @@ class Module_admin_quiz
         require_css('quizzes');
 
         set_helper_panel_tutorial('tut_quizzes');
+        set_helper_panel_text(comcode_lang_string('DOC_QUIZZES'));
 
         if ($type == 'browse') {
             $also_url = build_url(['page' => 'cms_quiz'], get_module_zone('cms_quiz'));

@@ -144,6 +144,7 @@ class Module_cms_calendar extends Standard_crud_module
         inform_non_canonical_parameter('validated');
 
         set_helper_panel_tutorial('tut_calendar');
+        set_helper_panel_text(comcode_lang_string('DOC_CALENDAR'));
 
         if ($type == '_import_ical') {
             breadcrumb_set_parents([['_SELF:_SELF:import', do_lang_tempcode('IMPORT_ICAL')]]);

@@ -154,6 +154,8 @@ class Module_admin_banners
                 case BANNER_FALLBACK:
                     $type = do_lang_tempcode('BANNER_FALLBACK');
                     break;
+                default:
+                    $type = do_lang_tempcode('UNKNOWN');
             }
 
             $banner_type = $myrow['b_type'];

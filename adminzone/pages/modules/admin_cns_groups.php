@@ -90,6 +90,7 @@ class Module_admin_cns_groups extends Standard_crud_module
         require_javascript('core_cns');
 
         set_helper_panel_tutorial('tut_subcom');
+        set_helper_panel_text(comcode_lang_string('DOC_GROUPS'));
 
         return parent::pre_run($top_level);
     }

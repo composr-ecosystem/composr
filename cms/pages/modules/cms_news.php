@@ -152,11 +152,11 @@ class Module_cms_news extends Standard_crud_module
 
         set_helper_panel_tutorial('tut_news');
 
-        if ($type == 'add' || $type == '_edit') {
+        if (($type == 'browse') || ($type == 'add') || ($type == '_edit')) {
             set_helper_panel_text(comcode_lang_string('DOC_NEWS'));
         }
 
-        if ($type == 'import' || $type == '_import_news') {
+        if (($type == 'import') || ($type == '_import_news')) {
             $this->title = get_screen_title('IMPORT_NEWS');
         }
 

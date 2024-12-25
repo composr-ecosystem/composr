@@ -115,6 +115,7 @@ class Module_admin_community_billboard extends Standard_crud_module
         require_lang('community_billboard');
 
         set_helper_panel_tutorial('tut_points');
+        set_helper_panel_text(comcode_lang_string('DOC_COMMUNITY_BILLBOARD'));
 
         return parent::pre_run($top_level);
     }

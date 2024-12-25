@@ -110,7 +110,7 @@ class Module_admin_backup
         require_lang('backups');
 
         set_helper_panel_tutorial('tut_backup');
-        set_helper_panel_text(comcode_lang_string('DOC_BACKUPS_2'));
+        attach_message(comcode_lang_string('DOC_BACKUPS_2'), 'notice', true);
 
         if ($type == 'make_backup') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('BACKUP')]]);
@@ -229,7 +229,7 @@ class Module_admin_backup
             '_GUID' => '64ae569b2cce398e89d1b4167f116193',
             'HIDDEN' => '',
             'JS_FUNCTION_CALLS' => $js_function_calls,
-            'TEXT' => '',
+            'TEXT' => comcode_lang_string('DOC_BACKUPS'),
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('BACKUP'),

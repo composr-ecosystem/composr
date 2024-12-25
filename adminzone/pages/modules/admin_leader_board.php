@@ -114,6 +114,7 @@ class Module_admin_leader_board extends Standard_crud_module
         require_lang('leader_board');
 
         set_helper_panel_tutorial('tut_points');
+        set_helper_panel_text(comcode_lang_string('DOC_LEADER_BOARDS'));
 
         if ($type == 'predefined_content') {
         }

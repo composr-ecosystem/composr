@@ -171,6 +171,7 @@ class Module_admin_disastr extends Standard_crud_module
         require_lang('disastr');
 
         set_helper_panel_tutorial('tut_subcom');
+        set_helper_panel_text(comcode_lang_string('DOC_DISASTR'));
 
         if ($type == 'view') {
             breadcrumb_set_self(do_lang_tempcode('VIEW_DISEASE'));

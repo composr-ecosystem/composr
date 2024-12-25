@@ -167,8 +167,10 @@ class Module_admin_workflow extends Standard_crud_module
 
         require_code('workflows');
         require_code('workflows2');
+        require_lang('workflows');
 
         set_helper_panel_tutorial('sup_set_up_a_workflow_in_composr');
+        set_helper_panel_text(comcode_lang_string('DOC_WORKFLOWS'));
 
         if ($type == '_add') {
             $doing = 'ADD_' . $this->lang_type;

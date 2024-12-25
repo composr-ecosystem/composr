@@ -32,7 +32,7 @@ class Hook_page_groupings_early_access
         }
 
         return [
-            ['tools', 'menu/adminzone/security/permissions/privileges', ['admin_early_access', ['type' => 'browse'], get_module_zone('admin_early_access')], do_lang_tempcode('early_access:EARLY_ACCESS_CODES'), 'early_access:EARLY_ACCESS_CODES_TEXT'],
+            ['tools', 'menu/adminzone/security/permissions/privileges', ['admin_early_access', ['type' => 'browse'], get_module_zone('admin_early_access')], do_lang_tempcode('early_access:EARLY_ACCESS_CODES'), 'early_access:DOC_EARLY_ACCESS_CODES'],
         ];
     }
 }

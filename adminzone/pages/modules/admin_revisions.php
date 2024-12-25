@@ -134,6 +134,7 @@ class Module_admin_revisions
 
         if ($type == 'browse') {
             $this->title = get_screen_title('REVISIONS');
+            set_helper_panel_text(comcode_lang_string('ABOUT_REVISIONS'));
         }
 
         if ($type == 'delete') {

@@ -179,7 +179,12 @@ There is one important rule when it comes to init functions: you are not allowed
 [surround]
 [media width="150" description="Exporting an addon (2)" float="right"]data_custom/images/docs/tut_framework/framework_export_2.png[/media]
 [media width="150" description="Exporting an addon (1)" float="right"]data_custom/images/docs/tut_framework/framework_export_1.png[/media]
-{!addons:DOC_ADDONS}
+In order for addons to the software to be distributed in a user-friendly fashion, an addon pack exporter and importer is provided. Three types of addons are supported by this tool:
+ - Language packs (for any new language translation)
+ - Themes (for any new theme)
+ - Code modifications (defined by manual selection of files)
+ 
+The software addons are TAR files which include a special definition file. They may be constructed manually if an author wishes to have more control over the construction process.
 [/surround]
 
 [surround]

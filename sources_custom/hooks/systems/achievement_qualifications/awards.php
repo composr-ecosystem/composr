@@ -14,7 +14,7 @@
 
 /*
     Supported parameters for this qualification:
-    1) count        -- The number of Top Content (awards) that must be earned for this qualification to be satisfied (not specified: 5)
+    1) count        -- The number of awards (top content) that must be earned for this qualification to be satisfied (not specified: 5)
     2) types        -- Only consider awards from this comma-delimited list of award types (not specified: no filter)
     3) content_ids  -- Only consider awards from this comma-delimited list of content IDs (must have exactly one "types" specified to use this filter) (not specified: no filter)
     4) days         -- Only consider awards earned from the last specified number of days [persist is not supported if this is specified] (not specified: no filter)

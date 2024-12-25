@@ -86,6 +86,7 @@ class Module_admin_tickets
         require_lang('tickets');
 
         set_helper_panel_tutorial('tut_support_desk');
+        set_helper_panel_text(comcode_lang_string('DOC_TICKETS'));
 
         if ($type != 'browse') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('MANAGE_TICKET_TYPES')]]);

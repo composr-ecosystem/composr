@@ -120,10 +120,12 @@ class Module_admin_zones
 
         if ($type != 'editor' && $type != '_editor' && $type != '__editor') {
             set_helper_panel_tutorial('tut_structure');
+            set_helper_panel_text(comcode_lang_string('DOC_ZONES'));
         }
 
         if ($type == 'editor') {
             breadcrumb_set_self(do_lang_tempcode('CHOOSE'));
+            set_helper_panel_text(comcode_lang_string('DOC_ZONE_EDITOR'));
         }
 
         if ($type == '_editor') {

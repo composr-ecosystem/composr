@@ -80,9 +80,9 @@ The most recent item to receive the award has a special status. Whether this dis
 [surround]
 [media width="150" description="Making an award type" float="right"]data_custom/images/docs/tut_featured/featured_award.png[/media]
 You can manage award types from:
-Admin Zone > Setup > Top content (Awards)
+Admin Zone > Setup > Awards (top content)
 
-If, for example, you wanted to choose a different yacht to display every week (from a catalogue of yachts), then create a catalogue award via Admin Zone > Setup > Top content (Awards) > Add award type.
+If, for example, you wanted to choose a different yacht to display every week (from a catalogue of yachts), then create a catalogue award via Admin Zone > Setup > Awards (top content) > Add award type.
 
 [box="Assigning points"]
 Optionally awards are tied in with the point system. You can configure the awards (when you add or edit the award itself) to carry a number of points. If you do this, the submitter of content given that award will be given some points, and that'll show up on their points profile.
@@ -111,7 +111,7 @@ Now we have added a new award type linked with a particular content type, adding
 [media width="150" description="A content which received awards" float="left"]data_custom/images/docs/tut_featured/featured_tooltip.png[/media]
 The [tt]main_awards[/tt] block can display the current award holder of any particular award. The block construction assistant makes it very easy to add the block to a page, providing a drop-down of award types for you to select from.
 
-Each award type has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Top content (Awards) of the default menus).
+Each award type has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Awards (top content) of the default menus).
 The archive is linked from the [tt]main_awards[/tt] block also.
 
 When viewing content which received one or more awards, the title of the content will contain a trophy icon. If you hover over the trophy, you will see a tooltip listing the awards given to the content and when.

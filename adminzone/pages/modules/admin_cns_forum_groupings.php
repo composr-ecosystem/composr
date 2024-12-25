@@ -99,6 +99,7 @@ class Module_admin_cns_forum_groupings extends Standard_crud_module
         require_javascript('cns_forum');
 
         set_helper_panel_tutorial('tut_forums');
+        set_helper_panel_text(comcode_lang_string('DOC_FORUM_GROUPINGS'));
 
         breadcrumb_set_parents([['_SEARCH:admin_cns_forums:browse', do_lang_tempcode('SECTION_FORUMS')]]);
 

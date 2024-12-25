@@ -135,14 +135,16 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         if ($type == 'browse') {
             $this->title = get_screen_title('ECOMMERCE');
+            set_helper_panel_text(comcode_lang_string('DOC_ECOMMERCE'));
         }
 
-        if (($type == 'browse') || ($type == 'add') || ($type == '_add') || ($type == 'edit') || ($type == '_edit') || ($type == '__edit')) {
+        if (($type == 'add') || ($type == '_add') || ($type == 'edit') || ($type == '_edit') || ($type == '__edit')) {
             set_helper_panel_text(comcode_lang_string('DOC_USERGROUP_SUBSCRIPTION'));
         }
 
         if (($type == 'prices') || ($type == '_prices')) {
             $this->title = get_screen_title('ECOM_PRODUCTS_MANAGE_INVENTORY');
+            set_helper_panel_text(comcode_lang_string('DOC_ECOMMERCE'));
         }
 
         return parent::pre_run($top_level);

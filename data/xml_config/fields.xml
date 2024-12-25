@@ -40,10 +40,26 @@
 	</qualify>
 	-->
 
+	<!-- Example if you want to require staff to provide a message (for a Private Topic) when issuing warnings -->
+	<!--
+	<qualify pages="warnings" types="add,_add" fields="message">
+		<minLength>1</minLength>
+	</qualify>
+	-->
+
+	<!-- Example if you want to require punitive actions to always be included on warnings (the staff member must tick the box) -->
+	<!--
+	<qualify pages="warnings" types="add,_add" fields="include_punitive_text">
+		<possibilitySet error="You are required to include punitive actions in the message for transparency with the member">1</possibilitySet>
+	</qualify>
+	-->
+
 	<!-- Example as might be used for a custom module -->
+	<!--
 	<qualify pages="property" types="add,_add,_edit,__edit" fields="descrip_features,descrip_accomodation,descrip_exterior">
 		<maxLength error="!property:P_DESCRIPT_TOO_LONG">1500</maxLength>
 	</qualify>
+	-->
 </fieldRestrictions>
 
 <!--

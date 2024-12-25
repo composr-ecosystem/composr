@@ -93,6 +93,7 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         require_css('cns_admin');
 
         set_helper_panel_tutorial('tut_emoticons');
+        set_helper_panel_text(comcode_lang_string('DOC_EMOTICONS'));
 
         if ($type == '_import') {
             breadcrumb_set_parents([['_SELF:_SELF:import', do_lang_tempcode('IMPORT_EMOTICONS')]]);

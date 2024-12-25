@@ -161,6 +161,7 @@ class Module_admin_security
         require_lang('security');
 
         set_helper_panel_tutorial('tut_security');
+        set_helper_panel_text(comcode_lang_string('DOC_SECURITY_LOG'));
 
         if ($type == 'browse') {
             inform_non_canonical_parameter('alert_sort');

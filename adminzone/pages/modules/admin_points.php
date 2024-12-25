@@ -104,6 +104,7 @@ class Module_admin_points
             $this->title = get_screen_title('EXPORT_POINTS_LEDGER');
         } else {
             set_helper_panel_tutorial('tut_points');
+            set_helper_panel_text(comcode_lang_string('DOC_POINTS_LEDGER'));
         }
 
         if ($type == 'browse') {

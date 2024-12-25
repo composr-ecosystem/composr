@@ -126,11 +126,12 @@ class Module_admin_site_messaging
             return $error_msg;
         }
 
+        require_lang('site_messaging');
+
         set_helper_panel_tutorial('tut_site_messaging');
+        set_helper_panel_text(comcode_lang_string('DOC_SITE_MESSAGING'));
 
         $type = get_param_string('type', 'browse');
-
-        require_lang('site_messaging');
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('SITE_MESSAGING'));

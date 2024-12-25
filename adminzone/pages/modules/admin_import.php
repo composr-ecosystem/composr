@@ -168,6 +168,7 @@ class Module_admin_import
         require_lang('import');
 
         set_helper_panel_tutorial('tut_importer');
+        set_helper_panel_text(comcode_lang_string('DOC_IMPORT'));
 
         if ($type == 'browse') {
             breadcrumb_set_self(do_lang_tempcode('IMPORT'));

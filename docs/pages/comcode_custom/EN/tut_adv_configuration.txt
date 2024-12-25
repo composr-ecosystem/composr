@@ -28,21 +28,24 @@ All the "bundled" addons are installed when you install Composr but it is recomm
 To manage addons go to Admin Zone > Structure > Addons. Any addons that are uninstalled will be archived so you can restore them later if you wish (although any data you created for the addons, such as entries, will be permanently lost).
 
 There are also many non-bundled addons that you can install. Some of these are official and some of these are third-party. An addon may be non-bundled if any of the following hold true:
- - It is not considered mainstream enough
- - It ties into a third-party service that is not officially endorsed
+ - It is not considered mainstream enough (e.g. its features will probably only be used by a few sites)
+ - It ties into a third-party service that is not officially supported
  - It has been written by a third-party, and not checked to Composr standards
  - It is known to not fully conform to Composr standards but still is considered useful for some audiences
+ - It requires complex knowledge or work to use or configure
 In reality the developers make pragmatic decisions. For example, as PayPal is so mainstream and the PayPal driver has low overhead, PayPal support is bundled with Composr -- but as Facebook support is a much more expansive thing, Facebook support is in a non-bundled addon.
 
 Non-bundled addons are installed via the "Import non-bundled addon(s)" link at the bottom of the Addons screen. The process goes as follows:
 1) Head to Admin Zone > Structure > Addons
 2) Scroll to the bottom
 3) Click the "Import non-bundled addon(s)" link
-4) Browse to the addon file
+4) Browse to the addon file (the tree will populate with available addons from the Composr homesite), or upload your own addon TAR.
 5) Click the "Import non-bundled addon(s)" button
 6) (The addon is now imported, but not installed)
 7) Review the warnings and click Proceed (to be honest unless you are a programmer doing a code-review the warnings will likely not mean much to you, but they are there for those capable of analysing it all)
 8) (The addon is now both imported and installed)
+
+A lot of (but not all) addons follow a similar major.minor.patch version convention: the major and minor version matches that of Composr's, and the patch version is specific to the addon (it increments on every software update if one or more addon files were changed).
 [/surround]
 
 [title="2"]Permissions[/title]
