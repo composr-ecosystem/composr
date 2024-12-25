@@ -1274,59 +1274,66 @@
 
         /* Software Chat */
         loadSoftwareChat: function () {
-            var url = 'https://composr.app/chat/global_room.htm?nick='; // TODO: add configuration option for this, possibly in rebrand
-            url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, '') + '@' + $cms.getSiteName().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
-
-            var bi = document.getElementById('main-website-inner');
-
-            var SOFTWARE_CHAT_EXTRA = $util.format('{!SOFTWARE_CHAT_EXTRA;^}', [$cms.filter.html($cms.getBrandBaseUrl())]);
-            var html = /** @lang HTML */'' +
-                '<div class="software-chat">' +
-                '   <h2>{!CMS_COMMUNITY_HELP}</h2>' +
-                '   <ul class="spaced-list">' + SOFTWARE_CHAT_EXTRA + '</ul>' +
-                '   <p class="associated-link associated-links-block-group">' +
-                '       <a title="{!SOFTWARE_CHAT_STANDALONE} {!LINK_NEW_WINDOW;^}" target="_blank" href="' + $cms.filter.html(url) + '">{!SOFTWARE_CHAT_STANDALONE}</a>' +
-                '       <a href="#!" class="js-global-click-load-software-chat">{!HIDE}</a>' +
-                '   </p>' +
-                '</div>' +
-                '<iframe class="software-chat-iframe" style="border: 0" src="' + $cms.filter.html(url) + '"></iframe>';
-
-            var box = $dom.$('#software-chat-box');
-            if (box) {
-                box.remove();
-
-                if (bi) {
-                    bi.classList.remove('faded');
+            $cms.ui.encryptData('Grant me le accezz 2 de chat!').then(function (encryptedData) {
+                if (encryptedData == '') {
+                    return;
                 }
-            } else {
-                var width = 950,
-                    height = 550;
 
-                box = $dom.create('div', {
-                    id: 'software-chat-box',
-                    css: {
-                        width: width + 'px',
-                        height: height + 'px',
-                        background: '#EEE',
-                        color: '#000',
-                        padding: '5px',
-                        border: '3px solid #AAA',
-                        position: 'absolute',
-                        zIndex: 2000,
-                        left: ($dom.getWindowWidth() - width) / 2 + 'px',
-                        top: 100 + 'px'
-                    },
-                    html: html
-                });
+                var url = 'https://composr.app/chat/global_room.htm?wide_high=1&nick='; // TODO: add configuration option for this, possibly in rebrand
+                url += encodeURIComponent($cms.getUsername().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, '') + '@' + $cms.getSiteName().replace(/[^a-zA-Z0-9_\-\\[]{}^`|]/g, ''));
+                url += '&token=' + encodeURIComponent(encryptedData);
 
-                document.body.appendChild(box);
+                var bi = document.getElementById('main-website-inner');
 
-                $dom.smoothScroll(0);
+                var SOFTWARE_CHAT_EXTRA = $util.format('{!SOFTWARE_CHAT_EXTRA;^}', [$cms.filter.html($cms.getBrandBaseUrl())]);
+                var html = /** @lang HTML */'' +
+                    '<div class="software-chat">' +
+                    '   <h2>{!CMS_COMMUNITY_HELP}</h2>' +
+                    '   <ul class="spaced-list">' + SOFTWARE_CHAT_EXTRA + '</ul>' +
+                    '   <p class="associated-link associated-links-block-group">' +
+                    '       <a title="{!SOFTWARE_CHAT_STANDALONE} {!LINK_NEW_WINDOW;^}" target="_blank" href="' + $cms.filter.html(url) + '">{!SOFTWARE_CHAT_STANDALONE}</a>' +
+                    '       <a href="#!" class="js-global-click-load-software-chat">{!HIDE}</a>' +
+                    '   </p>' +
+                    '</div>' +
+                    '<iframe class="software-chat-iframe" style="border: 0" src="' + $cms.filter.html(url) + '"></iframe>';
 
-                if (bi) {
-                    bi.classList.add('faded');
+                var box = $dom.$('#software-chat-box');
+                if (box) {
+                    box.remove();
+
+                    if (bi) {
+                        bi.classList.remove('faded');
+                    }
+                } else {
+                    var width = 950,
+                        height = 550;
+
+                    box = $dom.create('div', {
+                        id: 'software-chat-box',
+                        css: {
+                            width: width + 'px',
+                            height: height + 'px',
+                            background: '#EEE',
+                            color: '#000',
+                            padding: '5px',
+                            border: '3px solid #AAA',
+                            position: 'absolute',
+                            zIndex: 2000,
+                            left: ($dom.getWindowWidth() - width) / 2 + 'px',
+                            top: 100 + 'px'
+                        },
+                        html: html
+                    });
+
+                    document.body.appendChild(box);
+
+                    $dom.smoothScroll(0);
+
+                    if (bi) {
+                        bi.classList.add('faded');
+                    }
                 }
-            }
+            });
         },
 
         /* Staff Actions links */

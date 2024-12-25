@@ -39,7 +39,6 @@ class telemetry_test_set extends cms_test_case
             'version' => cms_version_pretty(), // Encrypted and contains full version
         ];
         $_payload = encrypt_data_telemetry(serialize($__payload));
-        $_payload['version'] = cms_version_number(); // Decrypted major/minor for use in determining which key pair to use
         $payload = json_encode($_payload);
 
         $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry';

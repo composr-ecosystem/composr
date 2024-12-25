@@ -32,6 +32,21 @@ class Mx_chat extends Module_chat
         $type = get_param_string('type', 'browse');
 
         if ($type == 'global_room') { // Similar to room
+            // Make it harder for clickjacking by requiring encrypted data (via telemetry keys) to be passed in for validation
+            require_code('encryption');
+
+            $token = get_param_string('token');
+            $decoded_base64 = base64_decode($token);
+            $decoded_json = json_decode($decoded_base64, true);
+
+            $contents = decrypt_data_telemetry($decoded_json['nonce'], $decoded_json['encrypted_data'], $decoded_json['encrypted_session_key'], $decoded_json['version']);
+            if ($contents != 'Grant me le accezz 2 de chat!') {
+                access_denied();
+            }
+
+            require_code('csp');
+            load_csp(['csp_allowed_iframe_ancestors' => "*"]);
+
             $room_id = $this->get_or_create_global_room();
             inject_feed_url('?mode=chat&select=' . strval($room_id), do_lang('CHATROOM'));
             $this->room_id = $room_id;
