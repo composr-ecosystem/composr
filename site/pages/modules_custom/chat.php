@@ -37,8 +37,13 @@ class Mx_chat extends Module_chat
 
             $token = get_param_string('token');
             $decoded_base64 = base64_decode($token);
+            if ($decoded_base64 === false) {
+                access_denied();
+            }
             $decoded_json = json_decode($decoded_base64, true);
-
+            if ($decoded_json === null) {
+                access_denied();
+            }
             $contents = decrypt_data_telemetry($decoded_json['nonce'], $decoded_json['encrypted_data'], $decoded_json['encrypted_session_key'], $decoded_json['version']);
             if ($contents != 'Grant me le accezz 2 de chat!') {
                 access_denied();
