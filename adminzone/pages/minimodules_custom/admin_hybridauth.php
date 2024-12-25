@@ -27,6 +27,8 @@ $full_path = get_custom_file_base() . '/data_custom/xml_config/hybridauth.xml';
 
 $post_url = build_url(['page' => '_SELF', 'type' => 'save'], '_SELF');
 
+set_helper_panel_text(comcode_lang_string('DOC_HYBRIDAUTH'));
+
 if ($type == 'save') {
     require_code('input_filter_2');
     if (get_value('disable_modsecurity_workaround') !== '1') {

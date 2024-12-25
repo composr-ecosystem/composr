@@ -1,9 +1,5 @@
 {TITLE}
 
-<p>
-	{!LDAP_INTRO}
-</p>
-
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post">
 	{$INSERT_FORM_POST_SECURITY}
 

@@ -109,6 +109,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         require_javascript('core_cns');
 
         set_helper_panel_tutorial('tut_adv_members');
+        set_helper_panel_text(comcode_lang_string('DOC_CUSTOM_PROFILE_FIELDS'));
 
         $ret = parent::pre_run($top_level);
 

@@ -20,7 +20,7 @@
  * @param  boolean $evaluate_comcode Whether to evaluate the Comcode (false: return as a string of Comcode rather than HTML)
  * @return ?string The full Comcode (null: not found)
  */
-function get_problem_match_nearest(string $error_message, string $evaluate_comcode = true) : ?string
+function get_problem_match_nearest(string $error_message, bool $evaluate_comcode = true) : ?string
 {
     if (!defined('DEFAULT_BRAND_NAME')) {
         define('DEFAULT_BRAND_NAME', 'Composr'); // TODO: This is a fudge

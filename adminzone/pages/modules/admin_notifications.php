@@ -95,6 +95,9 @@ class Module_admin_notifications
 
         require_lang('notifications');
 
+        set_helper_panel_tutorial('tut_notifications');
+        set_helper_panel_text(comcode_lang_string('DOC_NOTIFICATIONS'));
+
         if ($type == 'browse') {
             $this->title = get_screen_title('NOTIFICATIONS');
         }

@@ -180,6 +180,7 @@ class Module_cms_catalogues extends Standard_crud_module
         inform_non_canonical_parameter('#^field_.*$#');
 
         set_helper_panel_tutorial('tut_catalogues');
+        set_helper_panel_text(comcode_lang_string('DOC_CATALOGUES'));
 
         if ($type == '_import') {
             breadcrumb_set_parents([['_SELF:_SELF:import', do_lang_tempcode('MANAGE_CATALOGUES')], ['_SELF:_SELF:import', do_lang_tempcode('IMPORT_CATALOGUE_ENTRIES')]]);

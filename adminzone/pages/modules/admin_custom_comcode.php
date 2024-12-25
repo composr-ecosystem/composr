@@ -136,6 +136,7 @@ class Module_admin_custom_comcode extends Standard_crud_module
         require_lang('comcode');
 
         set_helper_panel_tutorial('tut_adv_comcode');
+        set_helper_panel_text(comcode_lang_string('DOC_CUSTOM_COMCODE'));
 
         return parent::pre_run($top_level);
     }

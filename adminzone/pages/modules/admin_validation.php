@@ -111,6 +111,7 @@ class Module_admin_validation
         require_lang('validation');
 
         set_helper_panel_tutorial('tut_censor');
+        set_helper_panel_text(do_lang_tempcode('DOC_VALIDATION'));
 
         $this->title = get_screen_title('NOT_VALIDATED_RESOURCES');
 

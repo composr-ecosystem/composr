@@ -202,6 +202,7 @@ class Module_admin_giftr extends Standard_crud_module
         require_lang('giftr');
 
         set_helper_panel_tutorial('tut_subcom');
+        set_helper_panel_text(comcode_lang_string('DOC_GIFTR'));
 
         if ($type == 'view') {
             breadcrumb_set_self(do_lang_tempcode('VIEW_GIFT'));

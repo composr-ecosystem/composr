@@ -157,6 +157,7 @@ class Module_admin_wordfilter extends Standard_crud_module
         require_lang('wordfilter');
 
         set_helper_panel_tutorial('tut_censor');
+        set_helper_panel_text(comcode_lang_string(('DOC_WORDFILTER')));
 
         if ($type == 'browse') {
             $this->title = get_screen_title('MANAGE_WORDFILTER');

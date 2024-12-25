@@ -282,6 +282,7 @@ class Module_admin_permissions
 
         if ($type == 'privileges') {
             set_helper_panel_tutorial('tut_permissions');
+            set_helper_panel_text(comcode_lang_string('DOC_PRIVILEGES'));
 
             require_all_lang();
 
@@ -300,6 +301,7 @@ class Module_admin_permissions
             $p_section = get_param_string('id', null);
             if (empty($p_section)) {
                 set_helper_panel_tutorial('tut_permissions');
+                set_helper_panel_text(comcode_lang_string('DOC_PRIVILEGES'));
             }
 
             breadcrumb_set_parents([['_SELF:_SELF:privileges', do_lang_tempcode('PRIVILEGES')]]);

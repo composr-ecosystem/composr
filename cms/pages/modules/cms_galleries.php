@@ -222,6 +222,7 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         set_helper_panel_tutorial('tut_galleries');
+        set_helper_panel_text(comcode_lang_string('DOC_GALLERIES'));
 
         return parent::pre_run($top_level);
     }

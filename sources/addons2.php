@@ -1763,7 +1763,7 @@ function update_addon_auto_version(string $place, string $name)
     require_code('version');
     require_code('version2');
 
-    // Get a hash of all the addon files to do change detection
+    // Get a hash of all the addon files to do change detection (except we exclude the addon registry hook since this function will modify it)
     $new_hash = find_addon_effective_md5($name, true);
 
     $hook_path = get_custom_file_base() . '/' . filter_naughty_harsh($place) . '/hooks/systems/addon_registry/' . filter_naughty_harsh($name) . '.php';

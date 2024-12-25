@@ -142,6 +142,7 @@ class Module_admin_early_access extends Standard_crud_module
 
         if ($type != 'view') { // The view table is too large for the panel
             set_helper_panel_tutorial('sup_early_access');
+            set_helper_panel_text(comcode_lang_string('DOC_EARLY_ACCESS_CODES'));
         }
 
         switch ($type) {
@@ -194,7 +195,7 @@ class Module_admin_early_access extends Standard_crud_module
         require_code('templates_donext');
         return do_next_manager(
             get_screen_title('EARLY_ACCESS_CODES'),
-            comcode_lang_string('EARLY_ACCESS_CODES_TEXT'),
+            comcode_lang_string('DOC_EARLY_ACCESS_CODES'),
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_EARLY_ACCESS_CODE')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_EARLY_ACCESS_CODE')],
@@ -560,7 +561,7 @@ class Module_admin_early_access extends Standard_crud_module
             $result_entries->attach(results_entry($map, true));
         }
 
-        $results_table = results_table(do_lang_tempcode('EARLY_ACCESS_CODES'), $start, 'early_access_start', $max, 'early_access_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'early_access_sort', paragraph(do_lang_tempcode('EARLY_ACCESS_CODES_TEXT')));
+        $results_table = results_table(do_lang_tempcode('EARLY_ACCESS_CODES'), $start, 'early_access_start', $max, 'early_access_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'early_access_sort');
 
         $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
 

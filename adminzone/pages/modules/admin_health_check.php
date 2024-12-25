@@ -79,6 +79,7 @@ class Module_admin_health_check
         require_code('health_check');
 
         require_lang('menus');
+        set_helper_panel_tutorial('tut_website_health');
         set_helper_panel_text(comcode_lang_string('DOC_HEALTH_CHECK'));
 
         $type = get_param_string('type', 'browse');

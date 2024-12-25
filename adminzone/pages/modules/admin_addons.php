@@ -157,6 +157,7 @@ class Module_admin_addons
 
         if ($type == 'browse') {
             set_helper_panel_tutorial('tut_adv_configuration');
+            set_helper_panel_text(comcode_lang_string('DOC_ADDONS'));
 
             $this->title = get_screen_title('ADDONS');
         }

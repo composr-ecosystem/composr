@@ -117,6 +117,7 @@ class Module_admin_cns_forums extends Standard_crud_module
         inform_non_canonical_parameter('forum_grouping_id');
 
         set_helper_panel_tutorial('tut_forums');
+        set_helper_panel_text(comcode_lang_string('DOC_FORUMS'));
 
         if ($type == 'reorder' || $type == 'edit') {
             $this->title = get_screen_title('EDIT_FORUM');
@@ -177,8 +178,8 @@ class Module_admin_cns_forums extends Standard_crud_module
     public function browse() : object
     {
         $menu_links = [
-            ['admin/add_one_category', ['admin_cns_forum_groupings', ['type' => 'add'], get_module_zone('admin_cns_forum_groupings')], do_lang('ADD_FORUM_GROUPING')],
-            ['admin/edit_one_category', ['admin_cns_forum_groupings', ['type' => 'edit'], get_module_zone('admin_cns_forum_groupings')], do_lang('EDIT_FORUM_GROUPING')],
+            ['admin/add_one_category', ['admin_cns_forum_groupings', ['type' => 'add'], get_module_zone('admin_cns_forum_groupings')], do_lang('ADD_FORUM_GROUPING'), 'DOC_FORUM_GROUPINGS'],
+            ['admin/edit_one_category', ['admin_cns_forum_groupings', ['type' => 'edit'], get_module_zone('admin_cns_forum_groupings')], do_lang('EDIT_FORUM_GROUPING'), 'DOC_FORUM_GROUPINGS'],
             ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_FORUM')],
             ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_FORUM')],
         ];

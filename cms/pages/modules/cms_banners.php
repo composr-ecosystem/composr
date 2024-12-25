@@ -109,6 +109,7 @@ class Module_cms_banners extends Standard_crud_module
         inform_non_canonical_parameter('b_type');
 
         set_helper_panel_tutorial('tut_banners');
+        set_helper_panel_text(comcode_lang_string('DOC_BANNERS'));
 
         if ((has_privilege(get_member(), 'banner_free')) && (get_option('admin_banners') == '0')) {
             attach_message(do_lang_tempcode('PERMISSION_BANNER_SKIP'), 'notice', true);

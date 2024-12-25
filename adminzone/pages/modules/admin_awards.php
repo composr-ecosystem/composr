@@ -166,6 +166,7 @@ class Module_admin_awards extends Standard_crud_module
         require_lang('awards');
 
         set_helper_panel_tutorial('tut_featured');
+        set_helper_panel_text(comcode_lang_string('DOC_AWARDS'));
 
         if ($type == 'predefined_content') {
         }

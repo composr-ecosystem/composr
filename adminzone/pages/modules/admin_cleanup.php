@@ -74,6 +74,7 @@ class Module_admin_cleanup
         require_lang('cleanup');
 
         set_helper_panel_tutorial('tut_website_health');
+        set_helper_panel_text(comcode_lang_string('DOC_CLEANUP_TOOLS'));
 
         if ($type == 'rebuild') {
             breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('CLEANUP_TOOLS')]]);

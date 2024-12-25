@@ -107,6 +107,7 @@ class Module_cms_quiz extends Standard_crud_module
         inform_non_canonical_parameter('validated');
 
         set_helper_panel_tutorial('tut_quizzes');
+        set_helper_panel_text(comcode_lang_string('DOC_QUIZZES'));
 
         if ($type == 'browse') {
             if (has_actual_page_access(get_member(), 'admin_quiz')) {

@@ -138,6 +138,7 @@ if ($type == 'save') {
 $description = do_lang_tempcode('DESCRIPTION_EDIT_ACHIEVEMENTS');
 
 set_helper_panel_tutorial('sup_achievements');
+set_helper_panel_text(comcode_lang_string('achievements:DOC_ACHIEVEMENTS'));
 
 // Render the XML editing screen (and revisions)
 return do_template('XML_CONFIG_SCREEN', [

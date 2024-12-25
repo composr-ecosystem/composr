@@ -92,7 +92,7 @@
 									<div><a title="{!_EDIT_THEME}: {NAME*}" href="{EDIT_URL*}">{$?,{$IS_EMPTY,{THEME_USAGE}},{!EDIT_THEME},{!SETTINGS}}</a></div>
 								</div>
 
-								<div data-cms-href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>
+								<div>
 									<div>
 										<a rel="edit" title="{!EDIT_TEMPLATES}: {NAME*}" href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>{+START,INCLUDE,ICON}
 											NAME=menu/adminzone/style/themes/templates
@@ -102,7 +102,7 @@
 									<div><a title="{!EDIT_TEMPLATES}: {NAME*}" href="{TEMPLATES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>{!EDIT_TEMPLATES}</a></div>
 								</div>
 
-								<div data-cms-href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>
+								<div>
 									<div>
 										<a rel="edit" title="{!EDIT_THEME_IMAGES}: {NAME*}" href="{IMAGES_URL*}"{+START,IF,{$EQ,{NAME},default}} data-cms-confirm-click="{!EDIT_DEFAULT_THEME_WARNING}"{+END}>{+START,INCLUDE,ICON}
 											NAME=menu/adminzone/style/themes/theme_images

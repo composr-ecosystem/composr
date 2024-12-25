@@ -63,7 +63,7 @@ Members can receive good karma for voting in topic polls. Additionally, the numb
 [*][b]feedback[/b]
 Members can be assigned good or bad karma for every rating they receive depending on the rating. This also works when using likes / dislikes.
 [*][b]awards[/b]
-Good karma can be assigned when a member receives a Top Content (Award) for some content.
+Good karma can be assigned when a member receives an award (top content) for some content.
 [*][b]cns_warnings[/b]
 Bad karma can be assigned as a punitive action for getting warned. You can also reverse recent karma assignments in a warning (e.g. in the event the member was abusing the karma system). Additionally, you can decrease the amount of karmic influence a member has based on how many formal warnings they received in a given period of time.
 [*][b]polls[/b]
