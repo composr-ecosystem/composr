@@ -31,12 +31,18 @@ function read_filtercode_parameter_from_env(string $field_name, ?string $field_t
 
     if ($field_type === null) {
         $field_type = 'line';
-        if (!array_key_exists('filter_' . $field_name, $env)) {
-            if (array_key_exists('filter_' . $field_name . '_year', $env)) {
-                $field_type = 'time';
+        if (array_key_exists('filter_' . $field_name, $env)) {
+            if (is_array($env['filter_' . $field_name])) {
+                $field_type = 'list_multi';
+            } else {
+                // Might be a date/time field?
+                if (array_key_exists('filter_' . $field_name . '_time', $env)) {
+                    $field_type = 'time';
+                }
+                if (array_key_exists('filter_' . $field_name . '_year', $env)) {
+                    $field_type = 'date';
+                }
             }
-        } elseif (is_array($env['filter_' . $field_name])) {
-            $field_type = 'list_multi';
         }
     }
 
@@ -56,19 +62,93 @@ function read_filtercode_parameter_from_env(string $field_name, ?string $field_t
 }
 
 /**
+ * Get a full Filtercode search string from all environment parameters.
+ * This assumes default conventions for key names (e.g. prefix "filter_", and for operations, suffix "_op").
+ *
+ * @return string The Filtercode
+ */
+function get_params_filtercode() : string
+{
+    $active_filters = [];
+
+    // Read in everything from the parameters
+    $env = $_POST + $_GET;
+    uksort($env, '_strlen_sort'); // Necessary so we do not
+
+    foreach ($env as $_key => $_value) {
+        if (strpos($_key, 'filter_') !== 0) {
+            continue;
+        }
+
+        if (strpos($_key, '_op') !== false) {
+            $key = substr($_key, 0, -3); // Get rid of _op
+            $is_op = true;
+        } else {
+            $key = $_key;
+            $is_op = false;
+        }
+        $env_key = substr($_key, 7); // Get rid of filter_
+        $name = substr($key, 7); // Get rid of filter_
+
+        if (!isset($active_filters[$name])) {
+            $active_filters[$name] = ['=', '']; // Double; operation, value
+        }
+
+        // Skip date components; already handled in read_filtercode_parameter_from_env
+        $skip_suffixes = ['_timezone', '_year', '_month', '_day', '_hour', '_minute', '_seconds', '_time'];
+        foreach ($skip_suffixes as $suffix) {
+            $substring = substr($name, (strlen($name) - strlen($suffix)));
+            $substring_b = substr($name, 0, strlen($name) - strlen($suffix));
+
+            // No skipping if the parameter was potentially not set yet
+            if (!isset($active_filters[$substring_b])) {
+                continue;
+            }
+
+            if ($substring == $suffix) {
+                continue 2;
+            }
+        }
+
+        $value = read_filtercode_parameter_from_env($env_key);
+
+        if ($is_op) {
+            $active_filters[$name][0] = $value;
+        } else {
+            $active_filters[$name][1] = $value;
+        }
+    }
+
+    // Compile into Filtercode
+    $ret = [];
+    foreach ($active_filters as $name => $details) {
+        list($filter_op, $filter_value) = $details;
+        if ($filter_value == '') {
+            continue;
+        }
+
+        $ret[] = strval($name) . $filter_op . $filter_value;
+    }
+
+    return implode(',', $ret);
+}
+
+/**
  * Get a form for inputting unknown variables within a filter.
  *
  * @param  string $filter String-based search filter (blank: make one up to cover everything, but only works if $table is known)
  * @param  array $labels Labels for field names (empty array: use auto-generated)
  * @param  ?ID_TEXT $content_type Content-type to auto-probe from (null: none, use string inputs)
  * @param  array $types Field types (empty array: use string inputs / defaults for table)
+ * @param  ?ID_TEXT $table Filter directly on this database table if $content_type is null (null: none)
  * @return array The form fields, The modded filter, Merger links
  */
-function form_for_filtercode(string $filter, array $labels = [], ?string $content_type = null, array $types = []) : array
+function form_for_filtercode(string $filter, array $labels = [], ?string $content_type = null, array $types = [], ?string $table = null) : array
 {
-    $table = null;
     $db = $GLOBALS['SITE_DB'];
     $info = [];
+
+    // If content type was provided, it takes priority for the table we will use
     if ($content_type !== null) {
         require_code('content');
         $ob = get_content_object($content_type);
@@ -76,12 +156,11 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
 
         if ($info !== null) {
             $table = $info['table'];
-            if (get_forum_type() == 'cns') {
-                if (($content_type == 'post') || ($content_type == 'topic') || ($content_type == 'member') || ($content_type == 'group') || ($content_type == 'forum')) {
-                    $db = $GLOBALS['FORUM_DB'];
-                }
-            }
         }
+    }
+
+    if ($table !== null) {
+        $db = get_db_for($table);
     }
 
     $fields_needed = [];
@@ -116,10 +195,7 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
         }
 
         // Custom fields
-        require_code('content');
-        $ob2 = get_content_object($content_type);
-        $info2 = $ob2->info();
-        if (($info2 !== null) && (($info2['support_custom_fields']) || ($content_type == 'catalogue_entry'))) {
+        if (((isset($info['support_custom_fields'])) && ($info['support_custom_fields'])) || ($content_type === 'catalogue_entry')) {
             require_code('fields');
             $catalogue_fields = list_to_map('id', get_catalogue_fields(($content_type == 'catalogue_entry') ? $catalogue_name : ('_' . $content_type)));
             foreach ($catalogue_fields as $catalogue_field) {
@@ -783,7 +859,7 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
  * @param  object $db Database object to use
  * @param  ?array $filters Parsed Filtercode structure (null: no filter)
  * @param  ?ID_TEXT $content_type The content type (null: no function needed, direct in-table mapping always works)
- * @param  ?string $context First parameter to send to the conversion function, may mean whatever that function wants it to. If we have no conversion function, this is the name of a table to read field metadata from (null: none)
+ * @param  ?string $context First parameter to send to the conversion function, may mean whatever that function wants it to. If we have no content type, this is the name of a table to read field metadata from (null: none)
  * @param  string $table_join_code What the database will join the table with
  * @return array Tuple: array of extra join (implode with ''), string of extra where
  */
@@ -830,8 +906,8 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
 
     // Load up fields to compare to
     $db_fields = [];
-    if (isset($info['table'])) {
-        $table = $info['table'];
+    $table = isset($info['table']) ? $info['table'] : $context;
+    if ($table !== null) {
         static $db_fields_for_table = [];
         if (isset($db_fields_for_table[$table])) {
             $db_fields = $db_fields_for_table[$table];
@@ -839,8 +915,6 @@ function filtercode_to_sql(object $db, ?array $filters, ?string $content_type = 
             $db_fields = collapse_2d_complexity('m_name', 'm_type', $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table]));
             $db_fields_for_table[$table] = $db_fields;
         }
-    } else {
-        $table = null;
     }
 
     foreach ($filters as $filter_i => $filter) {
