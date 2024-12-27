@@ -19,9 +19,16 @@
  */
 
 /*
- * This script is used by the homesite's install statistics service. It simply tells the homesite if a website is
- * installed here based on the presence of _config.php. Since htaccess blocks _config.php, we must use an API like
- * this to determine an installation.
+    This script is used by the homesite's install statistics service. It simply tells the homesite if a website is
+    installed here based on the presence of _config.php and sources/bootstrap.php. Since htaccess blocks _config.php,
+    we must use an API like this to determine an installation.
+
+    The homesite will only query if you elected to provide statistics when you installed your site.
+    And if this file no longer exists or reports the software is not installed, the homesite will stop querying
+    for this file after a year.
+
+    If you want your site to be immediately removed and the homesite to stop checking you, uncomment the echo line
+    'Remove me!'. When the homesite sees this, it will immediately remove you from its install statistics service.
  */
 
 header('X-Robots-Tag: noindex');
@@ -49,8 +56,17 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     }
 }
 
-// To prevent a DOS attack, we don't actually load in the software API; we don't need to do so.
-if (is_file($FILE_BASE . '/_config.php')) {
+/*
+    Un-comment this line and save the file if you want the homesite to remove you from the install statistics service and stop checking your site.
+    Leave it in for a few days to be sure the site gets the message and removes you.
+*/
+// echo 'Remove me!';
+
+/*
+    Don't load in the software API because we don't want DOS attacks.
+    We just need to check for two files. If they both exist, there's a 98% chance the software is indeed installed. Good enough to say yes for us.
+*/
+if (is_file($FILE_BASE . '/_config.php') && is_file($FILE_BASE . '/sources/bootstrap.php')) {
     echo 'Yes';
 } else {
     echo 'No';
