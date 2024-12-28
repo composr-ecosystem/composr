@@ -1,0 +1,96 @@
+[title sub="Written by Patrick Schmalstig"]The Pillars of Free and Open Source Software (FOSS)[/title]
+[surround]
+[media width="150" description="The three pillars of Free and Open Source Software" float="right"]data_custom/images/docs/tut_foss/pillars_of_foss.png[/media]
+Composr CMS is proudly a Free and Open Source Software, or FOSS for short. This means anyone...
+ - can freely download and use the software to build their own websites,
+ - can review the source code of the software and contribute changes / improvements towards it,
+ - can modify the source code in any way for their own personal use,
+ - can distribute copies of the source code (including modified copies), and
+ - can fork the Git repository to take Composr CMS in a different direction / make their own distro.
+
+The [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] allows anyone to view the full source code and development progress of the software. Anyone can also leave comments and make merge requests to contribute towards the code.
+[/surround]
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]1. The Freedom to Download and Use the Software[/title]
+The first pillar of FOSS is that users have the right to download the software and use it for virtually any purpose with no unreasonable restrictions.
+
+You can freely download Composr CMS and build whatever website you wish to build out of it. All features of Composr CMS are free and available to everyone without restrictions. The Composr developers and community do not, and will not, govern who can and cannot make which types of websites using Composr CMS (unlike proprietary software which frequently involve an End-User Licence Agreement [EULA] telling you how you can and cannot use the software).
+
+This is to say, however, that you are not free from the social and legal responsibilities and consequences. While we might not stop you from building a site selling illegal products, your local government might, and you could get arrested or fined for doing so. As another example, if you build an adult website, there are often some legal rules you must follow (such as age verification) to be in compliance and avoid getting penalised.
+
+With that being said, if there are ways you believe Composr CMS can be improved to better meet the legal requirements and needs in your area, please let us know by [page="site:report-issue"]making a feature request on the tracker[/page] or making a merge request on our [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] if you want to implement it yourself (please do keep in mind our [page="docs:codebook"]Coding Standards[/page] if you elect to implement it yourself and publish your implementation).
+
+[title="2"]2. The Freedom to View and Modify the Source Code[/title]
+The second pillar of FOSS is that users have the right to view the source code of the software in full and unobstructed, and they can modify it to their liking.
+
+The full source code of Composr CMS can be viewed on the [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url]. Additionally, when you download Composr, the entire source code is available to you and can be modified as you desire.
+
+The developers of Composr CMS take this pillar even further; we not-only allow you to modify the program to your liking, but we encourage it.
+
+The Composr ecosystem is designed around the idea of "code overrides", which are files you can place in special [tt]*_custom[/tt] folders (or as a hook in [tt]sources_custom/hooks/systems/contentious_overrides[/tt]) to modify the behaviour of Composr without modifying the original code. This makes upgrading much easier without losing the changes you made. And it makes sharing your modifications (e.g. as addons) much easier as well. The developers wrote the [page="docs:codebook"]Codebook[/page] extensively detailing how you can develop with Composr CMS.
+
+Additionally, Composr CMS employs "miniblocks" and "minimodules" which are PHP files that do not necessarily conform to Composr's API standards and simply echo out (or return) the content to display. This makes migration or getting started with Composr development easier.
+
+Finally, Composr CMS employs an "html" folder when you want to create pages written in raw HTML (opposed to Comcode or PHP).
+
+[title="2"]3. The Freedom to Distribute Copies of the Software[/title]
+The third and final pillar of FOSS is that users have the right to re-distribute the software, in part or in whole, whether in its original form or not.
+
+While we require that you maintain the original copyright comments at the top of every source code file, and we require that you document all changes you make (and the date/time), we otherwise permit the modification of the source code and its distribution. The best way to be in compliance is to fork the Composr repository into your own repository and make your modifications there (optionally pulling in from upstream so you are up-to-date with our repository). The commit history acts as a running changelog which will meet this requirement without you having to separately document them.
+
+[title="2"]The Benefits of FOSS[/title]
+There are many benefits to Free and Open Source software, but here are the main ones:
+[list]
+[*][b]Innovation[/b]
+Since FOSS actively encourages and facilitates contributions from the community, users of a software can come together and help progress and innovate the software. This can be done through finding and fixing bugs, patching security holes, implementing new features, or simply spreading the word about the software.
+[*][b]Transparency[/b]
+As the source code for the software is open and viewable by anyone, users know exactly what the software is doing / going to do. And if they don't like it, they can change it on their own copy.
+[*][b]Cost Efficiency[/b]
+Since FOSS is free to download and use, this potentially cuts out one major expense from the pipeline of making a website. Bear in mind, however, the following:
+ - There are still costs associated with running the website yourself and possibly hiring developers if you want your own customisations
+ - Professional support is not included with FOSS; if such is offered, you pay for that separately. This is contrary to proprietary software where sometimes support is included with the price you pay for the software.
+ - FOSS relies on community contributions to thrive and progress. This could be in the form of development / code contributions, submitting issues, engaging with the community, or providing financial donations to the developers.
+[*][b]Autonomy[/b]
+Since you have a copy of the software and its source code in full, you effectively have full control over your website and its data. This is becoming ever-so more important as time goes on and many companies switch to Software as a Service (SaaS) models where you don't own anything, not even your own data.
+[*][b]Community[/b]
+FOSS is community-focused. With proprietary software, there may be a community associated with it, but largely when it comes to development, you suggest things or post issues to the developers for them to implement, fix, or ignore. With FOSS, since the community runs the train, people come together to collaborate on everything, including the development of the software.
+[*][b]Education and Experience[/b]
+FOSS, given its open nature, is great for learning how to code or begin building up resume experience for future jobs in software engineering, IT, or development.
+[/list]
+
+[title="2"]Common Myths of FOSS[/title]
+There are some common myths about FOSS that are important to address. Here are a few of them:
+[list]
+[*][b]FOSS is completely free[/b]
+FOSS is free as-in freedom. This means you can do what you want with it with little to no restrictions. But that doesn't mean you won't need to budget for developers, web hosting, or other teams as necessary to make what you want happen (unless you have the skills, resources, and time to do all of it yourself). The software itself is free, but it is often provided with no warranties of any kind. You are fully responsible for anything that happens as a result of your use of the software. And you are responsible for getting / hiring your own support for it.
+Not to mention, FOSS cannot progress without the contributions of the community. So wherever you use FOSS, consider making a contribution of some sort towards that software or community. This can be in the form of a financial donation, code contributions, reporting issues or suggestions, or helping others in the community.
+[*][b]FOSS is outdated[/b]
+Some FOSS projects have unfortunately fallen out of maintenance; this is an unfortunate commonality where developers do not get the appreciation or the community support necessary to keep the project going. But that doesn't mean all (or even most) FOSS is like that. Many are still being maintained.
+[*][b]There are no support options for FOSS[/b]
+Sometimes FOSS will have commercial backing by a company. This was the case for Composr CMS as we were once backed by ocProducts, Ltd. And often, this company will offer professional support (for a cost) to anyone who needs it. Consider investing in it because often, what you pay in support directly helps fund the development of the software.
+FOSS often have their own communities as well. These individuals (or companies) may provide assistance and support through forums and chats. And where the developers behind a FOSS might not offer their own professional support, community members might be offering it.
+In a way, one can argue due to the open nature of FOSS, you actually have more support options, not less, compared to proprietary software.
+[*][b]FOSS is not secure[/b]
+On the contrary, since the source code of FOSS is publicly visible by anyone, it is easy for someone to spot a security issue and quickly inform the developers to patch it. Additionally, due to the open nature of collaboration, if the core developers cannot get to a quick patch, a user can make a patch themselves and distribute it. This is unlike proprietary software where only the developers see the code (and may miss spotting security flaws), and only they can make patches for them when they are discovered.
+[*][b]FOSS is secure[/b]
+But do not take the Open Source nature for granted. FOSS can still be insecure. It is important to give the project status of a FOSS, and its source code, a look-over before deciding to use it. Some FOSS, especially ones which are not being maintained anymore, may have security flaws that are not getting fixed despite being called out by the community. Or, perhaps it is outdated and replaced by something else.
+[*][b]FOSS is only for developers[/b]
+You do not need knowledge to code or develop to use FOSS. And you do not have to contribute back to FOSS in the form of code to make an impact. A large majority of FOSS users are not developers. They just want to use something that will save them time and money, and will allow them to maintain full control over their data. Furthermore, many FOSS users contribute in the form of bug reports, testing, assisting others in the forums, or donations, rather than code contributions. These are just as valuable.
+[*][b]FOSS is not profitable[/b]
+It is reasonable to assume that because FOSS is free, you cannot make a profit from developing FOSS. This is far from the truth. Often, FOSS will have a separate company / entity which offers paid professional support (or services, such as cloud hosting) for the software. And this paid support is what makes the FOSS profitable. Therefore, while the FOSS itself is often not profitable, the existence of the FOSS enables the ability to offer paid support (or other services) for it, which is profitable.
+[*][b]FOSS threatens businesses[/b]
+This is probably the biggest myth of them all. FOSS help businesses, not hurt them. Many businesses, even top companies, use FOSS in their workflow (even if they do not want to admit to it and fail to attribute FOSS like they should). FOSS enables businesses to cut costs or time by providing features or tools they need they would otherwise have to develop and maintain themslves. And some generous companies will provide much-needed financial backing to FOSS in return. It's a win-win for both FOSS and businesses.
+[/list]
+
+[concepts
+ 1_key="FOSS"				1_value="Free and Open Source Software; software which follows the principles of right to use, right to modify, and right to distribute"
+ 2_key="EULA"				2_value="End-User Licence Agreement; an agreement a user must sign to use software (often proprietary) which defines how they may or may not use it"
+ 3_key="Proprietary"		3_value="Describes software which is owned by a company or individual and is often Closed Source"
+ 4_key="Open Source"		4_value="Indicates that the source code of a software is freely visible and modifiable by the end-user"
+ 5_key="Closed Source"	5_value="Indicates that the source code of a software is obfuscated (or not provided at all, e.g. Software as a Service) and cannot be viewed or modified"
+ 6_key="SaaS"				6_value="Software as a Service; proprietary and often Closed Source software which can only be used in the Cloud and cannot be downloaded (access is provided and controlled by the servicer)"
+]Concepts[/concepts]
+
+{$SET,tutorial_tags,core,Internet Technology,Introduction,novice}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,Free and Open Source software\, like Composr CMS\, follow the principles of the freedom to use\, modify\, and distribute.}[block]main_tutorial_rating[/block]
