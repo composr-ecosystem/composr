@@ -7,13 +7,13 @@
      * @param e
      * @param searchType
      */
-    $cms.form.updateAjaxSearchList = function updateAjaxSearchList(target, e, searchType) {
+    $cms.form.updateAjaxGroupSearchList = function updateAjaxGroupSearchList(target, e, searchType) {
         var special = 'search';
         searchType = strVal(searchType);
         if (searchType) {
             special += '&search_type=' + encodeURIComponent(searchType);
         }
-        $cms.form.updateAjaxMemberList(target, special, false, e);
+        $cms.form.updateAjaxGroupList(target, special, false, e);
     };
 
     var currentlyDoingListTimer = 0,
@@ -25,7 +25,7 @@
      * @param delayed
      * @param event
      */
-    $cms.form.updateAjaxMemberList = function updateAjaxMemberList(target, special, delayed, event) {
+    $cms.form.updateAjaxGroupList = function updateAjaxGroupList(target, special, delayed, event) {
         if ((event && $dom.keyPressed(event, 'Enter')) || target.disabled) {
             return;
         }
@@ -45,7 +45,7 @@
             var eCopy = { 'keyCode': event.keyCode, 'which': event.which };
 
             currentlyDoingListTimer = setTimeout(function () {
-                $cms.form.updateAjaxMemberList(target, special, true, eCopy);
+                $cms.form.updateAjaxGroupList(target, special, true, eCopy);
             }, 400);
             return;
         } else {
@@ -57,14 +57,14 @@
         var v = target.value;
 
         currentListForEl = target;
-        var script = '{$FIND_SCRIPT_NOHTTP;,namelike}?id=' + encodeURIComponent(v);
+        var script = '{$FIND_SCRIPT_NOHTTP;,grouplike}?id=' + encodeURIComponent('*' + v + '*');
         if (special) {
             script = script + '&special=' + special;
         }
 
         $cms.doAjaxRequest(script + $cms.keep()).then(function (xhr) {
             if (xhr.responseXML) {
-                updateAjaxMemberListResponse(xhr.responseXML);
+                updateAjaxGroupListResponse(xhr.responseXML);
             }
         });
 
@@ -75,7 +75,7 @@
             }
         }
 
-        function updateAjaxMemberListResponse(responseXml) {
+        function updateAjaxGroupListResponse(responseXml) {
             var listContents = responseXml && responseXml.querySelector('result');
 
             if (!listContents || !currentListForEl) {
@@ -88,7 +88,7 @@
 
             //if (list_contents.childNodes.length==0) return;
             var list = document.createElement(isDataList ? 'datalist' : 'select');
-            list.className = 'people-list';
+            list.className = 'group-list';
             list.id = 'ajax_list';
             if (isDataList) {
                 currentListForEl.setAttribute('list', 'ajax_list');
@@ -114,8 +114,8 @@
                 item.value = listContents.children[i].getAttribute('value');
                 item.title = listContents.children[i].getAttribute('title');
                 displaytext = item.value;
-                if (listContents.children[i].getAttribute('displayname')) {
-                    displaytext = listContents.children[i].getAttribute('displayname');
+                if (listContents.children[i].getAttribute('groupname')) {
+                    displaytext = listContents.children[i].getAttribute('groupname');
                 }
                 item.text = displaytext;
                 item.textContent = displaytext;
@@ -151,7 +151,7 @@
                 if (ret != null) {
                     return ret;
                 }
-                return $cms.form.updateAjaxMemberList(currentListForCopy, currentListForCopy.special, false, event);
+                return $cms.form.updateAjaxGroupList(currentListForCopy, currentListForCopy.special, false, event);
             };
             currentListForEl.onchange = function (event) {
                 currentListForCopy.onkeyup = currentListForCopy.oldOnkeyup;

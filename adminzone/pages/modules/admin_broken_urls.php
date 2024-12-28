@@ -309,9 +309,6 @@ class Module_admin_broken_urls
             'TEXT' => do_lang_tempcode('PENDING_LINK_CHECK'),
             'RESULTS_TABLE' => $table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => null,
-            'FILTERS_ROW_B' => null,
-            'FILTERS_HIDDEN' => null,
             'URL' => null,
         ]);
     }

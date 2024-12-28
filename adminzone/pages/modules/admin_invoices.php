@@ -330,61 +330,17 @@ class Module_admin_invoices
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $filter_id = get_param_integer('filter_id', null);
-        $_filter_type_code = get_param_string('filter_type_code', '');
-        $filter_type_code = explode(',', $_filter_type_code);
-        $_filter_state = get_param_string('filter_state', '');
-        $filter_state = explode(',', $_filter_state);
-        $filter_txn_id = get_param_string('filter_txn_id', '');
-        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
-        $filter_start = post_param_date('filter_start', true);
-        $filter_end = post_param_date('filter_end', true);
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
-        $where = '1=1';
-        if ($filter_id !== null) {
-            $where .= ' AND i.id=' . strval($filter_id);
-        }
-        if ($_filter_type_code != '') {
-            $where .= ' AND (';
-            foreach ($filter_type_code as $key => $product) {
-                if ($key > 0) {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('i.i_type_code', $product);
-            }
-            $where .= ')';
-        }
-        if ($_filter_state != '') {
-            $where .= ' AND (';
-            foreach ($filter_state as $key => $status) {
-                if ($key > 0) {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('i.i_state', $status);
-            }
-            $where .= ')';
-        }
-        if ($filter_txn_id != '') {
-            // Invoices do not have a transaction ID column and must be searched for; there could be more than one record per invoice so we cannot use JOIN / LEFT JOIN (would break pagination). Also SQL cannot return multiple columns in a SELECT subquery (transaction linker needs the whole row). We must use an EXISTS query and run a separate query on each row iteration to get the actual transaction row for the table.
-            $where .= ' AND EXISTS (SELECT t.id FROM ' . get_table_prefix() . 'ecom_transactions t WHERE t.id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\' AND t.t_type_code=i.i_type_code AND t.t_purchase_id=i.id)';
-        }
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $where .= ' AND i.i_member_id=' . strval($member_id);
-            } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
-            }
-        }
-        if ($filter_start !== null) {
-            $where .= ' AND i.i_time>=' . strval($filter_start);
-        }
-        if ($filter_end !== null) {
-            $where .= ' AND i.i_time<=' . strval($filter_end);
-        }
+        // Build WHERE query from Filtercode
+        $where = [];
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'ecom_invoices', 'i');
 
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'ecom_invoices i WHERE ' . $where);
-        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_invoices i WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_invoices i', 'COUNT(*)', $where, $end);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices i', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         require_code('form_templates');
         require_code('templates_results_table');
@@ -392,6 +348,26 @@ class Module_admin_invoices
         require_code('templates_map_table');
 
         $result_entries = new Tempcode();
+        $filtercode = [
+            'i_time<i_time_op><i_time>',
+            'i_type_code=<i_type_code>',
+            'i_member_id=<i_member_id>',
+            'i_price<i_price_op><i_price>',
+            'i_tax<i_tax_op><i_tax>',
+            'i_state=<i_state>'
+        ];
+        $filtercode_labels = [
+            'i_time=' . do_lang('DATE'),
+            'i_type_code=' . do_lang('PRODUCT'),
+            'i_member_id=' . do_lang('MEMBER'),
+            'i_price=' . do_lang('PRICE'),
+            'i_tax=' . do_lang(get_option('tax_system')),
+            'i_state=' . do_lang('STATUS'),
+        ];
+        $filtercode_types = [
+            'i_type_code=list',
+            'i_state=list',
+        ];
         $header_row = results_header_row([
             do_lang('IDENTIFIER'),
             do_lang('DATE'),
@@ -462,7 +438,7 @@ class Module_admin_invoices
                 $customer_link,
                 $price_linker,
                 $tax,
-                do_lang('PAYMENT_STATE_' . $row['i_state']),
+                tooltip(do_lang('PAYMENT_STATE_' . $row['i_state']), $row['i_state'], true),
                 $transaction_linker,
                 $actions
             ], false));
@@ -470,72 +446,14 @@ class Module_admin_invoices
 
         $results_table = results_table(do_lang('INVOICES'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        // Product types
-        $products = new Tempcode();
-        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_invoices', ['DISTINCT i_type_code'], []);
-        $__products = [];
-        foreach ($product_rows as $p) {
-            list($details, $product_object) = find_product_details($p['i_type_code']);
-            if ($details !== null) {
-                $item_name = $details['item_name'];
-            } else {
-                $item_name = $p['i_type_code'];
-            }
-            $__products[] = ['value' => $p['i_type_code'], 'caption' => $item_name];
-        }
-        sort_maps_by($__products, 'caption');
-        foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
-        }
-
-        $i_states = new Tempcode();
-        $statuses = ['new', 'pending', 'paid', 'delivered', 'active', 'cancelled', 'smodified'];
-        foreach ($statuses as $status) {
-            $i_states->attach(form_input_list_entry($status, (($_filter_state != '') && in_array($status, $filter_state)), do_lang('PAYMENT_STATE_' . $status)));
-        }
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_id',
-                'LABEL' => do_lang_tempcode('IDENTIFIER'),
-                'FIELD' => form_input_integer(do_lang_tempcode('IDENTIFIER'), new Tempcode(), 'filter_id', $filter_id, false),
-            ],
-            [
-                'PARAM' => 'filter_type_code',
-                'LABEL' => do_lang_tempcode('PRODUCT'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $products),
-            ],
-            [
-                'PARAM' => 'filter_state',
-                'LABEL' => do_lang_tempcode('STATUS'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_state', $i_states),
-            ],
-            [
-                'PARAM' => 'filter_txn_id',
-                'LABEL' => do_lang_tempcode('TRANSACTION'),
-                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
-            ],
-        ];
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('MEMBER'),
-                'FIELD' => form_input_username(do_lang_tempcode('MEMBER'), new Tempcode(), 'filter_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_start',
-                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
-            ],
-            [
-                'PARAM' => 'filter_end',
-                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
-            ],
-        ];
         $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'ecom_invoices',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '6a57f3550b09818b5737407e2f6eea56',
@@ -543,13 +461,9 @@ class Module_admin_invoices
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

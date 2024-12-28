@@ -162,6 +162,7 @@ class Hook_addon_registry_commandr
             'sources/hooks/systems/commandr_commands/cpdir.php',
             'sources/hooks/systems/commandr_commands/cpf_decrypt.php',
             'sources/hooks/systems/commandr_commands/cpf_encrypt.php',
+            'sources/hooks/systems/commandr_commands/create_dummy_data.php',
             'sources/hooks/systems/commandr_commands/css_cleanup.php',
             'sources/hooks/systems/commandr_commands/date.php',
             'sources/hooks/systems/commandr_commands/db_search.php',

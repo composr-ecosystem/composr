@@ -406,4 +406,58 @@ class Hook_cns_warnings_content
             }
         }
     }
+
+    /**
+     * Return information for the standing profile tab.
+     *
+     * @param  MEMBER $member_id_of The member whose profile we are viewing
+     * @param  MEMBER $member_id_viewing The member who is viewing the profile
+     * @param  array $warning_ids Array of formal warning IDs against this member for checking against queried punitive actions
+     * @return array Array of maps with information about this punitive action
+     */
+    public function get_stepper(int $member_id_of, int $member_id_viewing, array $warning_ids) : array
+    {
+        if (!addon_installed('cns_warnings')) {
+            return [];
+        }
+
+        $ret = [];
+
+        if (addon_installed('securitylogging')) {
+            require_lang('security');
+            $info = [];
+
+            // Check if content submissions are banned
+            $submit_ban = $GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $member_id_of]);
+            if ($submit_ban !== null) {
+                $info[] = [
+                    'icon' => 'cns_topic_modifiers/closed',
+                    'text' => do_lang_tempcode('STANDING_RESTRICTIONS_SUBMIT_BAN'),
+                ];
+            }
+
+            $ret[] = [
+                'order' => 30,
+                'label' => do_lang('STANDING_RESTRICTIONS'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_RESTRICTIONS'),
+                'icon' => 'cns_topic_modifiers/closed',
+                'active' => !empty($info),
+                'active_color' => 'warning',
+                'info' => $info,
+            ];
+
+            // A submission ban is technically a restriction, but a very severe one that often signals a 'last chance', so highlight the danger stepper too.
+            $ret[] = [
+                'order' => 100,
+                'label' => do_lang('STANDING_DANGER'),
+                'explanation' => do_lang('DESCRIPTION_STANDING_DANGER'),
+                'icon' => 'buttons/no',
+                'active' => !empty($info),
+                'active_color' => 'danger',
+                'info' => [],
+            ];
+        }
+
+        return $ret;
+    }
 }

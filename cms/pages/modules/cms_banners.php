@@ -206,11 +206,12 @@ class Module_cms_banners extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
+        require_code('templates_tooltip');
         require_lang('banners');
 
         $current_ordering = get_param_string('sort', 'b_type ASC', INPUT_FILTER_GET_COMPLEX);
@@ -228,8 +229,15 @@ class Module_cms_banners extends Standard_crud_module
         }
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('banner', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'banner');
+
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_banners') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned], false, implode('', $extra_join), null, $end);
 
         $has_expiry_dates = false; // Save space by default
         foreach ($rows as $row) {
@@ -238,6 +246,23 @@ class Module_cms_banners extends Standard_crud_module
             }
         }
 
+        $filtercode = [
+            'name<name_op><name>',
+            'b_type=<b_type>',
+            'deployment_agreement=<deployment_agreement>',
+            'campaign_remaining<campaign_remaining_op><campaign_remaining>',
+            'display_likelihood<display_likelihood_op><display_likelihood>',
+        ];
+        $filtercode_labels = [
+            'name=' . do_lang('CODENAME'),
+            'b_type=' . do_lang('BANNER_TYPE'),
+            'deployment_agreement=' . do_lang('DEPLOYMENT_AGREEMENT'),
+            'campaign_remaining=' . do_lang('HITS_ALLOCATED'),
+        ];
+        $filtercode_types = [
+            'b_type=list',
+            'deployment_agreement=list',
+        ];
         $hr = [
             do_lang_tempcode('CODENAME'),
             do_lang_tempcode('BANNER_TYPE'),
@@ -263,14 +288,16 @@ class Module_cms_banners extends Standard_crud_module
             $deployment_agreement = new Tempcode();
             switch ($row['deployment_agreement']) {
                 case BANNER_PERMANENT:
-                    $deployment_agreement = do_lang_tempcode('BANNER_PERMANENT');
+                    $deployment_agreement = tooltip(do_lang_tempcode('BANNER_PERMANENT'), strval($row['deployment_agreement']), true);
                     break;
                 case BANNER_CAMPAIGN:
-                    $deployment_agreement = do_lang_tempcode('BANNER_CAMPAIGN');
+                    $deployment_agreement = tooltip(do_lang_tempcode('BANNER_CAMPAIGN'), strval($row['deployment_agreement']), true);
                     break;
                 case BANNER_FALLBACK:
-                    $deployment_agreement = do_lang_tempcode('BANNER_FALLBACK');
+                    $deployment_agreement = tooltip(do_lang_tempcode('BANNER_FALLBACK'), strval($row['deployment_agreement']), true);
                     break;
+                default:
+                    $deployment_agreement = do_lang_tempcode('UNKNOWN');
             }
 
             $fr = [
@@ -292,7 +319,20 @@ class Module_cms_banners extends Standard_crud_module
             $result_entries->attach(results_entry($fr, true));
         }
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'banner',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            null,
+            null,
+            $filtercode_box,
+        ];
     }
 
     /**
@@ -715,7 +755,7 @@ class Module_cms_banners_cat extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {

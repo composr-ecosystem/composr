@@ -770,7 +770,7 @@ comcode-{$REPLACE,\,,::selection\, comcode-,{$COMCODE_TAGS;,{$WYSIWYG_COMCODE__X
 }
 
 /* Stop Chrome breaking our datalist display with an arrow */
-input.input-username::-webkit-calendar-picker-indicator {
+input.input-username::-webkit-calendar-picker-indicator, input.input-group::-webkit-calendar-picker-indicator {
 	display: none;
 }
 

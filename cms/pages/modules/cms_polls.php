@@ -149,7 +149,7 @@ class Module_cms_polls extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -168,6 +168,28 @@ class Module_cms_polls extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('poll', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'poll');
+
+        $filtercode = [
+            'question<question_op><question>',
+            'add_time<add_time_op><add_time>',
+            'is_current=<is_current>',
+            'submitter=<submitter>',
+            'poll_views<poll_views_op><poll_views>',
+        ];
+        $filtercode_labels = [
+            'question=' . do_lang('QUESTION'),
+            'add_time=' . do_lang('ADDED'),
+            'is_current=' . do_lang('CURRENT'),
+            'submitter=' . do_lang('metadata:OWNER'),
+            'poll_views=' . do_lang('COUNT_VIEWS'),
+        ];
+        $filtercode_types = [];
         $header_row = results_header_row([
             do_lang_tempcode('QUESTION'),
             do_lang_tempcode('ADDED'),
@@ -182,7 +204,7 @@ class Module_cms_polls extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_polls') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['submitter' => $only_owned]));
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['submitter' => $only_owned]), false, implode('', $extra_join), null, $end);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
@@ -207,7 +229,20 @@ class Module_cms_polls extends Standard_crud_module
         $search_url = build_url(['page' => 'search', 'id' => 'polls'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'polls'], get_module_zone('polls'));
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'poll',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box,
+        ];
     }
 
     /**

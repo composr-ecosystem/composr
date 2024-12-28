@@ -154,7 +154,7 @@ class Mx_chat extends Module_chat
             'hide' => do_lang_tempcode('HIDE'),
         ];
         foreach ($_buttons as $button => $label) {
-            $buttons->attach(do_template('COMCODE_EDITOR_BUTTON', ['_GUID' => '4fd75edb2d091b1c78a71c653efb18f0', 'DIVIDER' => false, 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'LABEL' => $label, 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
+            $buttons->attach(do_template('COMCODE_EDITOR_BUTTON', ['_GUID' => 'a806bd32109657f6a3f963a234fa399c', 'DIVIDER' => false, 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'LABEL' => $label, 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
         }
 
         $micro_buttons = new Tempcode();
@@ -163,7 +163,7 @@ class Mx_chat extends Module_chat
             'i',
         ];
         foreach ($_micro_buttons as $button) {
-            $micro_buttons->attach(do_template('COMCODE_EDITOR_MICRO_BUTTON', ['_GUID' => '3ced1e569e0c6feaeadbc09f7f89e7ee', 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
+            $micro_buttons->attach(do_template('COMCODE_EDITOR_MICRO_BUTTON', ['_GUID' => '86a1e4416e1e54e899e168767b70b7d6', 'IS_POSTING_FIELD' => false, 'FIELD_NAME' => 'post', 'TITLE' => do_lang_tempcode('INPUT_COMCODE_' . $button), 'B' => $button]));
         }
 
         $user_colour = ((array_key_exists(0, $prefs)) && ($prefs[0] != '')) ? $prefs[0] : get_option('chat_default_post_colour');
@@ -175,6 +175,7 @@ class Mx_chat extends Module_chat
         $debug = 'none';
 
         return do_template('CHAT_ROOM_SCREEN', [
+            '_GUID' => 'b7f721403dc8525a96bc3d3cb3ac71df',
             'TITLE' => $this->title,
             'CHATTERS' => get_chatters_in_room_tpl(get_chatters_in_room($room_id)),
             'CHAT_SOUND' => get_chat_sound_tpl(),

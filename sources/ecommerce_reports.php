@@ -30,63 +30,56 @@ This file only contains the code for the sales and code for viewing an individua
 /**
  * The UI to view sales.
  *
- * @param  array $filters List of filters to apply (member_id, txn_id, type_code, start, end)
+ * @param  string $filters Filtercode to use
  * @param  boolean $show_username Whether to show the username (customer) column
  * @param  boolean $is_admin Whether the membwer viewing this table is an admin (activates Admin Zone links and the delete column)
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
- * @return ?array A tuple: The sales table, pagination, and database rows (null: none)
+ * @return ?array A tuple: The sales table, pagination, database rows, and Filtercode box (null: none)
  */
-function build_sales_table(array $filters = [], bool $show_username = false, bool $is_admin = false, int $max_default = 20, bool $empty_ok = false) : ?array
+function build_sales_table(string $filters = '', bool $show_username = false, bool $is_admin = false, int $max_default = 20, bool $empty_ok = false) : ?array
 {
     require_code('templates_map_table');
     require_code('templates_results_table');
     require_code('templates_columned_table');
     require_code('content');
     require_code('ecommerce');
+    require_code('filtercode');
 
     $max = get_param_integer('max_ecommerce_reports', $max_default);
     $start = get_param_integer('start_ecommerce_reports', 0);
 
     $header_row = [];
+    $filtercode = [];
+    $filtercode_labels = [];
+    $filtercode_types = [];
+
     $header_row[] = do_lang_tempcode('DATE_TIME');
+    $filtercode[] = 'date_and_time<date_and_time_op><date_and_time>';
     $header_row[] = do_lang_tempcode('TRANSACTION');
+    $filtercode[] = 'txn_id<txn_id_op><txn_id>';
+    $filtercode_labels[] = 'txn_id=' . do_lang('TRANSACTION');
     if ($show_username) {
         $header_row[] = do_lang_tempcode('CUSTOMER');
+        $filtercode[] = 'member_id=<member_id>';
+        $filtercode_labels[] = 'member_id=' . do_lang('CUSTOMER');
     }
     $header_row[] = do_lang_tempcode('PRODUCT');
     $header_row[] = do_lang_tempcode('DETAILS');
+    $filtercode[] = 'details<details_op><details>';
+    $filtercode_labels[] = 'details=' . do_lang('DETAILS');
     $header_row[] = do_lang_tempcode('OTHER_DETAILS');
+    $filtercode[] = 'details2<details2_op><details2>';
+    $filtercode_labels[] = 'details2=' . do_lang('OTHER_DETAILS');
     if ($is_admin) {
         $header_row[] = do_lang_tempcode('ACTIONS');
     }
     $_header_row = columned_table_header_row($header_row);
 
+    // Build WHERE query from Filtercode
     $where = [];
     $end = '';
-    if (array_key_exists('member_id', $filters)) {
-        $where['member_id'] = $filters['member_id'];
-    }
-    if (array_key_exists('txn_id', $filters)) {
-        $end .= ' AND (t.id LIKE \'' .  db_encode_like('%' . $filters['txn_id'] . '%') . '\' OR t.t_parent_txn_id LIKE \'' . db_encode_like('%' . $filters['txn_id'] . '%') . '\')';
-    }
-    if (array_key_exists('type_code', $filters)) {
-        $end .= ' AND (';
-        $filter_type_code = explode(',', $filters['type_code']);
-        foreach ($filter_type_code as $key => $product) {
-            if ($key > 0) {
-                $end .= ' OR ';
-            }
-            $end .= db_string_equal_to('t_type_code', $product);
-        }
-        $end .= ')';
-    }
-    if (array_key_exists('start', $filters)) {
-        $end .= ' AND date_and_time>=' . strval($filters['start']);
-    }
-    if (array_key_exists('end', $filters)) {
-        $end .= ' AND date_and_time<=' . strval($filters['end']);
-    }
+    list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), null, 'ecom_sales', 's');
 
     $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, $end . ' ORDER BY date_and_time DESC', $max, $start);
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'COUNT(*)', $where, $end);
@@ -192,7 +185,14 @@ function build_sales_table(array $filters = [], bool $show_username = false, boo
     require_code('templates_pagination');
     $pagination = pagination(do_lang_tempcode('ECOM_PRODUCTS_MANAGE_SALES'), $start, 'start_ecommerce_reports', $max, 'max_ecommerce_reports', $max_rows, false, null, null, 'tab--ecommerce-logs');
 
-    return [$sales_table, $pagination, $rows];
+    $filtercode_box = do_block('main_content_filtering', [
+        'param' => implode(',', $filtercode),
+        'table' => 'ecom_sales',
+        'labels' => implode(',', $filtercode_labels),
+        'types' => implode(',', $filtercode_types),
+    ]);
+
+    return [$sales_table, $pagination, $rows, $filtercode_box];
 }
 
 /**

@@ -114,6 +114,35 @@ function username_exists_script()
 }
 
 /**
+ * AJAX script for checking if a group exists.
+ *
+ * @ignore
+ */
+function group_exists_script()
+{
+    prepare_backend_response('text/plain');
+
+    $group = get_param_string('group', false, INPUT_FILTER_GET_IDENTIFIER);
+    $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true, [], null, true); // TODO: Optimise
+    foreach ($groups as $id => $name) {
+        if (is_numeric($group)) {
+            if (strval($id) == $group) {
+                cms_safe_exit_flow();
+                return;
+            }
+        }
+        if ($name == $group) {
+            cms_safe_exit_flow();
+            return;
+        }
+    }
+
+    echo 'false';
+
+    cms_safe_exit_flow();
+}
+
+/**
  * AJAX script for allowing username/author/search-terms home-in.
  *
  * @ignore
@@ -222,6 +251,65 @@ function namelike_script()
                 foreach ($names as $member_id => $name) {
                     echo '<option value="' . xmlentities($name) . '" displayname="' . xmlentities($GLOBALS['FORUM_DRIVER']->get_username($member_id, true)) . '" />';
                 }
+            }
+        }
+    }
+
+    echo '</result></request>';
+
+    cms_safe_exit_flow();
+}
+
+/**
+ * AJAX script for allowing group home-in.
+ *
+ * @ignore
+ */
+function grouplike_script()
+{
+    prepare_backend_response();
+
+    $group = str_replace('*', '%', get_param_string('id', false, INPUT_FILTER_GET_COMPLEX));
+    $_group = str_replace('%', '', $group);
+
+    $special = get_param_string('special', '');
+
+    cms_ini_set('ocproducts.xss_detect', '0');
+
+    require_code('xml');
+
+    echo '<?xml version="1.0" encoding="' . escape_html(get_charset()) . '"?' . '>';
+    echo '<!-- ' . $group . ' -->';
+    echo '<!-- ' . $_group . ' -->';
+    echo '<request><result>';
+
+    $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true, [], null, true); // TODO: Optimise
+    foreach ($groups as $id => $name) {
+        if (is_numeric($_group)) {
+            if (strval($id) == $_group) {
+                echo '<option value="' . xmlentities(strval($id)) . '" groupname="' . xmlentities($name) . '" />';
+                continue;
+            }
+        }
+        if ((substr($group, 0, 1) == '%') && (substr($group, -1, 1) == '%')) {
+            if (strpos($name, $_group) !== false) {
+                echo '<option value="' . xmlentities(strval($id)) . '" groupname="' . xmlentities($name) . '" />';
+                continue;
+            }
+        } elseif ((substr($group, -1, 1) == '%')) {
+            if (strpos($_group, $name) === 0) {
+                echo '<option value="' . xmlentities(strval($id)) . '" groupname="' . xmlentities($name) . '" />';
+                continue;
+            }
+        } elseif ((substr($group, 0, 1) == '%')) {
+            if (strpos($_group, $name) === (strlen($_group) - strlen($name))) {
+                echo '<option value="' . xmlentities(strval($id)) . '" groupname="' . xmlentities($name) . '" />';
+                continue;
+            }
+        } else {
+            if ($_group == $name) {
+                echo '<option value="' . xmlentities(strval($id)) . '" groupname="' . xmlentities($name) . '" />';
+                continue;
             }
         }
     }

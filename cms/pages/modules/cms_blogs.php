@@ -197,12 +197,30 @@ class Module_cms_blogs extends Standard_crud_module
         }
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('news', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'news');
+
+        $filtercode = [];
+        $filtercode_labels = [];
+        $filtercode_types = [];
         $fh = [];
         $fh[] = do_lang_tempcode('TITLE');
+        $filtercode[] = 'title<title_op><title>';
+        $filtercode_labels[] = 'title=' . do_lang('TITLE');
         $fh[] = do_lang_tempcode('ADDED');
+        $filtercode[] = 'date_and_time<date_and_time_op><date_and_time>';
+        $filtercode_labels[] = 'date_and_time=' . do_lang('ADDED');
         $fh[] = do_lang_tempcode('COUNT_VIEWS');
+        $filtercode[] = 'news_views<news_views_op><news_views>';
+        $filtercode_labels[] = 'news_views=' . do_lang('COUNT_VIEWS');
         if (addon_installed('validation')) {
             $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '204d1050402b48e5c2c9539763a3fe50', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
+            $filtercode[] = 'validated=<validated>';
+            $filtercode_labels[] = 'validated=' . do_lang('VALIDATED');
         }
         $fh[] = do_lang_tempcode('ACTIONS');
         $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
@@ -210,7 +228,7 @@ class Module_cms_blogs extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_midrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned], false, ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned], false, implode('', $extra_join) . ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NOT NULL', null, $end);
         if (empty($rows)) {
             return null;
         }
@@ -232,7 +250,20 @@ class Module_cms_blogs extends Standard_crud_module
         $search_url = build_url(['page' => 'search', 'id' => 'news'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'news'], get_module_zone('news'));
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'news',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box,
+        ];
     }
 
     /**

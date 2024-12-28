@@ -244,11 +244,12 @@ class Module_cms_news extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
+        require_code('templates_tooltip');
 
         $current_ordering = get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [
@@ -260,20 +261,52 @@ class Module_cms_news extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('news', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'news');
+
         $fh = [do_lang_tempcode('TITLE'), do_lang_tempcode('MAIN_CATEGORY')];
+        $filtercode = [
+            'title<title_op><title>',
+            'news_category=<news_category>',
+        ];
+        $filtercode_labels = [
+            'title=' . do_lang('TITLE'),
+            'news_category=' . do_lang('MAIN_CATEGORY'),
+        ];
+        $filtercode_types = [
+            'news_category=list',
+        ];
         $fh[] = do_lang_tempcode('ADDED');
+        $filtercode[] = 'date_and_time<date_and_time_op><date_and_time>';
+        $filtercode_labels[] = 'date_and_time=' . do_lang('ADDED');
         $fh[] = do_lang_tempcode('COUNT_VIEWS');
+        $filtercode[] = 'news_views<news_views_op><news_views>';
+        $filtercode_labels[] = 'news_views=' . do_lang('COUNT_VIEWS');
         if (addon_installed('validation')) {
             $fh[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '5e5269c25a2eb44fd92b554a50f6007f', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
+            $filtercode[] = 'validated=<validated>';
+            $filtercode_labels[] = 'validated=' . do_lang('VALIDATED');
         }
         $fh[] = do_lang_tempcode('metadata:OWNER');
+        $filtercode[] = 'submitter=<submitter>';
+        $filtercode_labels[] = 'submitter=' . do_lang('metadata:OWNER');
         $fh[] = do_lang_tempcode('ACTIONS');
         $header_row = results_header_row($fh, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
+        // Do not show blog entries if we are separating those in 'cms_blogs'
+        if (get_option('separate_blogs') == '1') {
+            $extra_join[] = ' JOIN ' . get_table_prefix() . 'news_categories c ON c.id=r.news_category AND nc_owner IS NULL';
+            attach_message(do_lang_tempcode('NEWS_NO_BLOGS_SHOWN'));
+        }
+
         $only_owned = has_privilege(get_member(), 'edit_highrange_content', 'cms_news') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned]);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, ($only_owned === null) ? [] : ['submitter' => $only_owned], false, implode('', $extra_join), null, $end);
         $news_cat_titles = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
@@ -287,7 +320,7 @@ class Module_cms_news extends Standard_crud_module
                 $news_cat_titles[$row['news_category']] = $nc_title;
             }
             if ($nc_title !== null) {
-                $fr[] = protect_from_escaping(hyperlink(build_url(['page' => 'news', 'type' => 'browse', 'select' => $row['news_category']], get_module_zone('news')), get_translated_text($nc_title), false, true));
+                $fr[] = tooltip(hyperlink(build_url(['page' => 'news', 'type' => 'browse', 'select' => $row['news_category']], get_module_zone('news')), get_translated_text($nc_title), false, true), strval($row['news_category']), true);
             } else {
                 $fr[] = do_lang('UNKNOWN');
             }
@@ -306,7 +339,20 @@ class Module_cms_news extends Standard_crud_module
         $search_url = build_url(['page' => 'search', 'id' => 'news'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'news'], get_module_zone('news'));
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'news',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box,
+        ];
     }
 
     /**
@@ -955,7 +1001,7 @@ class Module_cms_news_cat extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {

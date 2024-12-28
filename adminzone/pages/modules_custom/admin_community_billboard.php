@@ -184,7 +184,7 @@ class Module_admin_community_billboard extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -205,6 +205,26 @@ class Module_admin_community_billboard extends Standard_crud_module
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'community_billboard');
+
+        $filtercode = [
+            'the_message<the_message_op><the_message>',
+            'days<days_op><days>',
+            'order_time<order_time_op><order_time>',
+            'member_id=<member_id>',
+        ];
+        $filtercode_labels = [
+            'the_message=' . do_lang('MESSAGE'),
+            'days=' . do_lang('DAYS_ORDERED'),
+            'order_time=' . do_lang('ORDER_DATE'),
+            'member_id=' . do_lang('metadata:OWNER'),
+        ];
+        $filtercode_types = [];
         $header_row = results_header_row([
             do_lang_tempcode('MESSAGE'),
             do_lang_tempcode('DAYS_ORDERED'),
@@ -216,7 +236,7 @@ class Module_admin_community_billboard extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, [], false, implode('', $extra_join), null, $end);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
@@ -228,7 +248,20 @@ class Module_admin_community_billboard extends Standard_crud_module
             $result_entries->attach(results_entry([protect_from_escaping(get_translated_tempcode('community_billboard', $row, 'the_message')), integer_format($row['days']), get_timezoned_date_time($row['order_time']), ($row['active_now'] == 1) ? $days : do_lang_tempcode('NA_EM'), $username, protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, true, do_lang('EDIT') . ' #' . strval($row['id'])))], true));
         }
 
-        return [results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'community_billboard',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), either_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            null,
+            null,
+            $filtercode_box,
+        ];
     }
 
     /**

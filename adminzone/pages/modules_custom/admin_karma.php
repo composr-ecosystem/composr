@@ -209,6 +209,7 @@ class Module_admin_karma
 
     /**
      * Karma records interface.
+     * TODO: Convert into Filtercode-friendly
      *
      * @return Tempcode The result of execution
      */
@@ -223,23 +224,11 @@ class Module_admin_karma
         require_code('templates_results_table');
         require_code('form_templates');
 
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
         $start = get_param_integer('karma_start', 0);
         $max = get_param_integer('karma_max', 50);
-
-        // Filter parameters
-        $filter_username = get_param_string('filter_karma_username', null, INPUT_FILTER_NONE);
-        $filter_type = get_param_string('filter_karma_type', 'all');
-        $filter_from = post_param_date('filter_karma_from', true);
-        $filter_to = post_param_date('filter_karma_to', true);
-
-        // Filter validation
-        $member_id = null;
-        if ($filter_username !== null) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id === null) {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)), 'warn');
-            }
-        }
 
         // Sortable validation
         $sortables = ['k_date_and_time' => do_lang_tempcode('DATE_TIME')];
@@ -254,9 +243,29 @@ class Module_admin_karma
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        list($max_rows, $rows) = karma_get_logs($filter_type, $member_id, null, $max, $start, $sortable, $sort_order, null, $filter_from, $filter_to);
+        list($max_rows, $rows) = karma_get_logs($active_filters, $max, $start, $sortable, $sort_order);
         $result_entries = new Tempcode();
 
+        $filtercode = [
+            'k_date_and_time<k_date_and_time_op><k_date_and_time>',
+            'k_type=<k_type>',
+            'k_amount<k_amount_op><k_amount>',
+            'k_member_to=<k_member_to>',
+            'k_member_from=<k_member_from>',
+            'k_reason<k_reason_op><k_reason>',
+            'k_reversed=<k_reversed>'
+        ];
+        $filtercode_labels = [
+            'k_date_and_time=' . do_lang('DATE_TIME'),
+            'k_type=' . do_lang('TYPE'),
+            'k_amount=' . do_lang('AMOUNT'),
+            'k_member_to=' . do_lang('MEMBER'),
+            'k_member_from=' . do_lang('KARMA_INFLUENCER'),
+            'k_reason=' . do_lang('REASON'),
+        ];
+        $filtercode_types = [
+            'k_type=list',
+        ];
         $map = [
             do_lang_tempcode('IDENTIFIER'),
             do_lang_tempcode('DATE_TIME'),
@@ -354,58 +363,26 @@ class Module_admin_karma
             $result_entries->attach(results_entry($map, true));
         }
 
-        $results_table = results_table(do_lang_tempcode('KARMA'), $start, 'karma_start', $max, 'karma_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'karma_sort', paragraph(do_lang_tempcode('KARMA_LOG_HEAD')));
-
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        $log_types = new Tempcode();
-        $log_types->attach(form_input_list_entry('all', ($filter_type == 'all'), do_lang_tempcode('KARMA_FILTER_ALL')));
-        $log_types->attach(form_input_list_entry('sender', ($filter_type == 'sender'), do_lang_tempcode('KARMA_FILTER_SENDER')));
-        $log_types->attach(form_input_list_entry('recipient', ($filter_type == 'recipient'), do_lang_tempcode('KARMA_FILTER_RECIPIENT')));
-        $log_types->attach(form_input_list_entry('sender_recipient', ($filter_type == 'sender_recipient'), do_lang_tempcode('KARMA_FILTER_SENDER_RECIPIENT')));
-        $log_types->attach(form_input_list_entry('credit', ($filter_type == 'credit'), do_lang_tempcode('KARMA_FILTER_CREDIT')));
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_karma_username',
-                'LABEL' => do_lang_tempcode('MEMBER'),
-                'FIELD' => form_input_username(do_lang_tempcode('MEMBER'), new Tempcode(), 'filter_karma_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_karma_type',
-                'LABEL' => do_lang_tempcode('TYPE'),
-                'FIELD' => form_input_list(do_lang_tempcode('TYPE'), new Tempcode(), 'filter_karma_type', $log_types, null, false, false),
-            ],
-        ];
-
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_karma_from',
-                'LABEL' => do_lang_tempcode('FROM'),
-                'FIELD' => form_input_date(do_lang_tempcode('FROM'), new Tempcode(), 'filter_karma_from', false, false, true, $filter_from),
-            ],
-            [
-                'PARAM' => 'filter_karma_to',
-                'LABEL' => do_lang_tempcode('TO'),
-                'FIELD' => form_input_date(do_lang_tempcode('TO'), new Tempcode(), 'filter_karma_to', false, false, true, $filter_to),
-            ],
-        ];
+        $results_table = results_table(do_lang_tempcode('KARMA'), $start, 'karma_start', $max, 'karma_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'karma_sort');
 
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'karma',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => 'ee1b42664dfe09da882d2a2173c2d749',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
+            'FILTERCODE_BOX' => $filtercode_box,
+            'TEXT' => do_lang_tempcode('KARMA_LOG_HEAD'),
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

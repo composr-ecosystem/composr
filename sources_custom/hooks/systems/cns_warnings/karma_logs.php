@@ -86,7 +86,9 @@ class Hook_cns_warnings_karma_logs
             require_code('karma');
 
             $from_time = time() - (60 * 60 * 24 * 7);
-            list($max_rows, $rows) = karma_get_logs('sender_recipient', $member_id, get_member(), 50, 0, 'k_date_and_time', 'DESC', 0, $from_time);
+            $filter = 'k_member_to=' . strval($member_id) . ',k_date_and_time>=' . strval($from_time);
+
+            list($max_rows, $rows) = karma_get_logs($filter, 50, 0, 'k_date_and_time', 'DESC');
             $_fields = new Tempcode();
             foreach ($rows as $row) {
                 $reason = get_translated_tempcode('karma', $row, 'k_reason');

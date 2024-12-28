@@ -231,45 +231,14 @@ class Module_admin_shopping
             inform_exit(do_lang_tempcode('NO_ENTRIES'));
         }
 
-        $filter_id = get_param_integer('filter_id', null);
-        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
-        $filter_txn_id = get_param_string('filter_txn_id', '');
-        $_filter_order_status = get_param_string('filter_order_status', '');
-        $filter_order_status = explode(',', $_filter_order_status);
-        $filter_start = post_param_date('filter_start', true);
-        $filter_end = post_param_date('filter_end', true);
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
-        $where = '1=1';
-        if ($filter_id !== null) {
-            $where .= ' AND id=' . strval($filter_id);
-        }
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $where .= ' AND member_id=' . strval($member_id);
-            } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
-            }
-        }
-        if ($filter_txn_id != '') {
-            $where .= ' AND ' . db_string_equal_to('txn_id', $filter_txn_id);
-        }
-        if ($_filter_order_status != '') {
-            $where .= ' AND (';
-            foreach ($filter_order_status as $key => $status) {
-                if ($key > 0) {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('order_status', $status);
-            }
-            $where .= ')';
-        }
-        if ($filter_start !== null) {
-            $where .= ' AND add_date>=' . strval($filter_start);
-        }
-        if ($filter_end !== null) {
-            $where .= ' AND add_date<=' . strval($filter_end);
-        }
+        // Build WHERE query from Filtercode
+        $where = [];
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'shopping_orders');
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
@@ -293,6 +262,25 @@ class Module_admin_shopping
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
+        $filtercode = [
+            'add_date<add_date_op><add_date>',
+            'order_status=<order_status>',
+            'total_price<total_price_op><total_price>',
+            'total_tax<total_tax_op><total_tax>',
+            'total_shipping_cost<total_shipping_cost_op><total_shipping_cost>',
+            'member_id=<member_id>',
+        ];
+        $filtercode_labels = [
+            'add_date=' . do_lang('ORDERED_DATE'),
+            'order_status=' . do_lang('STATUS'),
+            'total_price=' . do_lang('PRICE'),
+            'total_tax=' . do_lang(get_option('tax_system')),
+            'total_shipping_cost=' . do_lang('SHIPPING_COST'),
+            'member_id=' . do_lang('ORDERED_BY'),
+        ];
+        $filtercode_types = [
+            'order_status=list',
+        ];
         $header_row = results_header_row([
             do_lang_tempcode('ORDER_NUMBER'),
             do_lang_tempcode('ORDERED_DATE'),
@@ -305,9 +293,8 @@ class Module_admin_shopping
             do_lang_tempcode('ACTIONS'),
         ], $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $sql = 'SELECT * FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where . ' ORDER BY ' . db_string_equal_to('order_status', 'ORDER_STATUS_cancelled')/*cancelled always last*/ . ',' . $sortable . ' ' . $sort_order;
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'shopping_orders WHERE ' . $where);
-        $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start, false, true);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('shopping_orders r', 'COUNT(*)', $where, $end);
+        $rows = $GLOBALS['SITE_DB']->query_select('shopping_orders r', ['*'], $where, $end . ' ORDER BY ' . db_string_equal_to('r.order_status', 'ORDER_STATUS_cancelled')/*cancelled always last*/ . ',r.' . $sortable . ' ' . $sort_order, $max, $start);
 
         $order_entries = new Tempcode();
         foreach ($rows as $row) {
@@ -342,7 +329,11 @@ class Module_admin_shopping
                 $transaction_linker = new Tempcode();
             }
 
-            $order_status = do_lang_tempcode($row['order_status']);
+            if (strpos($row['order_status'], 'ORDER_STATUS_') === 0) {
+                $order_status = do_lang_tempcode($row['order_status']);
+            } else {
+                $order_status = do_lang_tempcode('UNKNOWN');
+            }
 
             $order_actualise_url = build_url(['page' => '_SELF', 'type' => 'order_act', 'id' => $row['id']], '_SELF');
             $actions = do_template('ECOM_ADMIN_ORDER_ACTIONS', [
@@ -355,7 +346,7 @@ class Module_admin_shopping
             $order_entries->attach(results_entry([
                 $order_tooltip,
                 $order_date,
-                $order_status,
+                tooltip($order_status, $row['order_status'], true),
                 $price_linker,
                 ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_tax'])),
                 ecommerce_get_currency_symbol($row['order_currency']) . escape_html(float_format($row['total_shipping_cost'])),
@@ -374,52 +365,14 @@ class Module_admin_shopping
             $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '1d670698a7e9ddf12c0b2b9347bd4522', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        $t_order_statuses = new Tempcode();
-        $statuses = ['ORDER_STATUS_awaiting_payment', 'ORDER_STATUS_payment_received', 'ORDER_STATUS_dispatched', 'ORDER_STATUS_onhold', 'ORDER_STATUS_cancelled', 'ORDER_STATUS_returned'];
-        foreach ($statuses as $status) {
-            $t_order_statuses->attach(form_input_list_entry($status, (($_filter_order_status != '') && in_array($status, $filter_order_status)), do_lang($status)));
-        }
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_id',
-                'LABEL' => do_lang_tempcode('ORDER_NUMBER'),
-                'FIELD' => form_input_integer(do_lang_tempcode('ORDER_NUMBER'), new Tempcode(), 'filter_id', $filter_id, false),
-            ],
-            [
-                'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('ORDERED_BY'),
-                'FIELD' => form_input_username(do_lang_tempcode('ORDERED_BY'), new Tempcode(), 'filter_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_txn_id',
-                'LABEL' => do_lang_tempcode('TRANSACTION'),
-                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
-            ],
-            [
-                'PARAM' => 'filter_order_status',
-                'LABEL' => do_lang_tempcode('STATUS'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_order_status', $t_order_statuses),
-            ],
-        ];
-
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_start',
-                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
-            ],
-            [
-                'PARAM' => 'filter_end',
-                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
-            ],
-        ];
-
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'shopping_orders',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => 'cc57b368038807807c7198a57a959bbf',
@@ -427,13 +380,9 @@ class Module_admin_shopping
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

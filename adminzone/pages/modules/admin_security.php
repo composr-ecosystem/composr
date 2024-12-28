@@ -239,6 +239,10 @@ class Module_admin_security
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
         require_code('templates_results_table');
 
         $header_row = results_header_row([do_lang_tempcode('USERNAME'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('IP_ADDRESS')], $sortables, 'failed_sort', $_sortable . ' ' . $sort_order);
@@ -261,9 +265,12 @@ class Module_admin_security
 
         // Hack-attacks...
 
-        $member_id = post_param_integer('member_id', null);
-        $map = ($member_id !== null) ? ['member_id' => $member_id] : [];
-        list($alerts, $num_alerts) = find_security_alerts($map);
+        // Build WHERE query from Filtercode
+        $where = [];
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'hackattack');
+
+        list($alerts, $num_alerts, $filtercode_box) = find_security_alerts([], $end);
 
         // Render UI...
 
@@ -277,6 +284,7 @@ class Module_admin_security
             'ALERTS' => $alerts,
             'NUM_ALERTS' => strval($num_alerts),
             'URL' => $post_url,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
 
         require_code('templates_internalise_screen');

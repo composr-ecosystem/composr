@@ -489,7 +489,7 @@ function get_currency_symbol(string $currency) : array
     if (!$has_primacy) {
         // Maybe it has primacy as no other currency using the symbol?
         $counting = array_count_values($symbols);
-        if (isset($counting[$symbols[$currency]])) {
+        if (isset($symbols[$currency]) && isset($counting[$symbols[$currency]])) {
             if ($counting[$symbols[$currency]] == 1) {
                 $has_primacy = true;
             }

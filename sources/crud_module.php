@@ -1099,11 +1099,12 @@ abstract class Standard_crud_module
      * @param  boolean $force_site_db Whether to always access using the site database
      * @param  string $join Extra join clause for our query (blank: none)
      * @param  ?integer $max Maximum to show (null: standard)
+     * @param  string $query_end Extra complex query to add to the end
      * @return array A pair: Rows for selection from, Total results
      */
-    public function get_entry_rows(bool $recache = false, ?string $orderer = null, array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null) : array
+    public function get_entry_rows(bool $recache = false, ?string $orderer = null, array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null, string $query_end = '') : array
     {
-        if ((!$recache) && ($orderer === null) && ($where === null)) {
+        if ((!$recache) && ($orderer === null) && ($where === null) && ($query_end == '')) {
             if (isset($this->cached_entry_rows)) {
                 return [$this->cached_entry_rows, $this->cached_max_rows];
             }
@@ -1135,7 +1136,7 @@ abstract class Standard_crud_module
             push_db_scope_check(false);
         }
 
-        $max_rows = $db->query_select_value($table . $join, 'COUNT(*)', $where, '', false, find_lang_fields($table_raw, 'r'));
+        $max_rows = $db->query_select_value($table . $join, 'COUNT(*)', $where, $query_end, false, find_lang_fields($table_raw, 'r'));
         if ($max_rows == 0) {
             return [[], 0];
         }
@@ -1143,7 +1144,7 @@ abstract class Standard_crud_module
         if ($max === null) {
             $max = get_param_integer('max', 20);
         }
-        $rows = $db->query_select($table . $join, ['r.*'], $where, 'ORDER BY ' . $orderer, $max, $start, false, find_lang_fields($table_raw, 'r'));
+        $rows = $db->query_select($table . $join, ['r.*'], $where, $query_end . ' ORDER BY ' . $orderer, $max, $start, false, find_lang_fields($table_raw, 'r'));
 
         if ($force_site_db) {
             pop_db_scope_check();
@@ -1308,6 +1309,7 @@ abstract class Standard_crud_module
                 'SUBMIT_ICON' => 'buttons/sort',
                 'SUBMIT_NAME' => $has_ordering ? do_lang_tempcode('SORT') : null,
                 'POST_URL' => get_self_url(),
+                'FILTERCODE_BOX' => isset($table_result[4]) ? $table_result[4] : null,
                 'JS_FUNCTION_CALLS' => $this->js_function_calls_for_choose,
             ]);
 

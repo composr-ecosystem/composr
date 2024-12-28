@@ -252,11 +252,6 @@ class Module_achievements
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('DESCRIPTION_ACHIEVEMENTS'),
             'RESULTS_TABLE' => $results_table,
-
-            // TODO: get rid of the need for these in the Tempcode
-            'FILTERS_ROW_A' => new Tempcode(),
-            'FILTERS_ROW_B' => new Tempcode(),
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
     }
 }

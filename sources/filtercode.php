@@ -226,6 +226,7 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
                     case 'INTEGER':
                     case 'TIME':
                     case 'MEMBER':
+                    case 'GROUP':
                     case 'REAL':
                     case 'LONG_TEXT':
                     case 'SHORT_TEXT':
@@ -344,8 +345,10 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
                         case 'SHORT_INTEGER':
                         case 'UINTEGER':
                         case 'INTEGER':
-                        case 'GROUP':
                             $field_type = 'integer';
+                            break;
+                        case 'GROUP':
+                            $field_type = 'group';
                             break;
                         case 'MEMBER':
                             $field_type = 'username';
@@ -492,6 +495,10 @@ function form_for_filtercode(string $filter, array $labels = [], ?string $conten
 
             case 'username':
                 $form_fields->attach(form_input_username($field_label, '', 'filter_' . $field_name, $default_value, false));
+                break;
+
+            case 'group':
+                $form_fields->attach(form_input_group($field_label, '', 'filter_' . $field_name, $default_value, false));
                 break;
 
             case 'codename':
@@ -799,6 +806,17 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
             case 'GROUP':
                 $field_type = 'integer';
                 $filter_key = $table_join_code_here . '.' . $inner_filter_key;
+                if (($filter_val != '') && (preg_match('#^[\d|-]+$#', $filter_val) == 0)) {
+                    $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true, [], null, true); // TODO: Optimise
+                    $_filter_val = $filter_val;
+                    $filter_val = '';
+                    foreach ($groups as $id => $name) {
+                        if ($name == $_filter_val) {
+                            $filter_val = strval($id);
+                            break;
+                        }
+                    }
+                }
                 break;
             case 'MEMBER':
                 $field_type = 'integer';

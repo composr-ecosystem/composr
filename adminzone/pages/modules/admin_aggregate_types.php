@@ -298,7 +298,7 @@ class Module_admin_aggregate_types extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -315,6 +315,23 @@ class Module_admin_aggregate_types extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('aggregate_type_instance', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        $filtercode = [
+            'aggregate_label<aggregate_label_op><aggregate_label>',
+            'aggregate_type=<aggregate_type>',
+            'add_time<add_time_op><add_time>'
+        ];
+        $filtercode_labels = [
+            'aggregate_label=' . do_lang('LABEL'),
+            'aggregate_type=' . do_lang('TYPE'),
+            'add_time=' . do_lang('TIME'),
+        ];
+        $filtercode_types = [
+            'aggregate_type=list',
+        ];
         $header_row = results_header_row([
             do_lang_tempcode('LABEL'),
             do_lang_tempcode('TYPE'),
@@ -324,7 +341,9 @@ class Module_admin_aggregate_types extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'aggregate_type_instances');
+
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, [], false, implode('', $extra_join), null, $end);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
@@ -334,7 +353,20 @@ class Module_admin_aggregate_types extends Standard_crud_module
         $search_url = null;
         $archive_url = null;
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', get_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'aggregate_type_instances',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', get_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box
+        ];
     }
 
     /**

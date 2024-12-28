@@ -432,8 +432,6 @@ class Module_admin_site_messaging
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
             'URL' => $url,
-            'FILTERS_ROW_B' => new Tempcode(),
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         require_code('templates_internalise_screen');

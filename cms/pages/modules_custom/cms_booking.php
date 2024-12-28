@@ -223,7 +223,7 @@ class Module_cms_booking extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -484,7 +484,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -685,7 +685,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -882,15 +882,16 @@ class Module_cms_booking_bookings extends Standard_crud_module
      *
      * @param  boolean $recache Whether to force a re-cache
      * @param  ?ID_TEXT $orderer Order to use (null: automatic)
-     * @param  ?array $where Extra where clauses
+     * @param  array $where Extra where clauses
      * @param  boolean $force_site_db Whether to always access using the site database
      * @param  string $join Extra join clause for our query (blank: none)
      * @param  ?integer $max Maximum to show (null: standard)
+     * @param  string $query_end Extra complex query to add to the end
      * @return array A pair: Rows for selection from, Total results
      */
-    public function get_entry_rows(bool $recache = false, ?string $orderer = null, ?array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null) : array
+    public function get_entry_rows(bool $recache = false, ?string $orderer = null, array $where = [], bool $force_site_db = false, string $join = '', ?int $max = null, string $query_end = '') : array
     {
-        if ((!$recache) && ($orderer !== null) && (!empty($where))) {
+        if ((!$recache) && ($orderer === null) && ($where === null) && ($query_end == '')) {
             if (isset($this->cached_entry_rows)) {
                 return [$this->cached_entry_rows, $this->cached_max_rows];
             }
@@ -901,12 +902,12 @@ class Module_cms_booking_bookings extends Standard_crud_module
         }
         $request = [];
         if (get_param_integer('id', null) !== null) {
-            $where = ['member_id' => get_param_integer('id')];
+            $where += ['member_id' => get_param_integer('id')];
         }
         if (get_option('member_booking_only') == '1') {
-            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['DISTINCT member_id'], $where, 'ORDER BY ' . $orderer);
+            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['DISTINCT member_id'], $where, $query_end . ' ORDER BY ' . $orderer);
         } else {
-            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['id'], $where, 'ORDER BY ' . $orderer);
+            $_rows = $GLOBALS['SITE_DB']->query_select('booking r ' . $join, ['id'], $where, $query_end . ' ORDER BY ' . $orderer);
         }
         foreach ($_rows as $row) {
             if (get_option('member_booking_only') == '1') {
@@ -954,7 +955,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {

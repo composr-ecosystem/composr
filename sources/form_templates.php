@@ -841,6 +841,47 @@ function form_input_author($pretty_name, $description, string $name, ?string $de
 }
 
 /**
+ * Get the Tempcode for a group input line.
+ *
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
+ * @param  ID_TEXT $name The name which this input field is for
+ * @param  ?string $default The default value for this input field (null: blank)
+ * @param  boolean $required Whether this is a required input field
+ * @param  boolean $needs_match Whether it is required than a valid group is given
+ * @param  ?integer $tabindex The tab index of the field (null: not specified)
+ * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @return Tempcode The input field
+ */
+function form_input_group($pretty_name, $description, string $name, ?string $default, bool $required, bool $needs_match = true, ?int $tabindex = null, $autocomplete = null) : object
+{
+    if ($default === null) {
+        $default = '';
+    }
+
+    $default = filter_form_field_default($name, $default);
+    $required = filter_form_field_required($name, $required);
+
+    require_javascript('ajax_group_lists');
+
+    $autocomplete = _get_autocomplete_attribute_value($name, $autocomplete);
+
+    $tabindex = get_form_field_tabindex($tabindex);
+
+    $_required = ($required) ? '-required' : '';
+    $input = do_template('FORM_SCREEN_INPUT_GROUP', [
+        '_GUID' => '9e260954e5be5fbcab3f03dfc31e439d',
+        'TABINDEX' => strval($tabindex),
+        'NEEDS_MATCH' => $needs_match,
+        'REQUIRED' => $_required,
+        'NAME' => $name,
+        'DEFAULT' => $default,
+        'AUTOCOMPLETE' => $autocomplete,
+    ]);
+    return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
+}
+
+/**
  * Get the Tempcode for a e-mail-address input line.
  *
  * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
