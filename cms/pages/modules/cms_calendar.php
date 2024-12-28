@@ -252,11 +252,12 @@ class Module_cms_calendar extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
+        require_code('templates_tooltip');
 
         $current_ordering = get_param_string('sort', 'e_title ASC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [
@@ -267,6 +268,26 @@ class Module_cms_calendar extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('event', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'event');
+
+        $filtercode = [
+            'e_title<e_title_op><e_title>',
+            'e_type=<e_type>',
+            'validated=<validated>',
+        ];
+        $filtercode_labels = [
+            'e_title=' . do_lang('TITLE'),
+            'e_type=' . do_lang('TYPE'),
+            'validated=' . do_lang('VALIDATED'),
+        ];
+        $filtercode_types = [
+            'e_type=list',
+        ];
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('DATE_TIME'),
@@ -278,18 +299,19 @@ class Module_cms_calendar extends Standard_crud_module
         $result_entries = new Tempcode();
 
         $only_owned = has_privilege(get_member(), 'edit_lowrange_content', 'cms_calendar') ? null : get_member();
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['e_submitter' => $only_owned]));
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, (($only_owned === null) ? [] : ['e_submitter' => $only_owned]), false, implode('', $extra_join), null, $end);
         $types = [];
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             if (array_key_exists($row['e_type'], $types)) {
-                $type = $types[$row['e_type']];
+                $_type = $types[$row['e_type']];
             } else {
-                $_type = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_types', 't_title', ['id' => $row['e_type']]);
-                $type = ($_type === null) ? do_lang('UNKNOWN') : get_translated_text($_type);
-                $types[$row['e_type']] = $type;
+                $__type = $GLOBALS['SITE_DB']->query_select_value_if_there('calendar_types', 't_title', ['id' => $row['e_type']]);
+                $_type = ($__type === null) ? do_lang('UNKNOWN') : get_translated_text($__type);
+                $types[$row['e_type']] = $_type;
             }
+            $type = tooltip($_type, strval($row['e_type']), true);
 
             list(, $time_raw) = find_event_start_timestamp($row);
             if ($row['e_start_hour'] !== null) {
@@ -304,7 +326,20 @@ class Module_cms_calendar extends Standard_crud_module
         $search_url = build_url(['page' => 'search', 'id' => 'calendar'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'calendar'], get_module_zone('calendar'));
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'event',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box,
+        ];
     }
 
     /**
@@ -1496,7 +1531,7 @@ class Module_cms_calendar_cat extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {

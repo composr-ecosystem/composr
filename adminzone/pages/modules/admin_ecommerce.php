@@ -372,7 +372,7 @@ class Module_admin_ecommerce extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
@@ -396,6 +396,28 @@ class Module_admin_ecommerce extends Standard_crud_module
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($db, parse_filtercode($active_filters), null, 'f_usergroup_subs');
+
+        $filtercode = [
+            's_title<s_title_op><s_title>',
+            's_price<s_price_op><s_price>',
+            's_length<s_length_op><s_length>',
+            's_group_id=<s_group_id>',
+            's_enabled=<s_enabled>',
+        ];
+        $filtercode_labels = [
+            's_title=' . do_lang('TITLE'),
+            's_price=' . do_lang('PRICE'),
+            's_length=' . do_lang('SUBSCRIPTION_LENGTH'),
+            's_group_id=' . do_lang('USERGROUP'),
+            's_enabled=' . do_lang('ENABLED'),
+        ];
+        $filtercode_types = [];
         $header_row = results_header_row([
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('PRICE'),
@@ -407,14 +429,33 @@ class Module_admin_ecommerce extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, [], get_forum_type() != 'cns');
+        list($rows, $max_rows) = $this->get_entry_rows(false, $current_ordering, [], get_forum_type() != 'cns', implode('', $extra_join), null, $end);
         foreach ($rows as $r) {
             $edit_url = build_url($url_map + ['id' => $r['id']], '_SELF');
 
-            $result_entries->attach(results_entry([get_translated_text($r['s_title'], $db), float_format($r['s_price'], 2), do_lang_tempcode('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length'])), cns_get_group_name($r['s_group_id']), ($r['s_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . strval($r['id'])))], true));
+            if (do_lang('_LENGTH_UNIT_' . $r['s_length_units'], null, null, null, null, false) !== null) {
+                $length_unit = do_lang_tempcode('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length']));
+            } else {
+                $length_unit = integer_format($r['s_length']) . ' ' . '_LENGTH_UNIT_' . $r['s_length_units'];
+            }
+
+            $result_entries->attach(results_entry([get_translated_text($r['s_title'], $db), float_format($r['s_price'], 2), $length_unit, cns_get_group_name($r['s_group_id']), ($r['s_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . strval($r['id'])))], true));
         }
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'f_usergroup_subs',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            null,
+            null,
+            $filtercode_box,
+        ];
     }
 
     /**

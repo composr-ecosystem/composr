@@ -241,71 +241,18 @@ class Module_admin_points
         $start = get_param_integer('ledger_start', 0);
         $max = get_param_integer('ledger_max', 50);
 
-        // Filter parameters
-        $filter_username = get_param_string('filter_ledger_username', '', INPUT_FILTER_NONE);
-        $filter_type = get_param_string('filter_ledger_type', 'all');
-        $filter_from = post_param_date('filter_ledger_from', true);
-        $filter_to = post_param_date('filter_ledger_to', true);
-        $_filter_t_type = get_param_string('filter_ledger_t_type', '');
-        $filter_t_type = explode(',', $_filter_t_type);
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
-        // Build WHERE query with filters
+        // Build WHERE query from Filtercode
         $where = [];
         $end = '';
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $end .= ' AND (sending_member=' . strval($member_id) . ' OR receiving_member=' . strval($member_id) . ')';
-            } else {
-                attach_message(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)), 'warn');
-            }
-        }
-        if ($filter_type !== 'all') {
-            $guest_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
-            switch ($filter_type) {
-                case 'send':
-                    $end .= ' AND receiving_member<>' . strval($guest_id) . ' AND sending_member<>' . strval($guest_id);
-                    break;
-                case 'credit':
-                    $where['sending_member'] = $guest_id;
-                    break;
-                case 'debit':
-                    $where['receiving_member'] = $guest_id;
-                    break;
-                case 'reversal':
-                    $end .= ' AND (status=' . strval(LEDGER_STATUS_REVERSED) . ' OR status=' . strval(LEDGER_STATUS_REVERSING) . ')';
-                    break;
-                case 'refund':
-                    $where['status'] = LEDGER_STATUS_REFUND;
-                    break;
-                default:
-                    $filter_type = 'all';
-            }
-        }
-        if ($filter_from !== null) {
-            $end .= ' AND date_and_time>=' . strval($filter_from);
-        }
-        if ($filter_to !== null) {
-            $end .= ' AND date_and_time<=' . strval($filter_to);
-        }
-        if ($_filter_t_type != '') {
-            $end .= ' AND (';
-            foreach ($filter_t_type as $key => $t_type) {
-                if ($key > 0) {
-                    $end .= ' OR (';
-                }
-                $type_subtype = explode('__', $t_type);
-                $end .= db_string_equal_to('t_type', $type_subtype[0]);
-                if (array_key_exists(1, $type_subtype)) {
-                    $end .= ' AND ' . db_string_equal_to('t_subtype', $type_subtype[1]);
-                }
-                $end .= ')';
-            }
-        }
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'points_ledger');
 
         // Construct the table
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger', 'COUNT(*)', $where, $end);
-        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger', 'id', $where, $end . ' AND amount_gift_points>0');
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('points_ledger r', 'COUNT(*)', $where, $end);
+        $has_gift_points = $GLOBALS['SITE_DB']->query_select_value_if_there('points_ledger r', 'id', $where, $end . ' AND amount_gift_points>0');
 
         $sortables = ['date_and_time' => do_lang_tempcode('DATE_TIME')];
         if ($has_gift_points !== null) {
@@ -321,16 +268,32 @@ class Module_admin_points
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('points_ledger r', ['*'], $where, $end . ' ORDER BY r.' . $sortable . ' ' . $sort_order, $max, $start);
         $result_entries = new Tempcode();
 
         require_code('templates_results_table');
 
         $map = [do_lang_tempcode('IDENTIFIER'), do_lang_tempcode('DATE_TIME')];
+        $filtercode = ['date_and_time<date_and_time_op><date_and_time>'];
+        $filtercode_labels = [];
         if ($has_gift_points !== null) {
             $map[] = do_lang_tempcode('GIFT_POINTS');
+            $filtercode_labels[] = 'amount_gift_points=' . do_lang('GIFT_POINTS');
+            $filtercode[] = 'amount_gift_points<amount_gift_points_op><amount_gift_points>';
         }
         $map = array_merge($map, [do_lang_tempcode('POINTS'), do_lang_tempcode('_RANK_POINTS'), do_lang_tempcode('SENDER'), do_lang_tempcode('RECIPIENT'), do_lang_tempcode('REASON'), do_lang_tempcode('STATUS'), do_lang_tempcode('ACTIONS')]);
+        $filtercode[] = 'amount_points<amount_points_op><amount_points>';
+        $filtercode_labels[] = 'amount_points=' . do_lang('POINTS');
+        $filtercode[] = 'is_ranked=<is_ranked>';
+        $filtercode_labels[] = 'is_ranked=' . do_lang('_RANK_POINTS');
+        $filtercode[] = 'sending_member<sending_member_op><sending_member>';
+        $filtercode_labels[] = 'sending_member=' . do_lang('SENDER');
+        $filtercode[] = 'receiving_member<receiving_member_op><receiving_member>';
+        $filtercode_labels[] = 'receiving_member=' . do_lang('RECIPIENT');
+        $filtercode[] = 'reason<reason_op><reason>';
+        $filtercode_labels[] = 'reason=' . do_lang('REASON');
+        $filtercode[] = 'status=<status>';
+        $filtercode_labels[] = 'status=' . do_lang('STATUS');
         $header_row = results_header_row($map, $sortables, 'ledger_sort', $sortable . ' ' . $sort_order);
         foreach ($rows as $myrow) {
             $date = get_timezoned_date_time($myrow['date_and_time'], false);
@@ -406,7 +369,7 @@ class Module_admin_points
             $result_entries->attach(results_entry($map, true));
         }
 
-        $results_table = results_table(do_lang_tempcode('POINTS_LEDGER'), $start, 'ledger_start', $max, 'ledger_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'ledger_sort', paragraph(do_lang_tempcode('POINTS_LEDGER_HEAD')));
+        $results_table = results_table(do_lang_tempcode('POINTS_LEDGER'), $start, 'ledger_start', $max, 'ledger_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'ledger_sort');
 
         // Export button
         $form = new Tempcode();
@@ -415,84 +378,23 @@ class Module_admin_points
             $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        $transaction_types = new Tempcode();
-        $transaction_types->attach(form_input_list_entry('all', ($filter_type == 'all'), do_lang_tempcode('ALL')));
-        $transaction_types->attach(form_input_list_entry('credit', ($filter_type == 'credit'), do_lang_tempcode('CREDIT')));
-        $transaction_types->attach(form_input_list_entry('debit', ($filter_type == 'debit'), do_lang_tempcode('DEBIT')));
-        $transaction_types->attach(form_input_list_entry('refund', ($filter_type == 'refund'), do_lang_tempcode('REFUND')));
-        $transaction_types->attach(form_input_list_entry('reversal', ($filter_type == 'reversal'), do_lang_tempcode('REVERSAL')));
-        $transaction_types->attach(form_input_list_entry('send', ($filter_type == 'send'), do_lang_tempcode('SEND')));
-
-        // List item for every aggregate content type per points hooks
-        $t_types = new Tempcode();
-        $hook_obs = find_all_hook_obs('systems', 'points', 'Hook_points_');
-
-        $labels = [];
-        foreach ($hook_obs as $name => $hook_ob) {
-            $data = $hook_ob->points_profile(null, null);
-            if ($data === null) {
-                continue;
-            }
-            $selected = (($_filter_t_type != '') && (in_array($name, $filter_t_type)));
-            $labels[] = [
-                'label' => $data['label'],
-                'name' => $name,
-                'selected' => $selected,
-            ];
-        }
-        sort_maps_by($labels, 'label');
-        foreach ($labels as $label) {
-            $t_types->attach(form_input_list_entry($label['name'], $label['selected'], $label['label']));
-        }
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_ledger_username',
-                'LABEL' => do_lang_tempcode('USERNAME'),
-                'FIELD' => form_input_username(do_lang_tempcode('USERNAME'), new Tempcode(), 'filter_ledger_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_ledger_type',
-                'LABEL' => do_lang_tempcode('TYPE'),
-                'FIELD' => form_input_list(do_lang_tempcode('TYPE'), new Tempcode(), 'filter_ledger_type', $transaction_types, null, false, false),
-            ],
-            [
-                'PARAM' => 'filter_ledger_t_type',
-                'LABEL' => do_lang_tempcode('POINTS_AGGREGATE_ROWS'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('POINTS_AGGREGATE_ROWS'), new Tempcode(), 'filter_ledger_t_type', $t_types),
-            ],
-        ];
-
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_ledger_from',
-                'LABEL' => do_lang_tempcode('FROM'),
-                'FIELD' => form_input_date(do_lang_tempcode('FROM'), new Tempcode(), 'filter_ledger_from', false, false, true, $filter_from),
-            ],
-            [
-                'PARAM' => 'filter_ledger_to',
-                'LABEL' => do_lang_tempcode('TO'),
-                'FIELD' => form_input_date(do_lang_tempcode('TO'), new Tempcode(), 'filter_ledger_to', false, false, true, $filter_to),
-            ],
-        ];
-
         $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'points_ledger',
+            'labels' => implode(',', $filtercode_labels),
+        ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => 'e796e4efe18afa26424a3ceae282cf90',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
+            'FILTERCODE_BOX' => $filtercode_box,
+            'TEXT' => do_lang_tempcode('POINTS_LEDGER_HEAD'),
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

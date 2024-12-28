@@ -191,10 +191,13 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
  * Get a results table showing security alerts matching WHERE constraints.
  *
  * @param  array $where WHERE constraints
- * @return array A pair: The results table, The number
+ * @param  SHORT_TEXT $end Additional query to go on the end
+ * @return array A pair: The results table, The number, a Filtercode box
  */
-function find_security_alerts(array $where = []) : array
+function find_security_alerts(array $where = [], string $end = '') : array
 {
+    $end .= ' AND r.silent_to_staff_log=0'; // We always hide entries silenced (dismissed) from the staff log
+
     require_code('templates_tooltip');
     require_code('templates_results_table');
 
@@ -216,9 +219,27 @@ function find_security_alerts(array $where = []) : array
     $_fields = [do_lang_tempcode('FROM'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('RISK'), do_lang_tempcode('IP_ADDRESS'), do_lang_tempcode('REASON'), new Tempcode()];
     $header_row = results_header_row($_fields, $sortables, 'alert_sort', $sortable . ' ' . $sort_order);
 
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack', 'COUNT(*)', $where);
+    $filtercode = [
+        'member_id=<member_id>',
+        'date_and_time<date_and_time_op><date_and_time>',
+        'risk_score<risk_score_op><risk_score>',
+        'ip<ip_op><ip>',
+        'reason=<reason>',
+    ];
+    $filtercode_labels = [
+        'member_id=' . do_lang('FROM'),
+        'date_and_time=' . do_lang('DATE_TIME'),
+        'risk_score=' . do_lang('RISK'),
+        'ip=' . do_lang('IP_ADDRESS'),
+        'reason=' . do_lang('REASON'),
+    ];
+    $filtercode_types = [
+        'reason=list',
+    ];
 
-    $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], $where, 'AND risk_score>=1 AND silent_to_staff_log=0 ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('hackattack r', 'COUNT(*)', $where, $end);
+
+    $rows = $GLOBALS['SITE_DB']->query_select('hackattack r', ['*'], $where, $end . ' ORDER BY r.' . $sortable . ' ' . $sort_order, $max, $start);
 
     $result_entries = new Tempcode();
     foreach ($rows as $row) {
@@ -234,7 +255,6 @@ function find_security_alerts(array $where = []) : array
         if ($reason === null) {
             $reason = $row['reason'];
         }
-        $reason = generate_tooltip_by_truncation($reason, 50);
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['member_id']);
 
@@ -243,7 +263,7 @@ function find_security_alerts(array $where = []) : array
             hyperlink($full_url, $date, false, true),
             integer_format($row['risk_score']),
             hyperlink($lookup_url, $row['ip'], false, true),
-            $reason
+            tooltip($row['reason'], $reason, true),
         ];
 
         $deletion_tick = do_template('RESULTS_TABLE_TICK', ['_GUID' => '9d310a90afa8bd1817452e476385bc57', 'ID' => strval($row['id'])]);
@@ -252,7 +272,14 @@ function find_security_alerts(array $where = []) : array
         $result_entries->attach(results_entry($_row, false));
     }
 
-    return [results_table(do_lang_tempcode('SECURITY_ALERTS'), $start, 'alert_start', $max, 'alert_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'alert_sort'), count($rows)];
+    $filtercode_box = do_block('main_content_filtering', [
+        'param' => implode(',', $filtercode),
+        'table' => 'hackattack',
+        'labels' => implode(',', $filtercode_labels),
+        'types' => implode(',', $filtercode_types),
+    ]);
+
+    return [results_table(do_lang_tempcode('SECURITY_ALERTS'), $start, 'alert_start', $max, 'alert_max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'alert_sort'), count($rows), $filtercode_box];
 }
 
 /**

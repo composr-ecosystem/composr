@@ -189,11 +189,18 @@ class Module_admin_custom_comcode extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
+
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'custom_comcode');
 
         $current_ordering = get_param_string('sort', 'tag_tag ASC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [
@@ -206,6 +213,23 @@ class Module_admin_custom_comcode extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('custom_comcode_tag', $current_ordering);
 
+        $filtercode = [
+            'tag_tag<tag_tag_op><tag_tag>',
+            'tag_title<tag_title_op><tag_title>',
+            'tag_dangerous_tag=<tag_dangerous_tag>',
+            'tag_block_tag=<tag_block_tag>',
+            'tag_textual_tag=<tag_textual_tag>',
+            'tag_enabled=<tag_enabled>',
+        ];
+        $filtercode_labels = [
+            'tag_tag=' . do_lang('COMCODE_TAG'),
+            'tag_title=' . do_lang('TITLE'),
+            'tag_dangerous_tag=' . do_lang('DANGEROUS_TAG'),
+            'tag_block_tag=' . do_lang('BLOCK_TAG'),
+            'tag_textual_tag=' . do_lang('TEXTUAL_TAG'),
+            'tag_enabled=' . do_lang('ENABLED'),
+        ];
+        $filtercode_types = [];
         $header_row = results_header_row([
             do_lang_tempcode('COMCODE_TAG'),
             do_lang_tempcode('TITLE'),
@@ -218,14 +242,42 @@ class Module_admin_custom_comcode extends Standard_crud_module
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, [], false, implode('', $extra_join), null, $end);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['tag_tag']], '_SELF');
 
             $result_entries->attach(results_entry([$row['tag_tag'], get_translated_text($row['tag_title']), ($row['tag_dangerous_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_block_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_textual_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_enabled'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), protect_from_escaping(hyperlink($edit_url, do_lang_tempcode('EDIT'), false, false, '#' . $row['tag_tag']))], true));
         }
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false];
+        // Show in-built Comcode tags from hooks if no filters are active
+        if ($end == '') {
+            $hooks = find_all_hook_obs('systems', 'comcode', 'Hook_comcode_');
+            foreach ($hooks as $hook => $ob) {
+                $row = $ob->get_tag();
+                if ($row === null) {
+                    continue;
+                }
+
+                $result_entries->attach(results_entry([$row['tag_tag'], get_translated_text($row['tag_title']), ($row['tag_dangerous_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_block_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), ($row['tag_textual_tag'] == 1) ? do_lang_tempcode('YES') : do_lang_tempcode('NO'), do_lang_tempcode('YES'), do_lang_tempcode('COMCODE_HOOK')], true, null, '', 'disabled'));
+            }
+        } else {
+            attach_message(do_lang_tempcode('COMCODE_HOOKS_NOT_SHOWN'), 'notice');
+        }
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'custom_comcode',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            null,
+            null,
+            $filtercode_box,
+        ];
     }
 
     /**

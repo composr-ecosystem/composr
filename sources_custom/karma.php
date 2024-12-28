@@ -130,84 +130,29 @@ function get_karmic_influence(?int $member_id = null) : float
 /**
  * Get the karma logs a member has had.
  *
- * @param  ID_TEXT $type The type of logs we are looking for
- * @set sender recipient sender_recipient credit all
- * @param  ?MEMBER $member_id_filter Filter logs by this member ID (null: do not filter)
- * @param  ?MEMBER $member_id_viewing Who is viewing the logs (null: current member)
+ * @param  SHORT_TEXT $filters Filtercode to filter the results
  * @param  integer $max Maximum number of records to return
  * @param  integer $start The starting record number
  * @param  SHORT_TEXT $sortable Fields by which we want to order (blank: no ordering)
  * @param  ID_TEXT $sort_order Direction of ordering to use
  * @set ASC DESC
- * @param  ?integer $reversed Filter by the given reversed status (null: do not filter)
- * @param  ?TIME $from_time Only return transactions on or after this time (null: do not filter by this)
- * @param  ?TIME $to_time Only return transactions before this time (null: do not filter by this)
- * @return array Duple of total rows in the database and an array of rows
+ * @return array Tuple of total rows in the database, an array of rows
  */
-function karma_get_logs(string $type, ?int $member_id_filter = null, ?int $member_id_viewing = null, int $max = 50, int $start = 0, string $sortable = '', string $sort_order = 'DESC', ?int $reversed = null, ?int $from_time = null, ?int $to_time = null) : array
+function karma_get_logs(string $filters, int $max = 50, int $start = 0, string $sortable = '', string $sort_order = 'DESC') : array
 {
+    require_code('filtercode');
+
+    // Build WHERE query from Filtercode
     $where = [];
     $end = '';
+    list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), null, 'karma');
 
-    if ($member_id_viewing === null) {
-        $member_id_viewing = get_member();
-    }
-
-    switch ($type) {
-        case 'sender': // Only return logs where karma was sent to another member
-            if ($member_id_filter !== null) {
-                $where = ['k_member_from' => $member_id_filter];
-            }
-            $end = ' AND k_member_to<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            break;
-        case 'recipient': // Logs where the member received karma
-            if ($member_id_filter !== null) {
-                $where = ['k_member_to' => $member_id_filter];
-            }
-            $end = ' AND k_member_from<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            $end = '';
-            break;
-        case 'sender_recipient': // Logs where the member sent karma to other members or received karma (either from other members or the system)
-            if ($member_id_filter !== null) {
-                $end = ' AND ((k_member_from=' . strval($member_id_filter) . ' AND k_member_to<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ')';
-                $end .= ' OR (k_member_to=' . strval($member_id_filter) . '))';
-            } else {
-                $end = ' AND k_member_to<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
-            }
-            break;
-        case 'credit': // Logs where the member received karma from the system
-            if ($member_id_filter !== null) {
-                $where = ['k_member_to' => $member_id_filter, 'k_member_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
-            } else {
-                $where = ['k_member_from' => $GLOBALS['FORUM_DRIVER']->get_guest_id()];
-            }
-            $end = '';
-            break;
-        case 'all': // All logs
-            if ($member_id_filter !== null) {
-                $end = ' AND (k_member_to=' . strval($member_id_filter) . ' OR k_member_from=' . strval($member_id_filter) . ')';
-            }
-            break;
-    }
-
-    if ($reversed !== null) {
-        $where['k_reversed'] = $reversed;
-    }
-
-    if ($from_time !== null) {
-        $end .= ' AND k_date_and_time>=' . strval($from_time);
-    }
-
-    if ($to_time !== null) {
-        $end .= ' AND k_date_and_time<' . strval($to_time);
-    }
-
-    $max_rows = $GLOBALS['SITE_DB']->query_select_value('karma', 'COUNT(*)', $where, $end);
+    $max_rows = $GLOBALS['SITE_DB']->query_select_value('karma r', 'COUNT(*)', $where, $end);
 
     if ($sortable != '') {
-        $end .= ' ORDER BY ' . $sortable . ' ' . $sort_order;
+        $end .= ' ORDER BY r.' . $sortable . ' ' . $sort_order;
     }
-    $rows = $GLOBALS['SITE_DB']->query_select('karma', ['*'], $where, $end, $max, $start);
+    $rows = $GLOBALS['SITE_DB']->query_select('karma r', ['*'], $where, $end, $max, $start);
 
     return [$max_rows, $rows];
 }

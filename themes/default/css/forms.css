@@ -333,10 +333,10 @@ th.form-table-field-name a, /* Extra specificity to take precedence over th.de-t
 }
 
 .input-password, .input-colour, .input-list, .input-line, .input-integer,
-.input-author, .input-username, .input-email, .input-codename,
+.input-author, .input-username, .input-email, .input-codename .input-group,
 .input-tick, .input-float, .input-text, .input-upload,
 .input-password-required, .input-colour-required, .input-list-required, .input-line-required, .input-integer-required,
-.input-author-required, .input-username-required, .input-email-required, .input-codename-required,
+.input-author-required, .input-username-required, .input-email-required, .input-codename-required .input-group-required,
 .input-tick-required, .input-float-required, .input-text-required, .input-upload-required {
 	max-width: 100%;
 }

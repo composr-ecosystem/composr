@@ -1618,9 +1618,9 @@ class Module_purchase
         $member_id_of = get_param_integer('id', get_member());
         $filter_txn_id = get_param_integer('filter_txn_id', null);
 
-        $filters = ['member_id' => $member_id_of];
+        $filters = 'member_id=' . strval($member_id_of);
         if ($filter_txn_id !== null) {
-            $filters['txn_id'] = $filter_txn_id;
+            $filters .= ',txn_id=' . strval($filter_txn_id);
         }
         $tmp = build_sales_table($filters, ($member_id_of != get_member()), has_actual_page_access(get_member(), 'admin_ecommerce_reports'), 50, false);
 

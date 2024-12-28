@@ -167,11 +167,12 @@ class Module_cms_quiz extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A quartet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         require_code('templates_results_table');
+        require_code('templates_tooltip');
 
         $current_ordering = get_param_string('sort', 'q_name ASC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [
@@ -181,6 +182,26 @@ class Module_cms_quiz extends Standard_crud_module
         ];
         list($sql_sort, $sort_order, $sortable) = process_sorting_params('quiz', $current_ordering);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'quiz');
+
+        $filtercode = [
+            'q_name<q_name_op><q_name>',
+            'q_type=<q_type>',
+            'q_add_date<q_add_date_op><q_add_date>',
+        ];
+        $filtercode_labels = [
+            'q_name=' . do_lang('TITLE'),
+            'q_type=' . do_lang('TYPE'),
+            'q_add_date=' . do_lang('DATE'),
+        ];
+        $filtercode_types = [
+            'q_type=list',
+        ];
         $_header_row = [
             do_lang_tempcode('TITLE'),
             do_lang_tempcode('TYPE'),
@@ -188,17 +209,19 @@ class Module_cms_quiz extends Standard_crud_module
         ];
         if (addon_installed('points')) {
             $_header_row[] = do_lang_tempcode('POINTS');
+            $filtercode[] = 'q_points_for_passing<q_points_for_passing_op><q_points_for_passing>';
+            $filtercode_labels[] = 'q_points_for_passing=' . do_lang('POINTS');
         }
         $_header_row[] = do_lang_tempcode('ACTIONS');
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result_entries = new Tempcode();
 
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, [], false, implode('', $extra_join), null, $end);
         foreach ($rows as $row) {
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
-            $type = do_lang_tempcode($row['q_type']);
+            $type = tooltip(do_lang_tempcode($row['q_type']), $row['q_type'], true);
 
             $results_entry = [
                 protect_from_escaping(hyperlink(build_url(['page' => 'quiz', 'type' => 'do', 'id' => $row['id']], get_module_zone('quiz')), get_translated_text($row['q_name']), false, true)),
@@ -216,7 +239,20 @@ class Module_cms_quiz extends Standard_crud_module
         $search_url = build_url(['page' => 'search', 'id' => 'quiz'], get_module_zone('search'));
         $archive_url = build_url(['page' => 'quiz'], get_module_zone('quiz'));
 
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order), false, $search_url, $archive_url];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'quiz',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order),
+            false,
+            $search_url,
+            $archive_url,
+            $filtercode_box,
+        ];
     }
 
     /**

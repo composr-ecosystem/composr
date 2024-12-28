@@ -324,26 +324,9 @@ class Module_admin_cmsusers
             $rt['HITTIME'] = intval(round((time() - $r['hittime']) / 60 / 60));
             $rt['HITTIME_2'] = intval(round((time() - $r['hittime']) / 60 / 60 / 24));
 
-            if ($rt['HITTIME_2'] < 365) { // Do not check install status of sites inactive for more than a year; no use
-                $active = get_value_newer_than('testing__' . $r['website_url'] . '/data/installed.php', time() - 60 * 60 * 24, true);
-                if ($active === null) {
-                    $test_2 = cms_http_request($r['website_url'] . '/data/installed.php', ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'byte_limit' => (1024 * 4), 'ua' => get_brand_base_url() . ' install stats', 'timeout' => 3.0]);
-                    if ($test_2->data === 'Yes') {
-                        $active = do_lang('YES');
-                    } else {
-                        $active = @strval($test_2->message);
-                        if ($active == '') {
-                            $active = do_lang('NO');
-                        } else {
-                            $active .= do_lang('CMS_WHEN_CHECKING');
-                        }
-                    }
-                    set_value('testing__' . $r['website_url'] . '/data/installed.php', $active, true);
-                }
-                $rt['CMS_ACTIVE'] = $active;
-            } else {
-                $rt['CMS_ACTIVE'] = do_lang('CMS_CHECK_LIMIT');
-            }
+            // NB: The Cron hook 'cmsusers' does the actual checking on an interval
+            $active = get_value('testing__' . $r['website_url'] . '/data/installed.php', do_lang('UNKNOWN'), true);
+            $rt['CMS_ACTIVE'] = $active;
 
             $rt['NOTE'] = $perm ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
 
@@ -385,11 +368,6 @@ class Module_admin_cmsusers
             '_GUID' => '869126427270bea53365b807dfbb6878',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
-
-            // TODO: get rid of the need for these in the Tempcode
-            'FILTERS_ROW_A' => new Tempcode(),
-            'FILTERS_ROW_B' => new Tempcode(),
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         require_code('templates_internalise_screen');

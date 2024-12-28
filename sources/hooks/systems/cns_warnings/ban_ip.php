@@ -189,6 +189,31 @@ class Hook_cns_warnings_ban_ip
             }
         }
 
+        // Check if maybe the member was IP-banned outside of the warnings system through securitylogging
+        if (count($info) == 0) {
+            require_code('lookup');
+
+            $username = null;
+            $member_id = null;
+            $ip = null;
+            $email_address = null;
+            $known_ip_addresses = lookup_user($member_id_of, $username, $member_id, $ip, $email_address);
+
+            foreach (array_merge($known_ip_addresses, [$ip]) as $ip_check) {
+                $ban_until = $GLOBALS['SITE_DB']->query_select('banned_ip', ['i_ban_until'], ['i_ban_positive' => 1, 'ip' => $ip]);
+                if (array_key_exists(0, $ban_until)) {
+                    $ip_banned = (($ban_until[0]['i_ban_until'] === null) || ($ban_until[0]['i_ban_until'] > time()));
+                    if ($ip_banned) {
+                        $info[] = [
+                            'icon' => 'menu/adminzone/security/ip_ban',
+                            'text' => do_lang_tempcode('STANDING_DANGER_IP_TEXT_2'),
+                        ];
+                        break;
+                    }
+                }
+            }
+        }
+
         return [
             [
                 'order' => 100,

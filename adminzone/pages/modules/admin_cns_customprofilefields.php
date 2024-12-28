@@ -401,13 +401,21 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
      * Standard crud_module table function.
      *
      * @param  array $url_map Details to go to build_url for link to the next screen
-     * @return array A pair: The choose table, Whether re-ordering is supported from this screen
+     * @return array A quintet: The choose table, Whether re-ordering is supported from this screen, Search URL, Archive URL, a Filtercode box block
      */
     public function create_selection_list_choose_table(array $url_map) : array
     {
         $index_focused_view = (get_param_integer('index_focused', 0) == 1); // Useful for debugging
 
         require_code('templates_results_table');
+
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['FORUM_DB'], parse_filtercode($active_filters), null, 'f_custom_fields');
+
         $form_id = 'selection_table';
         $current_ordering = get_param_string('sort', $index_focused_view ? 'cf_include_in_main_search DESC' : 'cf_order ASC', INPUT_FILTER_GET_COMPLEX);
         $sortables = [];
@@ -426,28 +434,52 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
         $num_cpfs = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'COUNT(*)');
 
-        // Only allow ordering if using default sorting; otherwise it won't work correctly
-        $standard_ordering = (($current_ordering == 'cf_order ASC') && ($num_cpfs < 200));
+        // Only allow ordering if using default sorting, under 200 entries, and not using filters. Otherwise it won't work.
+        $standard_ordering = (($current_ordering == 'cf_order ASC') && ($num_cpfs < 200) && ($end == ''));
+
+        $filtercode = [];
+        $filtercode_labels = [];
+        $filtercode_types = [];
 
         $fh = [];
-
         $fh[] = do_lang_tempcode('NAME');
+        $filtercode[] = 'cf_name<cf_name_op><cf_name>';
+        $filtercode_labels[] = 'cf_name=' . do_lang('NAME');
+
+        // Fudge a max of 100 on index-focused view
         if ($index_focused_view) {
             if (!isset($_GET['max'])) {
                 $_GET['max'] = '100';
+            } else {
+                $_GET['max'] = strval(max(100, intval($_GET['max'])));
             }
         }
+
         if ($index_focused_view) {
             $fh[] = do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH');
+            $filtercode[] = 'cf_include_in_main_search=<cf_include_in_main_search>';
+            $filtercode_labels[] = 'cf_include_in_main_search=' . do_lang('INCLUDE_IN_MAIN_SEARCH');
             $fh[] = do_lang_tempcode('ALLOW_TEMPLATE_SEARCH');
-            $fh[] = 'Has index';
-            $fh[] = 'Has fulltext index';
+            $filtercode[] = 'cf_allow_template_search=<cf_allow_template_search>';
+            $filtercode_labels[] = 'cf_allow_template_search=' . do_lang('ALLOW_TEMPLATE_SEARCH');
+            $fh[] = 'Has index';  // TODO: move to a language string
+            $fh[] = 'Has fulltext index'; // TODO: move to a language string
         } else {
             $fh[] = do_lang_tempcode('OWNER_VIEW');
+            $filtercode[] = 'cf_owner_view=<cf_owner_view>';
+            $filtercode_labels[] = 'cf_owner_view=' . do_lang('OWNER_VIEW');
             $fh[] = do_lang_tempcode('OWNER_SET');
+            $filtercode[] = 'cf_owner_set=<cf_owner_set>';
+            $filtercode_labels[] = 'cf_owner_set=' . do_lang('OWNER_SET');
             $fh[] = do_lang_tempcode('PUBLIC_VIEW');
+            $filtercode[] = 'cf_public_view=<cf_public_view>';
+            $filtercode_labels[] = 'cf_public_view=' . do_lang('PUBLIC_VIEW');
             $fh[] = do_lang_tempcode('REQUIRED');
+            $filtercode[] = 'cf_required=<cf_required>';
+            $filtercode_labels[] = 'cf_required=' . do_lang('REQUIRED');
             $fh[] = do_lang_tempcode('SHOW_ON_JOIN_FORM');
+            $filtercode[] = 'cf_show_on_join_form=<cf_show_on_join_form>';
+            $filtercode_labels[] = 'cf_show_on_join_form=' . do_lang('SHOW_ON_JOIN_FORM');
             //$fh[]=do_lang_tempcode('SHOW_IN_POSTS'); Save space
             //$fh[]=do_lang_tempcode('SHOW_IN_POST_PREVIEWS');
         }
@@ -471,7 +503,7 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
         }
 
         // Load rows, according to pagination
-        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort);
+        list($rows, $max_rows) = $this->get_entry_rows(false, $sql_sort, [], false, implode('', $extra_join), null, $end);
 
         // Save sorting changes
         if ($standard_ordering) {
@@ -567,9 +599,24 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
 
             $result_entries->attach(results_entry($fr, true));
         }
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'f_custom_fields',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
         require_javascript('cns_cpfs');
         $this->js_function_calls_for_choose[] = ['moduleAdminCnsCustomProfileFields_createSelectionListChooseTable', $this->form_id];
-        return [results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gdfg43tfdgdfgdrfgd', true), true];
+
+        return [
+            results_table(do_lang($this->menu_label), get_param_integer('start', 0), 'start', either_param_integer('max', 20), 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', null, [], null, 8, 'gdfg43tfdgdfgdrfgd', true),
+            true,
+            null,
+            null,
+            $filtercode_box,
+        ];
     }
 
     /**

@@ -338,7 +338,7 @@ class Module_admin_lookup
         if ($ip == '') {
             $alerts = new Tempcode();
         } else {
-            list($alerts,) = find_security_alerts(['ip' => $ip]);
+            list($alerts,) = find_security_alerts(['r.ip' => $ip]);
         }
 
         // Find direct ban status and provide ban/unban links...

@@ -595,100 +595,22 @@ class Module_admin_ecommerce_reports
         require_code('form_templates');
         require_code('templates_tooltip');
 
-        // Get filter parameters
-        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
-        $filter_txn_id = get_param_string('filter_txn_id', '');
-        $_filter_type_code = get_param_string('filter_type_code', '');
-        $filter_type_code = explode(',', $_filter_type_code);
-        $filter_start = post_param_date('filter_start', true);
-        $filter_end = post_param_date('filter_end', true);
-
-        $filters = [];
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $filters['member_id'] = $member_id;
-            } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
-            }
-        }
-        if ($filter_txn_id != '') {
-            $filters['txn_id'] = $filter_txn_id;
-        }
-        if ($_filter_type_code != '') {
-            $filters['type_code'] = $_filter_type_code;
-        }
-        if ($filter_start !== null) {
-            $filters['start'] = $filter_start;
-        }
-        if ($filter_end !== null) {
-            $filters['end'] = $filter_end;
-        }
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
         // Build the table
-        $table = build_sales_table($filters, true, true, 50, true);
+        $table = build_sales_table($active_filters, true, true, 50, true);
         if ($table !== null) {
-            list($sales_table, $pagination, $rows) = $table;
+            list($sales_table, $pagination, $rows, $filtercode_box) = $table;
         } else {
             $sales_table = do_lang_tempcode('NO_ENTRIES');
             $pagination = new Tempcode();
             $rows = [];
+            $filtercode_box = null;
         }
-
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        // Product types
-        $_products = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['DISTINCT t.t_type_code'], [], '');
-        $products = new Tempcode();
-        $__products = [];
-        foreach ($_products as $p) {
-            list($details, $product_object) = find_product_details($p['t_type_code']);
-            if ($details !== null) {
-                $item_name = $details['item_name'];
-            } else {
-                $item_name = $p['t_type_code'];
-            }
-            $__products[] = ['value' => $p['t_type_code'], 'caption' => $item_name];
-        }
-        sort_maps_by($__products, 'caption');
-        foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
-        }
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_txn_id',
-                'LABEL' => do_lang_tempcode('TRANSACTION'),
-                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
-            ],
-            [
-                'PARAM' => 'filter_type_code',
-                'LABEL' => do_lang_tempcode('PRODUCT'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $products),
-            ],
-        ];
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('CUSTOMER'),
-                'FIELD' => form_input_username(do_lang_tempcode('CUSTOMER'), new Tempcode(), 'filter_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_start',
-                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
-            ],
-            [
-                'PARAM' => 'filter_end',
-                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
-            ],
-        ];
 
         $url = build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF');
-
-        pop_field_encapsulation();
 
         // Export button
         $form = new Tempcode();
@@ -703,9 +625,8 @@ class Module_admin_ecommerce_reports
             'TITLE' => $this->title,
             'CONTENT' => $sales_table,
             'PAGINATION' => $pagination,
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
     }
 
@@ -758,60 +679,13 @@ class Module_admin_ecommerce_reports
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        // Build WHERE query
-        $where = '1=1';
-        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
-        $filter_txn_id = get_param_string('filter_txn_id', '');
-        $filter_purchase_id = get_param_string('filter_purchase_id', '');
-        $_filter_status = get_param_string('filter_status', '');
-        $filter_status = explode(',', $_filter_status);
-        $_filter_type_code = get_param_string('filter_type_code', '');
-        $filter_type_code = explode(',', $_filter_type_code);
-        $filter_start = post_param_date('filter_start', true);
-        $filter_end = post_param_date('filter_end', true);
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $where .= ' AND t_member_id=' . strval($member_id);
-            } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
-            }
-        }
-        if ($filter_txn_id != '') {
-            $where .= ' AND (id LIKE \'' .  db_encode_like('%' . $filter_txn_id . '%') . '\' OR t_parent_txn_id LIKE \'' . db_encode_like('%' . $filter_txn_id . '%') . '\')';
-        }
-        if ($filter_purchase_id != '') {
-            $where .= ' AND ' . db_string_equal_to('t_purchase_id', $filter_purchase_id);
-        }
-        if ($_filter_status != '') {
-            $where .= ' AND (';
-            foreach ($filter_status as $key => $status) {
-                if ($key > 0) {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('t_status', $status);
-            }
-            $where .= ')';
-        }
-        if ($_filter_type_code != '') {
-            $where .= ' AND (';
-            foreach ($filter_type_code as $key => $product) {
-                if ($key > 0) {
-                    $where .= ' OR ';
-                }
-                $where .= db_string_equal_to('t_type_code', $product);
-            }
-            $where .= ')';
-        }
-        if ($filter_start !== null) {
-            $where .= ' AND t_time>=' . strval($filter_start);
-        }
-        if ($filter_end !== null) {
-            $where .= ' AND t_time<=' . strval($filter_end);
-        }
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+        list($extra_join, $where) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'ecom_transactions');
 
-        $max_rows = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'ecom_transactions WHERE ' . $where);
-        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'ecom_transactions WHERE ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_transactions r', 'COUNT(*)', [], $where);
+        $rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions r', ['*'], [], $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         require_code('form_templates');
         require_code('templates_results_table');
@@ -819,6 +693,34 @@ class Module_admin_ecommerce_reports
         require_code('templates_map_table');
 
         $result_entries = new Tempcode();
+        $filtercode = [
+            't_time<t_time_op><t_time>',
+            'id<id_op><id>',
+            't_member_id=<t_member_id>',
+            't_type_code=<t_type_code>',
+            't_purchase_id<t_purchase_id_op><t_purchase_id>',
+            't_price<t_price_op><t_price>',
+            't_tax<t_tax_op><t_tax>',
+            't_shipping<t_shipping_op><t_shipping>',
+            't_transaction_fee<t_transaction_fee_op><t_transaction_fee>',
+            't_status=<t_status>',
+        ];
+        $filtercode_labels = [
+            't_time=' . do_lang('DATE'),
+            'id=' . do_lang('TRANSACTION'),
+            't_member_id=' . do_lang('CUSTOMER'),
+            't_type_code=' . do_lang('PRODUCT'),
+            't_purchase_id=' . do_lang('PURCHASE_ID'),
+            't_price=' . do_lang('PRICE'),
+            't_tax=' . do_lang(get_option('tax_system')),
+            't_shipping=' . do_lang('SHIPPING'),
+            't_transaction_fee=' . do_lang('TRANSACTION_FEES'),
+            't_status=' . do_lang('STATUS'),
+        ];
+        $filtercode_types = [
+            't_type_code=list',
+            't_status=list',
+        ];
         $header_row = results_header_row([
             do_lang('DATE'),
             do_lang('TRANSACTION'),
@@ -839,11 +741,11 @@ class Module_admin_ecommerce_reports
                 $trigger_url = build_url(['page' => '_SELF', 'type' => 'trigger', 'type_code' => $transaction_row['t_type_code'], 'id' => $transaction_row['t_purchase_id']], '_SELF');
                 $status = do_template('ECOM_TRANSACTION_LOGS_MANUAL_TRIGGER', [
                     '_GUID' => '5e770b9b30db88032bcc56efe8e3dc23',
-                    'STATUS' => get_transaction_status_string($transaction_row['t_status']),
+                    'STATUS' => tooltip(get_transaction_status_string($transaction_row['t_status']), $transaction_row['t_status'], true),
                     'TRIGGER_URL' => $trigger_url,
                 ]);
             } else {
-                $status = make_string_tempcode(escape_html(get_transaction_status_string($transaction_row['t_status'])));
+                $status = tooltip(get_transaction_status_string($transaction_row['t_status']), $transaction_row['t_status'], true);
             }
 
 
@@ -923,73 +825,12 @@ class Module_admin_ecommerce_reports
             $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'dffe0df601b504c08ac59de95ef3a50f', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        // Transaction state
-        $t_statuses = new Tempcode();
-        $t_statuses->attach(form_input_list_entry('SCancelled', (($_filter_status != '') && in_array('SCancelled', $filter_status)), get_transaction_status_string('SCancelled')));
-        $t_statuses->attach(form_input_list_entry('SModified', (($_filter_status != '') && in_array('SModified', $filter_status)), get_transaction_status_string('SModified')));
-        $t_statuses->attach(form_input_list_entry('Completed', (($_filter_status != '') && in_array('Completed', $filter_status)), get_transaction_status_string('Completed')));
-        $t_statuses->attach(form_input_list_entry('Pending', (($_filter_status != '') && in_array('Pending', $filter_status)), get_transaction_status_string('Pending')));
-
-        // Product types
-        $products = new Tempcode();
-        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_transactions', ['DISTINCT t_type_code'], []);
-        $__products = [];
-        foreach ($product_rows as $p) {
-            list($details, $product_object) = find_product_details($p['t_type_code']);
-            if ($details !== null) {
-                $item_name = $details['item_name'];
-            } else {
-                $item_name = $p['t_type_code'];
-            }
-            $__products[] = ['value' => $p['t_type_code'], 'caption' => $item_name];
-        }
-        sort_maps_by($__products, 'caption');
-        foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
-        }
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_txn_id',
-                'LABEL' => do_lang_tempcode('TRANSACTION'),
-                'FIELD' => form_input_line(do_lang_tempcode('TRANSACTION'), new Tempcode(), 'filter_txn_id', $filter_txn_id, false),
-            ],
-            [
-                'PARAM' => 'filter_type_code',
-                'LABEL' => do_lang_tempcode('PRODUCT'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $products),
-            ],
-            [
-                'PARAM' => 'filter_purchase_id',
-                'LABEL' => do_lang_tempcode('PURCHASE_ID'),
-                'FIELD' => form_input_line(do_lang_tempcode('PURCHASE_ID'), new Tempcode(), 'filter_purchase_id', $filter_purchase_id, false),
-            ],
-            [
-                'PARAM' => 'filter_state',
-                'LABEL' => do_lang_tempcode('STATUS'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_status', $t_statuses),
-            ],
-        ];
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('CUSTOMER'),
-                'FIELD' => form_input_username(do_lang_tempcode('CUSTOMER'), new Tempcode(), 'filter_username', $filter_username, false),
-            ],
-            [
-                'PARAM' => 'filter_start',
-                'LABEL' => do_lang_tempcode('ST_START_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_START_PERIOD'), do_lang_tempcode('ST_START_PERIOD_DESCRIPTION'), 'filter_start', false, ($filter_start === null), true, $filter_start),
-            ],
-            [
-                'PARAM' => 'filter_end',
-                'LABEL' => do_lang_tempcode('ST_END_PERIOD'),
-                'FIELD' => form_input_date(do_lang_tempcode('ST_END_PERIOD'), do_lang_tempcode('ST_END_PERIOD_DESCRIPTION'), 'filter_end', false,  ($filter_end === null), true, $filter_end),
-            ],
-        ];
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'ecom_transactions',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'logs'], '_SELF');
 
@@ -999,13 +840,9 @@ class Module_admin_ecommerce_reports
             'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')))),
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -1347,60 +1184,38 @@ class Module_admin_ecommerce_reports
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
 
-        // Filter parameters
-        $filter_manual = get_param_integer('filter_manual', 0);
-        $filter_username = get_param_string('filter_username', '', INPUT_FILTER_NONE);
-        $_filter_state = get_param_string('filter_state', '');
-        $filter_state = explode(',', $_filter_state);
-        $_filter_type_code = get_param_string('filter_type_code', '');
-        $filter_type_code = explode(',', $_filter_type_code);
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
-        // Build WHERE query
+        // Build WHERE query from Filtercode
         $where = [];
         $end = '';
-        if ($filter_manual == 1) {
-            $where['s_payment_gateway'] = 'manual';
-        }
-        if ($filter_username != '') {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_username);
-            if ($member_id !== null) {
-                $where['s_member_id'] = $member_id;
-            } else {
-                warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($filter_username)));
-            }
-        }
-        if ($_filter_state != '') {
-            $end .= ' AND (';
-            foreach ($filter_state as $key => $state) {
-                if ($key > 0) {
-                    $end .= ' OR ';
-                }
-                $end .= db_string_equal_to('s_state', $state);
-            }
-            $end .= ')';
-        }
-        if ($_filter_type_code != '') {
-            $end .= ' AND (';
-            foreach ($filter_type_code as $key => $product) {
-                if ($key > 0) {
-                    $end .= ' OR ';
-                }
-                $end .= db_string_equal_to('s_type_code', $product);
-            }
-            $end .= ')';
-        }
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'ecom_subscriptions');
 
         // Construct the table
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions', 'COUNT(*)', $where, $end);
-
-        $end .= ' ORDER BY ' . $sortable . ' ' . $sort_order . ', s_time DESC'; // Use s_time as secondary ordering
-        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['*'], $where, $end, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_subscriptions r', 'COUNT(*)', $where, $end);
+        $end .= ' ORDER BY r.' . $sortable . ' ' . $sort_order . ', r.s_time DESC'; // Use s_time as secondary ordering
+        $subscriptions = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions r', ['*'], $where, $end, $max, $start);
 
         require_code('form_templates');
         require_code('templates_results_table');
         require_code('templates_tooltip');
 
         $map = [do_lang('IDENTIFIER'), do_lang('DATE_TIME'), do_lang('MEMBER'), do_lang('PRODUCT'), do_lang('EXPIRY_DATE'), do_lang('ACTIONS')];
+        $filtercode = [
+            's_time<s_time_op><s_time>',
+            's_member_id=<s_member_id>',
+            's_type_code=<s_type_code>',
+        ];
+        $filtercode_labels = [
+            's_time=' . do_lang('DATE_TIME'),
+            's_member_id=' . do_lang('MEMBER'),
+            's_type_code=' . do_lang('PRODUCT'),
+        ];
+        $filtercode_types = [
+            's_type_code=list',
+        ];
         $header_row = results_header_row($map, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
         $result = new Tempcode();
@@ -1442,73 +1257,23 @@ class Module_admin_ecommerce_reports
         $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], '_SELF', [], true);
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '38f0e331de0db2449c23378f9f41080e', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        // Subscription state
-        $s_states = new Tempcode();
-        $s_states->attach(form_input_list_entry('active', (($_filter_state != '') && in_array('active', $filter_state)), do_lang_tempcode('FILTER_STATE_ACTIVE')));
-        $s_states->attach(form_input_list_entry('cancelled', (($_filter_state != '') && in_array('cancelled', $filter_state)), do_lang_tempcode('FILTER_STATE_CANCELLED')));
-        $s_states->attach(form_input_list_entry('new', (($_filter_state != '') && in_array('new', $filter_state)), do_lang_tempcode('FILTER_STATE_NEW')));
-        $s_states->attach(form_input_list_entry('pending', (($_filter_state != '') && in_array('pending', $filter_state)), do_lang_tempcode('FILTER_STATE_PENDING')));
-
-        // Product types
-        $products = new Tempcode();
-        $product_rows = $GLOBALS['SITE_DB']->query_select('ecom_subscriptions', ['DISTINCT s_type_code'], [], 'ORDER BY s_type_code');
-        $__products = [];
-        foreach ($product_rows as $p) {
-            list($details, $product_object) = find_product_details($p['s_type_code']);
-            if ($details !== null) {
-                $item_name = $details['item_name'];
-            } else {
-                $item_name = $p['s_type_code'];
-            }
-            $__products[] = ['value' => $p['s_type_code'], 'caption' => $item_name];
-        }
-        sort_maps_by($__products, 'caption');
-        foreach ($__products as $p) {
-            $products->attach(form_input_list_entry($p['value'], (($_filter_type_code != '') && (in_array($p['value'], $filter_type_code))), $p['caption']));
-        }
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_manual',
-                'LABEL' => do_lang_tempcode('MANUAL_SUBSCRIPTIONS'),
-                'FIELD' => form_input_tick(do_lang_tempcode('MANUAL_SUBSCRIPTIONS'), new Tempcode(), 'filter_manual', ($filter_manual == 1)),
-            ],
-            [
-                'PARAM' => 'filter_state',
-                'LABEL' => do_lang_tempcode('STATUS'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('STATUS'), new Tempcode(), 'filter_state', $s_states),
-            ],
-            [
-                'PARAM' => 'filter_type_code',
-                'LABEL' => do_lang_tempcode('PRODUCT'),
-                'FIELD' => form_input_multi_list(do_lang_tempcode('PRODUCT'), new Tempcode(), 'filter_type_code', $products),
-            ],
-        ];
-        $filters_row_b = [
-            [
-                'PARAM' => 'filter_username',
-                'LABEL' => do_lang_tempcode('MEMBER'),
-                'FIELD' => form_input_username(do_lang_tempcode('MEMBER'), new Tempcode(), 'filter_username', $filter_username, false),
-            ],
-        ];
-
         $url = build_url(['page' => '_SELF', 'type' => 'view_subscriptions'], '_SELF');
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'ecom_subscriptions',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '5b3d7b61edb6e369c51ecdacffbcf0e2',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_HIDDEN' => new Tempcode(),
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
             'URL' => $url,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

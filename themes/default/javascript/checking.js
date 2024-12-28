@@ -733,6 +733,12 @@
                             errorMsg = $util.format('{!javascript:NOT_USERNAME;^}', [myValue]);
                         }
                     });
+                } else if ((fieldElement.classList.contains('input-group') || fieldElement.classList.contains('input-group-required')) && (myValue !== '') && (myValue !== '****')) {
+                    validatePromise = $cms.form.doAjaxFieldTest('{$FIND_SCRIPT_NOHTTP;,group_exists}?group=' + encodeURIComponent(myValue)).then(function (exists) {
+                        if (!exists) {
+                            errorMsg = $util.format('{!javascript:NOT_GROUP;^}', [myValue]);
+                        }
+                    });
                 } else if ((fieldElement.classList.contains('input-email') || fieldElement.classList.contains('input-email-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._+-]+@[a-zA-Z0-9._-]+$/))) {
                     errorMsg = $util.format('{!javascript:NOT_A_EMAIL;^}', [myValue]);
                 } else if ((fieldElement.classList.contains('input-codename') || fieldElement.classList.contains('input-codename-required')) && (myValue !== '') && (!myValue.match(/^[a-zA-Z0-9._-]*$/))) {

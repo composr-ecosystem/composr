@@ -492,6 +492,7 @@
             var usernameField = event.target;
             $cms.form.updateAjaxMemberList(usernameField, null, false, event);
         };
+
         var focusUpdateAjaxMemberListFields = document.querySelectorAll('.js-focus-update-ajax-member-list');
         focusUpdateAjaxMemberListFields.forEach(function (input) {
             input.onfocus = usernameOnFocus;
@@ -519,6 +520,18 @@
 
         $dom.on(container, 'keyup', '.js-keyup-update-ajax-member-list', function (e, input) {
             $cms.form.updateAjaxMemberList(input, null, false, e);
+        });
+    };
+
+    $cms.templates.formScreenInputGroup = function formScreenInputGroup(params, container) {
+        $dom.on(container, 'focus', '.js-focus-update-ajax-group-list', function (e, input) {
+            if (input.value === '') {
+                $cms.form.updateAjaxGroupList(input, null, true, e);
+            }
+        });
+
+        $dom.on(container, 'keyup', '.js-keyup-update-ajax-group-list', function (e, input) {
+            $cms.form.updateAjaxGroupList(input, null, false, e);
         });
     };
 

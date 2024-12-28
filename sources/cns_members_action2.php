@@ -149,7 +149,7 @@ function process_username_discriminator(string $username, bool $username_only = 
             }
 
             if ((microtime(true) - $time_taken) >= 3.0) { // Stop trying and error if we still do not have a good username after 3 seconds
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8de41393322c53b49b8527f890d314f1')));
             }
         }
     } while ($test);

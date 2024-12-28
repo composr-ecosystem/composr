@@ -129,17 +129,40 @@ class Module_admin_banners
 
         require_code('templates_results_table');
         $_header_row = [do_lang_tempcode('NAME'), do_lang_tempcode('TYPE'), do_lang_tempcode('BANNER_TYPE')];
+        $filtercode = ['name<name_op><name>', 'deployment_agreement=<deployment_agreement>', 'b_type=<b_type>'];
+        $filtercode_labels = ['deployment_agreement=' . do_lang('TYPE'), 'b_type=' . do_lang('BANNER_TYPE')];
+        $filtercode_types = ['b_type=list'];
         if ($has_banner_network) {
             $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_FROM'), do_lang_tempcode('BANNER_VIEWS_FROM')]);
+            $filtercode[] = 'hits_from<hits_from_op><hits_from>';
+            $filtercode[] = 'views_from<views_from_op><views_from>';
         }
         $_header_row = array_merge($_header_row, [do_lang_tempcode('BANNER_HITS_TO'), do_lang_tempcode('BANNER_VIEWS_TO'), do_lang_tempcode('BANNER_CLICKTHROUGH'), do_lang_tempcode('DISPLAY_LIKELIHOOD'), do_lang_tempcode('SUBMITTER'), do_lang_tempcode('ADDED')]);
+        $filtercode[] = 'hits_to<hits_to_op><hits_to>';
+        $filtercode[] = 'views_to<views_to_op><views_to>';
+        $filtercode[] = 'display_likelihood<display_likelihood_op><display_likelihood>';
+        $filtercode[] = 'submitter=<submitter>';
+        $filtercode[] = 'add_date<add_date_op><add_date>';
+        $filtercode_labels[] = 'add_date=' . do_lang('ADDED');
         if (addon_installed('validation')) {
             $_header_row[] = protect_from_escaping(do_template('COMCODE_ABBR', ['_GUID' => '7a2ed997384b823b25dc3c70d4ff82d6', 'TITLE' => do_lang_tempcode('VALIDATED'), 'CONTENT' => do_lang_tempcode('VALIDATED_SHORT')]));
+            $filtercode[] = 'validated=<validated>';
         }
         $header_row = results_header_row($_header_row, $sortables, 'sort', $sortable . ' ' . $sort_order);
 
-        $rows = $GLOBALS['SITE_DB']->query_select('banners', ['*'], [], ' ORDER BY ' . str_replace('r.', '', $sql_sort), $max, $start);
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('banners', 'COUNT(*)');
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        $where = [];
+        list($extra_join, $filtercode_end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), 'banner', null);
+        $end = ' ORDER BY ' . $sql_sort;
+
+        $rows = $GLOBALS['SITE_DB']->query_select('banners r', ['*'], $where, $filtercode_end . $end, $max, $start);
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('banners r', 'COUNT(*)', $where, $filtercode_end);
+
+        // Construct the table
         $result_entries = new Tempcode();
         foreach ($rows as $myrow) {
             $name = hyperlink(build_url(['page' => 'banners', 'type' => 'view', 'source' => $myrow['name']], get_module_zone('banners')), $myrow['name'], false, true);
@@ -199,14 +222,19 @@ class Module_admin_banners
 
         $table = results_table(do_lang_tempcode('BANNERS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'content_type' => 'banner',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
+
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '82133b12ecdece7cd22f879c0c20ff44',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
-            'FILTERS_ROW_A' => null,
-            'FILTERS_ROW_B' => null,
-            'FILTERS_HIDDEN' => null,
-            'URL' => null
+            'URL' => null,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
 
         require_code('templates_internalise_screen');

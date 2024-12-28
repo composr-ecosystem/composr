@@ -39,7 +39,7 @@ class Block_main_content_filtering
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'core';
-        $info['parameters'] = ['param', 'content_type', 'labels', 'types', 'links',];
+        $info['parameters'] = ['param', 'content_type', 'table', 'labels', 'types', 'links',];
         return $info;
     }
 
@@ -73,9 +73,11 @@ class Block_main_content_filtering
             }
         }
 
+        $table = (array_key_exists('table', $map) && ($map['table'] != '')) ? $map['table'] : null;
+
         require_code('filtercode');
 
-        list($fields, $filter, $_links) = form_for_filtercode($filter, $labels, $content_type, $types);
+        list($fields, $filter, $_links) = form_for_filtercode($filter, $labels, $content_type, $types, $table);
 
         // Filter links (different from form fields, works by overlaying)
         $_links2 = $this->interpret_pairs_from_string($links, '|');
@@ -89,7 +91,7 @@ class Block_main_content_filtering
             '_GUID' => '6cdeed216dfac854672a16db39a6807f',
             'BLOCK_ID' => $block_id,
             'FIELDS' => $fields,
-            'ACTIVE_FILTER' => $filter,
+            'ACTIVE_FILTER' => rawurlencode($filter),
             'LINKS' => $links,
             'SUBMIT_ICON' => 'buttons/filter',
         ]);

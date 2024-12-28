@@ -142,6 +142,8 @@ class Hook_addon_registry_core
         return [
             '.user.ini',
             'README.md',
+            '_compiled/.htaccess',
+            '_compiled/index.html',
             '_config.php',
             'adminzone/.htaccess',
             'adminzone/find_permissions.php',
@@ -659,6 +661,7 @@ class Hook_addon_registry_core
             'data/curl-ca-bundle.crt',
             'data/db_meta.bin',
             'data/empty.php',
+            'data/encrypt_data.php',
             'data/endpoint.php',
             'data/external_url_proxy.php',
             'data/files.bin',
@@ -2008,8 +2011,6 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
-            '_compiled/.htaccess',
-            '_compiled/index.html',
         ];
     }
 

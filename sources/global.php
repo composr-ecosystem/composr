@@ -404,8 +404,6 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         }
 
         if ($recompile === true) {
-            $old_timeout = cms_extend_time_limit(6);
-
             // Keep trying to write for 5 seconds; there might be parallel processes compiling files
             $time = microtime(true);
             while (file_put_contents($compiled_path, $code, LOCK_EX | LOCK_NB) === false) {
@@ -425,8 +423,6 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
             }
 
             clearstatcache(true, $compiled_path);
-
-            cms_set_time_limit($old_timeout);
         }
 
         return false;

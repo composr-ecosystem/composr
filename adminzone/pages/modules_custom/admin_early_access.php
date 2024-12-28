@@ -574,10 +574,7 @@ class Module_admin_early_access extends Standard_crud_module
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => null,
-            'FILTERS_ROW_B' => null,
             'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
 
         require_code('templates_internalise_screen');
