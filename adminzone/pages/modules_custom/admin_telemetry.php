@@ -251,7 +251,9 @@ class Module_admin_telemetry
             // Ignore local installs
             $where .= ' AND ' . db_string_not_equal_to('r.website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://10.0.%');
         }
-        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'telemetry_sites r JOIN ' . get_table_prefix() . 'telemetry_stats s ON s.s_site=r.id WHERE ' . $where . $order_by;
+        $group_by = ' GROUP BY r.website_url, r.website_name, r.software_version, r.may_feature';
+
+        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'telemetry_sites r JOIN ' . get_table_prefix() . 'telemetry_stats s ON s.s_site=r.id WHERE ' . $where . $group_by . $order_by;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start);
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('telemetry_sites r', 'COUNT(*)', [], ' AND ' . $where);
 
