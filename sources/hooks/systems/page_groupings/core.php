@@ -71,6 +71,7 @@ class Hook_page_groupings_core
             (addon_installed('actionlog') && get_option('store_revisions', true) === '1') ? ['audit', 'admin/revisions', ['admin_revisions', ['type' => 'browse'], get_module_zone('admin_revisions')], do_lang_tempcode('actionlog:REVISIONS'), 'actionlog:DOC_REVISIONS'] : null,
             (!addon_installed('content_reviews')) ? null : ['audit', 'menu/adminzone/audit/content_reviews', ['admin_content_reviews', ['type' => 'browse'], get_module_zone('admin_content_reviews')], do_lang_tempcode('content_reviews:CONTENT_REVIEWS'), 'content_reviews:DOC_CONTENT_REVIEWS'],
             addon_installed('securitylogging') ? ['audit', 'menu/adminzone/tools/users/investigate_user', ['admin_lookup', ['type' => 'browse'], get_module_zone('admin_lookup')], do_lang_tempcode('lookup:INVESTIGATE_USER'), 'lookup:INVESTIGATE_USER'] : null,
+            ['audit', 'menu/pages/privacy_policy', ['admin_privacy', ['type' => 'telemetry'], 'adminzone'], do_lang_tempcode('privacy:TELEMETRY_STATUS')],
 
             ['style', 'menu/adminzone/style/themes/themes', ['admin_themes', ['type' => 'browse'], get_module_zone('admin_themes')], do_lang_tempcode('themes:THEMES'), 'themes:DOC_THEMES'],
             ['style', 'admin/tool', ['admin_svg_sprites', [], get_page_zone('admin_svg_sprites')], do_lang_tempcode('themes:SVG_SPRITES'), 'themes:DOC_SVG_SPRITES'],

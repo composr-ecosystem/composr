@@ -47,7 +47,8 @@ function is_encryption_enabled() : bool
 }
 
 /**
- * Determine whether encryption support is available for telemetry, and the key is in place.
+ * Determine whether encryption support is available for telemetry.
+ * This also checks if all keys are in place including the software key and the site keys.
  *
  * @return boolean Encryption enabled?
  */
@@ -55,9 +56,29 @@ function is_encryption_enabled_telemetry() : bool
 {
     static $enabled = null;
     if ($enabled === null) {
+        $available = is_encryption_available_telemetry();
+        $site_public_key_exists = file_exists(get_file_base() . '/data_custom/keys/telemetry-site.pub');
+        $site_private_key_exists = file_exists(get_file_base() . '/data_custom/keys/telemetry-site.key');
+        $site_s_public_key_exists = file_exists(get_file_base() . '/data_custom/keys/telemetry-site-sign.pub');
+        $site_s_private_key_exists = file_exists(get_file_base() . '/data_custom/keys/telemetry-site-sign.key');
+        $enabled = (($available) && ($site_public_key_exists) && ($site_private_key_exists) && ($site_s_public_key_exists) && ($site_s_private_key_exists));
+    }
+    return $enabled;
+}
+
+/**
+ * Determine whether encryption support is available for telemetry.
+ * This does not check if the site keys are in place, but it will check if the software key is.
+ *
+ * @return boolean Encryption enabled?
+ */
+function is_encryption_available_telemetry() : bool
+{
+    static $enabled = null;
+    if ($enabled === null) {
         $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.pub');
         $available = function_exists('sodium_crypto_box_seal');
-        $enabled = (($public_key_exists) && ($available));
+        $enabled = (($available) && ($public_key_exists));
     }
     return $enabled;
 }
@@ -248,6 +269,46 @@ function get_private_key_telemetry(float $version)
 }
 
 /**
+ * Get the contents of the site's public key file for telemetry use.
+ *
+ * @return ~string File contents (false: error)
+ */
+function get_public_key_site_telemetry()
+{
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-site.pub', FILE_READ_LOCK);
+}
+
+/**
+ * Get the contents of the site's private key file for telemetry use.
+ *
+ * @return ~string File contents (false: error)
+ */
+function get_private_key_site_telemetry()
+{
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-site.key', FILE_READ_LOCK);
+}
+
+/**
+ * Get the contents of the site's public signing key file for telemetry use.
+ *
+ * @return ~string File contents (false: error)
+ */
+function get_public_sign_key_site_telemetry()
+{
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-site-sign.pub', FILE_READ_LOCK);
+}
+
+/**
+ * Get the contents of the site's private signing key file for telemetry use.
+ *
+ * @return ~string File contents (false: error)
+ */
+function get_private_sign_key_site_telemetry()
+{
+    return cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-site-sign.key', FILE_READ_LOCK);
+}
+
+/**
  * Encrypt some data for telemetry using symmetric encryption and the software's public key.
  *
  * @param  string $data The data to encrypt
@@ -345,6 +406,144 @@ function decrypt_data_telemetry(string $nonce_base64, string $encrypted_data_bas
 }
 
 /**
+ * Encrypt some data using the site and software keys for sending in telemetry.
+ *
+ * @param string $data The data to encrypt
+ * @return ?array Map of parameters for the JSON payload
+ */
+function encrypt_data_site_telemetry(string $data) : ?array
+{
+    // Load the software public key
+    $_s_public_key = get_public_key_telemetry();
+    if ($_s_public_key === false) {
+        return null;
+    }
+    $s_public_key = base64_decode($_s_public_key);
+    if ($s_public_key === false) {
+        return null;
+    }
+
+    // Get and decode the site private key
+    $_private_key = get_private_key_site_telemetry();
+    if ($_private_key === false) {
+        return null;
+    }
+    $private_key = base64_decode($_private_key);
+    if ($private_key === false) {
+        return null;
+    }
+
+    // Get and decode the site public key
+    $_public_key = get_public_key_site_telemetry();
+    if ($_public_key === false) {
+        return null;
+    }
+    $public_key = base64_decode($_public_key);
+    if ($public_key === false) {
+        return null;
+    }
+
+    $shared_key = sodium_crypto_box_keypair_from_secretkey_and_publickey(
+        $private_key,
+        $s_public_key
+    );
+
+    // Encrypt the message
+    $nonce = random_bytes(SODIUM_CRYPTO_BOX_NONCEBYTES);
+    $encrypted = sodium_crypto_box(
+        $data,
+        $nonce,
+        $shared_key,
+    );
+
+    // Get and decode the site signing private key
+    $_sign_private_key = get_private_sign_key_site_telemetry();
+    if ($_sign_private_key === false) {
+        return null;
+    }
+    $sign_private_key = base64_decode($_sign_private_key);
+    if ($sign_private_key === false) {
+        return null;
+    }
+    // Get and decode the site signing public key
+    $_sign_public_key = get_public_sign_key_site_telemetry();
+    if ($_sign_public_key === false) {
+        return null;
+    }
+    $sign_public_key = base64_decode($_sign_public_key);
+    if ($sign_public_key === false) {
+        return null;
+    }
+
+    $signed_message = sodium_crypto_sign($encrypted, $sign_private_key);
+
+    // Convert binary data to base64 for transmission
+    $nonce_base64 = base64_encode($nonce);
+    $encrypted_data_base64 = base64_encode($signed_message);
+
+    return [
+        'nonce' => $nonce_base64,
+        'encrypted_data' => $encrypted_data_base64,
+        'website_url' => get_base_url(),
+        'version' => cms_version_number(),
+    ];
+}
+
+/**
+ * Decrypt data encrypted with encrypt_data_site_telemetry.
+ *
+ * @param string $nonce_base64 The base64-encoded nonce
+ * @param string $encrypted_data_base64 The base64-encoded encrypted and signed data
+ * @param string $public_key_base64 The base64-encoded sender's public key
+ * @param string $sign_public_key_base64 The base64-encoded sender's signing public key
+ * @param float $version The software version used
+ * @return string The decrypted data
+ */
+function decrypt_data_site_telemetry(string $nonce_base64, string $encrypted_data_base64, string $public_key_base64, string $sign_public_key_base64, float $version) : string
+{
+    // Decode base64-encoded data
+    $encrypted_signed_data = base64_decode($encrypted_data_base64);
+    $public_key = base64_decode($public_key_base64);
+    $sign_public_key = base64_decode($sign_public_key_base64);
+    $nonce = base64_decode($nonce_base64);
+    if (($encrypted_signed_data === false) || ($public_key === false) || ($sign_public_key === false) || ($nonce === false)) {
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
+    }
+
+    // Verify the signed message
+    $encrypted_data = sodium_crypto_sign_open($encrypted_signed_data, $sign_public_key);
+    if ($encrypted_data === false) {
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
+    }
+
+    // Get and decode the private key
+    $_s_private_key = get_private_key_telemetry($version);
+    if ($_s_private_key === false) {
+        warn_exit(do_lang_tempcode('MISSING_PRIVATE_KEY', escape_html(float_to_raw_string($version))));
+    }
+    $s_private_key = base64_decode($_s_private_key);
+    if ($s_private_key === false) {
+        warn_exit(do_lang_tempcode('CORRUPT_PRIVATE_KEY', escape_html(float_to_raw_string($version))));
+    }
+    $shared_key = sodium_crypto_box_keypair_from_secretkey_and_publickey(
+        $s_private_key,
+        $public_key
+    );
+
+    // Decrypt the message
+    $data = sodium_crypto_box_open(
+        $encrypted_data,
+        $nonce,
+        $shared_key
+    );
+    if ($data === false) {
+        warn_exit(do_lang_tempcode('INVALID_TELEMETRY_DATA'));
+    }
+
+    return $data;
+}
+
+/**
  * Generate a public and private key pair for this version of the software and save it into the data_custom/keys directory.
  * You should copy the public key to data/key.pub during the build process.
  *
@@ -392,6 +591,56 @@ function generate_telemetry_key_pair(float $version, bool $overwrite_existing = 
 }
 
 /**
+ * Generate a site key-pair for use in signing messages to the homesite telemetry service.
+ * This function will always overwrite existing public and private keys, so use with care!
+ *
+ * @return array Public key, private key, signing public key, signing private key
+ * @throws SodiumException
+ */
+function generate_site_telemetry_key_pair() : array
+{
+    require_code('files2');
+
+    /* Encryption keys */
+
+    $key_path = get_file_base() . '/data_custom/keys/telemetry-site';
+
+    $key_pair = sodium_crypto_box_keypair();
+
+    // Extract the public and private keys
+    $private_key = sodium_crypto_box_secretkey($key_pair);
+    $public_key = sodium_crypto_box_publickey($key_pair);
+
+    // Convert keys to base64
+    $public_key_base64 = base64_encode($public_key);
+    $private_key_base64 = base64_encode($private_key);
+
+    // Save our keys
+    cms_file_put_contents_safe($key_path . '.pub', $public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($key_path . '.key', $private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+
+    /* Signing keys */
+
+    $s_key_path = get_file_base() . '/data_custom/keys/telemetry-site-sign';
+
+    $s_key_pair = sodium_crypto_sign_keypair();
+
+    // Extract the public and private keys
+    $s_private_key = sodium_crypto_sign_secretkey($s_key_pair);
+    $s_public_key = sodium_crypto_sign_publickey($s_key_pair);
+
+    // Convert keys to base64
+    $s_public_key_base64 = base64_encode($s_public_key);
+    $s_private_key_base64 = base64_encode($s_private_key);
+
+    // Save our keys
+    cms_file_put_contents_safe($s_key_path . '.pub', $s_public_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe($s_key_path . '.key', $s_private_key_base64, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+
+    return [$public_key_base64, $private_key_base64, $s_public_key_base64, $s_private_key_base64];
+}
+
+/**
  * Script to encrypt some data (with telemetry keys) and output the encrypted payload (from encrypt_data_telemetry) in JSON formatted base64.
  *
  */
@@ -406,4 +655,65 @@ function encrypt_data_script() {
 
     $data = encrypt_data_telemetry($data);
     echo base64_encode(json_encode($data));
+}
+
+/**
+ * Register this site with the homesite telemetry service if options and server environment permit.
+ * This should also be called when we need to update the homesite with this site's name, version, or may feature setting.
+ *
+ * @param  boolean $skip_creation Whether to skip creating a site key-pair and registering if one does not exist; this should be true when calling from an error handler
+ * @return boolean Whether the site has been registered or is already registered
+ */
+function register_site_telemetry(bool $skip_creation = false) : bool
+{
+    // Is telemetry disabled?
+    $telemetry = get_option('telemetry');
+    if ($telemetry == '0') {
+        return false;
+    }
+
+    // Are we not able to support telemetry?
+    if (!is_encryption_available_telemetry()) {
+        return false;
+    }
+
+    // If we are skipping creation, but we do not have a site key-pair, this is a failure
+    if (!is_encryption_enabled_telemetry() && $skip_creation) {
+        return false;
+    }
+
+    // Get or create the key-pairs for this site
+    if (is_encryption_enabled_telemetry()) {
+        $public_key = get_public_key_site_telemetry();
+        $sign_public_key = get_public_sign_key_site_telemetry();
+    } else {
+        list($public_key, $private_key, $sign_public_key, $sign_private_key) = generate_site_telemetry_key_pair();
+    }
+
+    require_code('version');
+
+    // We must send the data encrypted using the software keys, not the site keys, because the homesite does not yet know this site's public key
+    $__payload = [
+        'website_url' => get_base_url(),
+        'website_name' => get_site_name(),
+        'may_feature' => (get_option('telemetry_may_feature') == '1') ? 1 : 0,
+        'version' => cms_version_pretty(),
+        'public_key' => $public_key,
+        'sign_public_key' => $sign_public_key,
+    ];
+    $_payload = encrypt_data_telemetry(serialize($__payload));
+    $payload = json_encode($_payload);
+
+    // Register the site
+    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=register';
+    $error_code = null;
+    $error_message = '';
+    $response = cms_fsock_request($payload, $url, $error_code, $error_message);
+
+    // No success?
+    if (($response === null) || (strpos($response, '"success":true') === false)) {
+        return false;
+    }
+
+    return true;
 }

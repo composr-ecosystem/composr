@@ -573,7 +573,7 @@ function cms_http_request(string $url, array $options = []) : object
  * Make a low-level fsockopen request to an API.
  * Ideally, you should use a secure endpoint and encrypt the data to be sent using encrypt_message().
  *
- * @param  string $payload The payload to send (blank: make a GET request)
+ * @param  string $payload The payload to send as a JSON-encoded string (blank: make a GET request)
  * @param  URLPATH $url The URL to call including the path and port
  * @param  ?integer $error_code The error code returned (passed by reference) (null: No error)
  * @param  string $error_message The error message returned (passed by reference) (blank: No error)

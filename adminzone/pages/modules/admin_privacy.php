@@ -55,7 +55,9 @@ class Module_admin_privacy
     {
         return [
             'browse' => ['PRIVACY', 'menu/pages/privacy_policy'],
+            'telemetry' => ['PRIVACY', 'menu/pages/privacy_policy'], // TODO: change icon
         ];
+
     }
 
     public $title;
@@ -68,12 +70,22 @@ class Module_admin_privacy
     public function pre_run() : ?object
     {
         require_code('privacy');
-
-        set_helper_panel_text(comcode_lang_string('DOC_GDPR'));
+        require_lang('privacy');
 
         $type = get_param_string('type', 'browse');
 
-        $this->title = get_screen_title('PRIVACY');
+        switch ($type) {
+            case 'browse':
+            case '_search':
+            case '__search':
+                set_helper_panel_text(comcode_lang_string('DOC_GDPR'));
+                $this->title = get_screen_title('PRIVACY');
+                break;
+
+            case 'telemetry':
+                $this->title = get_screen_title('TELEMETRY_STATUS');
+                break;
+        }
 
         return null;
     }
@@ -95,6 +107,9 @@ class Module_admin_privacy
         }
         if ($type == '__search') {
             return $this->__search();
+        }
+        if ($type == 'telemetry') {
+            return $this->telemetry();
         }
 
         return new Tempcode();
@@ -333,5 +348,72 @@ class Module_admin_privacy
         }
 
         return new Tempcode();
+    }
+
+    /**
+     * The UI for current telemetry status of this site.
+     *
+     * @return Tempcode The UI
+     */
+    public function telemetry() : object
+    {
+        require_lang('privacy');
+
+        if (get_option('telemetry') == '0') {
+            warn_exit(do_lang_tempcode('TELEMETRY_DISABLED'));
+        }
+
+        require_code('encryption');
+
+        if (!is_encryption_enabled_telemetry()) {
+            warn_exit(do_lang_tempcode('TELEMETRY_NOT_AVAILABLE'));
+        }
+
+        require_code('temporal');
+        require_code('templates_map_table');
+        require_code('http');
+
+        // Prepare request to the homesite
+        $__payload = [
+            'version' => cms_version_pretty(),
+            'website_url' => get_base_url(),
+        ];
+        $_payload = encrypt_data_site_telemetry(serialize($__payload));
+        $payload = json_encode($_payload);
+        $post = ['data' => $payload];
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=get_data';
+
+        // Make the request
+        list($_result) = cache_and_carry('cms_http_request', [$url, ['post_params' => $post, 'timeout' => 10.0]], 15);
+        $http_result = @json_decode($_result, true);
+        if (($http_result === false) || ($http_result['success'] === false)) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+        }
+
+        $data = $http_result['data'];
+
+        $fields = [
+            'URL' => $data['website_url'],
+            'NAME' => $data['website_name'],
+            'VERSION' => $data['software_version'],
+            'CONFIG_TELEMETRY_MAY_FEATURE' => (($data['may_feature'] == 1) ? do_lang('YES') : do_lang('NO')),
+            'TELEMETRY_LAST_CHECKED' => (($data['last_checked'] === null) ? do_lang('NA') : get_timezoned_date_time($data['last_checked'])),
+            'TELEMETRY_WEBSITE_INSTALLED' => $data['website_installed'],
+            'TELEMETRY_ADDONS_INSTALLED' => implode(', ', unserialize($data['addons_installed'])),
+            'TELEMETRY_RELAYED_ERRORS' => integer_format($data['relayed_errors']),
+        ];
+
+        $stats = $data['latest_stats'];
+        if ($stats !== null) {
+            $fields['TELEMETRY_STATS_LAST_CHECKED'] = get_timezoned_date_time($stats['date_and_time']);
+            $fields['TELEMETRY_STATS_COUNT_MEMBERS'] = integer_format($stats['count_members']);
+            $fields['TELEMETRY_STATS_COUNT_DAILY_HITS'] = integer_format($stats['count_daily_hits']);
+        } else {
+            $fields['TELEMETRY_STATS_LAST_CHECKED'] = do_lang('NA');
+        }
+
+        $title = get_screen_title('TELEMETRY_STATUS');
+
+        return map_table_screen($title, $fields, true, null, null, true);
     }
 }

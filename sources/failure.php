@@ -1209,7 +1209,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
     if (
         ($mail !== null) &&
         ($developers) &&
-        (get_option('send_error_emails_developers') == '1') &&
+        (get_option('telemetry') != '0') &&
         (!$BLOCK_CORE_DEVELOPERS_ERROR_EMAILS) &&
         (!running_script('cron_bridge')) &&
         ($text != '!') &&
@@ -1298,8 +1298,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
                 'error_message' => strip_comcode($mail),
                 'version' => cms_version_pretty(), // Encrypted and contains full version
             ];
-            $_payload = encrypt_data_telemetry(serialize($__payload));
-            $_payload['version'] = cms_version_number(); // Decrypted major/minor for use in determining which key pair to use
+            $_payload = encrypt_data_site_telemetry(serialize($__payload));
             $payload = json_encode($_payload);
 
             if ($payload === false) {

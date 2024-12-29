@@ -46,27 +46,63 @@ class Hook_endpoint_cms_homesite_user_stats
      */
     public function run(?string $type, ?string $id) : array
     {
-        $website_url = substr(get_param_string('url', false, INPUT_FILTER_URL_GENERAL), 0, 255);
-        $website_name = substr(get_param_string('name', false, INPUT_FILTER_GET_COMPLEX), 0, 255);
-        require_code('version2');
-        $version = get_param_string('version');
-        $num_members = get_param_integer('num_members');
-        $num_hits_per_day = get_param_integer('num_hits_per_day');
+        // The JSON payload was coerced by the main endpoints script
+        $data = json_decode($_POST['data'], true);
 
-        $GLOBALS['SITE_DB']->query_insert('logged', [
-            'website_url' => $website_url,
-            'website_name' => $website_name,
-            'l_version' => $version,
-            'hittime' => time(),
-            'count_members' => $num_members,
-            'num_hits_per_day' => $num_hits_per_day,
+        // Sanity checks
+        if ($data === false) {
+            http_response_code(400);
+            return ['success' => false, 'error_details' => 'Telemetry data sent was not in JSON format.'];
+        }
+        if (!array_key_exists('nonce', $data) || !array_key_exists('encrypted_data', $data) || !array_key_exists('website_url', $data) || !array_key_exists('version', $data)) {
+            http_response_code(400);
+            return ['success' => false, 'error_details' => 'Invalid telemetry data sent.'];
+        }
+
+        // Grab public keys; exit if the site is not yet registered
+        $site = $GLOBALS['SITE_DB']->query_select('telemetry_sites', ['*'], ['website_url' => $data['website_url']]);
+        if (!array_key_exists(0, $site)) {
+            http_response_code(400);
+            return ['success' => false, 'error_details' => 'This website is not yet registered with the telemetry service.'];
+        }
+        $public_key = $site[0]['public_key'];
+        $sign_public_key = $site[0]['sign_public_key'];
+        $site_id = $site[0]['id'];
+
+        // Flood control
+        $existing = $GLOBALS['SITE_DB']->query_select_value('telemetry_stats', 'COUNT(*)', ['s_site' => $site_id], ' AND date_and_time>' . strval(time() - 60 * 60));
+        if ($existing > 0) {
+            http_response_code(429);
+            return ['success' => false, 'error_details' => 'You may only report telemetry stats once per hour.'];
+        }
+
+        // Decrypt our message
+        require_code('encryption');
+        $_data = decrypt_data_site_telemetry($data['nonce'], $data['encrypted_data'], $public_key, $sign_public_key, floatval($data['version']));
+        $decrypted_data = @unserialize($_data);
+        if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('count_members', $decrypted_data) || !array_key_exists('count_daily_hits', $decrypted_data)) {
+            http_response_code(400);
+            return ['success' => false, 'error_details' => 'Telemetry data sent is corrupt and cannot be decrypted.'];
+        }
+
+        $GLOBALS['SITE_DB']->query_insert('telemetry_stats', [
+            's_site' => $site_id,
+            'software_version' => $decrypted_data['version'],
+            'date_and_time' => time(),
+            'count_members' => $decrypted_data['count_members'],
+            'count_daily_hits' => $decrypted_data['count_daily_hits'],
         ]);
+
+        $GLOBALS['SITE_DB']->query_update('telemetry_sites', [
+            'software_version' => $decrypted_data['version'],
+            'website_installed' => 'Yes',
+        ], ['site_id' => $site_id]);
 
         if ($id === '_LEGACY_') { // LEGACY
             echo serialize([]);
             exit();
         }
 
-        return [];
+        return ['success' => true];
     }
 }
