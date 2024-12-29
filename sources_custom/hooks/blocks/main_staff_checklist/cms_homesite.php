@@ -39,7 +39,7 @@ class Hook_checklist_cms_homesite
         }
         $_status = ($status == 0) ? do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_0') : do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM_STATUS_1');
 
-        $url = build_url(['page' => 'admin_cmsusers', 'type' => 'errors'], get_module_zone('admin_cmsusers'));
+        $url = build_url(['page' => 'admin_telemetry', 'type' => 'errors'], get_module_zone('admin_telemetry'));
 
         $tpl = do_template('BLOCK_MAIN_STAFF_CHECKLIST_ITEM', [
             '_GUID' => '9caec63ef20ae396f8982f63a9c345bb',

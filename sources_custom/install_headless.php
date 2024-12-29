@@ -109,7 +109,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'cns_table_prefix' => $table_prefix,
         'maintenance_password' => '',
         'maintenance_password_confirm' => '',
-        'send_error_emails_developers' => '1',
+        'send_error_emails_developers' => '1', // TODO
         'admin_username' => 'admin',
         'cns_admin_password' => '',
         'cns_admin_password_confirm' => '',

@@ -608,15 +608,14 @@ function step_3() : object
 
     global $INSTALL_LANG;
 
-    // Call home, if they asked to
-    $advertise_on = post_param_integer('advertise_on', 0);
+    // Register for the newsletter if requested
     $email = $_POST['email'];
     if ($email == do_lang('EMAIL_ADDRESS')) {
         $email = ''; // In case was left as the label
     }
-    if (($email != '') || ($advertise_on == 2)) {
+    if ($email != '') {
         require_code('files');
-        http_get_contents('https://composr.app/data/endpoint.php/cms_homesite/newsletter/?url=' . urlencode(static_evaluate_tempcode(protect_url_parameter(get_base_url()))) . '&email=' . urlencode($email) . '&advertise_on=' . (($advertise_on == 2) ? '1' : '0') . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
+        http_get_contents('https://composr.app/data/endpoint.php/cms_homesite/newsletter/?email=' . urlencode($email) . '&lang=' . $INSTALL_LANG, ['trigger_error' => false]);
     }
 
     // Forum chooser
@@ -1020,7 +1019,6 @@ function step_4() : object
     $options->attach(make_option(do_lang_tempcode('MAINTENANCE_PASSWORD'), ($forum_type == 'none') ? example('', 'CHOOSE_MAINTENANCE_PASSWORD_ADMIN') : example('', 'CHOOSE_MAINTENANCE_PASSWORD_NO_ADMIN'), 'maintenance_password', $maintenance_password, true));
     require_lang('config');
     require_lang('privacy');
-    $options->attach(make_tick(do_lang_tempcode('SEND_ERROR_EMAILS_DEVELOPERS'), example('', 'CONFIG_OPTION_send_error_emails_developers'), 'send_error_emails_developers', file_exists(get_file_base() . '/_tests') ? 0 : 1));
     $sections->attach(do_template('INSTALLER_STEP_4_SECTION', ['_GUID' => 'f051465e86a7a53ec078e0d9de773993', 'HIDDEN' => $hidden, 'TITLE' => $title, 'TEXT' => $text, 'OPTIONS' => $options]));
     $hidden->attach(form_input_hidden('self_learning_cache', '1'));
 
@@ -1324,6 +1322,9 @@ function step_5() : object
     // Read in a temporary SITE_INFO, but only so this step has something to run with (the _config.php write doesn't use this data)
     foreach ($_POST as $key => $val) {
         if (in_array($key, [
+            'telemetry',
+            'telemetry_may_feature',
+
             'ftp_password',
             'ftp_password_confirm',
             'maintenance_password_confirm',
@@ -1902,6 +1903,9 @@ if (!function_exists(\'git_repos\')) {
     // Write in inputted settings
     foreach ($_POST as $key => $val) {
         if (in_array($key, [
+            'telemetry',
+            'telemetry_may_feature',
+
             'ftp_password',
             'ftp_password_confirm',
             'maintenance_password_confirm',
@@ -1909,11 +1913,9 @@ if (!function_exists(\'git_repos\')) {
             'cns_admin_password_confirm',
 
             'clear_existing_forums_on_install',
-            'send_error_emails_developers',
             'board_path',
             'confirm',
             'email',
-            'advertise_on',
             'forum',
             'max',
             'use_msn',
@@ -2735,8 +2737,8 @@ function step_8() : object
     if ($was_finished === true) { // Final tasks; we are done with this step
         @unlink(get_file_base() . '/data_custom/installer_step_8.bin');
 
-        set_option('send_error_emails_developers', strval(post_param_integer('send_error_emails_developers', 0)));
-        set_option('call_home', (post_param_integer('advertise_on', 0) != 0) ? '1' : '0');
+        set_option('telemetry', strval(post_param_integer('telemetry', 0)));
+        set_option('telemetry_may_feature', (post_param_integer('telemetry_may_feature', 0) == 1) ? '1' : '0');
 
         $url = prepare_installer_url('install.php?step=9');
     } else { // We have more to do

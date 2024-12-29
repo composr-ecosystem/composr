@@ -1176,17 +1176,37 @@ function do_site()
         }
 
         // Send very basic software details to homesite if enabled
-        if ((!is_local_machine()) && (get_option('call_home') == '1') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
-            $timeout_before = ini_get('default_socket_timeout');
-            cms_ini_set('default_socket_timeout', '3');
+        require_code('encryption');
+        if ((is_encryption_enabled_telemetry()) && (!is_local_machine()) && (get_option('telemetry') == '2') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
             require_code('version2');
-            $num_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
-            $num_hits_per_day = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
-            $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/?url=' . urlencode(get_base_url()) . '&name=' . urlencode(get_site_name()) . '&version=' . urlencode(get_version_dotted()) . '&num_members=' . urlencode(strval($num_members)) . '&num_hits_per_day=' . urlencode(strval($num_hits_per_day));
-            require_code('http');
-            cms_http_request($url, ['trigger_error' => false]);
+            $count_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
+            $count_daily_hits = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
+            $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/';
+            $__payload = [
+                'version' => cms_version_pretty(),
+                'count_members' => $count_members,
+                'count_daily_hits' => $count_daily_hits,
+            ];
+            $_payload = encrypt_data_site_telemetry(serialize($__payload));
+            $payload = json_encode($_payload);
+
+            if ($payload === false) {
+                cms_error_log(brand_name() . ' telemetry: WARNING Failed to JSON encode payload to send telemetry stats.');
+            } else {
+                $error_code = null;
+                $error_message = '';
+                $response = cms_fsock_request($payload, $url, $error_code, $error_message, 3.0);
+                if (($response === null) || ($error_message != '')) {
+                    cms_error_log(brand_name() . ' telemetry: WARNING Could not forward site statistics to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
+
+                    // Maybe something happened with the keys, or the base URL changed? Try re-registering in the background.
+                    cms_register_shutdown_function_safe(function() {
+                        register_site_telemetry();
+                    });
+                }
+            }
+
             set_value('last_call_home', strval(time()));
-            cms_ini_set('default_socket_timeout', $timeout_before);
         }
     }
 

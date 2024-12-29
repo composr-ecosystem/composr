@@ -16,13 +16,16 @@
 			</div>
 
 			<p>
-				<input type="radio" id="advertise_on_2" name="advertise_on" value="2"{+START,IF,{$NOT,{OFFICIAL_GIT}}}checked="checked" {+END}>
-				<label for="advertise_on_2">{!ADVERTISE_ON_HOMESITE_2}</label><br>
-				<input type="radio" id="advertise_on_1" name="advertise_on" value="1">
-				<label for="advertise_on_1">{!ADVERTISE_ON_HOMESITE_1}</label><br>
-				<input type="radio" id="advertise_on_0" name="advertise_on" value="0"{+START,IF,{OFFICIAL_GIT}}checked="checked" {+END}>
-				<label for="advertise_on_0">{!ADVERTISE_ON_HOMESITE_0}</label><br>
-				<small>{!DESCRIPTION_ADVERTISE_ON_HOMESITE}</small>
+				<input type="radio" id="telemetry_2" name="telemetry" value="2"{+START,IF,{$NOT,{OFFICIAL_GIT}}}checked="checked" {+END}>
+				<label for="telemetry_2">{!TELEMETRY_HOMESITE_2,{$BRAND_BASE_URL}}</label><br>
+				<input type="radio" id="telemetry_1" name="telemetry" value="1">
+				<label for="telemetry_1">{!TELEMETRY_HOMESITE_1,{$BRAND_BASE_URL}}</label><br>
+				<input type="radio" id="telemetry_0" name="telemetry" value="0"{+START,IF,{OFFICIAL_GIT}}checked="checked" {+END}>
+				<label for="telemetry_0">{!TELEMETRY_HOMESITE_0,{$BRAND_BASE_URL}}</label><br>
+				<input type="checkbox" id="telemetry_may_feature" name="telemetry_may_feature" value="1"{+START,IF,{OFFICIAL_GIT}}checked="checked" {+END}>
+				<label for="telemetry_may_feature">{!TELEMETRY_MAY_FEATURE_HOMESITE,{$BRAND_BASE_URL}}</label><br>
+				<p><small>{!TELEMETRY_HOMESITE_CAN_CHANGE_LATER}</small></p>
+				<p><small>{!DESCRIPTION_TELEMETRY_HOMESITE}</small></p>
 			</p>
 		</div>
 

@@ -35,7 +35,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 22;
+        $info['version'] = 23;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -1278,6 +1278,20 @@ class Module_admin_version
 
             // Needs re-done; in a previous upgrade this would result in a SHORT_TRANS__COMCODE field, which was wrong
             $GLOBALS['SITE_DB']->promote_text_field_to_comcode('digestives_tin', 'd_message', 'id', 4, false, true);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 23)) { // LEGACY: 11.beta7
+            // Migrate old telemetry options
+            $send_errors = get_option('send_error_emails_developers', true);
+            $call_home = get_option('call_home', true);
+            $telemetry = 0;
+            if ($send_errors === '1') {
+                $telemetry++;
+                if ($call_home === '1') {
+                    $telemetry++;
+                }
+            }
+            set_option('telemetry', strval($telemetry));
         }
     }
 

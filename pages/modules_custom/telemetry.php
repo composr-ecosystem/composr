@@ -102,7 +102,7 @@ class Module_telemetry
             warn_exit('Telemetry now utilises random GUIDs which are more secure than ID numbers. Composr 11 beta6 will properly generate GUID-based telemetry links. Errors are still being received on our end despite this change.');
         }
 
-        $_error = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['e_guid' => $id]);
+        $_error = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['*'], ['e_guid' => $id]);
         if (($_error === null) || !array_key_exists(0, $_error)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }

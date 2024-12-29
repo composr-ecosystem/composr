@@ -176,7 +176,7 @@ This addon does not contain the homesite install code and the overall site and t
     {
         return [
             'adminzone/pages/minimodules_custom/_make_release.php',
-            'adminzone/pages/modules_custom/admin_cmsusers.php',
+            'adminzone/pages/modules_custom/admin_telemetry.php',
             'cmscore.rdf',
             'data_custom/download_composr.php',
             'data_custom/keys/.htaccess',

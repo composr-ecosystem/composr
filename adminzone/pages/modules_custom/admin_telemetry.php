@@ -16,7 +16,7 @@
 /**
  * Module page class.
  */
-class Module_admin_cmsusers
+class Module_admin_telemetry
 {
     /**
      * Find details of the module.
@@ -26,11 +26,11 @@ class Module_admin_cmsusers
     public function info() : ?array
     {
         $info = [];
-        $info['author'] = 'Chris Graham';
+        $info['author'] = 'Chris Graham and Patrick Schmalstig';
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 9;
+        $info['version'] = 1;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -44,8 +44,10 @@ class Module_admin_cmsusers
     public function uninstall()
     {
         $tables = [
-            'may_feature',
-            'logged',
+            'telemetry_stats',
+            'telemetry_sites',
+            'telemetry_errors',
+            'telemetry_errors_ignore',
         ];
         $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
@@ -59,42 +61,34 @@ class Module_admin_cmsusers
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
         if ($upgrade_from === null) {
-            $GLOBALS['SITE_DB']->create_table('may_feature', [
+            $GLOBALS['SITE_DB']->create_table('telemetry_sites', [
                 'id' => '*AUTO',
-                'url' => 'URLPATH',
-            ]);
-
-            $GLOBALS['SITE_DB']->create_table('logged', [
-                'id' => '*AUTO',
+                'public_key' => 'SHORT_TEXT', // base64
+                'sign_public_key' => 'SHORT_TEXT', // base64
                 'website_url' => 'URLPATH',
                 'website_name' => 'SHORT_TEXT',
-                'l_version' => 'ID_TEXT',
-                'hittime' => 'TIME',
-                'count_members' => 'INTEGER',
-                'num_hits_per_day' => 'INTEGER',
-                'addons_installed' => 'LONG_TEXT',
+                'software_version' => 'SHORT_TEXT',
+                'may_feature' => 'BINARY',
+                'last_checked' => '?TIME', // Last time we checked data/installed.php (null: never)
+                'website_installed' => 'SHORT_TEXT',
+                'addons_installed' => 'SERIAL',
             ]);
-        }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
-            $GLOBALS['SITE_DB']->rename_table('mayfeature', 'may_feature');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('logged', 'num_members', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('logged', 'num_hits_per_day', 'INTEGER');
-            $GLOBALS['SITE_DB']->delete_table_field('logged', 'is_registered');
-            $GLOBALS['SITE_DB']->delete_table_field('logged', 'log_key');
-            $GLOBALS['SITE_DB']->delete_table_field('logged', 'expire');
-        }
-
-        if (($upgrade_from === null) || ($upgrade_from < 3)) {
-            $GLOBALS['SITE_DB']->create_table('relayed_errors', [
+            $GLOBALS['SITE_DB']->create_table('telemetry_stats', [
                 'id' => '*AUTO',
-                'e_guid' => 'SHORT_TEXT',
+                's_site' => 'AUTO_LINK',
+                'software_version' => 'SHORT_TEXT',
+                'date_and_time' => 'TIME',
+                'count_members' => 'INTEGER',
+                'count_daily_hits' => 'INTEGER',
+            ]);
+
+            $GLOBALS['SITE_DB']->create_table('telemetry_errors', [
+                'id' => '*AUTO',
+                'e_guid' => 'MINIID_TEXT',
+                'e_site' => 'AUTO_LINK',
                 'e_first_date_and_time' => 'TIME',
                 'e_last_date_and_time' => 'TIME',
-                'e_website_url' => 'URLPATH',
                 'e_version' => 'ID_TEXT',
                 'e_error_message' => 'LONG_TEXT',
                 'e_error_hash' => 'SHORT_TEXT',
@@ -103,45 +97,12 @@ class Module_admin_cmsusers
                 'e_resolved' => 'BINARY',
                 'e_note' => 'LONG_TRANS__COMCODE',
             ]);
-        }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 4)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT');
-        }
-        if (($upgrade_from !== null) && ($upgrade_from < 5)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE');
-        }
-
-        if (($upgrade_from === null) || ($upgrade_from < 6)) {
-            $GLOBALS['SITE_DB']->create_table('relayed_errors_ignore', [
+            $GLOBALS['SITE_DB']->create_table('telemetry_errors_ignore', [
                 'id' => '*AUTO',
                 'ignore_string' => 'SHORT_TEXT',
                 'resolve_message' => 'LONG_TRANS__COMCODE',
             ]);
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 7)) { // LEGACY: 11.beta1
-            // Database consistency fixes
-            $GLOBALS['SITE_DB']->alter_table_field('logged', 'num_members', 'INTEGER', 'count_members');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY: 11.beta3
-            $GLOBALS['SITE_DB']->add_table_field('logged', 'addons_installed', 'LONG_TEXT', '');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta6
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'e_refs_compiled', 'BINARY');
-            $GLOBALS['SITE_DB']->add_table_field('relayed_errors', 'e_guid', 'SHORT_TEXT');
-
-            // Consistency to avoid restricted keywords
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'first_date_and_time', 'TIME', 'e_first_date_and_time');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'last_date_and_time', 'TIME', 'e_last_date_and_time');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'website_url', 'URLPATH', 'e_website_url');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_message', 'LONG_TEXT', 'e_error_message');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_hash', 'SHORT_TEXT', 'e_error_hash');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'error_count', 'INTEGER', 'e_error_count');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'resolved', 'BINARY', 'e_resolved');
-            $GLOBALS['SITE_DB']->alter_table_field('relayed_errors', 'note', 'LONG_TRANS__COMCODE', 'e_note');
         }
     }
 
@@ -211,7 +172,7 @@ class Module_admin_cmsusers
 
         $type = get_param_string('type', 'browse');
         if ($type == 'browse') {
-            return $this->users();
+            return $this->sites();
         }
         if ($type == 'errors') {
             $this->title = get_screen_title('CMS_SITE_ERRORS');
@@ -259,7 +220,7 @@ class Module_admin_cmsusers
      *
      * @return Tempcode The result of execution
      */
-    public function users() : object
+    public function sites() : object
     {
         require_code('templates_results_table');
         require_code('form_templates');
@@ -269,12 +230,12 @@ class Module_admin_cmsusers
 
         // Sortable validation
         $sortables = [
-            'hittime' => do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
-            'l_version' => do_lang_tempcode('CMS_VERSION'),
+            'date_and_time' => do_lang_tempcode('CMS_LAST_ADMIN_ACCESS'),
+            'software_version' => do_lang_tempcode('CMS_VERSION'),
             'count_members' => do_lang_tempcode('CMS_COUNT_MEMBERS'),
-            'num_hits_per_day' => do_lang_tempcode('CMS_HITS_24_HRS'),
+            'count_daily_hits' => do_lang_tempcode('CMS_HITS_24_HRS'),
         ];
-        $test = explode(' ', get_param_string('sort', 'hittime DESC', INPUT_FILTER_GET_COMPLEX), 2);
+        $test = explode(' ', get_param_string('sort', 'date_and_time DESC', INPUT_FILTER_GET_COMPLEX), 2);
         if (count($test) == 1) {
             $test[1] = 'DESC';
         }
@@ -282,18 +243,17 @@ class Module_admin_cmsusers
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
-        $order_by = 'ORDER BY ' . $sortable . ' ' . $sort_order;
+        $order_by = ' ORDER BY ' . $sortable . ' ' . $sort_order;
 
-        $select = 'website_url,MAX(l_version) AS l_version,MAX(hittime) AS hittime,MAX(count_members) AS count_members,MAX(num_hits_per_day) AS num_hits_per_day';
-        $where = 'website_url NOT LIKE \'%.composr.info%\''; // LEGACY
+        $select = 'r.website_url AS website_url,r.website_name AS website_name,r.software_version AS website_version,r.may_feature AS website_may_feature,MAX(s.date_and_time) AS date_and_time,MAX(s.count_members) AS count_members,MAX(s.count_daily_hits) AS count_daily_hits';
+        $where = 'r.website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
             // Ignore local installs
-            $where .= ' AND ' . db_string_not_equal_to('website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('website_url', '%://10.0.%');
+            $where .= ' AND ' . db_string_not_equal_to('r.website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://10.0.%');
         }
-        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ' GROUP BY website_url ' . $order_by;
+        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'telemetry_sites r JOIN ' . get_table_prefix() . 'telemetry_stats s ON s.s_site=r.id WHERE ' . $where . $order_by;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start);
-        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) AS num_sites FROM (SELECT DISTINCT website_url FROM ' . get_table_prefix() . 'logged WHERE ' . $where . ') AS logged_sites');
-        $max_rows = $_max_rows[0]['num_sites'];
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('telemetry_sites r', 'COUNT(*)', [], ' AND ' . $where);
 
         $map = [
             do_lang_tempcode('CMS_WEBSITE_NAME'),
@@ -309,45 +269,49 @@ class Module_admin_cmsusers
         $result_entries = new Tempcode();
 
         foreach ($rows as $i => $r) {
-            // Test that they give feature permission
-            $url_parts = cms_parse_url_safe($r['website_url']);
-            if (!array_key_exists('host', $url_parts)) {
-                continue;
-            }
-            $perm = $GLOBALS['SITE_DB']->query_select_value_if_there('may_feature', 'id', ['url' => $url_parts['scheme'] . '://' . $url_parts['host']]);
-            if (($perm === null) && (get_param_integer('no_feature', 0) == 1)) {
+            if (($r['website_may_feature'] == 0) && (get_param_integer('may_feature_only', 0) == 1)) {
                 continue;
             }
 
             $rt = [];
 
-            $rt['HITTIME'] = intval(round((time() - $r['hittime']) / 60 / 60));
-            $rt['HITTIME_2'] = intval(round((time() - $r['hittime']) / 60 / 60 / 24));
+            $rt['HITTIME'] = intval(round((time() - $r['date_and_time']) / 60 / 60));
+            $rt['HITTIME_2'] = intval(round((time() - $r['date_and_time']) / 60 / 60 / 24));
 
             // NB: The Cron hook 'cmsusers' does the actual checking on an interval
             $active = get_value('testing__' . $r['website_url'] . '/data/installed.php', do_lang('UNKNOWN'), true);
             $rt['CMS_ACTIVE'] = $active;
 
-            $rt['NOTE'] = $perm ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
+            $rt['NOTE'] = ($r['website_may_feature'] == 1) ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
 
             $rt['NUM_MEMBERS'] = integer_format($r['count_members']);
 
-            $rt['NUM_HITS_PER_DAY'] = integer_format($r['num_hits_per_day']);
+            $rt['NUM_HITS_PER_DAY'] = integer_format($r['count_daily_hits']);
 
-            $current = $GLOBALS['SITE_DB']->query_select('logged', ['website_name', 'l_version', 'count_members', 'num_hits_per_day', 'hittime'], ['website_url' => $r['website_url']], ' ORDER BY hittime DESC', 1);
+            $_current = $GLOBALS['SITE_DB']->query_select('telemetry_stats', ['software_version', 'count_members', 'count_daily_hits', 'date_and_time'], ['s_site' => $r['id']], ' ORDER BY date_and_time DESC', 1);
+
+            if (array_key_exists(0, $_current)) {
+                $current = $_current[0];
+                $current_members = integer_format($current['count_members']);
+                $current_hits = integer_format($current['count_daily_hits']);
+            } else {
+                $current = null;
+                $current_members = do_lang('UNKNOWN');
+                $current_hits = do_lang('UNKNOWN');
+            }
 
             $map = [
-                hyperlink($r['website_url'], $current[0]['website_name'], true, true, $r['website_url']),
+                hyperlink($r['website_url'], $r['website_name'], true, true, $r['website_url']),
                 do_lang_tempcode(
                     '_CMS_LAST_ADMIN_ACCESS',
                     escape_html(do_lang('_AGO', do_lang('DAYS', integer_format($rt['HITTIME_2'])))),
                     escape_html(do_lang('_AGO', do_lang('HOURS', integer_format($rt['HITTIME']))))
                 ),
                 $rt['CMS_ACTIVE'],
-                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html($current[0]['l_version']), escape_html($r['l_version'])),
+                escape_html($r['website_version']),
                 $rt['NOTE'],
-                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['count_members'])), escape_html($rt['NUM_MEMBERS'])),
-                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html(integer_format($current[0]['num_hits_per_day'])), escape_html($rt['NUM_HITS_PER_DAY'])),
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html($current_members), escape_html($rt['NUM_MEMBERS'])),
+                do_lang_tempcode('CMS_VALUE_WITH_MAX', escape_html($current_hits), escape_html($rt['NUM_HITS_PER_DAY'])),
             ];
 
             $td_class = '';
@@ -393,25 +357,25 @@ class Module_admin_cmsusers
         //$filter_to = post_param_date('filter_to', true);
 
         // Build WHERE query with filters
-        $where = [];
-        $end = '';
+        $where = 'WHERE 1=1';
         if ($filter_website != '') {
-            $end .= ' AND e_website_url LIKE \'' . db_encode_like('%' . db_escape_string($filter_website) . '%') . '\'';
+            $where .= ' AND s.website_name LIKE \'' . db_encode_like('%' . db_escape_string($filter_website) . '%') . '\'';
         }
         if ($filter_error_message != '') {
-            $end .= ' AND e_error_message LIKE \'' . db_encode_like('%' . db_escape_string($filter_error_message) . '%') . '\'';
+            $where .= ' AND r.e_error_message LIKE \'' . db_encode_like('%' . db_escape_string($filter_error_message) . '%') . '\'';
         }
         if ($filter_show_resolved == 0) {
-            $where['e_resolved'] = 0;
+            $where .= ' AND r.e_resolved=0';
         }
         if ($filter_show_compiled == 0) {
-            $where['e_refs_compiled'] = 0;
+            $where .= ' AND r.e_refs_compiled=0';
         }
 
         // Query
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'COUNT(*)', $where, $end);
+        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where);
+        $max_rows = $_max_rows[0]['count_sites'];
         $sortables = [
-            'e_website_url' => do_lang_tempcode('URL'),
+            'website_name' => do_lang_tempcode('NAME'),
             'e_first_date_and_time' => do_lang_tempcode('FIRST_REPORTED'),
             'e_last_date_and_time' => do_lang_tempcode('LAST_REPORTED'),
             'e_version' => do_lang_tempcode('VERSION'),
@@ -425,7 +389,8 @@ class Module_admin_cmsusers
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], $where, $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $select = 'SELECT r.*,s.website_url AS website_url,s.website_name AS website_name';
+        $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         // Build results table
         $result_entries = new Tempcode();
@@ -436,7 +401,7 @@ class Module_admin_cmsusers
 
         $map = [
             do_lang_tempcode('IDENTIFIER'),
-            do_lang_tempcode('URL'),
+            do_lang_tempcode('NAME'),
             do_lang_tempcode('ERROR_SUMMARY'),
             do_lang_tempcode('ERROR_REFS_COMPILED'),
             do_lang_tempcode('FIRST_REPORTED'),
@@ -449,7 +414,7 @@ class Module_admin_cmsusers
 
         foreach ($rows as $myrow) {
             $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true);
-            $website_url = hyperlink($myrow['e_website_url'], $myrow['e_website_url'], true, true);
+            $website_url = hyperlink($myrow['website_url'], $myrow['website_name'], true, true);
             $summary = generate_tooltip_by_truncation($myrow['e_error_message'], 160);
             $first_date = get_timezoned_date_time($myrow['e_first_date_and_time'], false);
             $last_date = get_timezoned_date_time($myrow['e_last_date_and_time'], false);
@@ -533,18 +498,25 @@ class Module_admin_cmsusers
      */
     public function error(int $id) : object
     {
-        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['*'], ['id' => $id], '', 1);
         if (($_row === null) || (!array_key_exists(0, $_row))) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
         $row = $_row[0];
+
+        $_website_name = $GLOBALS['SITE_DB']->query_select_value_if_there('telemetry_sites', 'website_name', ['id' => $row['e_site']]);
+        $_website_url = $GLOBALS['SITE_DB']->query_select_value_if_there('telemetry_sites', 'website_url', ['id' => $row['e_site']]);
+        if (($_website_name !== null) && ($_website_url !== null)) {
+            $website_url = hyperlink($row['e_website_url'], $row['e_website_name'], true, true);
+        } else {
+            $website_url = do_lang('UNKNOWN');
+        }
 
         require_code('templates_map_table');
         require_code('temporal');
 
         $formatted_id = '#' . integer_format($row['id']);
         $guid = $row['e_guid'];
-        $website_url = hyperlink($row['e_website_url'], $row['e_website_url'], true, true);
         $first_date = get_timezoned_date_time($row['e_first_date_and_time'], false);
         $last_date = get_timezoned_date_time($row['e_last_date_and_time'], false);
         $resolved = ($row['e_resolved'] == 1);
@@ -590,7 +562,7 @@ class Module_admin_cmsusers
      */
     public function resolve_error(int $id) : object
     {
-        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['*'], ['id' => $id], '', 1);
         if (($_row === null) || (!array_key_exists(0, $_row))) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -627,7 +599,7 @@ class Module_admin_cmsusers
      */
     public function _resolve_error(int $id) : object
     {
-        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['*'], ['id' => $id], '', 1);
+        $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['*'], ['id' => $id], '', 1);
         if (($_row === null) || (!array_key_exists(0, $_row))) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -639,7 +611,7 @@ class Module_admin_cmsusers
         // Actualiser
         $map = ['e_resolved' => $resolved];
         $map += lang_remap_comcode('e_note', $row['e_note'], $new_note);
-        $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $id]);
+        $GLOBALS['SITE_DB']->query_update('telemetry_errors', $map, ['id' => $id]);
         $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));
     }
@@ -654,7 +626,7 @@ class Module_admin_cmsusers
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
 
-        $max_rows = $GLOBALS['SITE_DB']->query_select_value('relayed_errors_ignore', 'COUNT(*)');
+        $max_rows = $GLOBALS['SITE_DB']->query_select_value('telemetry_errors_ignore', 'COUNT(*)');
         $sortables = [
             'id' => do_lang_tempcode('IDENTIFIER'),
             'ignore_string' => do_lang_tempcode('TELEMETRY_IGNORE_STRING'),
@@ -667,7 +639,7 @@ class Module_admin_cmsusers
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
-        $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], [], ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query_select('telemetry_errors_ignore', ['*'], [], ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         // Build results table
         $result_entries = new Tempcode();
@@ -750,7 +722,7 @@ class Module_admin_cmsusers
         $line = '';
         $resolve_message = '';
         if ($id !== null) {
-            $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+            $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors_ignore', ['*'], ['id' => $id], '', 1);
             if (($_row === null) || (!array_key_exists(0, $_row))) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
@@ -793,7 +765,7 @@ class Module_admin_cmsusers
 
         // Actualise the record
         if ($id !== null) {
-            $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+            $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors_ignore', ['*'], ['id' => $id], '', 1);
             if (($_row === null) || (!array_key_exists(0, $_row))) {
                 warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
             }
@@ -803,13 +775,13 @@ class Module_admin_cmsusers
                 'ignore_string' => $ignore_string,
             ];
             $map += lang_remap_comcode('resolve_message', $row['resolve_message'], $resolve_message);
-            $GLOBALS['SITE_DB']->query_update('relayed_errors_ignore', $map, ['id' => $id]);
+            $GLOBALS['SITE_DB']->query_update('telemetry_errors_ignore', $map, ['id' => $id]);
         } else {
             $map = [
                 'ignore_string' => $ignore_string,
             ];
             $map += insert_lang_comcode('resolve_message', $resolve_message, 4);
-            $GLOBALS['SITE_DB']->query_insert('relayed_errors_ignore', $map);
+            $GLOBALS['SITE_DB']->query_insert('telemetry_errors_ignore', $map);
         }
 
         // Auto-resolve existing errors according to the specified criteria
@@ -818,13 +790,13 @@ class Module_admin_cmsusers
         $max = 100;
         $count = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query_select('relayed_errors', ['id', 'e_error_message', 'e_note'], ['e_resolved' => 0], '', $max, $start);
+            $rows = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['id', 'e_error_message', 'e_note'], ['e_resolved' => 0], '', $max, $start);
             foreach ($rows as $row) {
                 if (strpos($row['e_error_message'], $ignore_string) !== false) {
                     $count++;
                     $map = ['e_resolved' => 1];
                     $map += lang_remap_comcode('e_note', $row['e_note'], $resolve_message);
-                    $GLOBALS['SITE_DB']->query_update('relayed_errors', $map, ['id' => $row['id']]);
+                    $GLOBALS['SITE_DB']->query_update('telemetry_errors', $map, ['id' => $row['id']]);
                 }
             }
 
@@ -843,7 +815,7 @@ class Module_admin_cmsusers
      */
     public function ignore_error_delete(int $id) : object
     {
-        $_row = $GLOBALS['SITE_DB']->query_select('relayed_errors_ignore', ['*'], ['id' => $id], '', 1);
+        $_row = $GLOBALS['SITE_DB']->query_select('telemetry_errors_ignore', ['*'], ['id' => $id], '', 1);
         if (($_row === null) || (!array_key_exists(0, $_row))) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
@@ -861,7 +833,7 @@ class Module_admin_cmsusers
             ]);
         }
 
-        $GLOBALS['SITE_DB']->query_delete('relayed_errors_ignore', ['id' => $id]);
+        $GLOBALS['SITE_DB']->query_delete('telemetry_errors_ignore', ['id' => $id]);
 
         $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
         return redirect_screen($this->title, $url, do_lang_tempcode('SUCCESS'));

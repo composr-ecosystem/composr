@@ -57,10 +57,16 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 }
 
 /*
-    Un-comment this line and save the file if you want the homesite to remove you from the install statistics service and stop checking your site.
-    Leave it in for a few days to be sure the site gets the message and removes you.
+    Un-comment these two lines and save the file if you want the homesite to stop checking if you have Composr installed and to remove all your
+    data from its telemetry service. Before doing this, make sure you have the "Telemetry (what to relay to core developers)" option set to
+    "Relay nothing" (Admin Zone > Setup > Configuration > Privacy / legal compliance options), otherwise your site will re-register itself
+    with the telemetry service.
+
+    Leave the lines in place for at least a few days to give the homesite a chance to see it (the homesite only checks on a daily interval).
 */
+
 // echo 'Remove me!';
+// exit();
 
 /*
     Don't load in the software API because we don't want DOS attacks.

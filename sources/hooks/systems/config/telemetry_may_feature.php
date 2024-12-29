@@ -21,7 +21,7 @@
 /**
  * Hook class.
  */
-class Hook_config_send_error_emails_developers
+class Hook_config_telemetry_may_feature
 {
     /**
      * Gets the details relating to the config option.
@@ -31,13 +31,13 @@ class Hook_config_send_error_emails_developers
     public function get_details() : array
     {
         return [
-            'human_name' => 'SEND_ERROR_EMAILS_DEVELOPERS',
+            'human_name' => 'CONFIG_TELEMETRY_MAY_FEATURE',
             'type' => 'tick',
             'category' => 'PRIVACY',
             'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_send_error_emails_developers',
+            'explanation' => 'CONFIG_OPTION_telemetry_may_feature',
             'shared_hosting_restricted' => '1',
-            'list_options' => '',
+            'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
             'addon' => 'core_privacy',
@@ -51,6 +51,18 @@ class Hook_config_send_error_emails_developers
      */
     public function get_default() : ?string
     {
-        return '1';
+        return '0';
+    }
+
+    /**
+     * Code to run after the option is saved, if the value was changed or we are not formally setting it.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        // We need to update this setting with the homesite
+        require_code('encryption');
+        register_site_telemetry(true);
     }
 }
