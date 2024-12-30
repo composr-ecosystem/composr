@@ -72,9 +72,6 @@ function init__config()
     }
     $VALUE_OPTIONS_ELECTIVE_CACHE = [];
 
-    global $GET_OPTION_LOOP;
-    $GET_OPTION_LOOP = false;
-
     global $MULTI_LANG_CACHE;
     $MULTI_LANG_CACHE = null;
 
@@ -417,6 +414,9 @@ function get_option(string $name, bool $missing_ok = false) : ?string
 
     // Maybe missing a DB row, or has an old null one, so we need to auto-create from hook
     if (!isset($CONFIG_OPTIONS_CACHE[$name]['c_value'])) {
+        // It is not reasonable to try getting un-cached config options more than a couple times; something is wrong if this happens
+        check_for_infinite_loop('get_option', [$name, false], 2);
+
         if ((!$CONFIG_OPTIONS_FULLY_LOADED) && (!array_key_exists($name, $CONFIG_OPTIONS_CACHE))) {
             load_config_options();
 
@@ -436,9 +436,6 @@ function get_option(string $name, bool $missing_ok = false) : ?string
             $missing_ok = true; // Upgrade scenario, probably can't do this robustly
         }
 
-        global $GET_OPTION_LOOP;
-        $GET_OPTION_LOOP = true;
-
         require_code('config2');
         $value = get_default_option($name);
 
@@ -451,16 +448,15 @@ function get_option(string $name, bool $missing_ok = false) : ?string
                 }
             }
 
-            $GET_OPTION_LOOP = false;
-
             return null;
         }
 
         if (!running_script('upgrade')) {
             set_option($name, $value, 0);
         }
-
-        $GET_OPTION_LOOP = false;
+    } else {
+        // It is reasonable for us to get cached config options many times, but not too many times
+        check_for_infinite_loop('get_option', [$name, true], 1000);
     }
 
     // Load up row

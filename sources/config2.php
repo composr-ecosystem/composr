@@ -419,6 +419,9 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
 {
     global $CONFIG_OPTIONS_CACHE;
 
+    // We shouldn't be attempting to save the same value to the same config option more than a couple times
+    check_for_infinite_loop('set_option', [$name, $value, $will_be_formally_set], 2);
+
     if ($ob === null) {
         require_code('hooks/systems/config/' . filter_naughty_harsh($name));
         $ob = object_factory('Hook_config_' . filter_naughty_harsh($name), true);
@@ -431,7 +434,9 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
 
     $needs_dereference = ($details['type'] == 'transtext' || $details['type'] == 'transline' || $details['type'] == 'comcodetext' || $details['type'] == 'comcodeline') ? 1 : 0;
 
-    $previous_value = get_option($name);
+    if ($will_be_formally_set == 1) {
+        $previous_value = get_option($name);
+    }
 
     if (!isset($CONFIG_OPTIONS_CACHE[$name])) {
         // If not installed with a DB setting row, install it; even if it's just the default, we need it for performance
@@ -479,6 +484,14 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
         $CONFIG_OPTIONS_CACHE[$name] = $map + ['_cached_string_value' => $value] + $CONFIG_OPTIONS_CACHE[$name];
     }
 
+    // Clear caches
+    if (function_exists('persistent_cache_delete')) {
+        persistent_cache_delete('OPTIONS');
+    }
+    if (class_exists('Self_learning_cache')) {
+        Self_learning_cache::erase_smart_cache();
+    }
+
     if ($will_be_formally_set == 1) {
         if ($previous_value != $value) {
             // Run the post-save handler on changed values
@@ -497,14 +510,6 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
         if (method_exists($ob, 'postsave_handler')) {
             $ob->postsave_handler($value);
         }
-    }
-
-    // Clear caches
-    if (function_exists('persistent_cache_delete')) {
-        persistent_cache_delete('OPTIONS');
-    }
-    if (class_exists('Self_learning_cache')) {
-        Self_learning_cache::erase_smart_cache();
     }
 }
 
