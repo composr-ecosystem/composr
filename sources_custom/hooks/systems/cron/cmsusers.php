@@ -86,10 +86,10 @@ class Hook_cron_cmsusers
                     $last_adminzone_access = $GLOBALS['SITE_DB']->query_select_value('telemetry_stats', 'MAX(date_and_time)', ['s_site' => $r['id']]);
                     $last_error = $GLOBALS['SITE_DB']->query_select_value('telemetry_errors', 'MAX(e_last_date_and_time)', ['e_site' => $r['id']]);
 
-                    $last_telemetry = max($last_adminzone_access, $last_error);
+                    $last_telemetry = max($last_adminzone_access, $last_error, $r['add_date_and_time']);
 
-                    // If the site is not reporting installed, and last telemetry was over a year ago, probably a dead site. Forget about it.
-                    if ($last_telemetry <= (time() - (60 * 60 * 24 * 365))) {
+                    // Forget non-installed sites which were registered over a year ago and also sent no telemetry data in the last year
+                    if (($last_telemetry <= (time() - (60 * 60 * 24 * 365))) && ($r['website_installed'] != do_lang('YES'))) {
                         $GLOBALS['SITE_DB']->query_delete('telemetry_stats', ['s_site' => $r['id']]);
                         $GLOBALS['SITE_DB']->query_delete('telemetry_errors', ['e_site' => $r['id']]);
                         $GLOBALS['SITE_DB']->query_delete('telemetry_sites', ['id' => $r['id']]);

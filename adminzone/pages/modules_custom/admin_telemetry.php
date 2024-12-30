@@ -69,6 +69,7 @@ class Module_admin_telemetry
                 'website_name' => 'SHORT_TEXT',
                 'software_version' => 'SHORT_TEXT',
                 'may_feature' => 'BINARY',
+                'add_date_and_time' => 'TIME',
                 'last_checked' => '?TIME', // Last time we checked data/installed.php (null: never)
                 'website_installed' => 'SHORT_TEXT',
                 'addons_installed' => 'SERIAL',
