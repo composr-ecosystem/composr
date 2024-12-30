@@ -84,7 +84,7 @@ class Hook_cron_cmsusers
                     }
 
                     $last_adminzone_access = $GLOBALS['SITE_DB']->query_select_value('telemetry_stats', 'MAX(date_and_time)', ['s_site' => $r['id']]);
-                    $last_error = $GLOBALS['SITE_DB']->query_select_value('telemetry_stats', 'MAX(e_last_date_and_time)', ['e_site' => $r['id']]);
+                    $last_error = $GLOBALS['SITE_DB']->query_select_value('telemetry_errors', 'MAX(e_last_date_and_time)', ['e_site' => $r['id']]);
 
                     $last_telemetry = max($last_adminzone_access, $last_error);
 
