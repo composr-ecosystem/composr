@@ -40,6 +40,8 @@ $branches[] = [
     'version_time' => null
 ];
 
+sort_maps_by($branches, '!version_time');
+
 $_branches = [];
 
 foreach ($branches as $branch) {
