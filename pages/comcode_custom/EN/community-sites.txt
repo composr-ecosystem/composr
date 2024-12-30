@@ -1,29 +1,36 @@
 ﻿[semihtml]<h1 class="screen-title" itemprop="name"><a id="title--CommunitySites"></a> Community Site Showcase</h1>
 
-<p>These are some of the sites who have elected to be featured on composr.app . If you would like your site to be featured, select the applicable option in step 4 when installing your Composr site. Or, if you already installed your site, please <a class="user-link" href="{$PAGE_LINK*,:contact}">Contact Us</a>&nbsp;if you would like to be featured.</p>
+<p>These are some of the sites who have opted in to be featured on composr.app. If you would like your site to be featured, select the applicable option in step 2 when installing your Composr site. Or, if you already installed your site, you can change your setting in the Admin Zone > Setup > Configuration > Privacy / legal compliance options.</p>
 
 <p>Please be aware of the following:</p>
 
 <ul>
-	<li>We are not responsible for the content of these sites, and we do not regularly monitor for their content or even if they still work (please report problematic sites using the Report This link).</li>
-	<li>The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app.</li>
-	<li>Composr CMS makes it easy for anyone to make a website. You may find sites without professional designs or with controversial topics.
+	<li>We are not responsible for the content of these sites, and we do not regularly monitor for their content or even if they still work (but please report broken or problematic sites by clicking the screenshot and then, on the catalogue entry page at the bottom, click "Report This").</li>
+	<li>The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app nor the community.</li>
+	<li>Composr CMS makes it easy for anyone to make any kind of website. You may find sites here without professional designs or with controversial topics.
 	<ul>
 		<li>
-			That being said, we do apply a level of moderation for our site showcase. If your site contains any of the following, we probably will not feature it:
+			That being said, we do apply a level of moderation for our site showcase as we do not want to feature content which could get us in trouble. If your site contains any of the following, we probably will not feature it even if you opt in:
 			<ul>
-				<li>Illegal content, products, or services</li>
-				<li>Viruses, trojans, malware, spyware, ransomware, adware, spam, or scams</li>
+				<li>Selling, distribution, or purchasing of illegal content, products, or services</li>
+				<li>Viruses, trojans, malware, spyware, ransomware, adware, spam, or scams / phishing attacks (whether intentional or not; make sure your ads aren't doing this!)</li>
 				<li>Copyright, trademark, or intellectual property infringement</li>
-				<li>Pornography or any content not appropriate for children (unless you require age verification to see it)</li>
-				<li>Hate speech (threats or plans of harm to others)</li>
-				<li>Anything patently offensive (would offend the average person), such as discriminatory content, significant blasphemy, or significant profanity</li>
+				<li>Pornography, violence, or any content not appropriate for a general audience</li>
+				<li>Hate speech (direct threats or plans of harm to others)</li>
+				<li>Patently offensive content (e.g. would offend the average person), such as bigotry, significant blasphemy, or significant profanity</li>
 				<li>Anything that would significantly impede on the user experience (e.g. excessive advertising)</li>
-				<li>Deliberate spreading of false or misleading information unless clearly indicated it is satire / parody</li>
+				<li>Deliberate spreading of false or misleading information without a clear disclaimer of such</li>
 			</ul>
 		</li>
-		<li>We also will not feature sites that do not run the Composr CMS software; the point of our site showcase is to show how others are using the software.</li>
-		<li>We also will not feature sites which do not run securely under the HTTPS protocol; this is an expectation and standard of the modern web. And it is very easy to get an SSL/TLS certificate (e.g. Let's Encrypt offers free certificates for certain use cases).</li>
+		<li>
+			Additionally, we may not feature your site if any of the following hold true:
+			<ul>
+				<li>Your base URL redirects to another URL (you should update the base URL in your <kbd>_config.php</kbd> instead of making a redirection)</li>
+				<li>Your site is closed (until we see that it is open) or it has a lot of bugs</li>
+				<li>You did not opt in to be featured through your Admin Zone or installer, or you turned telemetry off (we cannot prove you own the site otherwise)</li>
+				<li>You are not running your site under SSL/TLS (HTTPS) or you do not have a valid certificate</li>
+			</ul>
+		</li>
 	</ul>
 	</li>
 </ul>

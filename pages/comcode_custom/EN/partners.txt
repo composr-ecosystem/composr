@@ -1,27 +1,19 @@
-[semihtml]
 [title]Composr partners[/title]
+This page shows companies or individuals who have registered their Composr services.
 
-<p>
-	This page shows companies or individuals who have registered their Composr services&dagger;.
-</p>
+We encourage anyone who offers services or support for those running Composr CMS to add your listing via the form at the bottom of the page.
 
-<p>
-	We encourage anyone who offers services or support for those running Composr CMS to <a href="{$PAGE_LINK*,cms:cms_catalogues:add:catalogue_name=partners}">add your listing</a>*.
-</p>
+It is the responsibility of purchasers of services to assess the suitability of any particular provider they choose. Listings are manually validated and periodically reviewed, but this is not official endorsement.
 
-	<h2>Companies</h2>
+[title="2"]Companies[/title]
 
-	{$BLOCK,block=main_cc_embed,cache=0,param=10}
-	
-	<h2>Individuals</h2>
-	
-	{$BLOCK,block=main_cc_embed,cache=0,param=11}
+[block="10" cache="0"]main_cc_embed[/block]
 
-	<hr />
+[title="2"]Individuals[/title]
 
-	<p>
-		* Services must be substantially related to Composr. For example webhosting that happens to be compatible with Composr would not apply, but webhosting that came with expert Composr support would.<br />
-		&dagger; It is the responsibility of purchasers of services to assess the suitability of any particular provider they choose. Listings are manually validated and periodically reviewed, but this is not official endorsement.
-	</p>
-</div>
-[/semihtml]
+[block="11" cache="0"]main_cc_embed[/block]
+
+[title="2"]Add Your Listing[/title]
+Services must be substantially related to Composr. For example, webhosting that happens to be compatible with Composr would not apply, but webhosting that came with expert Composr support would.
+
+[block="partners" only_one="1"]main_catalogues_form[/block]

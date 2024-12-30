@@ -43,19 +43,50 @@ We are very vigilant about solid security and employ layers of security througho
 
 Here are the highlights of our major versions over the years:
 
-ocPortal:
- - [b]v1[/b] [i](March 2004)[/i]: The release of a forum-friendly trailblazer
- - [b]v2[/b] [i](August 2004)[/i]: A whole new CMS framework and a MVC system
- - [b]v2.5[/b] [i](October 2005)[/i]: A standalone social networking system
- - [b]v3[/b] [i](July 2006)[/i]: AJAX features and a major system overhaul
- - [b]v4[/b] [i](August 2008)[/i]: UI/UX improvements
- - [b]v5[/b] [i](July 2010)[/i]: UI/UX improvements
- - [b]v6[/b] [i](March 2011)[/i]: Major performance improvements
- - [b]v6.1[/b] [i](April 2011)[/i]: Interactive CSS editing, theme UX
- - [b]v7[/b] [i](May 2011)[/i]: Finishing up interactive CSS editing, theme UX
- - [b]v8[/b] [i](March 2012)[/i]: Major feature upgrades
- - [b]v9[/b] [i](August 2012)[/i]: Major theme design improvements
+[title="2"]ocPortal[/title]
+[surround]
+[media width="150" description="ocPortal (v9) logo" float="right"]uploads/website_specific/cms_homesite/logos/ocportal-2.jpg[/media]
+[list]
+[*][b]v1[/b] [i](March 2004)[/i]
+ - The release of a forum-friendly trailblazer
+[*][b]v2[/b] [i](August 2004)[/i]
+ - A Brand new CMS framework
+ - A brand new MVC framework
+[*][b]v2.5[/b] [i](October 2005)[/i]
+ - A standalone social networking system
+[*][b]v3[/b] [i](July 2006)[/i]
+ - AJAX features
+ - Major system overhaul
+[*][b]v4[/b] [i](August 2008)[/i]
+ - UI/UX improvements
+[*][b]v5[/b] [i](July 2010)[/i]
+ - UI/UX improvements
+[*][b]v6[/b] [i](March 2011)[/i]
+ - Major performance improvements
+[*][b]v6.1[/b] [i](April 2011)[/i]
+ - Interactive CSS editing
+ - theme UX
+[*][b]v7[/b] [i](May 2011)[/i]
+ - Finishing up interactive CSS editing
+ - Finishing up theme UX
+[*][b]v8[/b] [i](March 2012)[/i]
+ - Major feature upgrades
+[*][b]v9[/b] [i](August 2012)[/i]
+ - Major theme design improvements
+[/list]
+[/surround]
 
-Composr CMS:
- - [b]v10[/b] [i](January 2016)[/i]: Platform overhaul
- - [b]v11[/b] [i](Not released yet)[/i]: Responsive theme, major performance and security improvements
+[title="2"]Composr CMS[/title]
+[surround]
+[media width="150" description="Composr CMS (v10) logo" float="right"]uploads/website_specific/cms_homesite/logos/composr_full_logo.png[/media]
+[list]
+[*][b]v10[/b] [i](January 2016)[/i]
+ - Platform overhaul (Sponsorship model)
+ - Major performance improvements
+[*][b]v11[/b] [i](Not released yet)[/i]
+ - Platform overhaul (Bazaar model)
+ - New responsive default theme
+ - New JavaScript framework
+ - Performance and security improvements
+[/list]
+[/surround]

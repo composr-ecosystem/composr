@@ -1,10 +1,15 @@
-﻿[semihtml]<p>[contents levels="3"][/contents]</p>
+﻿[semihtml]
 
 [title="1"]Composr Community Ecosystem[/title]
 
+[surround]
+[media width="150" description="The Composr Community Ecosystem" float="right"]uploads/website_specific/cms_homesite/ecosystem/ecosystem.png[/media]
 <p>The Composr community operates on the Bazaar model which is an open and democratic system. Every member of the Composr community can play a vital role in the community whether that is through development, funding, support, services, promotion, moderation, testing, reporting issues, or voting on decisions. There is no central company to Composr. And there are no central members. While there is a Board to help guide the decisions, and a Core Development Team who does most of the development, the members as a collective whole have the final say-so in the direction of Composr.</p>
 
 <p>It is essential for the Composr community and its members to participate in the ecosystem if they can do so (however much or little they can).&nbsp;By doing so, we establish a continuous economic giving/receiving circle of contributions which benefit everyone and the Composr project as a whole.</p>
+
+<p>[contents levels="3"][/contents]</p>
+[/surround]
 
 [title="2"]Code Contributions / Reporting Issues[/title]
 

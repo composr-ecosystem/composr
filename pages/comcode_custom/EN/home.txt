@@ -1,44 +1,36 @@
-﻿[semihtml]<h1><span class="inner"><span style="display: block; text-align: center;"><strong>Composr CMS</strong>:&nbsp;<br />
-Your <span style="color:#f39c12;">Data</span>, Your <span style="color:#f39c12;">Privacy</span>, Your <span style="color:#f39c12;">Control</span></span></span></h1>
+﻿[title][align="center"][b]Composr CMS[/b]:
+Your [color="#f39c12"]Data[/color], Your [color="#f39c12"]Privacy[/color], Your [color="#f39c12"]Control[/color][/align][/title]
 
-<p>Do you need to build a website? Are you tired of being locked down by third-party website builders and software? Composr CMS gives you full control and full autonomy over your website and its data!</p>
+Do you need to build a website? Are you tired of being locked down by third-party website builders and software? Composr CMS gives you full control and full autonomy over your website and its data!
 
-<p>The Composr software&nbsp;is Free and Open Source, so anyone can download and use it. Build any website you want, from a simple informational site to a complex eCommerce&nbsp;platform and anything in-between.</p>
+The Composr software is [page="_SEARCH:tut_foss"]Free and Open Source[/page], so anyone can download and use it. Build any website you want, from a simple informational site to a complex eCommerce platform and anything in-between.
 
-<table border="0" cellpadding="0" cellspacing="0" style="width:100%;">
-	<tbody>
-		<tr>
-			<td>
-			<h2>What is Composr CMS?</h2>
+{| 60%:40% wide flex
+|
+[title="2"]What is Composr CMS?[/title]
+Composr is a very flexible CMS with advanced social, interactive and dynamic functionality.
 
-			<p>Composr is a very flexible CMS with advanced social, interactive and dynamic functionality.</p>
+Hundreds of features and building blocks are available out of the box. You don't need to rely on sketchy and potentially unmaintained third-party addons any longer.
 
-			<p>Hundreds of features and building blocks are available out of the box. You don&#39;t need to rely on sketchy and potentially unmaintained third-party addons any longer.</p>
+Composr is embraced by a wide variety of industries, from Fortune-100 companies, government agencies, small startups / hobby sites, and much more! We make all the best ideas available to everyone.
+|
+[title="2"]Create smarter web properties; [color="#f39c12"]accelerate[/color] time to market[/title]
+[list]
+[*][abbr="Many features work together seamlessly out-of-the-box, such as photo galleries, events, forums, and news"]Huge integrated feature-set[/abbr]
+[*]Supportive community
+[*][abbr="While the software is free to download and use as-is, it is provided with no warranty of any kind. You need to provide your own web hosting on which to run the software (members of the community may help you with that, and we have some tutorials on this as well). And you may need to hire your own developers if you want professional support / maintenance."]No licensing costs[/abbr]
+[*]Cloud-compatible
+[*][abbr="The default themes are mobile responsive. It is the responsibility of theme developers to maintain mobile responsiveness when making custom themes."]Mobile responsive[/abbr]
+[*][abbr="Supports HTML5 and XHTML markup"]HTML5[/abbr], [abbr="Full design flexibility using templating and CSS3"]CSS3[/abbr], [abbr="Acclaimed accessibility, including WCAG and ATAG compliance (for the default themes)"]WCAG[/abbr]
+|}
 
-			<p>Composr is embraced by a wide variety of industries, from Fortune-100 companies, government agencies, small startups / hobby sites, and much more!&nbsp;We make all the best ideas available to everyone.</p>
-			</td>
-			<td>
-			<h2>Create smarter web properties; <span style="color:#f39c12;">accelerate</span> time to market&nbsp;</h2>
+[block param="5" member_based="0" display_slides="0" display_summaries="3" display_briefs="5" blogs="0" zone="_SEARCH" title="Latest v11 News" show_in_full="0" no_links="0" attach_to_url_filter="0" render_if_empty="1" start="0" pagination="0" as_guest="0" optimise="0" check="1" render_mode="grid" slider_interval="6000" news_articles_per_slide="3"]main_news[/block]
 
-			<ul>
-				<li><abbr title="Many features work together seamlessly out-of-the-box, such as photo galleries, events, forums, and news">Huge integrated feature-set</abbr></li>
-				<li>Supportive community</li>
-				<li><abbr title="While the software is free to download and use as-is, it is provided with no warranty of any kind. You need to provide your own web hosting on which to run the software (members of the community may help you with that, and we have some tutorials on this as well). And you may need to hire your own developers if you want professional support / maintenance.">No licensing costs</abbr></li>
-				<li>Cloud-compatible</li>
-				<li><abbr title="The default themes are mobile responsive. It is the responsibility of theme developers to maintain mobile responsiveness when making custom themes.">Mobile responsive</abbr></li>
-				<li><abbr title="Supports HTML5 markup">HTML5</abbr>,&nbsp;<abbr title="Full design flexibility using templating and CSS3">CSS3</abbr>,&nbsp;<abbr title="Acclaimed accessibility, including WCAG and ATAG compliance (for the default themes)">WCAG</abbr></li>
-			</ul>
-			</td>
-		</tr>
-	</tbody>
-</table>
+[title="2"]Get an Early Preview of Composr CMS v11[/title]
+Check out these sites running Composr CMS v11 who opted in to be featured:
 
-<p>&nbsp;[block param="5" member_based="0" display_slides="0" display_summaries="3" display_briefs="5" blogs="0" zone="_SEARCH" title="Latest v11 News" show_in_full="0" no_links="0" attach_to_url_filter="0" render_if_empty="1" start="0" pagination="0" as_guest="0" optimise="0" check="1" render_mode="grid" slider_interval="6000" news_articles_per_slide="3"]main_news[/block]</p>
+[block param="3" sorting="0" max="12" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
-<h2><span class="inner"><span style="display: block;">Get an Early Preview of Version 11 by Visiting These Sites</span></span></h2>
+You can opt-in (or out) to have your v11 site featured when installing (on step 2) or in your configuration in the Admin Zone > Setup > Configuration > Privacy / legal compliance options. See the [page="_SEARCH:community-sites"]site showcase[/page] for more information.
 
-<p><span class="inner"><span style="display: block;"><strong>[block param="3" sorting="0" max="12" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]</strong></span></span></p>
-
-<p>Would you like your v11 site featured? When installing v11, on the licence agreement / terms page, indicate that we may feature your site. Note that setting this option does not guarantee we will feature your site.</p>
-
-<p>Remember, version 11 is still in beta. We do not recommend running it in production unless you know what you are doing and are aware of the responsibilities and implications (especially security and stability).</p>[/semihtml]
+Remember, version 11 is still in beta. We do not recommend running it in production unless you know what you are doing and are aware of the responsibilities and implications (especially security and stability).

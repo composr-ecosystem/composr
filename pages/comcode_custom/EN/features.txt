@@ -7,10 +7,16 @@ Here, we have a summary of Composr's major features. As you'll see, you have man
 Almost every feature in Composr is optional. Anything you don't want you can uninstall in the Admin Zone > Structure > Addons, or through the Setup Wizard.
 
 [box="Companion Information"]
-Please also check the following information to help you in your CMS decision:
+{| 80%:20% wide flex
+|Please also check the following information to help you in your CMS decision:
  - Learn [page=":compare"]50 reasons why Composr is different[/page] to other CMSs.
  - Learn [page=":antifeatures"]what Composr is not[/page] (this page contains vitally important details to help you plan your project).
  - Learn our [page=":vision"]mission, vision, and purpose[/page].
+|{+START,INCLUDE,ICON}
+	NAME=spare/idea
+	ICON_SIZE=72
+{+END}
+|}
 [/box]
 
 [title="2"]Content Types[/title]
