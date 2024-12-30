@@ -390,10 +390,14 @@ class Module_admin_privacy
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
         }
 
-        $data = $http_result['data'];
+        $data = $http_result['response_data']['data'];
+        if ($data === null) {
+            inform_exit(do_lang_tempcode('TELEMETRY_NOT_REGISTERED'));
+        }
 
         $fields = [
             'URL' => $data['website_url'],
+            'ADDED' => get_timezoned_date_time($data['add_date_and_time']),
             'NAME' => $data['website_name'],
             'VERSION' => $data['software_version'],
             'CONFIG_TELEMETRY_MAY_FEATURE' => (($data['may_feature'] == 1) ? do_lang('YES') : do_lang('NO')),

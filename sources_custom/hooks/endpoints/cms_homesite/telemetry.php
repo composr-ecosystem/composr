@@ -257,6 +257,7 @@ class Hook_endpoint_cms_homesite_telemetry
                         'software_version' => $decrypted_data['version'],
                         'may_feature' => $decrypted_data['may_feature'],
                         'website_installed' => 'Yes',
+                        'add_date_and_time' => time(),
                         'addons_installed' => serialize([]),
                     ]);
                 }
@@ -293,7 +294,12 @@ class Hook_endpoint_cms_homesite_telemetry
                 // Decrypt our message (this is just to validate that the request actually came from the site specified)
                 require_code('encryption');
                 $_data = decrypt_data_site_telemetry($data['nonce'], $data['encrypted_data'], $public_key, $sign_public_key, floatval($data['version']));
-                if ($_data != $data['website_url']) {
+                $decrypted_data = @unserialize($_data);
+                if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data)) {
+                    http_response_code(400);
+                    return ['success' => false, 'error_details' => 'Telemetry data sent is corrupt and cannot be decrypted.'];
+                }
+                if ($decrypted_data['website_url'] != $data['website_url']) {
                     http_response_code(400);
                     return ['success' => false, 'error_details' => 'Telemetry data sent is corrupt and cannot be decrypted.'];
                 }
