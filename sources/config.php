@@ -414,7 +414,6 @@ function get_option(string $name, bool $missing_ok = false) : ?string
 
     // Maybe missing a DB row, or has an old null one, so we need to auto-create from hook
     if (!isset($CONFIG_OPTIONS_CACHE[$name]['c_value'])) {
-        // It is not reasonable to try getting un-cached config options more than a couple times; something is wrong if this happens
         check_for_infinite_loop('get_option', [$name, false], 2);
 
         if ((!$CONFIG_OPTIONS_FULLY_LOADED) && (!array_key_exists($name, $CONFIG_OPTIONS_CACHE))) {
@@ -454,9 +453,6 @@ function get_option(string $name, bool $missing_ok = false) : ?string
         if (!running_script('upgrade')) {
             set_option($name, $value, 0);
         }
-    } else {
-        // It is reasonable for us to get cached config options many times, but not too many times
-        check_for_infinite_loop('get_option', [$name, true], 1000);
     }
 
     // Load up row
