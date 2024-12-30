@@ -431,6 +431,8 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
 
     $needs_dereference = ($details['type'] == 'transtext' || $details['type'] == 'transline' || $details['type'] == 'comcodetext' || $details['type'] == 'comcodeline') ? 1 : 0;
 
+    $previous_value = get_option($name);
+
     if (!isset($CONFIG_OPTIONS_CACHE[$name])) {
         // If not installed with a DB setting row, install it; even if it's just the default, we need it for performance
         $map = [
@@ -478,8 +480,7 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
     }
 
     if ($will_be_formally_set == 1) {
-        $previous_value = get_option($name);
-        if (($previous_value != $value)) {
+        if ($previous_value != $value) {
             // Run the post-save handler on changed values
             if (method_exists($ob, 'postsave_handler')) {
                 $ob->postsave_handler($value);
