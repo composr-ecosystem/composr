@@ -381,7 +381,7 @@ class Module_admin_privacy
         $_payload = encrypt_data_site_telemetry(serialize($__payload));
         $payload = json_encode($_payload);
         $post = ['data' => $payload];
-        $url = (($GLOBALS['DEV_MODE']) ? get_base_url() : get_brand_base_url()) . '/data/endpoint.php/cms_homesite/telemetry?type=get_data';
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=get_data';
 
         // Make the request
         list($_result) = cache_and_carry('cms_http_request', [$url, ['post_params' => $post, 'timeout' => 10.0]], 15);

@@ -1181,7 +1181,7 @@ function do_site()
             require_code('version2');
             $count_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
             $count_daily_hits = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'stats WHERE date_and_time>' . strval(time() - 60 * 60 * 24));
-            $url = (($GLOBALS['DEV_MODE']) ? get_base_url() : get_brand_base_url()) . '/data/endpoint.php/cms_homesite/user_stats/';
+            $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/user_stats/';
             $__payload = [
                 'version' => cms_version_pretty(),
                 'count_members' => $count_members,
