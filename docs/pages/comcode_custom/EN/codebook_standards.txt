@@ -328,6 +328,13 @@ Do not use braces around the file path for [tt]require[/tt] / [tt]require_once[/
 | The contents of [tt]_config.php[/tt], [tt]data_custom/rate_limiter.php[/tt], and [tt]data_custom/errorlog.php[/tt] might change dynamically. When reading any of these or other dynamic PHP files, you should use [tt]include[/tt] or [tt]require[/tt], not their [tt]*_once[/tt] versions, to ensure you have the most up-to-date version loaded in.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Do not use [tt]<?php[/tt] in a string; break it up as [tt]'<' . '?php'[/tt][/color]
+| Stability
+| All development
+| Manually
+| Composr's code override system strips all exact occurrences of [tt]<?php[/tt] from source code files, so if it exists in a string, it might get stripped and the code will not work. Instead, it must be broken up, such as using [tt]'<' . '?php'[/tt]. That way, the override system does not strip it.
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use Composr APIs wherever appropriate[/color]
 | Security, stability, consistency
 | Composr development +
