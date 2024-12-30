@@ -97,7 +97,7 @@ class Hook_achievement_qualifications_leader_board
             }
         }
         if (($ids_allowed !== null) && (count($ids_allowed) == 0)) { // Sanity check
-            return null;
+            return [0, 0];
         }
         if ($ids_allowed !== null) {
             $extra_where .= ' AND lb_leader_board_id IN (' . implode(',', $ids_allowed) . ')';

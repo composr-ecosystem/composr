@@ -353,7 +353,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'notifications_enabled' => ['l_code_category'],
                     'w_rooms' => ['password_fail_message'],
                     'device_token_details' => ['token_type'],
-                    'relayed_errors' => ['e_error_hash'],
+                    'telemetry_errors' => ['e_error_hash'],
                     'achievements_progress' => ['ap_qualification_hash'],
                 ];
                 foreach ($fields_should_anonymise as $name => $type) {
@@ -375,7 +375,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'hackattack' => ['url', 'referer_url'],
                     'logged' => ['website_url'],
                     'may_feature' => ['url'],
-                    'relayed_errors' => ['e_website_url'],
+                    'telemetry_errors' => ['e_website_url'],
                     'stats' => ['referer_url'],
                     'stats_link_tracker' => ['c_url'],
                     'tutorials_external' => ['t_url'],

@@ -124,4 +124,7 @@ Tracking of qualification progress in the database is done by generating a hash 
 [title="3"]Qualification persisting[/title]
 Since progress is not calculated in real-time, it is possible on a persisting qualification for an item to not count if, for example, it was added and then deleted before calculations are run again for that member.
 
+[title="3"]Qualification hook return values[/title]
+The hooks located under [tt]hooks/systems/achievement_qualifications[/tt] have a particular behaviour with the return value of the run function. If it returns null, this means the qualification should be ignored completely (e.g. not considered when calculating whether or not the member earned the achievement, the same as never having defined the qualification). If it returns 0 for count required (index 1 of the array), this means it can never be satisfied at this time regardless of the count done value (index 0 of the array) (e.g. maybe it deals with content posts within a category that does not exist right now).
+
 {$SET,tutorial_tags,Addon,Fun and Games,regular,achievements}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,This tutorial covers how you can add achievements (public badges) which members can earn for meeting certain requirements.}[block]main_tutorial_rating[/block]

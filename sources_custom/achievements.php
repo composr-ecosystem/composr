@@ -506,7 +506,7 @@ class Achievements_loader
                         $group_progress[1] += $count_required;
                         $group_progress_arr[] = intval(min($count_done, $count_required)) / $count_required;
                     } else {
-                        $group_progress_arr[] = 1.0;
+                        $group_progress_arr[] = 0.0; // A 0 for count required means the qualification cannot be satisfied at this time
                     }
 
                     $this->achievement_progress[$member_id][$achievement]['qualification_groups'][$i]['qualifications'][$j] = [
@@ -536,7 +536,7 @@ class Achievements_loader
             // Determine if we need to add or remove the achievement to the member
             $unlocked = false;
             $revoked = false;
-            if ($total_progress[0] >= $total_progress[1]) {
+            if (($total_progress[0] >= $total_progress[1]) && ($total_progress[1] > 0)) {
                 if ($this->achievements[$achievement]['readOnly'] === false) {
                     $unlocked = $this->award_achievement($achievement, $member_id);
                 }
@@ -561,7 +561,7 @@ class Achievements_loader
                 $progress_sum += $percentile;
                 $total_sum += 1.0;
             }
-            $this->achievement_progress[$member_id][$achievement]['total_progress_percentile'] = (($total_sum > 0.0) ? ($progress_sum / $total_sum) : 1.0);
+            $this->achievement_progress[$member_id][$achievement]['total_progress_percentile'] = (($total_sum > 0.0) ? ($progress_sum / $total_sum) : 0.0);
         }
 
         /*
@@ -629,7 +629,7 @@ class Achievements_loader
         return do_template('ACHIEVEMENT_PROGRESS_QUALIFICATION', [
             '_GUID' => '751596a0d26e5a6d8ab5358568e9bef5',
             'QUALIFICATION_TEXT' => $results,
-            'QUALIFICATION_DONE' => ($count_done >= $count_required),
+            'QUALIFICATION_DONE' => (($count_done >= $count_required) && ($count_required > 0)),
         ]);
     }
 

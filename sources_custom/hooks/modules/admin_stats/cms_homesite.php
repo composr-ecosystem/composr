@@ -126,7 +126,7 @@ class Hook_admin_stats_cms_homesite extends CMSStatsProvider
         $max = 1000;
         $start = 0;
 
-        $query = 'SELECT e_first_date_and_time,e_resolved FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'relayed_errors WHERE ';
+        $query = 'SELECT e_first_date_and_time,e_resolved FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'telemetry_errors WHERE ';
         $query .= 'e_first_date_and_time>=' . strval($start_time) . ' AND ';
         $query .= 'e_first_date_and_time<=' . strval($end_time);
         $query .= ' ORDER BY e_first_date_and_time';
