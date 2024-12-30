@@ -509,7 +509,7 @@ class Module_admin_telemetry
         $_website_name = $GLOBALS['SITE_DB']->query_select_value_if_there('telemetry_sites', 'website_name', ['id' => $row['e_site']]);
         $_website_url = $GLOBALS['SITE_DB']->query_select_value_if_there('telemetry_sites', 'website_url', ['id' => $row['e_site']]);
         if (($_website_name !== null) && ($_website_url !== null)) {
-            $website_url = hyperlink($row['e_website_url'], $row['e_website_name'], true, true);
+            $website_url = hyperlink($_website_name, $_website_url, true, true);
         } else {
             $website_url = do_lang('UNKNOWN');
         }

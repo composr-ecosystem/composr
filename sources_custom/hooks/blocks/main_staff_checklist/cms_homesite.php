@@ -59,9 +59,9 @@ class Hook_checklist_cms_homesite
      */
     protected function get_num_relayed_errors() : array
     {
-        $_sum = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'COUNT(*)', ['e_resolved' => 0]);
+        $_sum = $GLOBALS['SITE_DB']->query_select_value('telemetry_errors', 'COUNT(*)', ['e_resolved' => 0]);
         $sum = @intval($_sum);
-        $_sum2 = $GLOBALS['SITE_DB']->query_select_value('relayed_errors', 'SUM(e_error_count)', ['e_resolved' => 0]);
+        $_sum2 = $GLOBALS['SITE_DB']->query_select_value('telemetry_errors', 'SUM(e_error_count)', ['e_resolved' => 0]);
         $sum2 = @intval($_sum2);
 
         return [$sum, $sum2];

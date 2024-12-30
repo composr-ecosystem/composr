@@ -46,6 +46,8 @@ class Hook_cron_cmsusers
      */
     public function run(?int $last_run)
     {
+        require_lang('cms_homesite');
+
         $start = 0;
         $max = 100;
         $count_checked = 0;

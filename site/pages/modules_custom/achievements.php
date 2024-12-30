@@ -150,8 +150,7 @@ class Module_achievements
     {
         // Try cache first
         require_code('caches');
-        $data = null;
-        //$data = get_cache_entry('achievements', serialize([get_member()]), CACHE_AGAINST_NOTHING_SPECIAL, 60);
+        $data = get_cache_entry('achievements', serialize([get_member()]), CACHE_AGAINST_NOTHING_SPECIAL, 60);
 
         // No cache available; we have to get the data from the achievements system
         if ($data === null) {

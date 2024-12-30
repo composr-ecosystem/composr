@@ -146,7 +146,7 @@ class stats_test_set extends cms_test_case
         }
 
         if (addon_installed('cms_homesite')) {
-            $dummy_data['relayed_errors'] = [[], ['e_resolved' => 0], ['e_resolved' => 1]];
+            $dummy_data['telemetry_errors'] = [[], ['e_resolved' => 0], ['e_resolved' => 1]];
         }
 
         // Remove old preprocessed stats so we can force pre-processing again
