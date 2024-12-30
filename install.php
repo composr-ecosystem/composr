@@ -453,8 +453,10 @@ function step_1() : object
     foreach ($_warnings as $_warning) {
         $warnings->attach(do_template('INSTALLER_WARNING', ['_GUID' => '6f6390d4410fae3b2a3761eb65b99db4', 'MESSAGE' => $_warning]));
     }
-    foreach (array_keys($_successes) as $_success) {
-        $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => '98512d0d436f52ae93b43a2bcbf4aed5', 'MESSAGE' => 'All pre-installation checks passed for ' . $_success]));
+    if (get_param_integer('successful_checks', 0) == 1) {
+        foreach (array_keys($_successes) as $_success) {
+            $warnings->attach(do_template('INSTALLER_NOTICE', ['_GUID' => '98512d0d436f52ae93b43a2bcbf4aed5', 'MESSAGE' => 'All pre-installation checks passed for ' . $_success]));
+        }
     }
 
     // Some checks relating to installation permissions
