@@ -248,7 +248,7 @@ class Module_admin_telemetry
         $select = 'r.id AS id,r.website_url AS website_url,r.website_name AS website_name,r.software_version AS website_version,r.may_feature AS website_may_feature,r.website_installed AS website_installed,MAX(s.date_and_time) AS date_and_time,MAX(s.count_members) AS count_members,MAX(s.count_daily_hits) AS count_daily_hits';
         $where = 'r.website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
-            // Ignore local installs
+            // Ignore local installs if not in dev mode
             $where .= ' AND ' . db_string_not_equal_to('r.website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://10.0.%');
         }
         $group_by = ' GROUP BY r.id, r.website_url, r.website_name, r.software_version, r.may_feature, r.website_installed';

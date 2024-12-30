@@ -705,7 +705,7 @@ function register_site_telemetry(bool $skip_creation = false) : bool
     $payload = json_encode($_payload);
 
     // Register the site
-    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=register';
+    $url = (($GLOBALS['DEV_MODE']) ? get_base_url() : get_brand_base_url()) . '/data/endpoint.php/cms_homesite/telemetry?type=register';
     $error_code = null;
     $error_message = '';
     $response = cms_fsock_request($payload, $url, $error_code, $error_message);

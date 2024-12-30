@@ -1113,7 +1113,7 @@ function get_webservice_result($error_message) : ?string
     // Talk to web service
     require_code('version2');
     require_code('http');
-    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
+    $url = (($GLOBALS['DEV_MODE']) ? get_base_url() : get_brand_base_url()) . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
     $post = ['error_message' => $error_message];
     list($_http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
     $http_result = @json_decode($_http_result, true);
@@ -1304,7 +1304,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
             if ($payload === false) {
                 cms_error_log(brand_name() . ' telemetry: WARNING Failed to JSON encode the error to send to the developers.');
             } else {
-                $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry';
+                $url = (($GLOBALS['DEV_MODE']) ? get_base_url() : get_brand_base_url()) . '/data/endpoint.php/cms_homesite/telemetry';
                 $error_code = null;
                 $error_message = '';
                 $response = cms_fsock_request($payload, $url, $error_code, $error_message);
