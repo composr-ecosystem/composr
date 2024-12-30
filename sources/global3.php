@@ -600,7 +600,7 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
 
     $fsock = fsockopen($fsock_hostname, $port, $error_code, $error_message, $timeout);
     if ($fsock === false) {
-        cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+        cms_profile_end_for('cms_fsock_request', 'COULD NOT OPEN; ' . $hostname . ':' . strval($port));
         return null;
     }
 
@@ -621,7 +621,7 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
     // Send the request
     $fwrite = fwrite($fsock, $request);
     if ($fwrite === false) {
-        cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+        cms_profile_end_for('cms_fsock_request', 'COULD NOT WRITE; ' . $hostname . ':' . strval($port));
         return null;
     }
 
@@ -629,8 +629,8 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
     $response = '';
     while (!feof($fsock)) {
         $_response = fgets($fsock, 128);
-        if ($_response === false) {
-            cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+        if (($_response === false) && ($response == '')) { // Could be false if there is nothing more to read, so this is only an error if we have no response data collected
+            cms_profile_end_for('cms_fsock_request', 'COULD NOT READ; ' . $hostname . ':' . strval($port));
             return null;
         }
         $response .= $_response;
@@ -638,7 +638,7 @@ function cms_fsock_request(string $payload, string $url, ?int &$error_code = nul
 
     fclose($fsock);
 
-    cms_profile_end_for('cms_fsock_request', $hostname . ':' . strval($port));
+    cms_profile_end_for('cms_fsock_request', 'FINISHED; ' . $hostname . ':' . strval($port));
     return $response;
 }
 

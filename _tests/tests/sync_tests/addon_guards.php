@@ -425,7 +425,7 @@ class addon_guards_test_set extends cms_test_case
                                         if ((!isset($class_info['functions'][$func]['code'])) || ($class_info['functions'][$func]['code'] === null)) {
                                             continue;
                                         }
-                                        $c = '<?php ' . "\n" . $class_info['functions'][$func]['code']; // Must be valid PHP code when we tokenise it
+                                        $c = '<' . '?php ' . "\n" . $class_info['functions'][$func]['code']; // Must be valid PHP code when we tokenise it
 
                                         $debug[$path . '::' . $class_name . '::' . $func][] = 'SEARCHING for global addon_guards';
 
@@ -485,7 +485,7 @@ class addon_guards_test_set extends cms_test_case
                             if ((!isset($function_info['code'])) || ($function_info['code'] === null)) {
                                 continue;
                             }
-                            $c = '<?php ' . "\n" . $function_info['code']; // Must be valid PHP code when we tokenise it
+                            $c = '<' . '?php ' . "\n" . $function_info['code']; // Must be valid PHP code when we tokenise it
 
                             // Save time and memory by skipping this function if we aren't calling anything that needs a guard
                             $matches = [];

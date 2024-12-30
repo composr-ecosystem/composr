@@ -206,7 +206,7 @@ class Module_admin_errorlog
             foreach ($lines as $line) {
                 $_line = trim($line);
 
-                if (($_line != '') && (strpos($_line, '<?php') === false)) {
+                if (($_line != '') && (strpos($_line, '<' . '?php') === false)) {
                     $matches = [];
                     if (preg_match('#^\[([^\]]*)\] PHP (Fatal error|Warning|Notice|Deprecated): [\s]?(.*)#', $_line, $matches) != 0) { // Non-formatted PHP errors
                         $error_level = 'UNKNOWN';

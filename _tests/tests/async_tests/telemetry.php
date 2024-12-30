@@ -43,7 +43,7 @@ class telemetry_test_set extends cms_test_case
         $_payload = encrypt_data_telemetry(serialize($__payload));
         $payload = json_encode($_payload);
 
-        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry';
+        $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry/';
         $error_code = null;
         $error_message = '';
         $response = cms_fsock_request($payload, $url, $error_code, $error_message);

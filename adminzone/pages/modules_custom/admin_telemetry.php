@@ -245,13 +245,15 @@ class Module_admin_telemetry
         }
         $order_by = ' ORDER BY ' . $sortable . ' ' . $sort_order;
 
-        $select = 'r.website_url AS website_url,r.website_name AS website_name,r.software_version AS website_version,r.may_feature AS website_may_feature,MAX(s.date_and_time) AS date_and_time,MAX(s.count_members) AS count_members,MAX(s.count_daily_hits) AS count_daily_hits';
+        $select = 'r.id AS id,r.website_url AS website_url,r.website_name AS website_name,r.software_version AS website_version,r.may_feature AS website_may_feature,r.website_installed AS website_installed,MAX(s.date_and_time) AS date_and_time,MAX(s.count_members) AS count_members,MAX(s.count_daily_hits) AS count_daily_hits';
         $where = 'r.website_url NOT LIKE \'%.composr.info%\''; // LEGACY
         if (!$GLOBALS['DEV_MODE']) {
-            // Ignore local installs
+            // Ignore local installs if not in dev mode
             $where .= ' AND ' . db_string_not_equal_to('r.website_url', '%://localhost%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://127.0.0.1%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://192.168.%') . ' AND ' . db_string_not_equal_to('r.website_url', '%://10.0.%');
         }
-        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'telemetry_sites r JOIN ' . get_table_prefix() . 'telemetry_stats s ON s.s_site=r.id WHERE ' . $where . $order_by;
+        $group_by = ' GROUP BY r.id, r.website_url, r.website_name, r.software_version, r.may_feature, r.website_installed';
+
+        $sql = 'SELECT ' . $select . ' FROM ' . get_table_prefix() . 'telemetry_sites r LEFT JOIN ' . get_table_prefix() . 'telemetry_stats s ON s.s_site=r.id WHERE ' . $where . $group_by . $order_by;
         $rows = $GLOBALS['SITE_DB']->query($sql, $max, $start);
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('telemetry_sites r', 'COUNT(*)', [], ' AND ' . $where);
 
@@ -279,14 +281,13 @@ class Module_admin_telemetry
             $rt['HITTIME_2'] = intval(round((time() - $r['date_and_time']) / 60 / 60 / 24));
 
             // NB: The Cron hook 'cmsusers' does the actual checking on an interval
-            $active = get_value('testing__' . $r['website_url'] . '/data/installed.php', do_lang('UNKNOWN'), true);
-            $rt['CMS_ACTIVE'] = $active;
+            $rt['CMS_ACTIVE'] = $r['website_installed'];
 
             $rt['NOTE'] = ($r['website_may_feature'] == 1) ? do_lang('CMS_MAY_FEATURE') : do_lang('CMS_KEEP_PRIVATE');
 
-            $rt['NUM_MEMBERS'] = integer_format($r['count_members']);
+            $rt['NUM_MEMBERS'] = (($r['count_members'] !== null) ? integer_format($r['count_members']) : '0');
 
-            $rt['NUM_HITS_PER_DAY'] = integer_format($r['count_daily_hits']);
+            $rt['NUM_HITS_PER_DAY'] = (($r['count_daily_hits'] !== null) ? integer_format($r['count_daily_hits']) : '0');
 
             $_current = $GLOBALS['SITE_DB']->query_select('telemetry_stats', ['software_version', 'count_members', 'count_daily_hits', 'date_and_time'], ['s_site' => $r['id']], ' ORDER BY date_and_time DESC', 1);
 
@@ -372,7 +373,7 @@ class Module_admin_telemetry
         }
 
         // Query
-        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where);
+        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where);
         $max_rows = $_max_rows[0]['count_sites'];
         $sortables = [
             'website_name' => do_lang_tempcode('NAME'),
@@ -390,7 +391,7 @@ class Module_admin_telemetry
             log_hack_attack_and_exit('ORDERBY_HACK');
         }
         $select = 'SELECT r.*,s.website_url AS website_url,s.website_name AS website_name';
-        $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         // Build results table
         $result_entries = new Tempcode();
@@ -414,7 +415,7 @@ class Module_admin_telemetry
 
         foreach ($rows as $myrow) {
             $id = hyperlink(build_url(['page' => '_SELF', 'type' => 'error', 'id' => $myrow['id']], '_SELF'), '#' . integer_format($myrow['id']), false, true);
-            $website_url = hyperlink($myrow['website_url'], $myrow['website_name'], true, true);
+            $website_url = (($myrow['website_url'] !== null) ? hyperlink($myrow['website_url'], $myrow['website_name'], true, true) : do_lang_tempcode('UNKNOWN'));
             $summary = generate_tooltip_by_truncation($myrow['e_error_message'], 160);
             $first_date = get_timezoned_date_time($myrow['e_first_date_and_time'], false);
             $last_date = get_timezoned_date_time($myrow['e_last_date_and_time'], false);
