@@ -33,14 +33,16 @@ function init__http()
 
 /**
  * Call a function, with inbuilt on-disk caching support.
+ * TODO: Go through cache_and_carry args and apply $post_breaks_cache where necessary.
  *
  * @param  mixed $func Function to call
  * @param  array $args Arguments to call with
  * @param  ?integer $timeout Caching timeout in minutes (null: no timeout)
  * @param  boolean $cache_errors Whether to cache HTTP statuses that do not start '2'
+ * @param  boolean $post_breaks_cache Whether the 'post_params' argument of HTTP requests should break the cache if changed
  * @return mixed The function result OR for cms_http_request calls a tuple of result details
  */
-function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_errors = false)
+function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_errors = false, bool $post_breaks_cache = true)
 {
     $ret = mixed();
 
@@ -48,6 +50,9 @@ function cache_and_carry($func, array $args, ?int $timeout = null, bool $cache_e
     if ((!$cache_errors) && (is_string($func)) && (in_array($func, ['cms_http_request', 'http_get_contents']))) {
         // Things likely to change that would break our cache signature
         unset($args_cache_signature[1]['extra_headers']['Authorization']);
+    }
+    if ((!$post_breaks_cache) && (is_string($func)) && (in_array($func, ['cms_http_request', 'http_get_contents']))) {
+        unset($args_cache_signature[1]['post_params']);
     }
 
     $path = get_custom_file_base() . '/caches/http/' . md5(serialize($func)) . '__' . md5(serialize($args_cache_signature)) . '.bin';

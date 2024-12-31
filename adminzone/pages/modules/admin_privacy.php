@@ -369,6 +369,8 @@ class Module_admin_privacy
             warn_exit(do_lang_tempcode('TELEMETRY_NOT_AVAILABLE'));
         }
 
+        $title = get_screen_title('TELEMETRY_STATUS');
+
         require_code('temporal');
         require_code('templates_map_table');
         require_code('http');
@@ -384,7 +386,12 @@ class Module_admin_privacy
         $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=get_data';
 
         // Make the request
-        list($_result) = cache_and_carry('cms_http_request', [$url, ['post_params' => $post, 'timeout' => 10.0]], 15);
+        $data = cache_and_carry('cms_http_request', [$url, ['post_params' => $post, 'timeout' => 10.0, 'trigger_error' => false]], 15, false, false);
+        if ($data === null) {
+            return warn_screen($title, do_lang_tempcode('TELEMETRY_STATUS_ERROR', escape_html(get_brand_base_url())));
+        }
+
+        list($_result) = $data;
         $http_result = @json_decode($_result, true);
         if (($http_result === false) || ($http_result['success'] === false)) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
@@ -416,8 +423,6 @@ class Module_admin_privacy
             $fields['TELEMETRY_STATS_LAST_CHECKED'] = do_lang('NA');
         }
 
-        $title = get_screen_title('TELEMETRY_STATUS');
-
-        return map_table_screen($title, $fields, true, null, null, true);
+        return map_table_screen($title, $fields, true, do_lang_tempcode('TELEMETRY_SUPP'), null, true);
     }
 }
