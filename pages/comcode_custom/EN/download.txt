@@ -1,0 +1,73 @@
+﻿[title]Download Composr CMS[/title]
+
+On this page, you can view information about Composr CMS and download it.
+
+[box="Looking for version 10?"]
+Head on over to [url="compo.sr"]https://compo.sr[/url] to download version 10.
+[/box]
+
+[contents levels="4"][/contents]
+
+[title="2"]Before you Download[/title]
+
+Check out our [page=":catalogues:category:6"]FAQ[/page] before downloading and installing version 11 beta.
+
+[box="Are you upgrading?"]
+Instead of using this page, you should go to your Admin Zone dashboard to upgrade your site. You can also [page=":news:browse:11"]browse our release archives[/page] to generate a personal upgrader file, and then go to [tt]yourbaseurl/upgrader.php[/tt] to upgrade using your personal upgrader.
+
+[b]We highly advise against upgrading from version 10 at this time.[/b] Version 11 is still bleeding edge and intended for testing purposes only; the upgrader will likely break your v10 site.
+[/box]
+
+[title="2"]Download / Transfer Files[/title]
+
+Transfer the installation files to your server. Here are our latest available versions of Composr CMS:
+
+[box]
+[block cache="0"]cms_homesite_download[/block]
+[/box]
+[box="Did You Know?"]
+ When a new version of Composr CMS v11 is released, we change the background image and the colours of the composr.app site.
+[/box]
+
+After doing that, go to [tt]yourbaseurl/install.php[/tt] to run the install wizard.
+
+[title="3"]For Developers[/title]
+
+[url="Git"]http://git-scm.com/[/url] is the revision control system we use to collaborate on Composr's development. You can access our GitLab repository by [url="clicking here"]https://gitlab.com/composr-foundation/composr[/url]. Version 11 is on the v11 branch.
+
+We often commit fixes to Git before patch releases come out. Consider the Git repository "bleeding-edge" which means it is unstable, liable to bugs, and not as strictly tested as official releases. Be aware that the Git repository also has many non-bundled addons in it. We develop them in there to keep them up-to-date. There is a script called [tt]delete_alien_files.php[/tt] which will erase them. You need to first delete the [tt]sources_custom/hooks/systems/addon_registry/*.php[/tt] files of any addons you don't want, then run the script, then run the commands the script says (after reviewing), then install.
+
+We accept and encourage external contributions via [url="merge requests"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] to the repository. Please [page=":contact"]Contact Us[/page] (under Free services > Make a partnership enquiry) after making a merge request if you would like to be listed as a developer or receive points for your contributions. We also encourage the submission of addons via our [page=":addon_submission"]Addon submission guidelines[/page].
+
+[title="2"]Requirements[/title]
+
+We recommend the following criteria for an optimal install of Composr CMS:
+
+ - Apache or IIS webserver
+  - Composr CMS may also work with NGINX or LiteSpeed with special considerations and configuration; it is not supported
+ - PHP 7.2 or above (ideally do not use any end-of-life versions)
+  - Memory limit set to 128 MB or above
+  - No disallowed_functions, max_input_vars
+  - Max execution time of 30 - 300 seconds (make sure no downstream software will affect this such as NGINX or Cloudflare)
+  - A cache enabled such as opCache
+  - The following extensions enabled:
+   - Ctype
+   - cURL
+   - GD2
+   - Hash
+   - Intl
+   - Json
+   - Posix
+   - Sodium (if you enable anonymous sending of errors or telemetry to composr.app)
+   - Unicode
+   - ZipArchive
+   - XML
+   - zlib
+   - OpenSSL
+   - mysqli or pdo_mysql (if using MySQL or MariaDB)
+ - MySQL 5.5.3 or higher (tested up to 8.2), or MariaDB 10 (tested up to 10.6)
+  - You could also use PostgreSQL or a flat-file XML database, but these are not regularly tested or supported
+ - 250 MB free storage space at minimum
+ - a suEXEC-like filesystem (unless you are okay with using chmod)
+ - turn ModSecurity off, or set it to detection only (Composr has its own built-in Web Application Firewall, and ModSecurity will interfere with Composr's functionality)
+For more information and recommendations, see our [page="docs:tut_webhosting"]webhosting tutorial[/page].
