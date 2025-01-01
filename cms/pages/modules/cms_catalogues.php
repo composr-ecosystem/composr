@@ -1931,6 +1931,12 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $hidden->attach(form_input_hidden($prefix . 'defines_order', strval($defines_order)));
         }
 
+        if (substr($catalogue_name, 0, 1) != '_') {
+            $fields->attach(form_input_tick(do_lang_tempcode('SORTABLE'), do_lang_tempcode('DESCRIPTION_SORTABLE'), $prefix . 'is_sortable', $is_sortable == 1));
+        } else {
+            $hidden->attach(form_input_hidden($prefix . 'is_sortable', strval($is_sortable)));
+        }
+
         if ($first_field) {
             $hidden->attach(form_input_hidden($prefix . 'visible', '1'));
             $hidden->attach(form_input_hidden($prefix . 'required', '1'));
@@ -1940,12 +1946,6 @@ class Module_cms_catalogues_alt extends Standard_crud_module
         }
 
         $fields->attach(form_input_tick(do_lang_tempcode('SENSITIVE_FIELD'), do_lang_tempcode('DESCRIPTION_SENSITIVE_FIELD'), $prefix . 'sensitive', $sensitive == 1));
-
-        if (substr($catalogue_name, 0, 1) != '_') {
-            $fields->attach(form_input_tick(do_lang_tempcode('SORTABLE'), do_lang_tempcode('DESCRIPTION_SORTABLE'), $prefix . 'is_sortable', $is_sortable == 1));
-        } else {
-            $hidden->attach(form_input_hidden($prefix . 'is_sortable', strval($is_sortable)));
-        }
         $fields->attach(form_input_tick(do_lang_tempcode('INCLUDE_IN_MAIN_SEARCH'), do_lang_tempcode('DESCRIPTION_INCLUDE_IN_MAIN_SEARCH'), $prefix . 'include_in_main_search', $include_in_main_search == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('ALLOW_TEMPLATE_SEARCH'), do_lang_tempcode('DESCRIPTION_ALLOW_TEMPLATE_SEARCH'), $prefix . 'allow_template_search', $allow_template_search == 1));
         $fields->attach(form_input_tick(do_lang_tempcode('PUT_IN_CATEGORY'), do_lang_tempcode('DESCRIPTION_PUT_IN_CATEGORY'), $prefix . 'put_in_category', $put_in_category == 1));
