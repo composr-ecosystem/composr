@@ -14,10 +14,11 @@
 
 /*
     This qualification is designed to be used for manual awarding of achievements by member ID.
-    You should use this in its own isolated qualifications block. Do not use other qualifications in the same block (including additional member ones).
+    You should not use any other qualification (except manual) in the same block, including other member ones.
 
     Supported parameters for this qualification:
-    1) ids  -- Required; a comma-delimited list of member IDs which meet this qualification
+    1) ids  -- Required (but can be blank if no one earned the achievement yet); a comma-delimited list of member IDs which meet this qualification
+    2) text -- Optional Comcode-supported text or language string to display as a requirement (not defined: this is hidden)
 */
 
 /**
@@ -58,11 +59,18 @@ class Hook_achievement_qualifications_member
             return null;
         }
 
+        $awarded_members = [];
+
         // Read in options
-        $member_ids = array_map('intval', explode(',', $params['ids']));
+        $member_ids = explode(',', $params['ids']);
+        foreach ($member_ids as $id) {
+            if (is_numeric($id)) {
+                $awarded_members[] = intval($id);
+            }
+        }
 
         // Check requirement
-        if (in_array($member_id, $member_ids)) {
+        if (in_array($member_id, $awarded_members)) {
             return [1, 1];
         }
 
@@ -80,7 +88,15 @@ class Hook_achievement_qualifications_member
      */
     public function to_text(int $member_id, array $params, int $count_done, int $count_required) : ?object
     {
-        // This is a hidden qualification
-        return null;
+        $text = isset($params['text']) ? $params['text'] : null;
+        if ($text === null) {
+            return null; // Hidden unless custom text defined
+        }
+
+        $ret = do_lang($text, null, null, null, null, false);
+        if ($ret === null) {
+            return comcode_to_tempcode($text, null, true);
+        }
+        return comcode_to_tempcode($ret, null, true);
     }
 }
