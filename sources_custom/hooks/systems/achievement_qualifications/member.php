@@ -14,7 +14,7 @@
 
 /*
     This qualification is designed to be used for manual awarding of achievements by member ID.
-    You should not use any other qualification (except manual) in the same block, including other member ones.
+    You should not use any other qualification in the same block, including other member ones.
 
     Supported parameters for this qualification:
     1) ids  -- Required (but can be blank if no one earned the achievement yet); a comma-delimited list of member IDs which meet this qualification
