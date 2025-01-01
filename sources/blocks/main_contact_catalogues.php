@@ -138,7 +138,7 @@ PHP;
             $field_results = [];
             foreach ($special_fields as $field_num => $field) {
                 $ob = get_fields_hook($field['cf_type']);
-                $inputted_value = $ob->inputted_to_field_value(false, $field, null);
+                $inputted_value = $ob->inputted_to_field_value(false, $field);
 
                 // Required field validation (a standard for all field hooks except tick)
                 if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
