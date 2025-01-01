@@ -140,6 +140,8 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
 
     $map = get_currency_map();
 
+    $log_to_error_log = true;
+
     // TODO: We do not currently support point conversions, so just bail with the amount
     if (($from_currency == 'POINTS') || ($to_currency == 'POINTS')) {
         return $amount;
@@ -147,7 +149,7 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
 
     // Check from currency
     if (!array_key_exists($from_currency, $map) && (($from_currency != 'POINTS') || !addon_installed('points'))) {
-        attach_message(do_lang_tempcode('UNKNOWN_CURRENCY', escape_html($from_currency)), 'warn', false, true);
+        attach_message(do_lang_tempcode('UNKNOWN_CURRENCY', escape_html($from_currency)), 'warn', false, $log_to_error_log);
 
         $from_currency = array_key_exists($to_currency, $map) ? $to_currency : 'USD';
     }
@@ -198,13 +200,19 @@ function currency_convert($amount, ?string $from_currency = null, ?string $to_cu
         $new_amount = _currency_convert__currency_conv_api($amount, $from_currency, $to_currency);
         if ($new_amount !== null) {
             $save_caching = true;
+        } else {
+            // If API key not set, don't bother logging conversion failures to the error log or we will get a bunch of them
+            $api_key = get_option('currency_api_key');
+            if ($api_key == '') {
+                $log_to_error_log = false;
+            }
         }
     }
 
     // Case: Fallback
     if (($new_amount === null) && ($force_via === null)) {
         require_lang('ecommerce');
-        attach_message(do_lang_tempcode('CURRENCY_CONVERSION_FAILED', escape_html(float_format($amount)), escape_html($from_currency), escape_html($to_currency)), 'warn', false, true);
+        attach_message(do_lang_tempcode('CURRENCY_CONVERSION_FAILED', escape_html(float_format($amount)), escape_html($from_currency), escape_html($to_currency)), 'warn', false, $log_to_error_log);
 
         $new_amount = $amount;
         $to_currency = $from_currency;
