@@ -27,6 +27,19 @@
 -->
 
 <achievements>
+	<!-- BEGIN custom achievements for composr.app -->
+	<achievement name="publish_addon" image="icons_monochrome/menu/adminzone/structure/addons" title="Published an addon">
+		<qualifications>
+			<qualification name="member" ids="" text="cms_homesite:ACHIEVEMENT_PUBLISH_ADDON" />
+		</qualifications>
+	</achievement>
+	<achievement name="publish_amazing_addon" image="icons/menu/adminzone/structure/addons" title="Published a high-quality addon">
+		<qualifications>
+			<qualification name="member" ids="" text="cms_homesite:ACHIEVEMENT_PUBLISH_AMAZING_ADDON" />
+		</qualifications>
+	</achievement>
+	<!-- END custom achievements for composr.app -->
+
 	<achievement name="anniversary" image="icons_monochrome/calendar/birthday" title="achievements:ACHIEVEMENT_ANNIVERSARY">
 		<qualifications>
 			<qualification name="account_age" days="365" />
