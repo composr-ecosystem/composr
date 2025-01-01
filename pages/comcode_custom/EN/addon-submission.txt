@@ -6,7 +6,12 @@ To submit your addon, [page=":contact"]click here to Contact Us[/page], choose O
 
 [title="2"]Why should I submit to the official repository?[/title]
 
-While it is entirely optional, getting your addon or theme accepted into the repository means that it will be easily downloadable from any Composr site's Admin Zone and from the composr.app site (more visibility). Additionally, although you will be responsible for maintaining the addon, the core developers will ensure it continues to function on a very basic / core level between Composr versions. And finally, you will receive points as a reward.
+While it is entirely optional, getting your addon or theme accepted into the repository brings you several benefits:
+ - It will be easily downloadable from any Composr site's Admin Zone and from the composr.app site (more visibility)
+ - Updates can be downloaded through the Admin Zone addons page when you update your addon; and Composr will inform webmasters when updates are available
+ - Although you will be responsible for maintaining the addon, the core developers will ensure it continues to function on a very basic / core level between Composr versions
+ - You will earn lots of points (see below)
+ - You will earn achievements for your profile to show off officially that you published an addon (you will earn an achievement for the first addon you submit which gets accepted; and there is another achievement you can earn when you submit an addon that meets the highest standards in the rubric)
 
 [title="2"]Guidelines[/title]
 When submitting an addon or theme for inclusion in the official repository of non-bundled addons / themes, please consider the following:
@@ -21,48 +26,42 @@ When submitting an addon or theme for inclusion in the official repository of no
 To encourage high-quality and useful addons / themes in the official repository, core developers use a rubric as outlined below for judging whether an addon / theme gets accepted into the Composr non-bundled addons repository, and how many points you receive as a reward. These points are assigned an appropriate role which could also list you on the [page=":stars"]community stars[/page] page.
 
 [surround][big_tab_controller switch_time="0"]Rejected,250 points,500 points,750 points,1000 points,1250 points,1500 points[/big_tab_controller]
-
 [big_tab="Rejected" default="1"]
 The addon or theme will be [i]rejected[/i], and either the member encouraged to fix their addon / theme and re-submit again, or to share the addon / theme in the forum instead, if [i]any[/i] of the following conditions hold true:
  - The addon / theme is too niche and would not be useful for a vast majority of sites.
  - The addon / theme does not add any useful features or reinvents the wheel on something that does not need to be reinvented.
  - The developers do not believe the addon / theme aligns with the current philosophy / direction of Composr.
- - The addon / theme does not work, contains any major bugs or security issues, breaks anything else in Composr, or contains any minor bugs the developers believe should have been easily spotted and fixed.
+ - The addon / theme does not work, contains any major bugs or security issues, breaks anything in the core Composr functionality, or contains any minor bugs the developers believe should have been easily spotted and fixed.
  - The addon / theme has significant UI / UX issues.
  - The addon / theme contains poor grammar and/or spelling.
  - The addon / theme is very slow or inefficient.
  - The addon / theme does not pass our automated tests (we may allow a few exceptions, and in a few other cases we may fix it ourselves).
  - The code does not adhere to basic PHP or Composr [page="docs:codebook"]coding standards[/page] (we allow some leniency for non-bundled addons but we still expect they conform to basic standards).
- - Your addon / theme's licence agreement is not compatible with that of Composr's licence (e.g. we do not accept closed-source or proprietary addons or themes)
+ - Your addon / theme's licence agreement is not compatible with that of Composr's licence (e.g. we do not accept closed-source, pay-for, freemium, or proprietary addons or themes)
 
 Please do not be discouraged if the team does not accept your addon into the official directory. That does not necessarily mean it is a bad addon. It could be, for example, that the addon does not follow the current vision of Composr. Members are always welcome to share their awesome themes and addons in the forums. And if an addon is rejected because it does not meet standards, you can work on it so that it does, and then re-submit it. Also don't hesitate to ask others in the community for support.
 [/big_tab]
-
 [big_tab="250 points"]
 Your addon or theme will earn [i]250 points[/i] if it meets [i]any[/i] of the following criteria:
  - The addon / theme only introduces minor improvements to existing Composr features / the default theme, but does not add anything new itself.
  - The addon / theme is niche and will probably not be useful except in a few cases (but could be useful in enough cases to allow it in the directory).
  - The code only adheres to basic PHP and Composr [page="docs:codebook"]coding standards[/page].
 [/big_tab]
-
 [big_tab="500 points"]
 Your addon or theme will earn [i]500 points[/i] if it meets [i]any[/i] of the criteria for the 250-point category, plus:
  - You wrote a tutorial which covers at minimum the basic / core functionality of the addon / theme
 [/big_tab]
-
 [big_tab="750 points"]
 Your addon or theme will earn [i]750 points[/i] if it meets [i]any[/i] of the following criteria:
  - The addon / theme introduces a new feature to Composr, but the feature is not unique compared to what other CMS generally offer, and your implementation is not notably better than what other CMS' do. 
- - For themes, it introduces some unique UI designs or screens but still uses many from the default theme.
+ - For themes, it introduces a few unique UI designs or screens but still uses many from the default theme.
  - The addon / theme will probably not be used by more than several sites (but more than what would be considered niche).
  - The code adheres to most PHP and Composr [page="docs:codebook"]coding standards[/page], but it still lacks the quality seen in core code.
 [/big_tab]
-
 [big_tab="1000 points"]
 Your addon or theme will earn [i]1,000 points[/i] if it meets [i]any[/i] of the criteria for the 750-point category, plus:
  - You wrote a decent tutorial that includes at least one screenshot and covers all of the core functions and concepts of the addon / theme. But it does not include any video demonstrations.
 [/big_tab]
-
 [big_tab="1250 points"]
 Your addon or theme will earn [i]1,250 points[/i] if it meets [b]all[/b] of the following criteria:
  - The addon introduces new features to Composr that are unique compared to other CMS in general (or if it is common in other CMS', you implemented it in a much better way than most do).
@@ -74,14 +73,13 @@ Your addon or theme will earn [i]1,250 points[/i] if it meets [b]all[/b] of the 
  - The grammar / spelling is correct across the entire addon / theme and its tutorials (we may allow a few minor errors).
  - The code adheres to PHP and Composr [page="docs:codebook"]coding standards[/page] to the degree that the quality cannot be differentiated from core code.
 [/big_tab]
-
 [big_tab="1500 points"]
 Your addon or theme will earn [i]1,500 points[/i] if it meets [b]all[/b] of the criteria for 1,250 points, plus:
  - You wrote a thorough tutorial that includes at least one screenshot, covers all of the functions and concepts of the addon / theme, and contains at least one video demonstration.
- - You wrote a proper automated test suite for the addon functionality that can be used in the testing_platform addon. And the test suite passes.
+ - You wrote a proper automated test which tests for the core functionality of the addon which can be used in the testing_platform addon. And the test suite passes.
 
-[b]Addons / themes which reach this degree of quality will also earn an award (get featured) and receive substantial promotion by the core team![/b]
+[b]Addons / themes which reach this degree of quality will also earn an award (get featured), receive substantial promotion by the core team, and come with it a special achievement for the author's profile![/b]
 [/big_tab]
 [/surround]
 
-In addition to the above, you will also receive points when someone likes the addon. Members can individually send you points as a thank-you for the addon. And you will get points when you regularly maintain and update the addon / theme.
+In addition to the above, you will also receive points when someone likes the addon. Members can individually send you points as a thank-you for the addon. And you can move up in the rubric / earn more points if you improve your addon in subsequent updates.
