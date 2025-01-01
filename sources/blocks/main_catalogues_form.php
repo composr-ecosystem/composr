@@ -142,7 +142,7 @@ PHP;
                 $inputted_value = $ob->inputted_to_field_value(false, $field);
 
                 // Required field validation (a standard for all field hooks except tick)
-                if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($inputted_value == '') || ($inputted_value === null) || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
+                if (($field['cf_type'] != 'tick') && ($field['cf_required'] == 1) && (($inputted_value === null) || ($inputted_value == '') || (($inputted_value == STRING_MAGIC_NULL) && !fractional_edit()))) {
                     return do_template('RED_ALERT', ['_GUID' => 'ae4e4f4f2a3423bf141faa953ee8a705', 'TEXT' => do_lang_tempcode('_REQUIRED_NOT_FILLED_IN', get_translated_tempcode('catalogue_fields', $field, 'cf_name'))]);
                 }
 
