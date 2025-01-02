@@ -2013,11 +2013,16 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         $PAGE_STRING = $string;
     }
 
+    $validated = 1;
+    if (addon_installed('validation')) {
+        $validated = intval(get_option('validate_new_comcode_pages'));
+    }
+
     $new_comcode_page_row = [
         'the_zone' => $zone,
         'the_page' => $codename,
         'p_parent_page' => '',
-        'p_validated' => 1,
+        'p_validated' => $validated,
         'p_edit_date' => null,
         'p_add_date' => null,
         'p_submitter' => null,
