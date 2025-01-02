@@ -480,6 +480,48 @@ function get_directory_contents(string $path, string $rel_path = '', ?int $bitma
 }
 
 /**
+ * Use a memory-efficient method to recursively count the number of files in a directory.
+ * This assumes the directory already exists. Uses '/' as the directory separator.
+ *
+ * @param  PATH $path The absolute path of the directory we want to count files
+ * @param  ?integer $bitmask Bitmask of extra stuff to ignore (see IGNORE_* constants) (null: do not use)
+ * @param  ?array $file_extensions Only count files of these extensions (no dots) (null: no limit)
+ * @return integer
+ */
+function count_directory_contents_recursively(string $path, ?int $bitmask = IGNORE_ACCESS_CONTROLLERS, ?array $file_extensions = null) : int
+{
+    $file_count = 0;
+
+    $directory_iterator = new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS);
+    $main_iterator = new RecursiveIteratorIterator($directory_iterator);
+
+    foreach ($main_iterator as $file) {
+        // We only want files
+        if (!$file->isFile()) {
+            continue;
+        }
+
+        // Ignore bitmask
+        if ($bitmask !== null) {
+            if (should_ignore_file($file->getPathname(), $bitmask)) {
+                continue;
+            }
+        } elseif ($file->isDot()) {
+            continue;
+        }
+
+        // Filter by extension
+        if (($file_extensions !== null) && (!in_array($file->getExtension(), $file_extensions))) {
+            continue;
+        }
+
+        $file_count++;
+    }
+
+    return $file_count;
+}
+
+/**
  * Get the size in bytes of a directory. It is assumed that the directory exists.
  *
  * @param  PATH $path The path to search

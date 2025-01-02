@@ -80,8 +80,11 @@ class Hook_health_check_stability extends Hook_Health_Check
         }
 
         require_code('files2');
-        if (count(get_directory_contents(get_file_base() . '/data_custom/errors', '', IGNORE_ACCESS_CONTROLLERS, false)) > 0) {
+        if (count_directory_contents_recursively(get_file_base() . '/data_custom/errors', IGNORE_ACCESS_CONTROLLERS) > 0) {
             $this->stateCheckManual('Check large errors that are logged in data_custom/errors. This is currently non-empty.');
+        }
+        if (count_directory_contents_recursively(get_file_base() . '/data_custom/failed_mail', IGNORE_ACCESS_CONTROLLERS) > 0) {
+            $this->stateCheckManual('Check failed mail logs that are logged in data_custom/failed_mail. This is currently non-empty.');
         }
 
         $this->stateCheckManual('Check the web server error logs, e.g. for 404 errors you may want to serve via a redirect');

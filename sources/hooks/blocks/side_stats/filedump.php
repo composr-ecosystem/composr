@@ -45,7 +45,7 @@ class Hook_stats_filedump
         $bits = new Tempcode();
 
         if (get_option('filedump_show_stats_count_total_files') == '1') {
-            $files_cnt = count(get_directory_contents(get_custom_file_base() . '/uploads/filedump'));
+            $files_cnt = count_directory_contents_recursively(get_custom_file_base() . '/uploads/filedump');
 
             $bits->attach(do_template('BLOCK_SIDE_STATS_SUBLINE', [
                 '_GUID' => 'd420666251bd9e70804f97ff737c775a',

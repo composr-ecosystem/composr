@@ -192,10 +192,11 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             'temp' => 100,
             'data_custom' => 100,
             'data_custom/errors' => 100,
+            // 'data_custom/failed_mail' => 100, // We do this check in another health check
         ];
         foreach ($directories as $dir => $max_contents_threshold) {
             if (file_exists(get_file_base() . '/' . $dir)) {
-                $count = count(get_directory_contents(get_file_base() . '/' . $dir, '', IGNORE_ACCESS_CONTROLLERS, false));
+                $count = count_directory_contents_recursively(get_file_base() . '/' . $dir, IGNORE_ACCESS_CONTROLLERS);
                 $this->assertTrue($count < $max_contents_threshold, 'Directory [tt]' . $dir . '[/tt] now contains ' . integer_format($count) . ' files, should be kept under ' . integer_format($max_contents_threshold));
             }
         }

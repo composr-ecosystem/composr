@@ -47,7 +47,7 @@ class Hook_search_filedump extends FieldsSearchHook
         }
 
         require_code('files2');
-        if (empty(get_directory_contents(get_custom_file_base() . '/uploads/filedump'))) {
+        if (count_directory_contents_recursively(get_custom_file_base() . '/uploads/filedump') == 0) {
             return null;
         }
 
