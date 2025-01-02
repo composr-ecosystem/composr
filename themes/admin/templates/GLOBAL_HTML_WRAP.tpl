@@ -198,7 +198,9 @@
 							</div>
 						</form>
 					{+END}{+END}{+END}
-					<div>{!PAGE_LINK} {$SELF_PAGE_LINK*}</div>
+					{+START,IF,{$HAS_ZONE_ACCESS,adminzone}}
+						<div>{$SELF_PAGE_LINK*}</div>
+					{+END}
 				</div>
 
 				<div class="global-footer-right">
