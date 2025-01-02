@@ -121,7 +121,7 @@ class Hook_media_rendering_image_websafe
                 $thumb_box_height = intval($attributes['height']);
             }
 
-            $new_name = url_to_filename(strval($thumb_box_width) . '__' . $_url_safe);
+            $new_name = url_to_filename('thumb__' . strval($thumb_box_width) . '__' . strval($thumb_box_width) . '__' . $_url_safe);
             require_code('images');
             if (!is_image($new_name, IMAGE_CRITERIA_GD_WRITE | IMAGE_CRITERIA_WEBSAFE)) {
                 $new_name .= '.png';

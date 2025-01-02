@@ -272,12 +272,12 @@ function do_image_thumb(string $url, $caption = '', bool $js_tooltip = false, bo
     }
 
     if (!$is_thumbnail_already) {
-        $new_name = '';
+        $new_name = 'thumb__';
         if (!$default_size) {
-            $new_name .= strval($width) . '_' . strval($height) . '_';
+            $new_name .= strval($width) . '__' . strval($height) . '__';
         }
         if ($only_make_smaller) {
-            $new_name .= 'os_';
+            $new_name .= 'os__';
         }
         $new_name = url_to_filename($new_name . $url);
 

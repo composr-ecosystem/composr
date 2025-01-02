@@ -118,12 +118,17 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
         $orig_url = get_custom_base_url() . '/' . $orig_url;
     }
 
+    $file_prefix = 'img+__' . $dimensions . '__' . $algorithm . '__' . $where;
+    if ($background !== null) {
+        $file_prefix .= '__' . str_replace('#', '', $background);
+    }
+
     if ($filename === null) {
         $ext = get_file_extension($orig_url);
         if (!is_image('example.' . $ext, IMAGE_CRITERIA_WEBSAFE, true)) {
             $ext = 'png';
         }
-        $filename = url_to_filename($orig_url);
+        $filename = url_to_filename($file_prefix . '__' . $orig_url);
         if (substr($filename, -4) != '.' . $ext) {
             $filename .= '.' . $ext;
         }
@@ -133,12 +138,8 @@ function convert_image_plus(string $orig_url, ?string $dimensions = null, string
         $fallback_image = $orig_url;
     }
 
-    $file_prefix = $output_dir . '/thumb__' . $dimensions . '__' . $algorithm . '__' . $where;
-    if ($background !== null) {
-        $file_prefix .= '__' . str_replace('#', '', $background);
-    }
-    $save_path = get_custom_file_base() . '/' . $file_prefix . '__' . $filename;
-    $thumbnail_url = get_custom_base_url() . '/' . $file_prefix . '__' . rawurlencode($filename);
+    $save_path = get_custom_file_base() . '/' . $output_dir . '/' . $filename;
+    $thumbnail_url = get_custom_base_url() . '/' . $output_dir . '/' . rawurlencode($filename);
 
     // Only bother calculating the image if we've not already made one with these options
     if (is_file($save_path)) {
