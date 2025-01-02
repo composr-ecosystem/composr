@@ -607,9 +607,6 @@ function _log_hack_attack_matches(array $specifier, string $reason, string $reas
  */
 function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
-    // It is possible on warn_exit we trigger another hack attack (e.g. GET/POST related hacks). We must stop this infinite loop scenario.
-    check_for_infinite_loop('_log_hack_attack_and_exit', [$reason], 1);
-
     // Default control settings
     $silent_to_user = false;
     $silent_to_staff_notifications = false;
@@ -636,6 +633,14 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
                 $risk_score = intval($specifier['risk_score']);
             }
         }
+    }
+
+    // Infinite loop protection (we first needed to determine if this is silent so we can either show hack message or loop message)...
+
+    $looping = check_for_infinite_loop('_log_hack_attack_and_exit', [$reason], 1, $silent_to_user);
+    if ($looping) {
+        require_code('critical_errors');
+        critical_error('HACK_ATTACK');
     }
 
     // HTTP statuses...
@@ -831,7 +836,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     }
 
     require_code('critical_errors');
-    critical_error('EMERGENCY', 'Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.');
+    critical_error('HACK_ATTACK');
 }
 
 /**

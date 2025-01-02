@@ -169,6 +169,9 @@ if (!function_exists('critical_error')) {
             case 'INFINITE_LOOP':
                 $error = '<div>A potential infinite loop in the software was halted (codename <kbd>' . htmlentities($relay) . '). This error has been logged. Please do not refresh this page as it could indicate a significant software or website bug.</div>';
                 break;
+            case 'HACK_ATTACK':
+                $error = '<div>Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.</div>';
+                break;
         }
 
         global $SITE_INFO;
