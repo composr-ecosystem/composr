@@ -5894,7 +5894,7 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     // Increment count and handle if we surpassed the allowed number of iterations
     $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
     if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
-        require_lang('critical_error');
-        warn_exit(do_lang_tempcode('INFINITE_LOOP_HALTED', escape_html($codename)));
+        require_code('critical_error');
+        critical_error('INFINITE_LOOP', $codename, true);
     }
 }

@@ -607,6 +607,9 @@ function _log_hack_attack_matches(array $specifier, string $reason, string $reas
  */
 function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
+    // It is possible on warn_exit we trigger another hack attack (e.g. GET/POST related hacks). We must stop this infinite loop scenario.
+    check_for_infinite_loop('_log_hack_attack_and_exit', [$reason], 1);
+
     // Default control settings
     $silent_to_user = false;
     $silent_to_staff_notifications = false;
@@ -1404,6 +1407,7 @@ function die_html_trace(string $message)
  */
 function put_value_in_stack_trace($value) : string
 {
+    set_throw_errors(true);
     try {
         if ($value === null) {
             $_value = gettype($value);
@@ -1444,6 +1448,7 @@ function put_value_in_stack_trace($value) : string
     } catch (Exception $e) { // Can happen for SimpleXMLElement or PDO
         $_value = '...';
     }
+    set_throw_errors(false);
 
     global $SITE_INFO;
     $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'admin_password', 'mysql_root_password'];
@@ -1463,6 +1468,12 @@ function put_value_in_stack_trace($value) : string
  */
 function get_html_trace() : object
 {
+    static $already_traced = false;
+
+    if ($already_traced) {
+        return new Tempcode();
+    }
+
     require_code('templates');
 
     push_suppress_error_death(true);
