@@ -1,0 +1,26 @@
+.pace {
+	z-index: 2000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	pointer-events: none;
+	transform: translate3d(0, -50px, 0);
+	transition: transform .5s ease-out;
+	{$BETA_CSS_PROPERTY,user-select: none;}
+}
+
+.pace.pace-active {
+	transform: translate3d(0, 0, 0);
+}
+
+.pace .pace-progress {
+	display: block;
+	position: fixed;
+	top: 0;
+	right: 100%;
+	width: 100%;
+	height: 10px;
+	pointer-events: none;
+	background: {$GET,seed};
+}

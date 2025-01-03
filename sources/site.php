@@ -1012,6 +1012,12 @@ function do_site()
         $RECORD_TEMPLATES_USED = true;
     }
 
+    // Pace.js progress bar
+    if (get_theme_option('enable_pace')) {
+        require_css('pace');
+        require_javascript('pace');
+    }
+
     // Any messages to output?
     if (get_param_integer('redirected', 0) == 1) {
         $messages = $GLOBALS['SITE_DB']->query_select('messages_to_render', ['r_message', 'r_type', 'r_time'], ['r_session_id' => get_session_id(),], 'ORDER BY r_time DESC');

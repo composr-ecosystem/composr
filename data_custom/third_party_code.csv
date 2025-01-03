@@ -52,3 +52,4 @@ Unslider,,https://github.com/idiot/unslider,No,No,No action,31st Mar 2020,N/A,IE
 xsl_mopup.js,,,No,Yes,"Remove when Firefox doesn't need it, unlikely to happen",N/A,N/A,N/A,N/A,N/A,
 Web Font Loader,,https://github.com/typekit/webfontloader,No,Yes,Re-sync regularly,21st Feb 2024,1.6.28,N/A,N/A,N/A,
 php-imap2,,https://github.com/javanile/php-imap2,Yes,No,Re-sync regularly,21st Feb 2024,0.1.10,PHP 7.0+,_protocol_imap,N/A,
+Pace.js,,https://codebyzach.github.io/pace/,Yes,Yes,Re-sync regularly,2nd Jan 2025,1.2.4,N/A,N/A,N/A,"Also download the 'Flat Top' theme CSS and save as 'pace.css'; replace background with Tempcode $GET,seed; move z-index from '.pace .pace-progress' to '.pace'"
