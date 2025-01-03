@@ -446,14 +446,32 @@ function _load_comcode_page_not_cached(string $string, string $zone, string $cod
 
         delete_cache_entry('main_comcode_page_children');
 
-        // Try and insert corresponding page; will silently fail if already exists. This is only going to add a row for a page that was not created in-system
+        // Try and insert corresponding page; will silently fail if already exists.
         if ($comcode_page_row === null) {
+            require_code('zones2');
+            check_page_name($zone, $codename);
+
             $comcode_page_row = $new_comcode_page_row;
             $GLOBALS['SITE_DB']->query_insert('comcode_pages', $comcode_page_row, false, true, true); // errors suppressed in case of race condition
 
+            // Generate a moniker
+            require_code('urls2');
+            suggest_new_idmoniker_for($codename, '', $zone, $zone, $codename);
+
+            // Schedule content reviews
             if (addon_installed('content_reviews')) {
                 require_code('content_reviews2');
                 schedule_content_review('comcode_page', $zone . ':' . $codename, intval(get_option('comcode_page_default_review_freq')));
+            }
+
+            // Save implicit SEO metadata
+            require_code('content2');
+            seo_meta_set_for_implicit('comcode_page', $zone . ':' . $codename, [$comcode], $comcode);
+
+            // Resource-fs moniker
+            if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
+                require_code('resource_fs');
+                generate_resource_fs_moniker('comcode_page', $zone . ':' . $codename);
             }
         }
     } else {
@@ -461,12 +479,30 @@ function _load_comcode_page_not_cached(string $string, string $zone, string $cod
         if (array_key_exists(0, $_comcode_page_row)) {
             $comcode_page_row = $_comcode_page_row[0];
         } else {
-            $comcode_page_row = $new_comcode_page_row;
-            $GLOBALS['SITE_DB']->query_insert('comcode_pages', $comcode_page_row, false, true); // errors suppressed in case of race condition
+            require_code('zones2');
+            check_page_name($zone, $codename);
 
+            $comcode_page_row = $new_comcode_page_row;
+            $GLOBALS['SITE_DB']->query_insert('comcode_pages', $comcode_page_row, false, true, true); // errors suppressed in case of race condition
+
+            // Generate a moniker
+            require_code('urls2');
+            suggest_new_idmoniker_for($codename, '', $zone, $zone, $codename);
+
+            // Schedule content reviews
             if (addon_installed('content_reviews')) {
                 require_code('content_reviews2');
                 schedule_content_review('comcode_page', $zone . ':' . $codename, intval(get_option('comcode_page_default_review_freq')));
+            }
+
+            // Save implicit SEO metadata
+            require_code('content2');
+            seo_meta_set_for_implicit('comcode_page', $zone . ':' . $codename, [$comcode], $comcode);
+
+            // Resource-fs moniker
+            if ((addon_installed('commandr')) && (!running_script('install')) && (!get_mass_import_mode())) {
+                require_code('resource_fs');
+                generate_resource_fs_moniker('comcode_page', $zone . ':' . $codename);
             }
         }
 
