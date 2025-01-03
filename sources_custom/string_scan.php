@@ -47,6 +47,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
                 }
             }
         }
+
+        // FUDGE: default zones
         $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/adminzone', 'adminzone', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
         $source_files_admin = array_merge($source_files_admin, get_directory_contents(get_file_base() . '/cms', 'cms', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));
         $source_files_non_admin = array_merge($source_files_non_admin, get_directory_contents(get_file_base() . '/site', 'site', IGNORE_NONBUNDLED | IGNORE_FLOATING, false, false, ['php']));

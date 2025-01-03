@@ -150,6 +150,7 @@ This script takes days to run properly.';
                 'shopping',
                 'tickets',
                 'wiki',
+                'site_messaging',
             ],
             'recommends' => [],
             'conflicts_with' => [],

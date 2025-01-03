@@ -107,6 +107,7 @@
 {+START,IF,{$EQ,{$METADATA,type},Profile}}
 	{+START,IF_NON_EMPTY,{$METADATA,creator}}<meta name="profile:username" content="{$METADATA*,creator}" />{+END}
 {+END}
+
 {$,Define the Microformats we support}
 {+START,COMMENT,Commented out by default to save bandwidth}
 	<link rel="profile" href="http://www.w3.org/2003/g/data-view" />

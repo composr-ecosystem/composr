@@ -635,6 +635,14 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         }
     }
 
+    // Infinite loop protection (we first needed to determine if this is silent so we can either show hack message or loop message)...
+
+    $looping = check_for_infinite_loop('_log_hack_attack_and_exit', [$reason], 1, $silent_to_user);
+    if ($looping) {
+        require_code('critical_errors');
+        critical_error('HACK_ATTACK');
+    }
+
     // HTTP statuses...
 
     if (!$GLOBALS['BOOTSTRAPPING']) {
@@ -828,7 +836,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     }
 
     require_code('critical_errors');
-    critical_error('EMERGENCY', 'Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.');
+    critical_error('HACK_ATTACK');
 }
 
 /**
@@ -1404,6 +1412,7 @@ function die_html_trace(string $message)
  */
 function put_value_in_stack_trace($value) : string
 {
+    set_throw_errors(true);
     try {
         if ($value === null) {
             $_value = gettype($value);
@@ -1444,6 +1453,7 @@ function put_value_in_stack_trace($value) : string
     } catch (Exception $e) { // Can happen for SimpleXMLElement or PDO
         $_value = '...';
     }
+    set_throw_errors(false);
 
     global $SITE_INFO;
     $site_info_keys = ['db_site_password', 'db_forums_password', 'maintenance_password', 'master_password', 'admin_password', 'mysql_root_password'];
@@ -1463,6 +1473,12 @@ function put_value_in_stack_trace($value) : string
  */
 function get_html_trace() : object
 {
+    static $already_traced = false;
+
+    if ($already_traced) {
+        return new Tempcode();
+    }
+
     require_code('templates');
 
     push_suppress_error_death(true);

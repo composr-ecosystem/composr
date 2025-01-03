@@ -27,6 +27,11 @@
 					<p class="accessibility-hidden"><label for="baddress">{!EMAIL_ADDRESS}</label></p>
 					<p><input class="form-control form-control-wide" id="baddress" name="address{NID*}" autocomplete="email" placeholder="{!EMAIL_ADDRESS}" /></p>
 				</div>
+
+				<div class="form-group">
+					{EXTRA_HIDDEN}
+					{EXTRA_FIELDS}
+				</div>
 			{+END}
 
 			<p class="proceed-button">

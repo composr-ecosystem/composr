@@ -225,7 +225,9 @@
 					{+START,IF_NON_EMPTY,{$TRIM,{$GET,footer_left}}}
 						<div class="global-footer-left block-desktop">
 							{$GET,footer_left}
-							<div>{!PAGE_LINK} {$SELF_PAGE_LINK*}</div>
+							{+START,IF,{$HAS_ZONE_ACCESS,adminzone}}
+								<div>{$SELF_PAGE_LINK*}</div>
+							{+END}
 						</div>
 					{+END}
 

@@ -285,6 +285,9 @@ class Module_admin_config
      */
     public function config_choose() : object
     {
+        // Can be slow especially in dev mode
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         $pre = new Tempcode();
 
         // Import?
@@ -534,6 +537,9 @@ class Module_admin_config
      */
     public function config_category() : object
     {
+        // Can be slow especially in dev mode
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         require_javascript('checking');
 
         // Load up some basic details

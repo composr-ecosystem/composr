@@ -20,6 +20,7 @@
     1) ids          -- Required; a comma-delimited list of usergroup IDs where a member must be in *one or more* of them to satisfy this qualification
     2) exclude      -- If 1, then this qualification is treated as a negation; the member must not be in *any* of the specified usergroups for this qualification to be satisfied (not specified: 0)
     3) primary_only -- If 1, then we only consider the member's primary group and not their secondary ones (not specified: 0)
+    4) text         -- Optional Comcode-supported text or language string to display as the requirement instead of the default "be in group" text
 */
 
 /**
@@ -113,12 +114,22 @@ class Hook_achievement_qualifications_group
             return null;
         }
 
-        require_lang('achievements');
-
         // Read in parameters
         $group_ids = array_map('intval', explode(',', $params['ids']));
         $exclude = isset($params['exclude']) ? ($params['exclude'] == '1') : false;
         $primary_only = isset($params['primary_only']) ? ($params['primary_only'] == '1') : false;
+        $text = isset($params['text']) ? $params['text'] : null;
+
+        // Custom text requirement instead of default group text?
+        if ($text !== null) {
+            $ret = do_lang($text, null, null, null, null, false);
+            if ($ret === null) {
+                return comcode_to_tempcode($text, null, true);
+            }
+            return comcode_to_tempcode($ret, null, true);
+        }
+
+        require_lang('achievements');
 
         $conditions = new Tempcode();
 

@@ -879,7 +879,9 @@ class Hook_health_check_email extends Hook_Health_Check
             return;
         }
 
-        $count = count(get_directory_contents(get_file_base() . '/data_custom/failed_mail', '', IGNORE_ACCESS_CONTROLLERS, false));
+        require_code('files2');
+
+        $count = count_directory_contents_recursively(get_file_base() . '/data_custom/failed_mail', IGNORE_ACCESS_CONTROLLERS, ['log']);
 
         $this->assertTrue($count == 0, 'Directory [tt]data_custom/failed_mail[/tt] contains ' . integer_format($count) . ' log files. These should be reviewed and then deleted as they are e-mails which did not get sent out.');
     }

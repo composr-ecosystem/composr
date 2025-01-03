@@ -369,6 +369,7 @@ END;
         require_code('files2');
         if (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) != 'WIN') {
             $files = get_directory_contents('/home', '', null, false);
+            $files = array_merge($files, get_directory_contents('/root', '', null, false));
         } else {
             $files = get_directory_contents('C:\\Users', '', null, false);
             $files = array_merge($files, get_directory_contents('C:\\Documents and Settings', '', null, false)); // LEGACY: Windows XP and below which some people still use

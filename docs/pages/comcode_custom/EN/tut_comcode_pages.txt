@@ -29,7 +29,7 @@ The default Comcode pages are...
 			<th>Zone</th>
 			<th>Page</th>
 			<th>Purpose</th>
-			<th>Editing likelihood</th>
+			<th>Likelihood you will want to edit this</th>
 		</tr>
 	</thead>
 
@@ -38,85 +38,85 @@ The default Comcode pages are...
 			<td><em>All</em></td>
 			<td><kbd>panel_*</kbd></td>
 			<td>Panels are special pages that sit alongside all pages in a zone. They are like shared borders.<br />Composr 10+ does not use left/right panels by default. Some are there out-of-the-box in the system, but blank. If you do panels you can set them up by editing them like normal pages.</td>
-			<td>25%</td>
+			<td>Possible</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
-			<td><kbd>start</td>
+			<td><kbd>home</td>
 			<td>This is the default front-page.</td>
-			<td>100%</td>
+			<td>Very likely</td>
 		</tr>
 		<tr>
 			<td>Site</td>
-			<td><kbd>start</td>
+			<td><kbd>home</td>
 			<td>This is the default front-page of the Site zone. It only exists if you do not have the "Single public zone" configuration option (Admin Zone > Setup > Configuration > Site options > Structure) enabled. If "Single public zone" is not enabled then this page is usually used for logged-in users only.</td>
-			<td>100%</td>
+			<td>Very likely</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>sitemap</kbd></td>
 			<td>The Site Map, which by default, is automatically generated using a special block.</td>
-			<td>5%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>_rules</kbd></td>
-			<td>Site rules, also shown when joining the website (<kbd>rules</kbd> also exists, which just wraps around <kbd>_rules</kbd> so that it looks good also as a standalone page).</td>
-			<td>50%</td>
+			<td>Site rules (or Terms of Service), also shown when joining the website or when join declarations are changed which forces all members to re-agree to them (<kbd>rules</kbd> also exists, which just wraps around <kbd>_rules</kbd> so that it looks good also as a standalone page).</td>
+			<td>Very Likely (The Setup Wizard has templates)</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>privacy</kbd></td>
-			<td>Privacy information.</td>
-			<td>30%</td>
+			<td>Privacy Policy (generated automatically by Composr by default).</td>
+			<td>Possible</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>keymap</kbd></td>
 			<td>Keymap of shortcuts, promoted to users on screen-readers (i.e. partially-sighted/blind users).</td>
-			<td>5%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>404</kbd></td>
 			<td>Shown when requested content cannot be found. We have default [tt].htaccess[/tt] rules pointing broken links to here. This isn't called by Composr when something has found internally to be missing. A missing page in Composr will use the [tt]MISSING_SCREEN.tpl[/tt] template. A missing resource (e.g. category, entry, ...) will use [tt]WARN_SCREEN.tpl[/tt] (as it's just another typoe of warning).</td>
-			<td>5%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>recommend_help</kbd></td>
 			<td>Usage instructions on recommending the site. Only installed if the <kbd>recommend</kbd> addon is installed.</td>
-			<td>5%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
 			<td><kbd>feedback</kbd></td>
 			<td>This provides a feedback form, linked from the footer.</td>
-			<td>50%</td>
+			<td>Likely (e.g. to put your contact information)</td>
 		</tr>
 		<tr>
 			<td>Site</td>
 			<td><kbd>help</kbd></td>
 			<td>Help for your site. Contains default information on points, etc.</td>
-			<td>80%</td>
+			<td>Very Likely</td>
 		</tr>
 		<tr>
 			<td>Site</td>
 			<td><kbd>userguide_comcode</kbd></td>
 			<td>A basic user-focused guide on Comcode.</td>
-			<td>30%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Site</td>
 			<td><kbd>popup_blockers</kbd></td>
 			<td>Information about how to disable pop-up blockers. Only installed if the <kbd>chat</kbd> addon is installed.</td>
-			<td>5%</td>
+			<td>Not likely</td>
 		</tr>
 		<tr>
 			<td>Site</td>
 			<td><kbd>userguide_chatcode</kbd></td>
 			<td>Help for the chat system. Only installed if the <kbd>chat</kbd> addon is installed.</td>
-			<td>2%</td>
+			<td>Not likely</td>
 		</tr>
 	</tbody>
 </table>
@@ -138,7 +138,7 @@ Actually If you are using a URL Scheme, then it may be something else (depending
 
 [surround]
 [media width="150" description="The easy way to add a Comcode page" float="right"]data_custom/images/docs/tut_comcode_pages/comcode_pages_easyadd.png[/media]
-There are two ways to add a new Comcode page in Composr.
+There are three ways to add a new Comcode page in Composr.
 
 Method 1:
 [list="a"]
@@ -159,6 +159,12 @@ Method 2:
 (If you don't use a colon, a default zone will be picked)
 [/list]
 [/surround]
+
+Method 3: by manually adding a [tt]txt[/tt] file in the [tt]pages/comcode_custom[/tt] directory of the zone you want to add the Comcode page.
+
+[box="A note about manually adding Comcode pages"]
+By default, when you add a new txt file for a Comcode page, the Comcode page will be validated and will go live. If you have the [tt]validation[/tt] addon installed and do not want new Comcode pages to go live by default, you can go to Admin Zone > Setup > Configuration > Content editing options > Comcode, and untick "Validate new Comcode pages". With this unticked, new Comcode pages manually created (or pulled from Git) will not be validated until you manually validate them.
+[/box]
 
 [title="3"]Proceeding to edit the page[/title]
 
@@ -204,7 +210,7 @@ The templates are stored in the [tt]data/modules/cms_comcode_pages/<lang>[/tt] d
 
 [title="2"]Hiding pages from the Sitemap[/title]
 
-There may be cases where you don't want a Comcode page to appear in your Sitemap. The easiest way to solve this is to preface the name of the Comcode page with an underscore (_). For example, pages named [tt]_test[/tt] and [tt]_example[/tt] will not show on the Sitemap due to starting with the underscore symbol.
+There may be cases where you don't want a Comcode page to appear in your Sitemap. The easiest way to solve this is to preface the name of the Comcode page with an underscore (_). For example, pages named [tt]_test[/tt] and [tt]_example[/tt] will not show on the Sitemap due to starting with the underscore symbol. Be aware this does not actually prevent people from accessing the page (if you want to fully hide a page, you will need the [tt]validation[/tt] addon and to turn validation to off when editing the page).
 
 [concepts
  1_key="Comcode page"   1_value="A Composr page written in Comcode, editable from inside Composr"

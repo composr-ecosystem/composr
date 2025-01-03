@@ -252,14 +252,14 @@ function captcha_audio(string $code_needed) : string
  */
 function form_input_captcha(object $hidden) : object
 {
+    require_code('form_templates');
+
     $tabindex = get_form_field_tabindex(null);
 
     if (uses_question_captcha()) {
         require_javascript('captcha');
 
         $tpl = new Tempcode();
-
-        require_code('form_templates');
 
         $questions = get_captcha_questions();
         foreach ($questions as $i => $details) {

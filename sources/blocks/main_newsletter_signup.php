@@ -94,6 +94,11 @@ PHP;
         if ($address != '') {
             // Actualiser...
 
+            if (addon_installed('captcha')) {
+                require_code('captcha');
+                enforce_captcha();
+            }
+
             require_code('newsletter');
             require_code('newsletter2');
 
@@ -168,6 +173,18 @@ PHP;
             $url = get_self_url();
         }
 
+        $extra_fields = new Tempcode();
+        $extra_hidden = new Tempcode();
+
+        // CAPTCHA?
+        if (addon_installed('captcha')) {
+            require_code('captcha');
+            if (use_captcha()) {
+                $extra_fields->attach(paragraph(do_lang_tempcode('captcha:FORM_TIME_SECURITY')));
+                $extra_fields->attach(form_input_captcha($extra_hidden));
+            }
+        }
+
         return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
             '_GUID' => 'c0e6f9cdab3d624bf3d27b745e3de38f',
             'BLOCK_PARAMS' => comma_list_arr_to_str($map),
@@ -176,6 +193,8 @@ PHP;
             'NID' => strval($newsletter_id),
             'URL' => $url,
             'BUTTON_ONLY' => $button_only,
+            'EXTRA_FIELDS' => $extra_fields,
+            'EXTRA_HIDDEN' => $extra_hidden,
         ]);
     }
 }
