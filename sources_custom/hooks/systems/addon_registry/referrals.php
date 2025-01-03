@@ -251,7 +251,7 @@ Allows people to specify who referred them when they join your site or other con
             }
         }
 
-        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
+        if (($upgrade_major_minor !== null) && (($upgrade_major_minor < 11.0) || ($upgrade_patch < 2))) { // LEGACY
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('referrer_override', 'o_referrer', '*MEMBER', 'o_referring_member');
             $GLOBALS['SITE_DB']->alter_table_field('referees_qualified_for', 'q_referee', 'MEMBER', 'q_referred_member');
