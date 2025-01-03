@@ -955,9 +955,9 @@ function looks_like_guid(string $potential) : bool
  * @param  URLPATH $url The target URL
  * @param  BINARY $parse Whether to parse into a map
  * @param  ?resource $context A stream context to attach to (null: no special context)
- * @return array Result
+ * @return ~array Result (false: error)
  */
-function cms_get_headers(string $url, int $parse = 0, $context = null) : array
+function cms_get_headers(string $url, int $parse = 0, $context = null)
 {
     if (version_compare(PHP_VERSION, '8.0', '<')) {
         return get_headers($url, $parse, $context);
