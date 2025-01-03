@@ -147,15 +147,15 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     }
 
     $manifest = load_integrity_manifest();
-    list($files_to_check, $hook_files) = load_files_list_of_installed_addons($manifest);
+    list($files_to_check, $hook_info) = load_files_list_of_installed_addons($manifest);
 
     // Override handling
-    $check_outdated__handle_overrides_result = check_outdated__handle_overrides(get_file_base() . '/', '', $manifest, $hook_files, $allow_merging);
+    $check_outdated__handle_overrides_result = check_outdated__handle_overrides(get_file_base() . '/', '', $manifest, $files_to_check, $allow_merging);
     list($outdated__outdated_original_and_override, $outdated__possibly_outdated_override, $outdated__missing_original_but_has_override, $outdated__uninstalled_addon_but_has_override) = $check_outdated__handle_overrides_result;
 
     // Check addon compatibility with the current version of the software
     $outdated__addon = '';
-    foreach ($hook_files as $hook => $info) {
+    foreach ($hook_info as $hook => $info) {
         $outdated = false;
 
         if (($info['min_cms_version'] === null) || ($info['min_cms_version'] > cms_version_number())) {
