@@ -195,14 +195,14 @@ New users should then be assigned a mentor/friend who will receive an equal amou
             ]);
         }
 
-        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
+        if (($upgrade_major_minor !== null) && (($upgrade_major_minor < 11.0) || ($upgrade_patch < 2))) { // LEGACY
             $GLOBALS['SITE_DB']->add_table_field('members_mentors', 'date_and_time', 'TIME');
 
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('members_mentors', 'mentor_id', '*MEMBER', 'mentor_member_id');
         }
 
-        if (($upgrade_major_minor === null) || ($upgrade_major_minor < 11.0)) {
+        if (($upgrade_major_minor === null) || (($upgrade_major_minor < 11.0) || ($upgrade_patch < 2))) {
             $GLOBALS['SITE_DB']->create_index('members_mentors', 'date_and_time', ['date_and_time']);
         }
     }

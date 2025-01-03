@@ -196,7 +196,7 @@ class Hook_addon_registry_sms
             /*$GLOBALS['SITE_DB']->create_index('confirmed_mobiles', 'confirmed_numbers', ['m_confirm_code']);*/
         }
 
-        if (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) { // LEGACY
+        if (($upgrade_major_minor !== null) && (($upgrade_major_minor < 11.0) || ($upgrade_patch < 2))) { // LEGACY
             // Database integrity fixes
             $GLOBALS['SITE_DB']->alter_table_field('sms_log', 's_trigger_ip', 'IP', 's_trigger_ip_address');
 
