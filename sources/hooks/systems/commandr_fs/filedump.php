@@ -76,7 +76,7 @@ class Hook_commandr_fs_filedump
             $dh = opendir($path);
             while (($file = readdir($dh)) !== false) {
                 if (($file != '.') && ($file != '..') && ($file != '.git')) {
-                    $filesize = ((!is_dir($path . '/' . $file)) && (!isset($records[cms_mb_substr($file, 0, 80)]))) ? filesize($path . '/' . $file)/*will be raw binary*/ : null/*don't calculate a filesize*/;
+                    $filesize = ((!is_dir($path . '/' . $file)) && (!isset($records[cms_mb_substr($file, 0, 80)])) && (is_readable($path . '/' . $file))) ? filesize($path . '/' . $file)/*will be raw binary*/ : null/*don't calculate a filesize*/;
 
                     $listing[] = [
                         $file,

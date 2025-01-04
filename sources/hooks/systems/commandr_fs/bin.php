@@ -46,7 +46,7 @@ class Hook_commandr_fs_bin
                     $listing[] = [
                         $file,
                         is_dir($path . '/' . $file) ? COMMANDR_FS_DIR : COMMANDR_FS_FILE,
-                        is_dir($path . '/' . $file) ? null : filesize($path . '/' . $file),
+                        ((is_dir($path . $file)) || (!is_readable($path . $file))) ? null : filesize($path . $file),
                         filemtime($path . '/' . $file),
                     ];
                 }
