@@ -402,7 +402,14 @@ namespace webdav_commandr_fs {
                 }
             }
             if ($request->getMethod() === 'PROPFIND') {
-                $must_calculate_size = true;
+				$uri = $request->getPath();
+				$node = $server->tree->getNodeForPath($uri);
+
+				// For PROPFIND, we are likely listing directory contents, but we could be downloading
+				if ($node instanceof \Sabre\DAV\ICollection) {
+				} else {
+					$must_calculate_size = true;
+				}
             }
             $rangeHeader = $request->getHeader('Range');
             if ($rangeHeader) {
