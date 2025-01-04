@@ -202,6 +202,27 @@ abstract class Resource_fs_base
      */
     abstract public function file_delete(string $filename, string $path) : bool;
 
+    /**
+     * Standard Commandr-fs file size function for resource-fs hooks. Calculates the size of a given resource.
+     *
+     * @param  LONG_TEXT $filename Filename OR Resource label
+     * @param  string $path The path (blank: root / not applicable)
+     * @param  boolean $force_calculate Whether to forcefully calculate a size if we normally would have returned -1 for dynamic
+     * @return ~integer The file size (false: error)
+     */
+    public function file_size(string $filename, string $path, bool $force_calculate = false)
+    {
+        if ($force_calculate === false) {
+            return -1; // Resource-fs files are dynamic by default which means we would have to read in all the data to get an actual size
+        }
+
+        $file = $this->file_load__flat($filename, $path);
+        if ($file === false) {
+            return 0;
+        }
+
+        return strlen($file);
+    }
 
     /*
     HOOKS MAY OVERRIDE THESE AS REQUIRED, TO ENCODE IMPLEMENTATION COMPLEXITIES
@@ -2586,7 +2607,7 @@ abstract class Resource_fs_base
             return false;
         }
 
-        $listing = [];
+        static $cached_listings = [];
 
         $folder_types = is_array($this->folder_resource_type) ? $this->folder_resource_type : (($this->folder_resource_type === null) ? [] : [$this->folder_resource_type]);
         $file_types = is_array($this->file_resource_type) ? $this->file_resource_type : (($this->file_resource_type === null) ? [] : [$this->file_resource_type]);
@@ -2607,6 +2628,14 @@ abstract class Resource_fs_base
             $parent_folder = '';
         }
 
+        require_code('files');
+
+        // Can be slow if we have a lot of files
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+        $start_time = microtime(true);
+
+        cms_profile_start_for('Resource_fs_base->listing');
+
         // Find folders
         foreach ($folder_types as $resource_type) {
             $folder_info = $this->_get_cma_info($resource_type);
@@ -2618,6 +2647,20 @@ abstract class Resource_fs_base
             if ($relationship === null) {
                 continue;
             }
+
+            // Cache
+            if (isset($cached_listings[$resource_type][$cat_id])) {
+                $listing = array_merge($cached_listings[$resource_type][$cat_id], $listing);
+                continue;
+            }
+            if (!isset($cached_listings[$resource_type])) {
+                $cached_listings[$resource_type] = [];
+            }
+            if (!isset($cached_listings[$resource_type][$cat_id])) {
+                $cached_listings[$resource_type][$cat_id] = [];
+            }
+
+            cms_profile_start_for('Resource_fs_base->listing find folders in ' . $resource_type);
 
             $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
 
@@ -2652,30 +2695,53 @@ abstract class Resource_fs_base
                 }
             }
             $select = array_unique($select);
-            $child_folders = $folder_info['db']->query_select($table, $select, $where, $extra, 10000/*Reasonable limit*/);
-            foreach ($child_folders as $folder) {
-                $str_id = extract_content_str_id_from_data($folder, $folder_info);
-                $filename = $this->folder_convert_id_to_filename($resource_type, $str_id);
 
-                $filetime = $this->_get_folder_edit_date($folder, $parent_folder);
-                if ($filetime === null) {
-                    if ($folder_info['edit_time_field'] !== null) {
-                        $filetime = $folder[$folder_info['edit_time_field']];
-                    }
-                    if ($filetime === null) {
-                        if ($folder_info['add_time_field'] !== null) {
-                            $filetime = $folder[$folder_info['add_time_field']];
-                        }
-                    }
+            $start = 0;
+            $max = 200;
+            $absolute_max = 5000; // reasonable limit
+            $memory_limit = php_return_bytes(ini_get('memory_limit'));
+            do {
+                cms_profile_start_for('Resource_fs_base->listing find folders iteration');
+
+                // Running low on remaining memory or time
+                if ((($memory_limit - memory_get_usage()) < (1024 * 1024 * 16)) || ((microtime(true) - $start_time) >= 26.0)) {
+                    cms_profile_end_for('Resource_fs_base->listing find folders iteration', 'Out of time or memory');
+                    break;
                 }
 
-                $listing[] = [
-                    $filename,
-                    COMMANDR_FS_DIR,
-                    null/*don't calculate a filesize*/,
-                    $filetime,
-                ];
-            }
+                $child_folders = $folder_info['db']->query_select($table, $select, $where, $extra, $max, $start);
+                foreach ($child_folders as $folder) {
+                    $str_id = extract_content_str_id_from_data($folder, $folder_info);
+                    $filename = $this->folder_convert_id_to_filename($resource_type, $str_id);
+
+                    $filetime = $this->_get_folder_edit_date($folder, $parent_folder);
+                    if ($filetime === null) {
+                        if ($folder_info['edit_time_field'] !== null) {
+                            $filetime = $folder[$folder_info['edit_time_field']];
+                        }
+                        if ($filetime === null) {
+                            if ($folder_info['add_time_field'] !== null) {
+                                $filetime = $folder[$folder_info['add_time_field']];
+                            }
+                        }
+                    }
+
+                    $map = [
+                        $filename,
+                        COMMANDR_FS_DIR,
+                        null/*don't calculate a filesize*/,
+                        $filetime,
+                    ];
+                    $cached_listings[$resource_type][$cat_id][] = $map;
+                    $listing[] = $map;
+                }
+
+                $start += $max;
+
+                cms_profile_end_for('Resource_fs_base->listing find folders iteration', 'Found ' . integer_format(count($child_folders)) . ' folders');
+            } while ((count($child_folders) > 0) && ($start < $absolute_max));
+
+            cms_profile_end_for('Resource_fs_base->listing resource ' . $resource_type);
         }
 
         // Find files
@@ -2690,6 +2756,20 @@ abstract class Resource_fs_base
                 continue;
             }
 
+            // Cache
+            if (isset($cached_listings[$resource_type][$cat_id])) {
+                $listing = array_merge($cached_listings[$resource_type][$cat_id], $listing);
+                continue;
+            }
+            if (!isset($cached_listings[$resource_type])) {
+                $cached_listings[$resource_type] = [];
+            }
+            if (!isset($cached_listings[$resource_type][$cat_id])) {
+                $cached_listings[$resource_type][$cat_id] = [];
+            }
+
+            cms_profile_start_for('Resource_fs_base->listing find files in ' . $resource_type);
+
             $where = [];
             if ($this->folder_resource_type !== null) {
                 $_cat_id = ($relationship['cat_field_numeric'] ? (($cat_id == '') ? null : intval($cat_id)) : $cat_id);
@@ -2698,33 +2778,56 @@ abstract class Resource_fs_base
 
             $select = [];
             append_content_select_for_fields($select, $file_info, ['id', 'add_time', 'edit_time'], 'main');
-            $files = $file_info['db']->query_select($file_info['table'] . ' main', $select, $where, '', 10000/*Reasonable limit*/);
-            foreach ($files as $file) {
-                $str_id = extract_content_str_id_from_data($file, $file_info);
-                $filename = $this->file_convert_id_to_filename($resource_type, $str_id);
 
-                $filetime = null;
-                if (method_exists($this, '_get_file_edit_date')) {
-                    $filetime = $this->_get_file_edit_date($file, $parent_folder);
+            $start = 0;
+            $max = 200;
+            $absolute_max = 5000; // reasonable limit
+            $memory_limit = php_return_bytes(ini_get('memory_limit'));
+            do {
+                cms_profile_start_for('Resource_fs_base->listing find files iteration');
+
+                // Running low on remaining memory or time
+                if ((($memory_limit - memory_get_usage()) < (1024 * 1024 * 16)) || ((microtime(true) - $start_time) >= 26.0)) {
+                    cms_profile_end_for('Resource_fs_base->listing find files iteration', 'Out of time or memory');
+                    break;
                 }
-                if ($filetime === null) {
-                    if ($file_info['edit_time_field'] !== null) {
-                        $filetime = $file[$file_info['edit_time_field']];
+
+                $files = $file_info['db']->query_select($file_info['table'] . ' main', $select, $where, '', $max, $start);
+                foreach ($files as $file) {
+                    $str_id = extract_content_str_id_from_data($file, $file_info);
+                    $filename = $this->file_convert_id_to_filename($resource_type, $str_id);
+
+                    $filetime = null;
+                    if (method_exists($this, '_get_file_edit_date')) {
+                        $filetime = $this->_get_file_edit_date($file, $parent_folder);
                     }
                     if ($filetime === null) {
-                        if ($file_info['add_time_field'] !== null) {
-                            $filetime = $file[$file_info['add_time_field']];
+                        if ($file_info['edit_time_field'] !== null) {
+                            $filetime = $file[$file_info['edit_time_field']];
+                        }
+                        if ($filetime === null) {
+                            if ($file_info['add_time_field'] !== null) {
+                                $filetime = $file[$file_info['add_time_field']];
+                            }
                         }
                     }
+
+                    $map = [
+                        $filename,
+                        COMMANDR_FS_FILE,
+                        null/*don't calculate a filesize*/,
+                        $filetime,
+                    ];
+                    $cached_listings[$resource_type][$cat_id][] = $map;
+                    $listing[] = $map;
                 }
 
-                $listing[] = [
-                    $filename,
-                    COMMANDR_FS_FILE,
-                    null/*don't calculate a filesize*/,
-                    $filetime,
-                ];
-            }
+                $start += $max;
+
+                cms_profile_end_for('Resource_fs_base->listing find files iteration', 'Found ' . integer_format(count($files)) . ' files');
+            } while ((count($files) > 0) && ($start < $absolute_max));
+
+            cms_profile_end_for('Resource_fs_base->listing find files in ' . $resource_type);
         }
 
         if ($cat_id != '') { // File for editing the folder's own properties
@@ -2757,6 +2860,8 @@ abstract class Resource_fs_base
                 ];
             }
         }
+
+        cms_profile_end_for('Resource_fs_base->listing');
 
         return $listing;
     }
@@ -2810,6 +2915,32 @@ abstract class Resource_fs_base
             return $this->folder_load__flat(array_pop($meta_dir), implode('/', $meta_dir));
         }
         return $this->file_load__flat($file_name, implode('/', $meta_dir));
+    }
+
+    /**
+     * Standard Commandr-fs file size function for Commandr-fs hooks.
+     *
+     * @param  array $meta_dir The current meta-directory path
+     * @param  string $meta_root_node The root node of the current meta-directory
+     * @param  string $file_name The file name
+     * @param  boolean $force_calculate Whether to forcefully calculate a size where we would otherwise return -1 for dynamic
+     * @param  object $commandr_fs A reference to the Commandr filesystem object
+     * @return ~integer The file size (false: failure)
+     */
+    public function get_file_size(array $meta_dir, string $meta_root_node, string $file_name, bool $force_calculate, object &$commandr_fs)
+    {
+        if ($file_name == RESOURCE_FS_SPECIAL_DIRECTORY_FILE) { // Cannot use standard file size function for special folder files
+            if ($force_calculate) {
+                $contents = $this->folder_load__flat(array_pop($meta_dir), implode('/', $meta_dir));
+                if ($contents === false) {
+                    return 0;
+                }
+                return strlen($contents);
+            }
+            return -1;
+        }
+
+        return $this->file_size($file_name, implode('/', $meta_dir), $force_calculate);
     }
 
     /**

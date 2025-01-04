@@ -250,6 +250,15 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
+
+                    // Since we verified the password is correct, check if the stored hash is of a different cost than configured. If so, we must re-hash.
+                    $this_ratchet = get_ratchet_cost($row['m_pass_hash_salted']);
+                    if ($this_ratchet !== null) {
+                        $current_ratchet = get_option('crypt_ratchet');
+                        if ($current_ratchet != $this_ratchet) {
+                            $needs_rehash = true;
+                        }
+                    }
                     break;
 
                 case '': // LEGACY: v10 style bcrypt passwords (insecure as they use md5)
@@ -310,15 +319,17 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             }
         }
 
-        // LEGACY: Transform old style v10 passwords into v11 passwords (v10 ones were not hashed securely)
+        // v10 passwords need re-hashed for v11. Also, v11 passwords hashed with a different ratchet than configured need re-hashed.
         if ($needs_rehash) {
             require_code('crypt');
+
+            // For extra security, let's also change the salt
             $password_salt = get_secure_random_string(32, CRYPT_BASE64);
             $password_salted = ratchet_hash($password_mixed, $password_salt);
 
             $GLOBALS['FORUM_DB']->query_update('f_members', [
                 'm_pass_hash_salted' => $password_salted,
-                'm_password_compat_scheme' => ($password_compat_scheme == '') ? 'bcrypt' : ('bcrypt_' . $password_compat_scheme),
+                'm_password_compat_scheme' => (($password_compat_scheme == '') || ($password_compat_scheme == 'bcrypt')) ? 'bcrypt' : ('bcrypt_' . $password_compat_scheme),
                 'm_pass_salt' => $password_salt,
             ], ['id' => $member_id]);
 

@@ -135,12 +135,10 @@ namespace webdav_commandr_fs {
          */
         protected function _listingWrap($parsedPath)
         {
-            $sz = serialize($parsedPath);
-            if (isset($GLOBALS['COMMANDR_FS_LISTING_CACHE'][$sz])) {
-                return $GLOBALS['COMMANDR_FS_LISTING_CACHE'][$sz];
-            }
-            $GLOBALS['COMMANDR_FS_LISTING_CACHE'][$sz] = $this->commandr_fs->listing($parsedPath);
-            return $GLOBALS['COMMANDR_FS_LISTING_CACHE'][$sz];
+            cms_profile_start_for('webdav_commandr_fs->Node->_listingWrap');
+            $listings = $this->commandr_fs->listing($parsedPath);
+            cms_profile_end_for('webdav_commandr_fs->Node->_listingWrap');
+            return $listings;
         }
     }
 
@@ -237,6 +235,8 @@ namespace webdav_commandr_fs {
          */
         public function getChildren()
         {
+            cms_profile_start_for('webdav_commandr_fs->Directory->getChildren');
+
             $listing = $this->_listingWrap($this->commandr_fs->_pwd_to_array($this->path));
 
             $nodes = [];
@@ -245,15 +245,19 @@ namespace webdav_commandr_fs {
 
                 $_path = $this->path . '/' . $filename;
 
-                $nodes[] = new Directory($_path);
+                $node = new Directory($_path);
+                $nodes[] = $node;
             }
             foreach ($listing[1] as $l) {
                 list($filename, $filetype, $filesize, $filetime) = $l;
 
                 $_path = $this->path . '/' . $filename;
 
-                $nodes[] = new File($_path);
+                $node = new File($_path);
+                $nodes[] = $node;
             }
+
+            cms_profile_end_for('webdav_commandr_fs->Directory->getChildren', integer_format(count($nodes)) . ' nodes');
 
             return $nodes;
         }
@@ -266,6 +270,8 @@ namespace webdav_commandr_fs {
          */
         public function childExists($name)
         {
+            cms_profile_start_for('webdav_commandr_fs->Directory->childExists');
+
             $listing = $this->_listingWrap($this->commandr_fs->_pwd_to_array($this->path));
 
             $nodes = [];
@@ -273,9 +279,12 @@ namespace webdav_commandr_fs {
                 list($filename, $filetype, $filesize, $filetime) = $l;
 
                 if ($filename == $name) {
+                    cms_profile_end_for('webdav_commandr_fs->Directory->childExists');
                     return true;
                 }
             }
+
+            cms_profile_end_for('webdav_commandr_fs->Directory->childExists');
 
             return false;
         }
@@ -374,7 +383,37 @@ namespace webdav_commandr_fs {
          */
         public function getSize()
         {
+            $server = ServerRegistry::getServer();
+            if (!$server) {
+                var_dump($server);
+                exit;
+            }
+
+            cms_profile_start_for('webdav_commandr_fs->File->getSize');
+
+            // Determine if we absolutely have to calculate the file size
+            $must_calculate_size = false;
+            $request = $server->httpRequest;
+            if (in_array($request->getMethod(), ['GET', 'HEAD'])) {
+                $uri = $request->getPath();
+                $node = $server->tree->getNodeForPath($uri);
+                if ($node instanceof \Sabre\DAV\IFile) {
+                    $must_calculate_size = true;
+                }
+            }
+            if ($request->getMethod() === 'PROPFIND') {
+                $must_calculate_size = true;
+            }
+            $rangeHeader = $request->getHeader('Range');
+            if ($rangeHeader) {
+                $must_calculate_size = true;
+            }
+            if (in_array($request->getMethod(), ['COPY', 'MOVE'])) {
+                $must_calculate_size = true;
+            }
+
             list($currentPath, $currentName) = \Sabre\Uri\split($this->path);
+            $parsedPath = $this->commandr_fs->_pwd_to_array($this->path);
             $parsedCurrentPath = $this->commandr_fs->_pwd_to_array($currentPath);
 
             $listing = $this->_listingWrap($parsedCurrentPath);
@@ -382,11 +421,14 @@ namespace webdav_commandr_fs {
                 list($filename, $filetype, $filesize, $filetime) = $l;
                 if ($filename == $currentName) {
                     if ($filesize === null) {
-                        $filesize = strlen($this->get()); // Needed at least for Cyberduck
+                        $filesize = $this->commandr_fs->get_file_size($parsedPath, $must_calculate_size);
                     }
+                    cms_profile_end_for('webdav_commandr_fs->File->getSize');
                     return $filesize;
                 }
             }
+
+            cms_profile_end_for('webdav_commandr_fs->File->getSize');
 
             throw new \Sabre\DAV\Exception\NotFound('Could not find ' . $this->path);
 
@@ -450,6 +492,18 @@ namespace webdav_commandr_fs {
                 return $GLOBALS['FORUM_DRIVER']->is_super_admin($result['id']);
             }
             return false;
+        }
+    }
+
+    class ServerRegistry {
+        private static ?\Sabre\DAV\Server $server = null;
+
+        public static function setServer(\Sabre\DAV\Server $server): void {
+            self::$server = $server;
+        }
+
+        public static function getServer(): ?\Sabre\DAV\Server {
+            return self::$server;
         }
     }
 }

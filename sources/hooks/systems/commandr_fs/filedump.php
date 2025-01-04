@@ -275,6 +275,30 @@ class Hook_commandr_fs_filedump
     }
 
     /**
+     * Standard Commandr-fs file size function for Commandr-fs hooks.
+     *
+     * @param  array $meta_dir The current meta-directory path
+     * @param  string $meta_root_node The root node of the current meta-directory
+     * @param  string $file_name The file name
+     * @param  boolean $force_calculate Whether to forcefully calculate a size where we would otherwise return -1 for dynamic
+     * @param  object $commandr_fs A reference to the Commandr filesystem object
+     * @return ~integer The file size (false: failure)
+     */
+    public function get_file_size(array $meta_dir, string $meta_root_node, string $file_name, bool $force_calculate, object &$commandr_fs)
+    {
+        if ($force_calculate === false) {
+            return -1;
+        }
+
+        $contents = $this->read_file($meta_dir, $meta_root_node, $file_name, $commandr_fs);
+        if ($contents === false) {
+            return false;
+        }
+
+        return strlen($contents);
+    }
+
+    /**
      * Standard Commandr-fs file writing function for commandr_fs hooks.
      *
      * @param  array $meta_dir The current meta-directory path

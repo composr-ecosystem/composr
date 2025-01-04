@@ -160,6 +160,31 @@ class Hook_commandr_fs_root
     }
 
     /**
+     * Standard Commandr-fs file size function for Commandr-fs hooks.
+     *
+     * @param  array $meta_dir The current meta-directory path
+     * @param  string $meta_root_node The root node of the current meta-directory
+     * @param  string $file_name The file name
+     * @param  boolean $force_calculate Whether to forcefully calculate a size where we would otherwise return -1 for dynamic
+     * @param  object $commandr_fs A reference to the Commandr filesystem object
+     * @return ~integer The file size (false: failure)
+     */
+    public function get_file_size(array $meta_dir, string $meta_root_node, string $file_name, bool $force_calculate, object &$commandr_fs)
+    {
+        $file_name = filter_naughty($file_name);
+        $path = $this->_customise_directory($meta_dir);
+        if (!file_exists($path . $file_name)) {
+            $path = $this->_customise_directory($meta_dir, false);
+        }
+
+        if ((is_dir($path)) && (file_exists($path . $file_name)) && (is_readable($path . $file_name))) {
+            return filesize($path . $file_name);
+        }
+
+        return false; // File doesn't exist
+    }
+
+    /**
      * Standard Commandr-fs file writing function for commandr_fs hooks.
      *
      * @param  array $meta_dir The current meta-directory path

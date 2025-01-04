@@ -29,6 +29,9 @@ function init__commandr_fs()
         define('COMMANDR_FS_FILE', 0);
         define('COMMANDR_FS_DIR', 1);
     }
+
+    global $COMMANDR_FS_LISTING_CACHE;
+    $COMMANDR_FS_LISTING_CACHE = [];
 }
 
 /**
@@ -131,6 +134,12 @@ class Commandr_fs
             $dir = $this->pwd;
         }
 
+        global $COMMANDR_FS_LISTING_CACHE;
+        $ser = serialize([$dir, $full_paths]);
+        if (isset($COMMANDR_FS_LISTING_CACHE[$ser])) {
+            return $COMMANDR_FS_LISTING_CACHE[$ser];
+        }
+
         if (strpos(implode('/', $dir), '*') !== false) { // Handle wildcards
             $end_bit = array_pop($dir); // Remove last element
             $dir_remaining = implode('/', $dir);
@@ -157,6 +166,8 @@ class Commandr_fs
                     }
                 }
             }
+
+            $COMMANDR_FS_LISTING_CACHE[$ser] = $ret;
             return $ret;
         }
 
@@ -177,6 +188,8 @@ class Commandr_fs
                 }
             }
         }
+
+        $COMMANDR_FS_LISTING_CACHE[$ser] = $current_dir;
         return $current_dir;
     }
 
@@ -763,6 +776,31 @@ class Commandr_fs
             require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
             $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
             return $object->read_file($meta_dir, $meta_root_node, $filename, $this);
+        }
+
+        return false;
+    }
+
+    /**
+     * Calculate the size of a file.
+     *
+     * @param  array $to_read The file to read
+     * @param  boolean $force_calculate Whether to forcefully calculate a size where we would otherwise return -1 for dynamic
+     * @return ~integer The file size (false: failure)
+     */
+    public function get_file_size(array $to_read, bool $force_calculate = false)
+    {
+        $filename = array_pop($to_read);
+        $meta_dir = [];
+        $meta_root_node = '';
+        $meta_root_node_type = '';
+        $this->_discern_meta_dir($meta_dir, $meta_root_node, $meta_root_node_type, $to_read);
+
+        if ($meta_root_node !== null) {
+            // We're underneath a meta root node (a directory which is generated dynamically)
+            require_code('hooks/systems/commandr_fs/' . filter_naughty_harsh($meta_root_node_type));
+            $object = object_factory('Hook_commandr_fs_' . filter_naughty_harsh($meta_root_node_type));
+            return $object->get_file_size($meta_dir, $meta_root_node, $filename, $force_calculate, $this);
         }
 
         return false;

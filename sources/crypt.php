@@ -46,7 +46,7 @@ function init__crypt()
 function ratchet_hash(string $password, string $salt) : string
 {
     // NB: We don't pass the salt separately, we let password_hash generate its own internal salt also (that builds into the hash). So it is double salted.
-    $ratchet = max(10, intval(get_option('crypt_ratchet')));
+    $ratchet = intval(get_option('crypt_ratchet'));
     return password_hash($salt . $password, PASSWORD_BCRYPT, ['cost' => $ratchet]);
 }
 
@@ -116,6 +116,21 @@ function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cos
     } while ($elapsed_time < $target_time);
 
     return ($cost - 1); // We don't want to use the cost that exceeded our target time; use the one below it.
+}
+
+/**
+ * Given a bcrypt hash, get its cost.
+ *
+ * @param  SHORT_TEXT $hash The bcrypt hash
+ * @return ?integer The cost (null: could not find / invalid bcrypt hash)
+ */
+function get_ratchet_cost(string $hash) : ?int
+{
+    if (preg_match('/^\$2[ayb]?\$(\d{2})\$/', $hash, $matches)) {
+        return intval($matches[1]);
+    }
+
+    return null;
 }
 
 
