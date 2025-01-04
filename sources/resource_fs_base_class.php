@@ -2608,6 +2608,7 @@ abstract class Resource_fs_base
         }
 
         static $cached_listings = [];
+        $listing = [];
 
         $folder_types = is_array($this->folder_resource_type) ? $this->folder_resource_type : (($this->folder_resource_type === null) ? [] : [$this->folder_resource_type]);
         $file_types = is_array($this->file_resource_type) ? $this->file_resource_type : (($this->file_resource_type === null) ? [] : [$this->file_resource_type]);
