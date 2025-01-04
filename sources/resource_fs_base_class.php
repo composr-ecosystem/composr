@@ -2121,8 +2121,13 @@ abstract class Resource_fs_base
 
         // URL monikers
         if ($cma_info['support_url_monikers']) {
-            $page_bits = explode(':', $cma_info['view_page_link_pattern']);
-            $properties['url_id_monikers'] = table_to_portable_rows('url_id_monikers', /*skip*/['id'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => isset($page_bits[2]) ? $page_bits[2] : '', 'm_resource_id' => $resource_id], $db);
+            if (strpos($resource_id, ':') !== false) { // Comcode page
+                $page_bits = explode(':', $resource_id);
+                $properties['url_id_monikers'] = table_to_portable_rows('url_id_monikers', /*skip*/['id'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => '', 'm_resource_id' => $page_bits[0]], $db);
+            } else {
+                $page_bits = explode(':', $cma_info['view_page_link_pattern']);
+                $properties['url_id_monikers'] = table_to_portable_rows('url_id_monikers', /*skip*/['id'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => isset($page_bits[2]) ? $page_bits[2] : '', 'm_resource_id' => $resource_id], $db);
+            }
         }
 
         // Attachments
@@ -2282,8 +2287,13 @@ abstract class Resource_fs_base
         // URL monikers
         if ($cma_info['support_url_monikers']) {
             if (isset($properties['url_id_monikers'])) {
-                $page_bits = explode(':', $cma_info['view_page_link_pattern']);
-                table_from_portable_rows('url_id_monikers', $properties['url_id_monikers'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => $page_bits[2], 'm_resource_id' => $resource_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA, $db);
+                if (strpos($resource_id, ':') !== false) { // Comcode page
+                    $page_bits = explode(':', $resource_id);
+                    table_from_portable_rows('url_id_monikers', $properties['url_id_monikers'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => '', 'm_resource_id' => $page_bits[0]], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA, $db);
+                } else {
+                    $page_bits = explode(':', $cma_info['view_page_link_pattern']);
+                    table_from_portable_rows('url_id_monikers', $properties['url_id_monikers'], ['m_resource_page' => $page_bits[1], 'm_resource_type' => $page_bits[2], 'm_resource_id' => $resource_id], TABLE_REPLACE_MODE_BY_EXTRA_FIELD_DATA, $db);
+                }
             }
         }
 
