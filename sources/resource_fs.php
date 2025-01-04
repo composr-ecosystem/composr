@@ -901,7 +901,7 @@ function remap_portable_as_time(?string $portable_data) : ?int
  * Convert a URL (external or internal) to something portable.
  *
  * @param  ?URLPATH $urlpath The URL (null: not set)
- * @return ?mixed Portable details (null: not set)
+ * @return ?mixed Either a URLPATH or a double of URLPATH and base64-encoded file data (null: not set)
  */
 function remap_urlpath_as_portable(?string $urlpath)
 {
@@ -909,12 +909,19 @@ function remap_urlpath_as_portable(?string $urlpath)
         return null;
     }
 
-    if ($urlpath == '' || strpos($urlpath, ':') !== false || get_param_integer('raw_urls', 0) == 1) {
+    if (($urlpath == '') || (strpos($urlpath, '://') !== false) || (get_param_integer('raw_urls', 0) == 1)) {
         return $urlpath;
     }
 
     $path = get_custom_file_base() . '/' . $urlpath;
     if (!file_exists($path)) {
+        return $urlpath;
+    }
+
+    $filesize = filesize($path);
+
+    // Prevent PHP out of memory errors by not including the data if the file is 8 MB or more
+    if (($filesize === false) || ($filesize >= (1024 * 1024 * 8))) {
         return $urlpath;
     }
 
