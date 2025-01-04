@@ -24,9 +24,6 @@ use Sabre\DAV;
  */
 function init__webdav()
 {
-    global $COMMANDR_FS_LISTING_CACHE;
-    $COMMANDR_FS_LISTING_CACHE = [];
-
     global $WEBDAV_LOG_FILE;
     $WEBDAV_LOG_FILE = null;
 }
@@ -66,6 +63,7 @@ function webdav_script()
 
     $root_dir = new webdav_commandr_fs\Directory('');
     $server = new DAV\Server($root_dir);
+    webdav_commandr_fs\ServerRegistry::setServer($server);
 
     $parsed = parse_url(get_base_url());
     if (!isset($parsed['path'])) {
