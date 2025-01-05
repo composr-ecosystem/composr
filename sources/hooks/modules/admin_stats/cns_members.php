@@ -356,6 +356,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('USERNAME'),
                     'y_axis_label' => $y_axis_label,
+                    'limit_bars' => true,
                 ];
         }
 
