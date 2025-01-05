@@ -52,23 +52,23 @@ class Hook_cron_stats_preprocess_raw_data
      */
     public function run()
     {
-        $server_timezone = get_server_timezone();
-
         $start_time = null;
         $_start_time = get_value('stats__last_processed', null, true);
 
         // LEGACY: 11.beta7
         if ($_start_time === null) {
-            $last_day_processed = get_value('stats__last_day_processed', null, true);
-            if ($last_day_processed !== null) {
-                list($year, $month, $day) = array_map('intval', explode('-', $last_day_processed));
+            $_start_time = get_value('stats__last_day_processed', null, true);
+            if ($_start_time !== null) {
+                list($year, $month, $day) = array_map('intval', explode('-', $_start_time));
                 $start_time = cms_mktime(0, 0, 0, $month, $day, $year);
-                $start_time = tz_time($start_time, $server_timezone);
+                $start_time = tz_time($start_time, get_server_timezone());
                 delete_value('stats__last_day_processed', true);
+
+                $_start_time = strval($start_time);
             }
         }
 
-        if ($start_time === null) {
+        if ($_start_time === null) {
             require_code('global4');
             $start_time = get_site_start_time();
         } else {
