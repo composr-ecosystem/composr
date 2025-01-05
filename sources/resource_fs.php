@@ -271,7 +271,7 @@ function generate_resource_fs_moniker(string $resource_type, string $resource_id
     if (($moniker !== $no_exists_check_for) || ($new_guid !== null)) {
         $GLOBALS['SITE_DB']->query_delete('alternative_ids', ['resource_type' => $resource_type, 'resource_id' => $resource_id], '', 1);
 
-        // Ensure we do not have duplicate GUIDs in the database
+        // Ensure we do not have duplicate GUIDs in the database (extremely unlikely but possible)
         $guid_attempts = 0;
         while (($GLOBALS['SITE_DB']->query_select_value_if_there('alternative_ids', 'resource_guid', ['resource_guid' => $guid]) !== null) && ($new_guid === null) && ($guid_attempts < 25)) {
             require_code('crypt');
