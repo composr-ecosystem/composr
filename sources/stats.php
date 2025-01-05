@@ -1686,7 +1686,8 @@ function preprocess_raw_data_for(string $hook_name, int $start_time = 0, ?int $e
     require_code('temporal');
 
     if ($end_time === null) {
-        $end_time = time();
+        // Prevent an edge case where something could be logged before the current second is over and never get counted
+        $end_time = time() - 1;
     }
 
     require_code('hooks/modules/admin_stats/' . filter_naughty($hook_name));
