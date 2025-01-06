@@ -1,6 +1,6 @@
 ﻿[title]Statistics[/title]
 
-On this page, we showcase various graphical statistics about composr.app. These graphs are updated automatically every day.
+On this page, we showcase various graphical statistics about composr.app. Statistics are calculated every hour.
 
 [box="Start-of-month notice"]
 Note that statistics always begin at the start of a given month. For example, if the current date is October 10, 2024... a one-year graph will count / include statistics from October 1, 2023 up to October 10, 2024.
