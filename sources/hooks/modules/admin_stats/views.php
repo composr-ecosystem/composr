@@ -667,12 +667,10 @@ class Hook_admin_stats_views extends CMSStatsProvider
             $max = 1000;
             do {
                 cms_profile_start_for('Hook_admin_stats_views->preprocess_raw_data (session behaviours) (session ' . $session_id . ' group ' . integer_format($start) . ')');
-                $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], 'ORDER BY date_and_time', $max, $start);
+                $end = ' AND date_and_time>=' . strval($start_time) . ' AND date_and_time<=' . strval($end_time) . ' ORDER BY date_and_time';
+                $rows = $GLOBALS['SITE_DB']->query_select('stats', ['page_link', 'date_and_time', 'ip'], ['session_id' => $session_id], $end, $max, $start);
                 foreach ($rows as $row) {
                     $timestamp = $row['date_and_time'];
-                    if ($timestamp < $start_time) {
-                        continue;
-                    }
                     $timestamp = tz_time($timestamp, $server_timezone);
 
                     $month = to_epoch_interval_index($timestamp, 'months');

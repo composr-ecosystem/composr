@@ -374,8 +374,8 @@ function extract_content_str_id_from_data(array $data, array $cma_info) : string
     $id = '';
     $id_field_parts = is_array($id_field) ? $id_field : [$id_field];
     $id_field_parts = array_reverse($id_field_parts);
-    foreach ($id_field_parts as $id_field_part) {
-        if ($id != '') {
+    foreach ($id_field_parts as $i => $id_field_part) {
+        if ($i > 0) { // Comcode page
             $id .= ':';
         }
         $id .= (is_integer($data[$id_field_part]) ? strval($data[$id_field_part]) : $data[$id_field_part]);

@@ -61,9 +61,10 @@ class Hook_admin_stats_content extends CMSStatsProvider
      */
     public function preprocess_raw_data_flat(int $start_time, int $end_time, array &$data_buckets)
     {
-        $server_timezone = get_server_timezone();
-
-        $date_pivots = $this->get_date_pivots();
+        // Optimisation: do not process if end time is over a day ago (this only calculates overall statistics, so is useless if not calculating for now)
+        if ($end_time < (time() - (60 * 60 * 24))) {
+            return;
+        }
 
         $limit_per_content_type = 100;
 
@@ -72,7 +73,6 @@ class Hook_admin_stats_content extends CMSStatsProvider
 
         require_code('content');
         $cma_hooks = find_all_hook_obs('systems', 'content_meta_aware', 'Hook_content_meta_aware_');
-        $content_types = [];
         foreach ($cma_hooks as $content_type => $hook_ob) {
             $info = $hook_ob->info();
             if (($info !== null) && ($info['views_field'] !== null) && ($info['id_field'] !== null) && ($info['title_field'] !== null)) {

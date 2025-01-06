@@ -78,8 +78,11 @@ class Hook_admin_stats_support_tickets extends CMSStatsProvider
 
         $forum_id = get_ticket_forum_id();
 
+        // NB: Have to use topics because the tickets table does not store times
         $query = 'SELECT t_cache_first_time FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics WHERE ';
-        $query .= 't_forum_id=' . strval($forum_id);
+        $query .= 't_forum_id=' . strval($forum_id) . ' AND ';
+        $query .= 't_cache_first_time>=' . strval($start_time) . ' AND ';
+        $query .= 't_cache_first_time<=' . strval($end_time);
         $query .= ' ORDER BY t_cache_first_time';
         do {
             $rows = $GLOBALS['FORUM_DB']->query($query, $max, $start);

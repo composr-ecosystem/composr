@@ -133,6 +133,13 @@ class Hook_admin_stats_comments extends CMSStatsProvider
                     $timestamp = $topic['t_cache_first_time'];
                     $timestamp = tz_time($timestamp, $server_timezone);
 
+                    if ($timestamp < $start_time) {
+                        continue;
+                    }
+                    if ($timestamp > $end_time) {
+                        continue;
+                    }
+
                     $month = to_epoch_interval_index($timestamp, 'months');
 
                     $num_comments = $topic['t_cache_num_posts'] - 1;

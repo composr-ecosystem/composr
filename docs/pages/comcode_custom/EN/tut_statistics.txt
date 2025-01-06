@@ -452,7 +452,7 @@ Why do we do this? There are a number of reasons:
 
 One limitation to the pre-computation is that it does limit the amount of filtering possible to what we have built into our data structures. For example, you can set date ranges but only aligned to months.
 
-Another limitation, to preserve site stability, is that statistics from over 31 days in the past will not be pre-processed. We have found sites will completely lock up even on performant dedicated servers (mainly because of the heavy use of database table locking in the process of pre-processing) if statistics have to pre-process multiple months of data. This means you could experience a gap in your data if any of the following occur:
+Another limitation, to preserve site stability, is that statistics from over 31 days in the past will not be pre-processed. Additionally, stats will only be processed one day at a time each run of the scheduler hook. We have found sites will completely lock up even on performant dedicated servers (mainly because of the heavy use of database table locking in the process of pre-processing) if statistics have to pre-process multiple months of data. This means you could experience a gap in your data if any of the following occur:
  - The system scheduler stops working for 31 or more consecutive days
  - The statistics module repeatedly fails to pre-process data over the course of 31 or more consecutive days
  - You manually delete existing statistical data from Admin Zone > Tools > Cleanup Tools, or from the database

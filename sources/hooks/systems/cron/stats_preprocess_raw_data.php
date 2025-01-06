@@ -23,6 +23,7 @@
  */
 class Hook_cron_stats_preprocess_raw_data
 {
+    protected const END_TIME_CUTOFF = 24 * 60 * 60; // Only process up to one day at a time to avoid server freezes.
     protected const INITIAL_BACK_TIME = 24 * 60 * 60 * 31; // Don't calculate stats older than 31 days ago to prevent server freezes.
 
     /**
@@ -41,7 +42,7 @@ class Hook_cron_stats_preprocess_raw_data
         return [
             'label' => 'Stats preprocessing',
             'num_queued' => null,
-            'minutes_between_runs' => 60 * 24,
+            'minutes_between_runs' => 60,
             'enabled_by_default' => true,
         ];
     }
@@ -51,25 +52,44 @@ class Hook_cron_stats_preprocess_raw_data
      */
     public function run()
     {
-        $server_timezone = get_server_timezone();
+        $start_time = null;
+        $_start_time = get_value('stats__last_processed', null, true);
 
-        $last_day_processed = get_value('stats__last_day_processed', null, true);
-        if ($last_day_processed === null) {
-            $start_time = 0;
-        } else {
-            list($year, $month, $day) = array_map('intval', explode('-', $last_day_processed));
-            $start_time = cms_mktime(0, 0, 0, $month, $day, $year);
-            $start_time = tz_time($start_time, $server_timezone);
+        // LEGACY: 11.beta7
+        if ($_start_time === null) {
+            $_start_time = get_value('stats__last_day_processed', null, true);
+            if ($_start_time !== null) {
+                list($year, $month, $day) = array_map('intval', explode('-', $_start_time));
+                $start_time = cms_mktime(0, 0, 0, $month, $day, $year);
+                $start_time = tz_time($start_time, get_server_timezone());
+                delete_value('stats__last_day_processed', true);
+
+                $_start_time = strval($start_time);
+            }
         }
 
+        if ($_start_time === null) {
+            require_code('global4');
+            $start_time = get_site_start_time();
+        } else {
+            $start_time = intval($_start_time);
+        }
+
+        // Do not process too far back
         if ($start_time < (time() - self::INITIAL_BACK_TIME)) {
             $start_time = (time() - self::INITIAL_BACK_TIME);
         }
 
-        $today = cms_date('Y-m-d');
-        list($year, $month, $day) = array_map('intval', explode('-', $today));
-        $end_time = cms_mktime(0, 0, 0, $month, $day, $year) - 1;
-        $end_time = tz_time($end_time, $server_timezone);
+        /*
+            NB: We subtract 1 second due to an edge case; the current second is not over yet, so additional stats (especially views)
+            that happen this second might later get logged. If we process this second now, those views / stats might get neglected.
+        */
+        $end_time = (time() - 1);
+
+        // Do not process too much at once
+        if (($end_time - $start_time) > self::END_TIME_CUTOFF) {
+            $end_time = ($start_time + self::END_TIME_CUTOFF);
+        }
 
         if ($end_time > $start_time) {
             require_code('global3');
@@ -86,7 +106,7 @@ class Hook_cron_stats_preprocess_raw_data
                 preprocess_raw_data_for($hook_name, $start_time, $end_time);
             }
 
-            set_value('stats__last_day_processed', $today, true);
+            set_value('stats__last_processed', strval($end_time), true);
 
             // Send KPI notifications...
 

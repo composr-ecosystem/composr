@@ -182,6 +182,12 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
      */
     public function preprocess_raw_data_flat(int $start_time, int $end_time, array &$data_buckets)
     {
+        // Optimisation: do not process if end time is over a day ago (this only calculates overall statistics, so is useless if not calculating for now)
+        if ($end_time < (time() - (60 * 60 * 24))) {
+            return;
+        }
+
+        // Required in early since its use is within a loop; we do not want to call many times
         if (addon_installed('points')) {
             require_code('points');
         }
@@ -189,7 +195,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
         $max = 1000;
         $start = 0;
 
-        $query = 'SELECT id,m_username,m_cache_num_posts FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ';
+        $query = 'SELECT id,m_username,m_cache_num_posts,m_total_sessions FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ';
         $query .= 'id<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id());
         do {
             $rows = $GLOBALS['FORUM_DB']->query($query, $max, $start);
@@ -197,12 +203,9 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                 $member_id = $row['id'];
                 $username = $row['m_username'];
 
-                $visits = $GLOBALS['SITE_DB']->query_select_value('stats', 'COUNT(DISTINCT session_id)', ['member_id' => $member_id]);
+                $visits = $row['m_total_sessions'];
                 if ($visits > 0) {
-                    if (!isset($data_buckets['top_members_by_visits'][$username])) {
-                        $data_buckets['top_members_by_visits'][$username] = 0;
-                    }
-                    $data_buckets['top_members_by_visits'][$username] += $visits;
+                    $data_buckets['top_members_by_visits'][$username] = $visits;
                 }
 
                 if (addon_installed('cns_forum')) {
@@ -353,6 +356,7 @@ class Hook_admin_stats_cns_members extends CMSStatsProvider
                     'data' => $data,
                     'x_axis_label' => do_lang_tempcode('USERNAME'),
                     'y_axis_label' => $y_axis_label,
+                    'limit_bars' => true,
                 ];
         }
 
