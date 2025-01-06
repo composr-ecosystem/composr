@@ -2969,7 +2969,7 @@ function _form_input(string $name, $pretty_name, $description, object $input, bo
         ];
 
         if (isset($discouraged_field_names[$name])) {
-            fatal_exit(sprintf('Form field with $name "%s" is not allowed as it does not work reliably with autofill, use "%s" instead.', $name, $discouraged_field_names[$name]));
+            fatal_exit(sprintf('Form field with $name \'%s\' is not allowed as it does not work reliably with autofill, use \'%s\' instead.', $name, $discouraged_field_names[$name]));
         }
 
         if (user_lang() == fallback_lang()) {
