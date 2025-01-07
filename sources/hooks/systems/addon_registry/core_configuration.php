@@ -217,6 +217,7 @@ class Hook_addon_registry_core_configuration
             'sources/hooks/systems/config/enable_mail_queue_large_warning.php',
             'sources/hooks/systems/config/enable_markup_webstandards.php',
             'sources/hooks/systems/config/enable_menu_editor_buttons.php',
+            'sources/hooks/systems/config/enable_pace.php',
             'sources/hooks/systems/config/enable_previews.php',
             'sources/hooks/systems/config/enable_seo_fields.php',
             'sources/hooks/systems/config/enable_spell_check.php',
