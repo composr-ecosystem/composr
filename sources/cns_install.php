@@ -1130,6 +1130,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_status_member_id', ['ga_status_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_promotion_to', ['ga_new_group_id', 'ga_status']);
 
+        $GLOBALS['FORUM_DB']->drop_table_if_exists('f_pposts_fulltext_index'); // LEGACY: nu_search from v10
         $GLOBALS['FORUM_DB']->create_table('f_pposts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',
             'i_for' => '*MEMBER',
@@ -1423,6 +1424,7 @@ function install_cns(?float $upgrade_from = null)
             'i_occurrence_rate', // For sorting
         ]);
 
+        $GLOBALS['FORUM_DB']->drop_table_if_exists('f_posts_fulltext_index'); // LEGACY: nu_search from v10
         $GLOBALS['FORUM_DB']->create_table('f_posts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',
 
@@ -1646,8 +1648,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'last_edit_by');
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');
