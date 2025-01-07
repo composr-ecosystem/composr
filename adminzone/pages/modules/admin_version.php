@@ -1252,6 +1252,7 @@ class Module_admin_version
                 'b_ip_address' => 'IP',
             ]);
             $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_time', ['b_time']);
+            $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_ip_address', ['b_ip_address']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 21)) { // LEGACY: 11.beta5

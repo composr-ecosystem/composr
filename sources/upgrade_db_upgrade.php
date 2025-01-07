@@ -658,150 +658,16 @@ function database_specific() : bool
 
     $done_something = false;
 
-    // LEGACY: Handle database field edits from 11 alpha to 11.beta1
-    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) >= 1711670588/*11.alpha1*/) && (intval($upgrade_from) < 1721661975)) {
-        $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
-        $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
-        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_url', 'URLPATH');
-        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_thumb_url', 'URLPATH');
-        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_last_downloaded_time', '?TIME');
-        $GLOBALS['SITE_DB']->alter_table_field('attachments', 'a_add_time', 'TIME');
-        $GLOBALS['SITE_DB']->alter_table_field('group_privileges', 'group_id', '*GROUP');
-        $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
-        $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
-        $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
-
-        $GLOBALS['SITE_DB']->create_index('group_privileges', 'group_id', ['group_id']);
-
-        $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_cache_last_username', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_answers', 'pa_poll_id', 'AUTO_LINK');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_group_join_log', 'usergroup_id', '?GROUP');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_invites', 'i_inviter', 'MEMBER', 'i_invite_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_on_probation_until', '?TIME', 'm_probation_expiration_time');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_groups', 'g_group_leader', '?MEMBER', 'g_group_lead_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_groups', 'g_promotion_target', '?GROUP', 'g_promotion_target_group');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_forums', 'f_parent_forum', '?AUTO_LINK', 'f_parent_forum_id');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_topics', 't_pt_from', '?MEMBER', 't_pt_from_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_topics', 't_pt_to', '?MEMBER', 't_pt_to_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_poster', 'MEMBER', 'p_posting_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_intended_solely_for', '?MEMBER', 'p_whisper_to_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_cache_points_at_voting_time', 'INTEGER', 'pv_points_when_voted');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
-
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'last_edit_by');
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_to');
-        $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 't_pt_from');
-
-        $GLOBALS['FORUM_DB']->change_primary_key('f_poll_answers', ['id']);
-        $GLOBALS['FORUM_DB']->create_index('f_invites', 'inviter', ['i_invite_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_posts', 'last_edit_member', ['p_last_edit_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_to_member', ['t_pt_to_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_topics', 't_pt_from_member', ['t_pt_from_member']);
-        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_member_id', ['pv_member_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_poll_votes', 'voting_ip_address', ['pv_ip_address']);
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta2) Copy declarations in CPF on upgrade so members are not forced to re-agree to the rules
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1721686113)) {
-        if ((get_option('join_declarations') != '') && (get_option('show_first_join_page') == '1')) {
-            $member_id = null;
-            do {
-                $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
-                foreach ($rows as $row) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
-
-                    if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
-                        continue;
-                    }
-
-                    $cpfs = $GLOBALS['FORUM_DRIVER']->get_custom_fields($member_id);
-                    if ($cpfs === null) {
-                        continue;
-                    }
-
-                    // Only copy declarations in for members whose declarations field was blank
-                    if (!isset($cpfs['agreed_declarations']) || ($cpfs['agreed_declarations'] == '')) {
-                        $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', get_option('join_declarations'));
-                    }
-                }
-            } while (count($rows) > 0);
-
-            $done_something = true;
-        }
-    }
-
-    // LEGACY: (11.beta2) Add new privilege for recommend addon
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1722461012)) {
-        require_code('permissions3');
-        add_privilege('RECOMMEND', 'use_own_recommend_message', false, false, true);
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta2) login keys should be stored as hashes just like passwords
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1723865750)) {
+    // LEGACY: [MUST STAY] (11.beta2) login keys should be stored as hashes just like passwords
+    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1723865750)) {
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_login_key', 'SHORT_TEXT', 'm_login_key_hash');
 
         $done_something = true;
     }
 
-    // LEGACY: (11.beta3) the country CPF was changed to country type in v11 but was never added to upgrade code
+    // LEGACY: [MUST STAY] (11.beta3) the country CPF was changed to country type in v11 but was never added to upgrade code
     if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726358732)) {
         $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta3) we need to track unsubscribed e-mail addresses so we never e-mail them (admin_version module v20)
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726889667)) {
-        $GLOBALS['SITE_DB']->create_table('unsubscribed_emails', [
-            'id' => '*AUTO',
-            'b_email_hashed' => 'SHORT_TEXT',
-            'b_time' => 'TIME',
-            'b_ip_address' => 'IP',
-        ]);
-        $GLOBALS['SITE_DB']->create_index('unsubscribed_emails', 'b_ip_address', ['b_ip_address']);
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta3) use_own_recommend_message needs to be false by default (was set to true in 11.beta2)
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1727441431)) {
-        delete_privilege('use_own_recommend_message');
-        add_privilege('RECOMMEND', 'use_own_recommend_message', false, false, true);
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta3) add m_message_extended field on logged_mail_messages
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1727902102)) {
-        $GLOBALS['SITE_DB']->add_table_field('logged_mail_messages', 'm_message_extended', 'LONG_TEXT', '');
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta4) referer also changed in hackattack table
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1728772485)) {
-        $GLOBALS['SITE_DB']->alter_table_field('hackattack', 'referer', 'URLPATH', 'referer_url');
-
-        $done_something = true;
-    }
-
-    // LEGACY: (11.beta5)
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1731538424)) {
-        //incorrect content type in ratings for catalogue entries
-        $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
 
         $done_something = true;
     }
