@@ -470,7 +470,7 @@ Useful Composr logs include:
  - System scheduler log, if enabled (enable it via creating an empty writable [tt]data_custom/cron.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Health Check log, if enabled (enable it via creating an empty writable [tt]data_custom/health_check.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Tasks log, if enabled (enable it via creating an empty writable [tt]data_custom/tasks.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
- - Permission checks, if enabled (useful for debugging why accessing is failing) (enable it via creating an empty writable [tt]data_custom/permission_checks.log[/tt] file; can view from Admin Zone > Audit > Low-level logging); covered in the [page="_SARCH:tut_permissions"]Access control and privileges[/page] tutorial
+ - Permission checks, if enabled (useful for debugging why accessing is failing) (enable it via creating an empty writable [tt]data_custom/permission_checks.log[/tt] file; can view from Admin Zone > Audit > Low-level logging); covered in the [page="_SEARCH:tut_permissions"]Access control and privileges[/page] tutorial
  - Queries running (debugging), if enabled (enable it via creating an empty writable [tt]data_custom/queries.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
  - Disk profiling (debugging performance), if enabled (enable it via creating an empty writable [tt]data_custom/debug_fs.log[/tt] file and using the [tt]keep_debug_fs[/tt] parameter; can view from Admin Zone > Audit > Low-level logging)
  - Profiling (debugging performance), if enabled (enable it via creating an empty writable [tt]data_custom/profiling*.log[/tt] file; can view from Admin Zone > Audit > Low-level logging)
