@@ -141,12 +141,15 @@ function automate_upgrade__safe()
     clear_caches_2();
     version_specific();
 
+    // Conversr
+    cns_upgrade();
+
     // TODO: The below will not work because it now happens in steps
     $offset = 2;
     upgrade_addons($from_cms_version, $offset);
 
-    rebuild_zone_files();
+    // Hot fixes
+    database_specific();
 
-    // Conversr
-    cns_upgrade();
+    rebuild_zone_files();
 }

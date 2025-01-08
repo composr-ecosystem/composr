@@ -336,6 +336,19 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_index('cached_comcode_pages', 'ccp_join', ['the_page', 'the_zone']);
         }
 
+        if (($upgrade_from === null) || ($upgrade_from < 23)) {
+            // This table has been all sorts of messed up. Let's just delete it and re-create it so it has the proper Comcode columns (it's flushable anyway)
+            $GLOBALS['SITE_DB']->drop_table_if_exists('messages_to_render');
+            $GLOBALS['SITE_DB']->create_table('messages_to_render', [
+                'id' => '*AUTO',
+                'r_session_id' => 'ID_TEXT',
+                'r_message' => 'LONG_TRANS__COMCODE',
+                'r_type' => 'ID_TEXT',
+                'r_time' => 'TIME',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('messages_to_render', 'forsession', ['r_session_id']);
+        }
+
         // A lot of core upgrade is also here. When absolutely necessary it is put in upgrade.php.
 
         if (($upgrade_from !== null) && ($upgrade_from < 20)) { // LEGACY: 11.beta1 (later upgrade code depends on this)
@@ -1034,6 +1047,7 @@ class Module_admin_version
                 'c_enabled' => 'BINARY',
             ]);
 
+            $GLOBALS['SITE_DB']->drop_table_if_exists('translation_cache'); // Must have come from a v10 NB addon; drop it as it is flushable.
             $GLOBALS['SITE_DB']->create_table('translation_cache', [
                 'id' => '*AUTO',
                 't_lang_from' => 'LANGUAGE_NAME',
@@ -1175,15 +1189,16 @@ class Module_admin_version
                 $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_include_on_sitemap' => $include_on_sitemap ? 1 : 0], $row, '', 1);
             }
 
+            $GLOBALS['SITE_DB']->drop_table_if_exists('ft_index_commonality'); // Flushable table from v10 NB addon nu_search
             $GLOBALS['SITE_DB']->create_table('ft_index_commonality', [
                 'id' => '*AUTO',
                 'c_ngram' => 'SHORT_TEXT',
                 'c_commonality' => 'REAL',
             ]);
-
             $GLOBALS['SITE_DB']->create_index('ft_index_commonality', 'c_ngram', ['c_ngram']);
             $GLOBALS['SITE_DB']->create_index('ft_index_commonality', 'c_commonality', ['c_commonality']);
 
+            $GLOBALS['SITE_DB']->drop_table_if_exists('cpages_fulltext_index'); // Flushable table from v10 NB addon nu_search
             $GLOBALS['SITE_DB']->create_table('cpages_fulltext_index', [
                 'i_zone_name' => '*ID_TEXT',
                 'i_page_name' => '*ID_TEXT',
@@ -1256,8 +1271,6 @@ class Module_admin_version
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 21)) { // LEGACY: 11.beta5
-            $GLOBALS['SITE_DB']->alter_table_field('messages_to_render', 'r_message', 'LONG_TRANS__COMCODE');
-
             // This has been broken in v10 and v11 for quite some time now; 'catalogues' is not a valid content type and actually referred to entries.
             $GLOBALS['SITE_DB']->query_update('rating', ['rating_for_type' => 'catalogue_entry'], ['rating_for_type' => 'catalogues']);
         }
@@ -1273,9 +1286,6 @@ class Module_admin_version
 
             // Odd field that should have been URLPATH but never was (even the tests did not pick up on this)
             $GLOBALS['SITE_DB']->alter_table_field('logged_mail_messages', 'm_url', 'URLPATH');
-
-            // Missing promotion to Comcode field from 11.beta5
-            $GLOBALS['SITE_DB']->promote_text_field_to_comcode('messages_to_render', 'r_message', 'id', 4, false, true);
 
             // Needs re-done; in a previous upgrade this would result in a SHORT_TRANS__COMCODE field, which was wrong
             $GLOBALS['SITE_DB']->promote_text_field_to_comcode('digestives_tin', 'd_message', 'id', 4, false, true);

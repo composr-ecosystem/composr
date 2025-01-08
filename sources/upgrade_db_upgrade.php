@@ -180,7 +180,7 @@ END;
  */
 function version_specific() : bool
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     // Version specific (rather than component specific) upgrading
     $version_files = cms_version_number();
@@ -476,6 +476,42 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
+            // Even though this is technically Conversr, it absolutely has to be done first because custom fields have to be modified early
+            if ($GLOBALS['FORUM_DB']->table_exists('f_custom_fields')) {
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_allow_template_search', 'BINARY');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_icon', 'ID_TEXT');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_section', 'ID_TEXT');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_tempcode', 'LONG_TEXT');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_type', 'ID_TEXT');
+                $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
+            }
+
+            // We have to take a non-conventional approach to migrating the old long country field to the new short field
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'legacy_country', 5, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0);
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
+            $_legacy_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name' => 'cms_legacy_country']);
+            $_new_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
+            $legacy_id = 'field_' . strval($_legacy_id);
+            $new_id = 'field_' . strval($_new_id);
+
+            $max = 200;
+            $start = 0;
+            do {
+                $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', [$legacy_id, 'mf_member_id'], [], '', $max, $start);
+                foreach ($rows as $row) {
+                    $text = get_translated_text($row[$legacy_id]);
+                    if (strlen($text) >= 250) {
+                        $text = substr($text, 0, 250) . '...';
+                    }
+                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [$new_id => $text], ['mf_member_id' => $row['mf_member_id']]);
+                }
+
+                $start += $max;
+            } while (count($rows) > 0);
+
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('legacy_country');
+
             // Database changes (correcting previous errors in types)
             $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
             $GLOBALS['SITE_DB']->alter_table_field('db_meta_indices', 'i_fields', 'LONG_TEXT');
@@ -488,9 +524,6 @@ function version_specific() : bool
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'cache_username', 'ID_TEXT');
             $GLOBALS['SITE_DB']->alter_table_field('sessions', 'last_activity', 'TIME', 'last_activity_time');
             $GLOBALS['SITE_DB']->alter_table_field('menu_items', 'i_url', 'SHORT_TEXT', 'i_link');
-
-            // Core CPF change
-            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
 
             echo do_lang('UPGRADER_UPGRADED_CORE_TABLES', '11');
 
@@ -665,13 +698,6 @@ function database_specific() : bool
         $done_something = true;
     }
 
-    // LEGACY: [MUST STAY] (11.beta3) the country CPF was changed to country type in v11 but was never added to upgrade code
-    if ((!is_numeric($upgrade_from)) || (intval($upgrade_from) < 1726358732)) {
-        $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
-
-        $done_something = true;
-    }
-
     return $done_something;
 }
 
@@ -684,6 +710,8 @@ function database_specific() : bool
  */
 function upgrade_addons(float $from_cms_version, int &$offset) : string
 {
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH); // On major updates, some modules may need to migrate or re-structure lots of data
+
     $_offset = ($offset - 2); // We start at 2 when we first execute this
 
     require_code('zones2');

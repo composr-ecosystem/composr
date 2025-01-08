@@ -176,7 +176,7 @@ function uninstall_cns()
  */
 function install_cns(?float $upgrade_from = null)
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     require_code('cns_members');
     require_code('cns_topics');
@@ -233,16 +233,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date_time'], ['cf_type' => 'date']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date'], ['cf_type' => 'just_date']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'time'], ['cf_type' => 'just_time']);
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_allow_template_search', 'BINARY');
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_icon', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_section', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_tempcode', 'LONG_TEXT');
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_type', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
         $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
