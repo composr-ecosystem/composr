@@ -1303,6 +1303,8 @@ class Module_admin_version
                 }
             }
             set_option('telemetry', strval($telemetry));
+
+            delete_value('implicit_usergroup_sync'); // In favor of the native system scheduler enable / disable system
         }
     }
 
