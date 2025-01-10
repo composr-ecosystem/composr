@@ -690,7 +690,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // Automatic ban needed?...
 
-    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]) + $risk_score);
+    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]) + $risk_score);
     $hack_threshold = intval(get_option('hack_ban_threshold'));
 
     // Super administrators do not get risk scores
@@ -719,7 +719,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     require_lang('security');
 
     $ip_ban_todo = null;
-    if (($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
+    if ((!$silent_to_staff_log) && ($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {

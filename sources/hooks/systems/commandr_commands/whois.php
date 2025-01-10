@@ -80,7 +80,7 @@ class Hook_commandr_command_whois
         foreach ($known_ip_addresses as $row) {
             // Tack on risk score
             if (addon_installed('securitylogging')) {
-                $row['risk_score'] = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $row['ip']]));
+                $row['risk_score'] = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $row['ip'], 'silent_to_staff_log' => 0]));
             } else {
                 $row['risk_score'] = null;
             }
