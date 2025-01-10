@@ -474,6 +474,7 @@ class Module_search
         $direction = get_param_string('direction', 'DESC');
         if (!in_array(cms_strtoupper_ascii($direction), ['ASC', 'DESC'])) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a45c2d7a43db544cb22b1556986f4d4e')));
         }
         $only_titles = get_param_integer('only_titles', 0) == 1;
         $search_under = get_param_string('search_under', '!', INPUT_FILTER_GET_COMPLEX);

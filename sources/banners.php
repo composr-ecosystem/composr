@@ -191,6 +191,7 @@ function banners_script(bool $ret = false, ?string $type = null, ?string $dest =
 
         if ((strpos($url, "\n") !== false) || (strpos($url, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('09fbbd4799105e30bac32297b907ff8d')));
         }
         require_code('site2');
         redirect_exit($url);

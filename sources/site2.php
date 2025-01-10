@@ -171,6 +171,7 @@ function assign_refresh($url, float $multiplier = 0.0)
     }
     if ((strpos($url, "\n") !== false) || (strpos($url, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('33ffcd2c75fa51d9bb9ac759f1749198')));
     }
 
     $url = str_replace('https-cms:', get_base_url() . '/', $url);

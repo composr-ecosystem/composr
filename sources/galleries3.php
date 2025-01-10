@@ -46,6 +46,7 @@ function download_gallery_script()
     check_privilege('may_download_gallery', ['galleries', $cat]);
     if ((strpos($cat, "\n") !== false) || (strpos($cat, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('29dd740f93e95868847fe9e4d6a8d3a8')));
     }
 
     $num_videos = $GLOBALS['SITE_DB']->query_select_value('videos', 'COUNT(*)', ['cat' => $cat, 'validated' => 1]);

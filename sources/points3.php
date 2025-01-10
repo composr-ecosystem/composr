@@ -151,6 +151,7 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('75a9c3e19bb956e7bd791c20e851cd69')));
         }
 
         $out = new Tempcode();
@@ -418,6 +419,7 @@ function points_get_transactions_screen(string $type, int $member_id_of, int $me
     list($sortable, $sort_order) = $test;
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e97c7572d8c45789a102ecc8e819efa8')));
     }
 
     list($max_rows, $rows) = points_get_transactions($type, $member_id_of, $member_id_viewing, $max, $start, $sortable, $sort_order, null, false, $skip_low_impact);

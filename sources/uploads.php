@@ -744,6 +744,12 @@ function _get_specify_url(int $member_id, string $specify_name, string $upload_f
             } else {
                 if (substr($shouldbe, 0, 8000) !== substr($actuallyis->data, 0, 8000)) {
                     log_hack_attack_and_exit('DOWNLOAD_PRIVATE_URL_HACK');
+                    if ($accept_errors) {
+                        attach_message(do_lang_tempcode('MISSING_FILE', escape_html(_sanitise_error_msg(rawurldecode($url[0])))), 'warn', false, true);
+                        return ['', ''];
+                    } else {
+                        warn_exit(do_lang_tempcode('MISSING_FILE', escape_html(_sanitise_error_msg(rawurldecode($url[0])))), false, true);
+                    }
                 }
             }
         }

@@ -596,14 +596,13 @@ function _log_hack_attack_matches(array $specifier, string $reason, string $reas
 }
 
 /**
- * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ * Log a hackattack, and depending on advanced banning settings might also notify the staff and/or exit with an error.
  *
  * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
  * @param  integer $risk_score The default risk score for this hack attack; could be overridden by advanced banning
  * @ignore
- * @exits
  */
 function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {

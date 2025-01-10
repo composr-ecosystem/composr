@@ -678,7 +678,6 @@ Values are like hidden configuration options. They are either hidden because the
   - [tt]disable_member_tracking[/tt] -- set this to '1' if you want to disable the member tracking feature where it's supported (it shows who is viewing a forum topic, for example)
   - [tt]min_lastvisit_frequency[/tt] -- set this to the number of seconds waited between the last-visit time being updated (performance tweak, minimises database writes)
   - [tt]disable_flood_control[/tt] -- set this to '1' if you will not have flood control
-  - [tt]implicit_usergroup_sync[/tt] -- set this to '1' to enable synching of implicit usergroups (see the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial for more information)
   - [tt]shortened_tempcode[/tt] -- set this to '1' to not store parameter reference origins in Tempcode, which makes Tempcode use less memory/storage/CPU
   - [tt]aggressive_tempcode_compilation[/tt] -- set this to '1' if you want to compile some things aggressively into Tempcode that may occasionally change, such as member avatar URLs or resource URLs; setting this implies you will tolerate some outdated data in return for slightly faster cache rendering
   - [tt]save_jpegs_as_png[/tt] -- set this to '1' to allow Composr to detect when JPEG files would be smaller, and save JPEG data into PNG file extensions. It is a bit of a hack, and goes against standards, but works well

@@ -61,6 +61,7 @@ function points_get_escrow(int $member_id_of, int $member_id_viewing) : object
     list($sortable, $sort_order) = $test;
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('138c2e4028d95bb09ef432596a482263')));
     }
 
     if (($member_id_of == $member_id_viewing) || (has_privilege($member_id_viewing, 'moderate_points_escrow'))) {
@@ -137,6 +138,7 @@ function escrow_get_logs(int $id) : object
     list($sortable, $sort_order) = $test;
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bc7d5345d5d551f580f6275abee70d2d')));
     }
 
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('escrow_logs', 'COUNT(*)', ['escrow_id' => $id]);

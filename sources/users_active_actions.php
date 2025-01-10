@@ -246,6 +246,7 @@ function handle_active_login(string $username)
         $count = $GLOBALS['SITE_DB']->query_value_if_there('SELECT COUNT(*) FROM ' . get_table_prefix() . 'failedlogins WHERE date_and_time>' . strval(time() - 60 * $brute_force_login_minutes) . ' AND date_and_time<=' . strval(time()) . ' AND ' . db_string_equal_to('ip', get_ip_address()));
         if ($count >= $brute_force_threshold) {
             log_hack_attack_and_exit('BRUTEFORCE_LOGIN_HACK', $username);
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2ac6158512b95401a5cdbebf67eb26a1')));
         }
     }
 }

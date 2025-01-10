@@ -363,6 +363,7 @@ class RevisionEngineDatabase
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6706f9cacb0852578f9bb10f4dfee0c2')));
         }
 
         $max_rows = $this->total_revisions($resource_types, $resource_id, $category_id, $member_id);
@@ -468,6 +469,7 @@ class RevisionEngineDatabase
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('022e7aa28be650a3871c01c3ca4a5b77')));
         }
 
         $max_rows = $this->total_revisions([$resource_type], $resource_id);

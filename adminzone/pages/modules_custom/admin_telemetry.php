@@ -243,6 +243,7 @@ class Module_admin_telemetry
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b84fffc6982b588da34b4a6c6ffb7b9f')));
         }
         $order_by = ' ORDER BY ' . $sortable . ' ' . $sort_order;
 
@@ -390,6 +391,7 @@ class Module_admin_telemetry
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cb54eb251ad058d0935c226b42440407')));
         }
         $select = 'SELECT r.*,s.website_url AS website_url,s.website_name AS website_name';
         $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
@@ -640,6 +642,7 @@ class Module_admin_telemetry
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bf811d6f2bc5838948b270b574d5a4e')));
         }
         $rows = $GLOBALS['SITE_DB']->query_select('telemetry_errors_ignore', ['*'], [], ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 

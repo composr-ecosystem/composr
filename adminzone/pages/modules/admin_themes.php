@@ -1822,9 +1822,11 @@ class Module_admin_themes
 
         if ((strpos($directory, '..') !== false) || (preg_match('#(^themes/|pages/comcode/\w+$|pages/comcode_custom/\w+$)#', $directory) == 0)) {
             log_hack_attack_and_exit('PATH_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('edd2db57faaf508ba37b61a9ac3272b9')));
         }
         if (!in_array($ext, ['txt', 'tpl', 'xml', 'css', 'js'])) {
             log_hack_attack_and_exit('PATH_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('6dea6535093a5d9da07b0ba4c43fb326')));
         }
 
         $diff_more_recent_revision = get_param_integer('more_recent_revision', null);

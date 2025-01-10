@@ -449,6 +449,7 @@ class Module_admin_early_access extends Standard_crud_module
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('9333df6115ba5c0fbf3e25244f158398')));
         }
 
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('early_access_codes', 'COUNT(*)', []);

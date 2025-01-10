@@ -94,6 +94,7 @@ function chat_logs_script()
     header('Content-Type: application/octet-stream');
     if ((strpos($room_name, "\n") !== false) || (strpos($room_name, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('169a2b40101a59d99d4b9804b5f8246c')));
     }
     header('Content-Disposition: attachment; filename="' . escape_header($filename, true) . '"');
 

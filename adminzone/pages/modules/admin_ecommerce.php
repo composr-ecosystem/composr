@@ -394,6 +394,7 @@ class Module_admin_ecommerce extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('248964e1ce2d5cfd8440fb8c3ea50d5a')));
         }
 
         // Prepare Filtercode

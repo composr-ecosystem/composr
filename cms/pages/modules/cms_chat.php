@@ -343,6 +343,7 @@ class Module_cms_chat
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('27368921b1e45fd593c0963a703d421c')));
         }
         $max_rows = $GLOBALS['SITE_DB']->query_select_value('chat_messages', 'COUNT(*)', ['room_id' => $room_id]);
         $rows = $GLOBALS['SITE_DB']->query_select('chat_messages', ['*'], ['room_id' => $room_id], 'ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);

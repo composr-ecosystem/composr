@@ -424,6 +424,7 @@ class Module_cms_polls extends Standard_crud_module
         if ($current == 1) {
             if (!has_privilege(get_member(), 'choose_poll')) {
                 log_hack_attack_and_exit('BYPASS_VALIDATION_HACK');
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('51b632e80e1655c89f4dfd90754dafe2')));
             }
             set_poll($id);
         }
@@ -529,6 +530,7 @@ class Module_cms_polls extends Standard_crud_module
                 if ($is_current == 0) {
                     if (!has_privilege(get_member(), 'choose_poll')) {
                         log_hack_attack_and_exit('BYPASS_VALIDATION_HACK');
+                        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c3dda9297d6a566aac0578b62c012e32')));
                     }
 
                     set_poll(intval($id));

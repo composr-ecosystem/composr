@@ -8,10 +8,18 @@
 	<!-- Very low-scored, because it may well just be user-error / Silent to user because we have a normal CAPTCHA-failed error message / Common so silence it to staff -->
 	<hackattack codename="CAPTCHAFAIL" silent_to_user="true" risk_score="1" silent_to_staff_notifications="true" silent_to_staff_log="true" />
 
-	<!-- Common and almost always intentional spam; silence it to staff but syndicate it as spam -->
+	<!-- Common and almost always intentional spam; syndicate it as spam -->
 	<hackattack codename="BLACKHOLE_SPAM_HACK" silent_to_staff_notifications="true" silent_to_staff_log="true" syndicate_as_spammer="true" risk_score="10" />
 
-	<!-- Other hack attack codes without special parameters; they are defined here just so it is easy if you want to configure their score -->
+	<!-- These CSRF token hacks should add a little score but otherwise be silent to users and staff (can be common mistakes made by the user, but could also be a bot we want to prevent) -->
+	<hackattack codename="EVIL_POSTED_FORM_NO_TOKEN_HACK" silent_to_user="true" silent_to_staff_notifications="true" risk_score="2" />
+	<hackattack codename="EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK" silent_to_user="true" silent_to_staff_notifications="true" risk_score="3" />
+	<hackattack codename="EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK" silent_to_user="true" silent_to_staff_notifications="true" risk_score="2" />
+
+	<!-- For users we use our standard resource missing error message, but we want to prevent scraping of sensitive resources so we still want to add score for it -->
+	<hackattack codename="SENSITIVE_RESOURCE_HACK" risk_score="5" silent_to_user="true" />
+
+	<!-- Other hack attack codes without special parameters by default -->
 	<hackattack codename="BRUTEFORCE_LOGIN_HACK" risk_score="100" /><!-- Very high-scored, because we do not want to allow too much brute forcing (a hack attack is only triggered after so many attempts in so many minutes); also see brute_force_login_minutes and brute_force_threshold options -->
 	<hackattack codename="DODGY_GET_HACK" risk_score="10" /><!-- Very unlikely, but possible, a suspicious GET parameter could be a false-positive -->
 	<hackattack codename="EVIL_POSTED_FORM_HACK" risk_score="20" /><!-- Posts from external websites without the CSRF token on behalf of a member are almost always hacks -->
@@ -31,6 +39,7 @@
 	<hackattack codename="PHP_DOWNLOAD_INNOCENT" risk_score="100" /><!-- Should never happen and indicates the site was compromised; this should ideally auto-ban the IP in case they were the ones who did it -->
 	<hackattack codename="HACK_ATTACK_PASSWORD_CHANGE" risk_score="10" /><!-- Almost always an attempt to gain access to a member account -->
 	<hackattack codename="SQL_INJECTION_HACK" risk_score="20" /><!-- Tried to UNION something; definitely an SQL injection attack attempt -->
+	<hackattack codename="EVIL_POSTED_FORM_MISMATCHED_TOKEN_HACK" risk_score="10" /><!-- Used someone else's CSRF token; they probably stole it, but could happen if logging out before submission. -->
 	<hackattack codename="HACK_ATTACK" risk_score="10" /><!-- Generic hack-attacks, usually from non-bundled addons -->
 
 	<!-- See hack_ban_threshold option to know how many normalised hack-attacks until a ban happens -->

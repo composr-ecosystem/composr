@@ -137,6 +137,7 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
     $sortables = ['date_and_time' => do_lang_tempcode('DATE'), 'page_link' => do_lang_tempcode('PAGE_LINK')];
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7577cd4a99325591b2c28f029ba50b68')));
     }
 
     $query = '';
@@ -196,7 +197,7 @@ function find_page_stats_for(int $member_id, string $ip, int $start = 0, int $ma
  */
 function find_security_alerts(array $where = [], string $end = '') : array
 {
-    $end .= ' AND r.silent_to_staff_log=0'; // We always hide entries silenced (dismissed) from the staff log
+    $where['r.silent_to_staff_log'] = 0; // We always hide entries silenced (dismissed) from the staff log
 
     require_code('templates_tooltip');
     require_code('templates_results_table');
@@ -214,6 +215,7 @@ function find_security_alerts(array $where = [], string $end = '') : array
     list($sortable, $sort_order) = $test;
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('815d3f3eb1595ca8b4f1ba9998ef3e99')));
     }
 
     $_fields = [do_lang_tempcode('FROM'), do_lang_tempcode('DATE_TIME'), do_lang_tempcode('RISK'), do_lang_tempcode('IP_ADDRESS'), do_lang_tempcode('REASON'), new Tempcode()];

@@ -83,7 +83,8 @@ function check_csrf_token(?string $token)
     }
 
     if ($token === null) {
-        warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_NO_TOKEN_HACK'));
+        log_hack_attack_and_exit('EVIL_POSTED_FORM_NO_TOKEN_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('871ff449f3ad54c2b75b3cbcb435651b')));
     }
 
     delete_expired_tokens();
@@ -110,7 +111,8 @@ function check_csrf_token(?string $token)
         if (!$member_match && !$session_match && !$ip_match) { // Multiple checks means safe if login status changed, session changed, or networks changed - but not all 3; also allows it to work well for both guests and members
             $GLOBALS['SITE_DB']->query_delete('post_tokens', ['token' => $token], '', 1); // Kill the token, in case a hacker has stolen it and this was a mis-targeting that preempts a successful future targeting
 
-            warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_MISMATCHED_TOKEN_HACK'));
+            log_hack_attack_and_exit('EVIL_POSTED_FORM_MISMATCHED_TOKEN_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a233b889eef55a67ae4b516a9566e292')));
         }
 
         if ($token_row['usage_tally'] == 0) {
@@ -119,7 +121,8 @@ function check_csrf_token(?string $token)
             $expired = ($token_row['generation_time'] < time() - 60 * 60 * intval(get_option('csrf_token_expire_fresh')));
         }
         if ($expired) {
-            warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK'));
+            log_hack_attack_and_exit('EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3f7ca43034b75563aa34c01a4d0411fb')));
         }
 
         if (isset($_POST['_data'])) {
@@ -132,7 +135,8 @@ function check_csrf_token(?string $token)
             $GLOBALS['SITE_DB']->query_update('post_tokens', ['usage_tally' => $token_row['usage_tally'] + 1], ['token' => $token], '', 1);
         }
     } else {
-        warn_exit(do_lang_tempcode('EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK'));
+        log_hack_attack_and_exit('EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bdc22714af2515da699ced7008b5ea8')));
     }
 }
 

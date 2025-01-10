@@ -717,6 +717,7 @@ function check_extension(string &$path, bool $skip_server_side_security_check = 
                 return false;
             }
             log_hack_attack_and_exit('SCRIPT_UPLOAD_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a5ada3b2cf5751889eabbe71992aad1e')));
         }
     }
 

@@ -74,6 +74,7 @@ if ($field_id !== null) {
     list($sortable, $sort_order) = $test;
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a6b0cbd520a4534eb13760ebeed62693')));
     }
     inform_non_canonical_parameter('sort');
     $orderby = 'field_' . $field_id;

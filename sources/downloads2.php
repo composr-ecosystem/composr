@@ -162,6 +162,7 @@ function dload_script()
     // Send header
     if ((strpos($myrow['original_filename'], "\n") !== false) || (strpos($myrow['original_filename'], "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('604ae8d6a3d15a789161233e6e8bdae2')));
     }
     require_code('mime_types');
     $mime_type = get_mime_type(get_file_extension($myrow['original_filename']), false);
@@ -182,6 +183,7 @@ function dload_script()
         }
         if ((strpos($full, "\n") !== false) || (strpos($full, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('bff797095d1c5197af14340db75cc745')));
         }
         header('Location: ' . escape_header($full)); // assign_refresh not used, as no UI here
         log_download($id, 0, $got_before !== null); // Bandwidth used is 0 for an external download
@@ -191,6 +193,7 @@ function dload_script()
     // Some basic security: don't fopen php files
     if ($extension == 'php') {
         log_hack_attack_and_exit('PHP_DOWNLOAD_INNOCENT', integer_format($id));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e62783cf99dc5213a57ccbc7502dd673')));
     }
 
     // Size, bandwidth

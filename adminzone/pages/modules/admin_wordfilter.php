@@ -382,6 +382,7 @@ class Module_admin_wordfilter extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f12e0e813aa25e908ef6b9714854cf7b')));
         }
 
         $columns = [];

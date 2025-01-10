@@ -424,6 +424,7 @@ function stats_generate_results_table(string $graph_name, array $filters = [], $
     ];
     if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
         log_hack_attack_and_exit('ORDERBY_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2c1b9b7e47c7594f8731e3c7f6d255f8')));
     }
 
     $columns = [];

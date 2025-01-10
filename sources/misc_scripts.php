@@ -536,6 +536,7 @@ function thumb_script()
 
     if ((strpos($url_thumb, "\n") !== false) || (strpos($url_thumb, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('ba7bd2e1b0d05cf287a45494dbbcaf60')));
     }
     header('Location: ' . escape_header($url_thumb)); // assign_refresh not used, as no UI here
 }
@@ -554,6 +555,7 @@ function page_link_redirect_script()
 
     if ((strpos($x, "\n") !== false) || (strpos($x, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('caa15d8383735f51966786143b6796b3')));
     }
 
     require_code('site2');

@@ -88,16 +88,21 @@ class Module_mail
 
         $id = find_id_via_guid($guid);
         if ($id === null) {
+            log_hack_attack_and_exit('SENSITIVE_RESOURCE_HACK', $guid, 'mail');
             warn_exit(do_lang_tempcode('MISSING_RESOURCE__MAIL'));
         }
 
         $resource = get_resource_fs_record('mail', $id);
         if ($resource === null) {
+            expunge_resource_fs_moniker('mail', strval($id));
+            log_hack_attack_and_exit('SENSITIVE_RESOURCE_HACK', $guid, 'mail');
             warn_exit(do_lang_tempcode('MISSING_RESOURCE__MAIL'));
         }
 
         $email = json_decode($resource[0], true);
         if ($email === null) {
+            expunge_resource_fs_moniker('mail', strval($id));
+            log_hack_attack_and_exit('SENSITIVE_RESOURCE_HACK', $guid, 'mail');
             warn_exit(do_lang_tempcode('MISSING_RESOURCE__MAIL'));
         }
 
