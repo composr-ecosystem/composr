@@ -299,16 +299,15 @@ class DecisionTree
                 }
                 $current_section = $section;
 
-                $_description = isset($question_details['description']) ? $question_details['description'] : '';
-                $description = comcode_to_tempcode($_description, null, true);
+                $description = isset($question_details['description']) ? $question_details['description'] : '';
 
-                if ($_description != '') {
-                    $hidden->attach(form_input_hidden('description_for__' . $question_name, $_description));
+                if ($description != '') {
+                    $hidden->attach(form_input_hidden('description_for__' . $question_name, $description));
                 }
 
                 list($hook_ob, $field, $default) = $this->get_question_field_details($question_name, $question_details, $i);
 
-                $temp = $hook_ob->get_field_inputter(protect_from_escaping(comcode_to_tempcode($label, null, true)), $description, $field, cms_empty_safe($default) ? null : $default, true);
+                $temp = $hook_ob->get_field_inputter(comcode_to_tempcode($label, null, true)->evaluate(), $description, $field, cms_empty_safe($default) ? null : $default, true);
                 if (is_array($temp)) {
                     $field_details = $temp[0];
                     $hidden->attach($temp[1]);
