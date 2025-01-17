@@ -88,10 +88,10 @@ class Block_main_staff_tips
         // What tips have been permanently dismissed by the current member?
         $read = collapse_1d_complexity('t_tip', $GLOBALS['SITE_DB']->query_select('staff_tips_dismissed', ['t_tip'], ['t_member' => get_member()]));
 
-        $esc_free_support = escape_html(get_brand_page_url(['page' => 'contact', 'type' => 'free'], ''));
+        $esc_free_support = escape_html(get_brand_page_url(['page' => 'contact', 'type' => 'browse'], ''));
         $esc_brand_name = escape_html(brand_name());
         $remaining_tip_params = [
-            escape_html(get_brand_page_url(['page' => 'professional_support'], ''/*is site, except runs with single public zone*/)),
+            escape_html(get_brand_page_url(['page' => 'partners'], ''/*is site, except runs with single public zone*/)),
             escape_html(get_brand_page_url(['page' => ''], 'forum')),
             escape_html(get_tutorial_url('tutorials')),
             escape_html(get_tutorial_url(null)),

@@ -78,7 +78,7 @@ Previously we supported JavaScript as disabled, but realistically all modern web
 
 [title="2"]Desktop settings[/title]
 
-A screen-resolution of at least 1024&times;768 is strongly suggested, as this is the minimum resolution that we design the default theme for.
+A screen-width of at least 983 pixels is strongly suggested for desktop environments, as this is the minimum resolution that we design the default theme for.
 
 [title="2"]Printing[/title]
 

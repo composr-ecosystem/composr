@@ -94,7 +94,7 @@ Note that "Avoid broad input filtering security layer" happens on the input laye
 
 [title="3"]The future[/title]
 
-Some time in the future browsers may gain the ability to sandbox parts of web pages, which would allow us to relax these rules, but it seems a long way off still. We would need to wait for all web browsers in use to have adopted the new sandboxing behaviour before we could rely on it.
+Some browsers have the ability to sandbox parts of web pages, but this is not a common standard yet and not widely implemented. Should that become the case for all major browsers, we can relax some of these rules.
 
 [title="2"]Custom Comcode[/title]
 
@@ -119,8 +119,10 @@ Note that Comcode is cached, and if you edit a tag after adding Comcode using it
 [/surround]
 
 [box="Tip"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
 If you want to let users use some specific "dangerous" Comcode (such as Tempcode symbols, or an iframe), wrapping it up within a Custom Comcode tag is a great solution. As long as a user has permission to the tag itself (i.e. it's not added as dangerous), they can indirectly do what code it contains regardless of the nature of that code.
+[/surround]
 [/box]
 
 In the Replacement text you can either put your parameters in lower case like [tt]{example}[/tt] or upper case like [tt]{EXAMPLE}[/tt]. If you are comfortable with Tempcode programming, use upper case, as this is standard Tempcode and thus the conventional way to do it; you can also add escaping, e.g. [tt]{EXAMPLE*}[/tt]. If you use lower case then a substitution to upper case will be done for you while also automatically adding HTML escaping (i.e. special HTML characters like angled brackets with parameters will be shown literally rather than run as code within the web browser).
@@ -175,6 +177,8 @@ Use of Tempcode in this example allows us to do some computation when the tag di
 The [tt][semihtml][/tt] tag is a special tag that allows Comcode and HTML to be naturally mixed together. Primarily, the tag is used so that the WYSIWYG editor, which is an HTML editor, may have Comcode placed within it that is not visual, and thus could not be edited in a WYSIWYG fashion.
 
 The [tt][semihtml][/tt] tag is also useful if you are writing some content that has very tight formatting, so it involves a lot of HTML, but also includes elements of Comcode, such as blocks. Without the [tt][semihtml][/tt] tag, it would be necessary to keep opening and closing [tt][html][/tt] tags to achieve the same effect.
+
+Keep in mind some caveats. For example, normally with Comcode when you separate content with a blank line, the content will be separated with line breaks in HTML. This is not the case when inside a [tt][semihtml][/tt] tag (no line breaks are added); you will need to use HTML tags manually for that.
 
 [title="2"]Syntax highlighting[/title]
 

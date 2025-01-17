@@ -12,11 +12,11 @@ The Composr gallery system provides a number of advanced features -- this tutori
 If you have a [abbr="comma-separated Values"]CSV[/abbr] spreadsheet file saved to your server as (strictly) [tt]uploads/galleries/descriptions.csv[/tt], with the first column containing filenames, and the second column containing descriptions, then this will be checked when bulk importing files. The filenames should not contain a path component (so just the filenames), and should be under [tt]uploads/galleries[/tt] also.
 Also, EXIF data (in JPEG and TIFF files) will be checked for descriptions.
 
-The orphaned files importer will auto-select any orphaned files that are put in a directory of the same name as the gallery you are importing. This is useful if you have been organising your gallery images/videos into a directory structure before-hand, as it stops you having to manually re-select what-goes-where when you do the import. Note that the gallery structure is only one-level-deep, there is no support for subdirectory nesting; however, that is not required anyway as gallery names must be unique and thus there is no potential for directory name conflict.
+The orphaned files importer will auto-select any orphaned files that are put in a directory of the same name as the gallery you are importing. This is useful if you have been organising your gallery images/videos into a directory structure before-hand, as it stops you having to manually re-select what-goes-where when you do the import.
 
 [box="Tip"]
 If you are importing a lot of large images from a digital camera you may want to size the images down first using a tool such as [url="Image Resizer"]http://www.bricelam.net/ImageResizer/[/url] or the inbuilt Preview app on a Mac.
-This will speed up upload and reduce changes of hitting timeouts.
+This will speed up upload and reduce chances of hitting timeouts (although ideally the task queue will be enabled, which the mass import tool will use if that is the case).
 [/box]
 
 [title="3"]EXIF[/title]
@@ -83,16 +83,16 @@ For example, if the container gallery does not allow videos, neither will person
 An example of a complex gallery hierarchy is as follows:
  - (root)
   - Germany Holiday Photos 2004 (*)
-   - Benjamin's Photos (+)
-   - Harry's Photos (+)
+   - Benjamin's member galleries (+)
+   - Harry's member galleries (+)
   - School Photos
    - Secondary School (*)
-    - Benjamin's Photos (+)
-    - Harry's Photos (+)
-    - Julie's Photos (+)
+    - Benjamin's member galleries (+)
+    - Harry's member galleries (+)
+    - Julie's member galleries (+)
    - Primary School (*)
-    - Benjamin's Photos (+)
-    - Harry's Photos (+)
+    - Benjamin's member galleries (+)
+    - Harry's member galleries (+)
 
 [tt](*)[/tt] denotes a personal gallery container that an admin has precreated in advance
 [tt](+)[/tt] denotes a personal gallery created automatically by a member (now the gallery owner) adding media

@@ -15,7 +15,7 @@ This tutorial covers day-to-day aspects of making and installing addons, especia
 
 [title="2"]Open Source[/title]
 
-Composr is Free Software and Open Source, meaning it's completely open and customisable.
+Composr is [page="_SEARCH:tut_foss"]Free and Open Source Software[/page], meaning it's completely open and customisable.
 
 [title="2"]The Composr API[/title]
 
@@ -41,12 +41,15 @@ Composr is not just a lump of code like most software: a lot of effort has gone 
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/advantage.png[/media]
 These methods include:
- - Overriding of existing source files with modified versions. Every directory that holds effective source code (as opposed to the shell files such as [tt]index.php[/tt] or [tt]dload.php[/tt] that just provide entry points into Composr) support a system of overriding: in other words, every Composr source code file can be replaced with a customised version, cleanly, without damaging the existing code and without the changes getting buried. This is done via elevation of a file to a [tt]_custom[/tt] suffixed directory of where the file originally was
- - A Composr editor (the code editor) is provided to provide a simple (password protected) editor for your site, and does this automatically
+ - Overriding of existing source files with modified versions. Every directory that holds effective source code (as opposed to the shell files such as [tt]index.php[/tt] or [tt]dload.php[/tt] that just provide entry points into Composr) support a system of overriding: in other words, every Composr source code file can be replaced (or extended) with a customised version, cleanly, without damaging the existing code and without the changes getting buried. 
+  - This is done primarily through saving such files in [tt]_custom[/tt] directories with the same name as the original file; Composr will then elevate these files.
+  - Contentious override hooks can be used for more sophisticated overrides (such as replacing something in the code, injecting something before or after a specific line, or introducing logic to decide when to apply an override). These are located in [tt]sources_custom/hooks/systems/contentious_overrides[/tt].
+  - If code gets changed because of an override, Composr will generate a compiled version under [tt]_compiled[/tt] for requiring into PHP. This ensures developers can still make use of stack traces and that PHP's native cache extensions (when active) are still utilised for the overridden code.
+ - A Composr editor (the code editor) is provided to provide a simple (password protected) editor for your site, and automatically saves your changes as [tt]_custom[/tt] overrides
  - New [concept]Module[/concept]s can be added just by writing a file and placing it in the modules_custom directory for the zone that it is to run in. In addition, there is support for a simple form of module, called a [concept]Mini-module[/concept] that can be added in a similar way, but is much easier to write for amateur programmers
  - New [concept]Block[/concept]s can be added just by writing a file and placing it in the [tt]sources_custom/blocks[/tt] directory. In addition, there is support for a simple form of module, called a 'mini-block' that can be added in a similar way, but is much easier to write for amateur programmers
  - New [concept]API[/concept] source code files can be added just by writing a file and placing it into the [tt]sources_custom[/tt] directory
- - 'Hooks' to add features into a hooked area can be written. For example, a 'search hook' can be written by writing a file and placing it into the [tt]sources_custom/hooks/modules/search[/tt] directory
+ - 'Hooks' to add features into a hooked area can be written. For example, a 'search hook' can be written by writing a file and placing it into the [tt]sources_custom/hooks/modules/search[/tt] directory.
 
 [title="2"]An example of a new module[/title]
 
@@ -91,7 +94,7 @@ Composr lets you override individual PHP files with changes by adding to the [tt
 Overrides work at the file level. When Composr is running code it is rarely doing anything at an addon level, addon management is more to do with initial packaging/install, and then it's just files.
 
 If you are overriding a file you are taking responsibility for merging in any changes made to the original file back into your version.
-If some other non-bundled addon is overriding the same file, it is up to you to resolve the conflict by somehow merging the two sets of changes together manually.
+If some other non-bundled addon is overriding the same file, it is up to you to resolve the conflict by somehow merging the two sets of changes together manually (or making a contentious override hook instead).
 It isn't feasible for us to create any mechanism for multiple people overriding the same files, as this would just create a complicated tangle in the long-run.
 
 There are 4 different kinds of PHP override in Composr:
@@ -201,9 +204,11 @@ The date/time of the exported addon TAR file will be the date/time of the most r
 [title="2"]The Code Editor[/title]
 
 [surround]
-[media width="150" description="Using the code editor" float="right"]data_custom/images/docs/tut_framework/framework_code_editor_3.png[/media]
-[media width="150" description="Choosing a code file to edit" float="right"]data_custom/images/docs/tut_framework/framework_code_editor_2.png[/media]
+[media_set]
 [media width="150" description="A password is obviously needed to use the code editor" float="right"]data_custom/images/docs/tut_framework/framework_code_editor_1.png[/media]
+[media width="150" description="Choosing a code file to edit" float="right"]data_custom/images/docs/tut_framework/framework_code_editor_2.png[/media]
+[media width="150" description="Using the code editor" float="right"]data_custom/images/docs/tut_framework/framework_code_editor_3.png[/media]
+[/media_set]
 Composr provides a very simple code editor for editing of existing Composr code files, or creation of new files. The code editor has inbuilt, automated, support for the Composr file override system: editing an original Composr file will save the edited version in the equivalent [tt]_custom[/tt] suffixed directory where possible.
 
 Access the code editor from Admin Zone > Tools > Code editor.
@@ -227,7 +232,7 @@ If you still are not convinced that Composr is the right choice for you, conside
   [*] the database abstraction system allows relational databases to be accessed without concern of SQL-injection;
   [*] The template system is written to make XSS injection virtually impossible (where the vast majority of programmers write code that is full of XSS vulnerabilities, without even knowing what they are).
  [/list]
- [*] Composr's framework is of professional quality, managed by a single company that keeps every aspect of it to high standards, and compatible with each other. If you opt for frameworks which are incomplete, and end up using addon libraries to achieve additional functionality, you will soon realise, both immediately and after-time, that the lack of central control results in:[list="1"]
+ [*] Composr's framework is of professional quality. If you opt for frameworks which are incomplete, and end up using addon libraries to achieve additional functionality, you will soon realise, both immediately and after-time, that the lack of central control results in:[list="1"]
   [*] major compatibility problems;
   [*] messy feature overlap;
   [*] inconsistent philosophies for code;

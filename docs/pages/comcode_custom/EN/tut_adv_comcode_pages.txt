@@ -11,6 +11,7 @@ Composr provides features to allow Comcode pages to be very feature rich. This t
 If you have read the [page="_SEARCH:tut_comcode_pages"]Adding standalone pages of content (via Comcode)[/page] tutorial, you will know that using Comcode pages, you can type in text that visually resembles the look of the page (unlike HTML, which can look very complicated). This is a very powerful tool, but it is ultimately limited by the fact that you are only producing a document, not an interactive data-bound part of a website. If this was all you could do (forgetting modules for a minute) then Composr would not be much more powerful than a word processor.
 
 Composr has a concept called a 'block'. Blocks are building blocks that can be inserted into a Comcode page in order to add the aforementioned interactive and data-bound functionality that is so important to a modern website.
+
 Put another way, blocks are dynamic elements, elements that automatically generate content that could not be pre-prepared. For example:
  - a list of recent topics on a forum ([tt]main_forum_topics[/tt])
  - information about the currently logged in user ([tt]side_personal_stats[/tt])
@@ -21,13 +22,14 @@ The default front page in the Welcome Zone, and the panels make use of blocks.
 [/surround]
 
 [title="2"]Available blocks[/title]
-
+[media_set]
 [media width="150" description="List of blocks" float="right"]data_custom/images/docs/tut_adv_comcode_pages/block_add.png[/media]
 [surround]
 [media width="150" description="Sample form for adding a block selected from the long list to the right" float="right"]data_custom/images/docs/tut_adv_comcode_pages/block_add_2.png[/media]
 [media width="150" description="Actual Comcode that references blocks (with WYSIWYG on, highlighting the add block button)" float="right"]data_custom/images/docs/tut_adv_comcode_pages/wysiwyg.png[/media]
 [media width="150" description="Actual Comcode that references blocks (with WYSIWYG off, highlighting the add block button)" float="right"]data_custom/images/docs/tut_adv_comcode_pages/add_block_button.png[/media]
-At the time of writing Composr contains 75 blocks for you to use.
+[/media_set]
+At the time of writing Composr contains about 75 blocks for you to use (if you have every bundled addon installed). Non-bundled addons may also include their own blocks (e.g. activity feed).
 
 The block construction assistant (available as a button above the editor) will help you add a block. It will:
 1) show you what exact blocks are available (grouped by addon)

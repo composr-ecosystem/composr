@@ -29,7 +29,7 @@ When you add a download you have a choice as to whether to specify a URL or to a
 
 We recommend that you attach a file, as Composr can then manage it without risk of the URL being broken by something outside of the Composr control.
 
-There is a caveat with this, however, as the web was not designed for uploading large files. Essentially, the web was designed to make fast requests for web pages: attaching a large file extends the request, and widens the window for transfer errors (HTTP uploads have no 'resume' mechanism, and no good way of easily finding it a transfer is actually proceeding other than checking for network usage).
+There is a caveat with this, however, as the web was not designed for uploading large files. Essentially, the web was designed to make fast requests for web pages: attaching a large file extends the request, and widens the window for transfer errors (HTTP uploads have no 'resume' mechanism, and no good way of easily finding if a transfer is actually proceeding other than checking for network usage).
 
 In addition, PHP may not support large files (sometimes dropping POST information as well as the file, which makes Composr give an error message).
 
@@ -53,9 +53,11 @@ When you add a download, Composr automatically adds a specially-named gallery fo
 [title="2"]Accessing downloads[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Viewing a download" float="right"]data_custom/images/docs/tut_downloads/downloads_view.png[/media]
 [media width="150" description="Our download, listed in its category" float="right"]data_custom/images/docs/tut_downloads/downloads_in_subcat.png[/media]
 [media width="150" description="The subcategory (where our download is being stored) is displayed" float="right"]data_custom/images/docs/tut_downloads/downloads_subcat.png[/media]
+[/media_set]
 Downloads are accessed from the [tt]downloads[/tt] module ([tt]site:downloads[/tt] page-link, Content > Downloads on the default menus).
 
 This link will take the user to the Home download category, from which they can browse through the categories until they find a download they want.
@@ -91,8 +93,8 @@ In addition, the [tt]search[/tt] module is able to search within the actual down
 
 [title="2"]Large files[/title]
 
-If you're PHP build is 32 bit, files over 2GB are not supported.
-If you're PHP build is 64 bit, files over 2GB are supported but the file size will not be displayed.
+If your PHP build is 32 bit, files over 2GB are not supported.
+If your PHP build is 64 bit, files over 2GB are supported but the file size will not be displayed.
 
 [concepts
  1_key="Download"          1_value="An entry in the download system, bound to a local file or a URL"

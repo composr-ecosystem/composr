@@ -24,7 +24,7 @@ Opponents of fixed-width argue:
  - that using fixed-width is done by those that are applying traditional design skills to the new online medium without adjusting them properly for that medium
 [/surround]
 
-Most modern designs are fluid and use responsive design techniques to make it look good on different widths. This is the default within Composr.
+Most modern designs are fluid and use responsive design techniques to make it look good on different widths. This is the default within Composr's default theme as of version 11.
 
 [title="2"]Background options for fixed-width[/title]
 

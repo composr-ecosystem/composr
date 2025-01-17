@@ -43,7 +43,7 @@ rm -f cms-<version>.zip
 
 Fix all the necessary file permissions, but [b]only if you are not running on a suEXEC-style server[/b]:
 [code="Bash"]
-sh fixperms.sh
+php fixperms.php
 [/code]
 
 You must then launch the URL to the [tt]install.php[/tt] in your web browser, and proceed through the installation steps.

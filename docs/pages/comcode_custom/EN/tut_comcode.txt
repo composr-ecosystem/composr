@@ -104,9 +104,9 @@ Comcode is primarily written and laid out as plain-text. Special tags (and other
 [list="1"]
 [*] [b]Emoticon[/b] codes may be used (for Conversr, these are listed in the [page="_SEARCH:tut_emoticons"]The Composr emoticon system[/page] tutorial).
 [*] Comcode [b]tags[/b] may be used for [b]text formatting[/b], such as [tt][b]text[/b][/tt] to make some text bold.
-[*] Comcode tags may be used to [b]embed content[/b], such as  [tt][block]main_contact_us[/block][/tt] to add a dynamic comments box.
-[*] [b]Horizontal lines[/b] may be added by placing a few [tt]-[/tt]s on their own line.
-[*] HTML-style [b]entities[/b] can be use to place special characters inside the text (e.g. [tt]&reg;[/tt]).
+[*] Comcode tags may be used to [b]embed content[/b], such as  [tt][block]main_contact_us[/block][/tt] to add a dynamic contact box.
+[*] [b]Horizontal lines[/b] may be added by placing a few consecutive dashes on their own line.
+[*] HTML-style [b]entities[/b] can be used to place special characters inside the text (e.g. [tt]&reg;[/tt]).
 [*] [b]Member profile links[/b] can be placed by typing [tt]{{username-goes-here}}[/tt], or [tt]{{?username-goes-here}}[/tt] to show extra details when the mouse is hovered over and send a notification to the referenced member ([concept]Conversr[/concept] only). Member profile links can also be placed by typing the simpler syntax (Conversr-only, always shows the extra details), [tt]@username-goes-here[/tt]; the simpler syntax is a bit more flimsy due to the possibility for ambiguity if usernames have spaces.
 [*] [b][concept]Wiki+[/concept] page links[/b] can be placed by typing [tt][[pagename-goes-here]][/tt], or [tt][[pagename-goes-here#anchor]][/tt].
 [*] [b]Table[/b] syntax (described in separate section below).
@@ -161,7 +161,7 @@ This only applies to the [tt]param[/tt] parameter (and only if a tag has one).
 
 If you need to include the [tt]"[/tt] symbol inside a tag parameter, you can put it in as [tt]\"[/tt] (e.g. [tt][quote="Mr \"Happy\""][/quote][/tt]).
 
-Also, if you need to literally display a tag without it being parsed, you may type [tt]\[[/tt] for the opening square bracket (e.g. [tt]\[i do not want this as italics][/tt]).
+Also, if you need to literally display a tag without it being parsed, you may type [tt]\[[/tt] for the opening square bracket (e.g. [tt]\[i do not want this as italics][/tt]). Or, you can put it within [tt]tt[/tt] tags.
 
 [title="3"]Tabular syntax[/title]
 
@@ -241,12 +241,13 @@ If you wish to extend the list to a second level, just add the first line of the
 This all sounds more complex than it is, so I will give an example to show how in fact, it is really very easy to do:
 [code="Comcode"]
  - 1
+  - 1.1
+   - 1.1.1
+  - 1.2
+   - 1.2.1
+	 - 1.2.1.1
  - 2
   - 2.1
-   - 2.1.1
-  - 2.2
- - 3
-  - 3.1
 [/code]
 
 See how simple it is: the number of spaces before the hyphen identifies the list level, the hyphen identifies it is a list, and then after a space (to make it look better when writing it) comes the actual line of the list.
@@ -370,11 +371,12 @@ For tags where generated-HTML would add automatic blank lines (visually speaking
 [title="2"]Tag reference[/title]
 
 [surround]
+[media_set]
 [media width="150" description="List of tags via the Comcode Tag Assistant" float="right"]data_custom/images/docs/tut_comcode/tags.png[/media]
-[surround]
 [media width="150" description="Sample form for adding a Comcode tag selected from the long list to the right" float="right"]data_custom/images/docs/tut_comcode/tag_2.png[/media]
 [media width="150" description="Comcode Tag Assistant button (WYSIWYG on)" float="right"]data_custom/images/docs/tut_comcode/tag_wysiwyg.png[/media]
 [media width="150" description="Comcode Tag Assistant button (WYSIWYG off)" float="right"]data_custom/images/docs/tut_comcode/tag_non_wysiwyg.png[/media]
+[/media_set]
 Tags may be easily added via the "Comcode Tag Assistant" feature in Composr, which lists all tags and provides an input mechanism for each.
 
 In addition, new tags may be created (discussed in the [page="_SEARCH:tut_adv_comcode"]Advanced Comcode[/page] tutorial).

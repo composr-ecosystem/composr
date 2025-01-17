@@ -14,7 +14,7 @@ Composr provides multiple ways to get files into the download system, each appro
 
 The easiest way to add a file for a download is by attaching the file to the web-form, when the details of the download are defined. This is the most popular way, and is usually appropriate, however there are some major drawbacks (that are a result of the method, and not the fault of Composr):
  - Users with unreliable connections will not be able to resume the upload if it fails, and sometimes, it is hard to see if the upload has failed, or is just being slow
- - As far as we know none of the common web browsers show a progress monitor for the upload
+ - As far as we know none of the common web browsers show a progress monitor for the upload (but Composr has a custom template for [tt]plupload[/tt], the upload JavaScript library used by default, which will show a progress bar)
  - PHP server settings often severely limit the maximum file size that may be uploaded
 
 [title="3"]Uploading, and then referencing the URL[/title]
@@ -50,7 +50,7 @@ When a download in the download database has a new version released, either as a
 
 'Outmoded' isn't a word everyone understands. Outmoded means "superseded" or "obsoleted".
 
-To outmode a download, you need to edit the download (the original, older, download) such that the outmode field is set to refer to the newer one. When then viewed, the old download will provide a clear link to the new one.
+To outmode a download, you need to edit the download (the original, older, download) such that the 'Newer version' field is set to refer to the newer one. When then viewed, the old download will provide a clear link to the new one.
 
 The older download has now been 'outmoded' by the newer one.
 

@@ -5,7 +5,7 @@ Commandr, the Composr Command-Line Environment, is designed for experienced syst
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Introduction[/title]
-
+[surround]
 [media width="150" description="Commandr" float="right"]data_custom/images/docs/tut_commandr/commandr.png[/media]
 We designed Commandr to supplement the features of the Admin Zone, rather than to replace them. The interface allows you to enter commands in the form of:
  - PHP code
@@ -17,6 +17,7 @@ We designed Commandr to supplement the features of the Admin Zone, rather than t
 Commandr is accessed from:
 Admin Zone > Tools > Commandr
 Or, as an overlay using the button in the footer if you have left that enabled (this is very handy).
+[/surround]
 
 [title="2"]Commands[/title]
 
@@ -167,7 +168,7 @@ For example:
 [code="Commandr"]
 give -a 7334 "Nice User" "I love you"
 [/code]
-This example anonymously gives 7334 points anonymously to a user named "Nice User", with the message "I love you".
+This example gives 7334 points anonymously to a user named "Nice User", with the message "I love you".
 
 [title="3"]Changing passwords[/title]
 

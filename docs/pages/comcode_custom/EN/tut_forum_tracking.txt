@@ -37,10 +37,13 @@ Clicking on one of the listed links would take you straight to the first unread 
 [title="2"]Read status[/title]
 
 [surround]
+[media_set]
 [media width="150" description="How the read/unread status of a topic works" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_topic_read_status.gif[/media]
 [media width="150" description="The button to mark a topic as unread" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_mark_topic_unread_link.png[/media]
 [media width="150" description="The button to mark a topic as read" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_mark_forum_read_link.png[/media]
+[/media_set]
 A topic can either be 'read', or 'unread'. If a topic is unread, it is shown in bold in the topic listing, and has a little triangle icon next to it (the 'jump to first unread' link).
+[/surround]
 
 [title="3"]Marking as unread[/title]
 
@@ -53,23 +56,23 @@ This function is available for forums as well as topics. If you use it on a foru
 Marking as read is a function only available for forums, to save you the hassle of going through each topic and reading them when you might not want to, or they might not be relevant. Simply go to the forum view of the forum you want to mark as read (or any of its parents, such as the home forum), and click the "mark 'read'" button.
 
 This function is not available for individual topics, as to reach the button, you would be marking the topic as read anyway.
-[/surround]
 
 [title="2"]Notifications[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Options for getting notifications for a topic in your account (Account, Settings tab, Notifications sub-tab, at the very bottom)" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_notification_auto_options.png[/media]
 [media width="150" description="The button sets a notification on a forum/topic" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_notification_settings.png[/media]
 [media width="150" description="The button to disable notifications for a forum/topic" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_unmonitor_button.png[/media]
 [media width="150" description="The button to get notifications for a forum/topic" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_monitor_button.png[/media]
-[page="_SEARCH:tut_notifications"]Notifications[/page] allow you to mark topics for notification (duh): when a new reply is posted, you will be notified of its presence. You can receive notifications in numerous ways, but the most common is by e-mail.
+[/media_set]
+[page="_SEARCH:tut_notifications"]Notifications[/page] allow you to mark topics for notification: when a new reply is posted, you will be notified of its presence. You can receive notifications in numerous ways, but the most common is by e-mail.
 
 There is an automatic notifications option that each member may set in their account (i.e. for automatically enabling topics the member posts in for notifications).
 
-As well as automatic notifications, you can enable notifications for topics manually, by clicking the "monitor" button in the topic view.
-After enabling notifications topics and forums, you can easily disable it again because the button changes to an "unmonitor" button.
+As well as automatic notifications, you can enable notifications for topics manually, by clicking the "monitor" button in the topic view. After enabling notification topics and forums, you can easily disable it again because the button changes to an "unmonitor" button.
 
-You can also mark whole forums for notifications, by clicking the "monitor" button in the forum view. Note that if you enable notifications in a forum it does not automatically enable for sub-forums of that forum.
+You can also mark whole forums for notifications, by clicking the "monitor" button in the forum view. Note that if you enable notifications in a forum it does not automatically enable for sub-forums of that forum (only topics directly under that forum).
 
 (You can set notifications for virtually any category of content, not just forum topics. This can all be configured within your member settings. That is outside the scope of this tutorial though.)
 [/surround]

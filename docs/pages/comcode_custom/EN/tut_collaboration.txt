@@ -11,15 +11,16 @@ The Internet, combined with Composr, is a powerful tool for online-collaboration
 
 Services you could easily offer using Composr features include:
  - Forum hosting (usually as a sub-forum of our main forums -- which brings a lot of interest to someone's project)
- - News posting/coverage, of projects
+ - News posting/coverage, of projects (including the sending of newsletters)
  - Access to a file storage service, with remote linking enabled (the File/Media library)
  - File hosting, in the public download database
  - An active community on the forums, with public and private forums; also public and private chatrooms
  - Advertising for projects in a banner exchange, and in a project database
  - Personal author profiles, so people can give information about themselves with your file releases
  - The points system, so people can be awarded for their work. They can use their gained points to 'purchase' banner hits, e-mail addresses, and text-banner promotion
- - Advertisement of works as images of the day
- - Project documentation on Wiki+
+ - Advertisement of works as awards / top content
+ - Project documentation on Wiki+ or Comcode pages
+ - Basic project data management as catalogues
 
 [title="2"]File/Media library[/title]
 
@@ -40,17 +41,19 @@ You may wish to embed library files into some other content, such as a news arti
 [/surround]
 
 [box="Important -- Security"]
+[surround]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-There is nothing stopping ordinary users from downloading from the file/media library if they have the URL to a file.
+There is nothing stopping ordinary users from downloading from the file/media library if they have the URL to a file. This is intentional because it allows you to use files from the library within templates, pages, and other areas of content.
 
-This is sometimes useful, but you should be aware that if files are given guessable filenames, they will not be secure.
+You should be aware that if files are given guessable filenames, they will not be secure.
+[/surround]
 [/box]
 
 You may want to provide some guidelines to members before you give them access. For example:
 [quote]
 Feel free to create personal folders in here for your own use.
 
-Please do not use the space for large, unrelated. files. It is not for the storage of purely personal files, or illegal material.
+Please do not use the space for large, unrelated files. It is not for the storage of purely personal files, or illegal material.
 
 If any rules are broken with the space, or people cause trouble, they are liable to have their access revoked.
 
@@ -60,7 +63,7 @@ Most members will only be able to delete their own files, but all files are view
 [/quote]
 
 [concepts
- 1_key="File/Media Library"    2_value="A tool to allow members to store their own files"
+ 1_key="File/Media Library"    1_value="A tool to allow members to store their own files"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]

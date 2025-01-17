@@ -18,9 +18,11 @@ Advanced configuration options include (but are not limited to):
 [title="2"]Addons[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Installing an imported addon. Seeing warnings is normal, they just inform you what risks installing the addon may carry." float="right"]data_custom/images/docs/tut_adv_configuration/addons_install.png[/media]
 [media width="150" description="Importing a non-bundled addon. We can import them direct from the {$BRAND_BASE_URL} server." float="right"]data_custom/images/docs/tut_adv_configuration/addons_import.png[/media]
 [media width="150" description="List of addons that are imported into the system (will be a mix of installed and non-installed)." float="right"]data_custom/images/docs/tut_adv_configuration/addons_list.png[/media]
+[/media_set]
 Composr is split into a series of addons.
 
 All the "bundled" addons are installed when you install Composr but it is recommended that you should remove any that aren't needed once you are familiar with Composr. This is so as to make sure the non-required/unconfigured functionality doesn't accidentally get discovered by your visitors, and that any unnecessary complexity is removed. Less is more when it comes to good design, and if you ensure you have only the right set of features on your site then you can better tailor it for your visitors.

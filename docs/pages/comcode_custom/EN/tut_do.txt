@@ -16,78 +16,79 @@ This tutorial will detail a few of the miscellaneous do and do-nots of running a
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/disadvantage.png[/media]
  - Make a website that is too busy, as it will be slow and will distract from your site message
  - Use every Composr feature on your site just because they exist
- - Plagiarise content: if you use other peoples content, credit them
+ - Plagiarise content: if you use other people's content, make sure they explicitly allow it, and attribute / cite them
+  - Remember: It is not good enough in copyright law to simply cite / attribute the original author; they must explicitly allow re-distribution of their content
 
 [title="2"]Tips[/title]
 
 The Admin Zone dashboard contains a number of tips which are reproduced here also:
 [quote="Admin Zone dashboard"]
 Level 0 (emerging):
- - {!tips:TIP_0a,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_0a,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
 
 Level 1 (embarking):
- - {!tips:TIP_1a,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1b,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1c,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1d,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1e,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1f,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1g,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1h,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1i,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1j,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1k,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1l,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1m,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_1n,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1a,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1b,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1c,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1d,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1e,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1f,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1g,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1h,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1i,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1j,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1k,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1l,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1m,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_1n,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
 
 Level 2 (establishing):
- - {!tips:TIP_2a,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2b,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2c,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2d,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2e,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2f,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2g,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2h,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2i,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2j,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2k,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2l,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2m,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2n,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2o,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2p,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2q,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2r,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2s,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2t,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_2u,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2a,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2b,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2c,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2d,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2e,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2f,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2g,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2h,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2i,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2j,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2k,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2l,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2m,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2n,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2o,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2p,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2q,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2r,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2s,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2t,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_2u,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
 
 Level 3 (established):
- - {!tips:TIP_3a,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3b,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3c,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3d,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3e,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3f,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3g,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3h,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3i,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3j,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3k,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3l,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3m,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3n,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_3o,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3a,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3b,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3c,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3d,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3e,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3f,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3g,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3h,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3i,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3j,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3k,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3l,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3m,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3n,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_3o,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
 
 Level 4 (expert):
- - {!tips:TIP_4a,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_4b,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_4c,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_4d,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_4e,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
- - {!tips:TIP_4f,{$PAGE_LINK*,:contact:free,0,1},Composr,{$PAGE_LINK*,site:professional_support,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4a,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4b,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4c,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4d,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4e,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
+ - {!tips:TIP_4f,{$PAGE_LINK*,_SEARCH:contact,0,1},Composr,{$PAGE_LINK*,_SEARCH:partners,0,1},{$PAGE_LINK*,forum:,0,1},{$PAGE_LINK*,docs:,0,1},{$REPLACE*,abcdef.htm,,{$PAGE_LINK,docs:abcdef,0,1}}}
 [/quote]
 
 [title="2"]Writing articles[/title]

@@ -210,7 +210,7 @@ Note that text fields will sort using a text sort algorithm. For example, "10" c
 
 [title="3"]posting_field[/title]
 
-Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. Also, any fields which appear below the posting field will be collapsed in an 'Additional information' section.
+Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. Also, any fields which appear below the posting field will be collapsed in an 'Additional information' section. Ideally, a posting field should be towards the bottom of your list of fields with optional, trivial fields below it.
 
 {| 15em wide
 ! Type label
@@ -425,9 +425,9 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 ! Supported field options
 | [tt]range_search=on|off[/tt]: search forms will allow a range-based search
 
-[tt]decimal_points=on|off[/tt]: search forms will allow a range-based search
+[tt]decimal_points=2[/tt]: the (maximum) number of decimal points we want
 
-[tt]decimal_points_behaviour=dp|trim|price[/tt]: show exact number of decimal places, trim any zero decimal places off, show exact number of decimal places unless there are none
+[tt]decimal_points_behaviour=dp|trim|price[/tt]: dp = always show exact number of decimal places (default), trim = trim any zero decimal places off, price = show exact number of decimal places or none if a whole number
 |-
 ! Special field validation behaviour
 | The entry will be rejected if this is not a valid number.
@@ -484,7 +484,7 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 
 [tt]input_size[/tt] (the number of options shown in the list before scrolling is required, applies only to the 'inline' widget type; default is 9)
 
-[tt]widget=radio|inline|dropdown|inline_huge|dropdown_huge[/tt] (whether to use a radio buttons, an inline list, or a dropdown list; default is dropdown)
+[tt]widget=radio|inline|dropdown|inline_huge|dropdown_huge[/tt] (the UI mechanism; default is dropdown)
 
 [tt]spreadsheet_heading[/tt] (the column from the spreadsheet file to use, if the default was set as a spreadsheet file; default is to use the first column)
 |-

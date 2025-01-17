@@ -83,6 +83,7 @@ You can manage award types from:
 Admin Zone > Setup > Awards (top content)
 
 If, for example, you wanted to choose a different yacht to display every week (from a catalogue of yachts), then create a catalogue award via Admin Zone > Setup > Awards (top content) > Add award type.
+[/surround]
 
 [box="Assigning points"]
 Optionally awards are tied in with the point system. You can configure the awards (when you add or edit the award itself) to carry a number of points. If you do this, the submitter of content given that award will be given some points, and that'll show up on their points profile.
@@ -91,10 +92,11 @@ Optionally awards are tied in with the point system. You can configure the award
 Composr has one award that is precreated for you as an example: Download Of The Week (assuming you have the bundled [tt]downloads[/tt] addon installed).
 
 [box="Tip"]
+[surround]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
 If you want to delete an award type, this is done by editing the award type and choosing the delete option on the form.
-[/box]
 [/surround]
+[/box]
 
 [title="4"]Awarding some content[/title]
 
@@ -106,9 +108,11 @@ Now we have added a new award type linked with a particular content type, adding
 [title="4"]Display[/title]
 
 [surround]
+[media_set]
 [media width="150" description="A [tt]main_awards[/tt] block being viewed" float="left"]data_custom/images/docs/tut_featured/featured_award_block.png[/media]
 [media width="150" description="Adding a [tt]main_awards[/tt] block using the block construction assistant" float="left"]data_custom/images/docs/tut_featured/assistant.png[/media]
 [media width="150" description="A content which received awards" float="left"]data_custom/images/docs/tut_featured/featured_tooltip.png[/media]
+[/media_set]
 The [tt]main_awards[/tt] block can display the current award holder of any particular award. The block construction assistant makes it very easy to add the block to a page, providing a drop-down of award types for you to select from.
 
 Each award type has its own archive, in the [tt]awards[/tt] module ([tt]site:awards[/tt] page-link, About > Awards (top content) of the default menus).
@@ -138,7 +142,7 @@ For example:
 [/code]
 would show Conversr topic #1 in a block, without running permission checks, and with the title removed.
 
-The first parameter is the page-link to what we are embedding, which in the above example was the [tt]topicview[/tt] module, in whatever zone it is in, the [tt]browse[/tt] screen of it, and ID [tt]1[/tt]. You can usually work out page-links from the URL once you understand them. Page-links are described in the [page="_SEARCH:tut_menus"]Customising what's on the menus[/page] tutorial.
+The first parameter is the page-link to what we are embedding, which in the above example was the [tt]topicview[/tt] module, in whatever zone it is in, the [tt]browse[/tt] screen of it, and ID [tt]1[/tt]. You can usually work out page-links from the URL once you understand them (and when logged in as a staff member, the page-link of any given page is displayed in the footer). Page-links are described in the [page="_SEARCH:tut_menus"]Customising what's on the menus[/page] tutorial.
 
 In the screenshots on the right I have shown a quirky example where I am embedding the recommend page directly into a news post.
 [/surround]

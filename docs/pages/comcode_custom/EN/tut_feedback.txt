@@ -26,12 +26,10 @@ In addition to site-wide control of feedback, feedback may also be enabled/disab
 
 [title="3"]Rating[/title]
 
-[media width="150" description="This content page demonstrates rating and comments" float="right"]data_custom/images/docs/tut_feedback/feedback_poll_page.png[/media]
+[media width="150" description="This content page demonstrates rating and comments" float="right"]data_custom/images/docs/tut_feedback/feedback_comments.jpg[/media]
 The Composr rating system allows 'one rating per IP address'. Therefore, if a user gets a new IP address, they can rate again.
 
-Our own forum does not allow poll voting by guests, and hence more serious rating/poll situations may be handled there.
-
-There is a [tt]main_rating[/tt] block that you may use to allow any Comcode page to be rated (by placing the block on the page).
+There is a [tt]main_rating[/tt] block that you may use to allow any Comcode page to be rated (by placing the block on the page). In fact, we use this on the tutorial pages.
 
 [title="3"]Trackbacks[/title]
 
@@ -66,12 +64,13 @@ If the [tt]tickets[/tt] addon is installed, Composr includes a contact block, [t
 
 [title="3"]Catalogues contact form (as e-mail)[/title]
 
-[surround="right float-separation"]
-[media width="170" description="Viewing the [tt]main_contact_catalogues[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_3.png[/media]
-[media width="170" description="The [tt]main_contact_catalogues[/tt] block form"]data_custom/images/docs/tut_feedback/catalogue_block_2.png[/media]
-[media width="170" description="Choosing the [tt]main_contact_catalogues[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_1.png[/media]
-[/surround]
+[surround]
+[media_set]
 [media width="150" description="Adding a contact catalogue" float="right"]data_custom/images/docs/tut_feedback/catalogue_add.png[/media]
+[media width="170" description="Choosing the [tt]main_contact_catalogues[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_1.png[/media]
+[media width="170" description="The [tt]main_contact_catalogues[/tt] block form"]data_custom/images/docs/tut_feedback/catalogue_block_2.png[/media]
+[media width="170" description="Viewing the [tt]main_contact_catalogues[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_3.png[/media]
+[/media_set]
 The [tt]main_contact_catalogues[/tt] block shows a form of custom fields coded into a catalogue. This is great for creating complex contact forms sent out as e-mails.
 
 The process for using this block is as follows:
@@ -85,15 +84,17 @@ You can set field options to tag fields used for the contact message:
  - [tt]tag=email[/tt] -- to set the 'from e-mail'. You can also pre-populate an "An e-mail address" field with the current member's e-mail address via a default value of [tt]![/tt].
  - [tt]tag=name[/tt] -- to set the 'from name'. You can also pre-populate an "A brief line of text" field with the current member's display name via a default value of [tt]NAME[/tt].
  - [tt]tag=subject[/tt] -- to set the 'subject'.
+[/surround]
  
 [title="3"]Catalogues form (as entries)[/title]
 
-[surround="right float-separation"]
-[media width="170" description="Viewing the [tt]main_catalogues_form[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_6.png[/media]
-[media width="170" description="The [tt]main_catalogues_form[/tt] block form"]data_custom/images/docs/tut_feedback/catalogue_block_5.png[/media]
-[media width="170" description="Choosing the [tt]main_catalogues_form[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_4.png[/media]
-[/surround]
+[surround]
+[media_set]
 [media width="150" description="Adding a catalogue form" float="right"]data_custom/images/docs/tut_feedback/catalogue_add.png[/media]
+[media width="170" description="Choosing the [tt]main_catalogues_form[/tt] block from the block construction assistant"]data_custom/images/docs/tut_feedback/catalogue_block_4.png[/media]
+[media width="170" description="The [tt]main_catalogues_form[/tt] block form"]data_custom/images/docs/tut_feedback/catalogue_block_5.png[/media]
+[media width="170" description="Viewing the [tt]main_catalogues_form[/tt] block"]data_custom/images/docs/tut_feedback/catalogue_block_6.png[/media]
+[/media_set]
 The [tt]main_catalogues_form[/tt] block shows a form of custom fields coded into a catalogue. The submissions from this block are stored as not validated entries which can then be reviewed by staff.
 
 The process for using this block is as follows:
@@ -101,7 +102,8 @@ The process for using this block is as follows:
 2) Optionally add categories to the catalogue; the generated form by the block will prompt the member to select a category if more than one exists.
 3) Go to add/edit the page where the block should go.
 4) Add the block to it in the normal way. When adding the block, you are asked which catalogue to use and whether members may only submit one entry per member (which also prevents guests from submitting).
-The user will fill in the block, and it will be added as an entry which is not validated into the appropriate catalogue and category. Staff may then review the entries and process them as necessary. If [tt]Members only; one entry each[/tt] is enabled, then deleting the entry will allow the member to re-submit the form.
+The user will fill in the block, and it will be added as an entry which is not validated into the appropriate catalogue and category. Staff may then review the entries and process them as necessary. If [tt]Members only; one entry each[/tt] is enabled, then deleting the entry will allow the member to re-submit the form. But so long as one entry exists in the catalogue for the member (regardless of category or validation status), they cannot submit another one.
+[/surround]
 
 [title="3"]Simple e-mail form[/title]
 
@@ -112,6 +114,8 @@ This block relays direct to e-mail, avoiding any dealing with notifications and 
 Any POST fields that Composr does not consider a "control field" will be included within the e-mail.
 
 This block looks very similar to the [tt]main_contact_us[/tt] block.
+
+Be careful with using this block as there exists the potential for spam / abuse. Composr cannot sufficiently run all its checks to prevent spam given how this block works and relays fields.
 
 [title="3"]Custom commenting forms (advanced)[/title]
 
@@ -205,11 +209,12 @@ CAPTCHA can be supported. To do so you have to:
 As you can see, that's complex, so unless you have a spam problem here that your spam filters can't tackle for you, and that the blackhole doesn't deal with, it probably is not worth bothering.
 
 [title="2"]Polls[/title]
-
 [surround]
-[media width="150" description="The poll block, once a poll is chosen" float="right"]data_custom/images/docs/tut_feedback/feedback_poll.png[/media]
-[media width="150" description="Adding a poll" float="right"]data_custom/images/docs/tut_feedback/feedback_add_poll.png[/media]
+[media_set]
 [media width="150" description="Initially there is no poll, so the poll block displays like this" float="right"]data_custom/images/docs/tut_feedback/feedback_no_poll.png[/media]
+[media width="150" description="Adding a poll" float="right"]data_custom/images/docs/tut_feedback/feedback_add_poll.png[/media]
+[media width="150" description="The poll block, once a poll is chosen" float="right"]data_custom/images/docs/tut_feedback/feedback_poll.png[/media]
+[/media_set]
 {!polls:DOC_POLLS}
 Polls are managed from Admin Zone > Content > Polls.
 You can delete a poll from the bottom of its edit form.

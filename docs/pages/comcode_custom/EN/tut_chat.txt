@@ -37,6 +37,8 @@ You may have multiple simultaneous conversations, as conversations are separated
 If a member is not in the lobby when they are invited to start a conversation then they will be sent an e-mail alert after you make the first message in a conversation with them, inviting them to visit the lobby. Upon visiting the lobby all active conversations that they have started or been invited to will appear.
 It is recommended that members who make a lot of use of the IM system leave the lobby open, so that they are easily reachable. By the time you respond to your e-mail alert, the conversant who wishes to talk to you may have lost interest. [b]Alternatively[/b], there is a configuration option ("Site-wide IM") you can enable that essentially turns your whole website into the chat lobby, so that pop-up windows instantly appear for any new conversation that someone starts with a member (assuming the member is somewhere on the website of course).
 
+Note that it is not recommended using the "Site-wide IM" feature because instantly-appearing pop-up windows violate W3C accessibility guidelines. Therefore, it is disabled by default (also for performance reasons).
+
 Conversations may be closed by clicking the 'Close' button. If you do not close a conversation then it will remain in the system unless you are the only member who has not closed it and you have since left the lobby.
 
 The friend list shows online status indication for all your friends, and similar statuses are shown for all conversants within active conversations. These statuses are dynamically updated as members come and go (there's no need to reload your browser window). Members may be:
@@ -45,7 +47,7 @@ The friend list shows online status indication for all your friends, and similar
  - active (in the lobby)
  - away (was in the lobby recently, but is not anymore -- may be online, or may be offline)
 
-If a member signs in, or a new message is posted in a conversation, then the browser window may flash (depending on your web browser). A sound will also play  if you have left sound enabled. In addition, when a member signs in an activity indicator will mention that they have just signed in and the indicator will remain for a number of seconds.
+If a member signs in, or a new message is posted in a conversation, then the browser window may flash (depending on your web browser). A sound will also play if you have left sound enabled. In addition, when a member signs in an activity indicator will mention that they have just signed in and the indicator will remain for a number of seconds.
 
 [title="2"]Chatcode[/title]
 
@@ -100,26 +102,29 @@ Each post in a chatroom is displayed with a few potent links, which allow users 
 [/surround]
 
 [title="3"]Editing messages[/title]
-
-[media width="150" description="Moderating a message" float="right"]data_custom/images/docs/tut_chat/chat_moderation_panel_edit_message.png[/media]
-[media width="150" description="Messages to moderate" float="right"]data_custom/images/docs/tut_chat/chat_moderation_panel_messages.png[/media]
+[surround]
+[media_set]
 [media width="150" description="Choosing a room to moderate" float="right"]data_custom/images/docs/tut_chat/chat_moderation_panel_rooms.png[/media]
+[media width="150" description="Messages to moderate" float="right"]data_custom/images/docs/tut_chat/chat_moderation_panel_messages.png[/media]
+[media width="150" description="Moderating a message" float="right"]data_custom/images/docs/tut_chat/chat_moderation_panel_edit_message.png[/media]
+[/media_set]
 To edit messages, you have to use the chat system moderation page (Admin Zone > Content > Chat moderation), which can also be accessed using one of the several moderation links peppered around the main chat screen. The main moderation screen lists all the chatrooms on the system, as well as pertinent information such as how many messages have been posted in each room. Clicking on a room name takes you to a more specific screen for that room.
 
 This screen lists all messages in the room (with chatcode unparsed), with some useful information and a link to the member profile view screen of the submitter. Clicking on the message post date takes you to a message-edit page. On this page, you can edit the message details, and submit them. The changes won't immediately be reflected in the views of anybody using the relevant chatroom, but if a new user joins, or if somebody refreshes the room, they'll see the changes.
+[/surround]
 
 [title="3"]Deleting messages[/title]
 
 To delete a chat message, simply go to its edit screen, and tick (check) the "Delete" box, then submit the page. The message will be completely erased from history. Please note that this might take a significant chunk out of a conversation, so should be used sparingly; editing is probably a better way to go.
 
 [title="4"]Deleting all messages[/title]
-
 [surround]
 [media width="150" description="The link to delete all messages in a room" float="right"]data_custom/images/docs/tut_chat/chat_delete_all_messages_link.png[/media]
 Sometimes it's necessary to delete all the messages in a chatroom, whether to preserve sanctity/sanity, or simply to clean up. To delete all the messages in a chatroom, navigate to the specified chatroom's moderation page (where all the messages are listed), and click the "Delete all messages" link. A confirmation page will appear. Clicking "Proceed" from the confirmation will result in permanent deletion of all the messages.
+[/surround]
 
 [title="2"]Administration[/title]
-
+[surround]
 [media width="150" description="Selecting a chatroom for administration" float="left"]data_custom/images/docs/tut_chat/chat_administration_chatrooms.png[/media]
 The administration screen of the chat system allows the manipulation of chatrooms themselves.
 
@@ -153,14 +158,16 @@ To delete a chatroom, simply go to that chatroom's edit screen, and tick (check)
 [media width="150" description="Confirmation for deleting all chatrooms" float="right"]data_custom/images/docs/tut_chat/chat_delete_all_chatrooms.png[/media]
 [media width="150" description="The icon to delete all chatrooms" float="right"]data_custom/images/docs/tut_chat/chat_delete_all_rooms_link.png[/media]
 If you want to delete all the chatrooms, and all the chat messages on the system (this is a drastic measure), you must click the "Delete all rooms" icon. You will be presented with a verbose confirmation page. Clicking "Proceed" will delete everything.
+[/surround]
 
 [box="Caution: The shout-box"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
 If you are using the shout-box block, which works via a chatroom, you will have just deleted its associated chatroom.
 
 Be sure to create a new chatroom for the shout-box to feed from and re-associate it via the block parameter (or if you didn't use a block parameter, the block will automatically associate with the new chatroom as it'll be the first one).
-[/box]
 [/surround]
+[/box]
 
 [title="2"]Advice for younger users[/title]
 
@@ -193,10 +200,10 @@ If you wish to disable the enter/leave room messages you may translate the follo
 [title="2"]Third-party approaches[/title]
 
 Composr's chatroom system is not perfect for everyone. There are four main areas where there are some natural limitations to the system:
-1) No video chat.
-2) No sales-chat system.
-3) No desktop app chat.
-4) Performance concerns on volume use. Because the system works by very regular web requests ("polling") it does create significant server load if lots of users are in the chatroom. We have optimised this significantly, but it is still an issue with (depending on server capacity) hundreds of users.
+1) No video chat (this would require substantial server and bandwidth resources).
+2) No sales-chat system (you can use [tt]Support Tickets[/tt] instead).
+3) No desktop app chat (but Composr can be integrated with [tt]Tapatalk[/tt] or a mobile app through the [tt]Composr Mobile SDK[/tt]).
+4) Performance concerns on volume use. Because the system works by very regular AJAX web requests ("polling") it creates significant server load if lots of users are in the chatroom. We have optimised this significantly, but it is still an issue with (depending on server capacity) hundreds of users.
 
 We'd love to improve all these areas within Composr, but frankly it would be very costly for us to develop them so we'd need sponsors to put a lot of money in. These are the main areas we'd like to make future developments in:
 a) High-quality WebRTC integration within the chat system
@@ -207,7 +214,7 @@ e) Support for file sharing
 
 [title="3"]CometChat[/title]
 
-CometChat (a commercial chat system) provides support for Composr CMS. See our video tutorial: https://www.youtube.com/watch?v=ItrBhsRTAOU&feature=youtu.be
+CometChat (a commercial chat system) provides support for Composr CMS. See our video tutorial: https://www.youtube.com/watch?v=ItrBhsRTAOU&feature=youtu.be . Support is for Composr version 10 and has not been tested with version 11.
 
 [title="3"]Video chat[/title]
 
@@ -215,13 +222,15 @@ Video chat either needs a powerful central video server, or a complex peer-to-pe
 
 For video chat it is therefore best just to use an established third-party infrastructure such as:
  - [url="Talky"]https://talky.io/[/url] (which lets you access rooms by just giving an identifying URL -- meaning you can integrate it into a Composr chat template easily)
- - Jitsi (similar)
- - appear.in (similar)
+ - appear.in
+ - Jitsi (requires a moderator to have a registered account)
  - Google Hangouts (you'd need to direct people to start a hangout)
  - Skype (ditto)
  - CometChat (they provide a video chat option on their Platinum Edition)
+ - Zoom
+ - Discord
 
-We'd love there to be feasible Open Source offerings, but the complexity of software and hardware infrastructure of Open Source systems is currently very high such that it is not feasible for anything less than a full time team to deploy. Proprietary Flash systems used to be simpler, but Flash is no longer an appropriate technology for website development.
+We'd love there to be feasible Open Source offerings, but the complexity of software and hardware infrastructure of Open Source systems is currently very high such that it is not feasible for anything less than a full time team to deploy. Proprietary Flash systems used to be simpler, but Flash is no longer an appropriate technology for website development as it is outdated and very insecure.
 
 [title="3"]Desktop app chat[/title]
 
@@ -229,12 +238,14 @@ IRC is an old chat system that is still popular and works well. Client support i
 
 For a long time it looked like XMPP was going to replace it, but XMPP popularity has declined due to its complexity and commercial vendors pulling away from it (in favour of their own proprietary offerings -- Facebook Messenger, etc).
 
-The down-side of IRC is that it is complex. However, [url="https://kiwiirc.com/"]Kiwi IRC[/url] is an excellent system that lets you put IRC within a frame on your site. We use this on the Composr site, and even are able to pre-set the chat username to match the username of the logged in Composr user.
+The down-side of IRC is that it is complex. However, [url="https://kiwiirc.com/"]Kiwi IRC[/url] is an excellent system that lets you put IRC within a frame on your site.
 
 [title="3"]Sales-chat systems[/title]
 
 Composr caters well for public/private chatrooms, and private instant messaging, but is not designed specifically for one-on-one live chat sessions between guest visitors and a staff team.
-For this we advise integration external software, which should be very easy. For an example of a free live chat solution see [url="Comm100"]http://www.comm100.com/livechat/features.aspx[/url].
+
+For this we advise the bundled [tt]Support Tickets[/tt] addon, which is not real-time but provides a member-staff communication avenue. If you need real-time communication, consider an integration with external software, which should be very easy. For an example of a free live chat solution see [url="Comm100"]http://www.comm100.com/livechat/features.aspx[/url].
+
 This is one of the few cases where relying on a third party tool does not provide user experience problems, as it's a use-case that is quite oblique to the rest of the website experience (works in a pop-up, and is an isolated sequence of interactions).
 
 [concepts

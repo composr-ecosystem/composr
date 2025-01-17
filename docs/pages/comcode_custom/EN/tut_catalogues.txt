@@ -192,7 +192,7 @@ To add a catalogue (among other functions) go to Admin Zone > Content > Catalogu
 Once a catalogue is added it will get its own icon under Content Management.
 
 [title="2"]Editing/deleting a catalogue[/title]
-
+[surround]
 [media width="150" description="Editing a catalogue" float="right"]data_custom/images/docs/tut_catalogues/catalogues_edit.png[/media]
 You can edit a catalogue to change details, add, edit or remove fields. Access this at:
 Admin Zone > Content > Catalogues > Edit catalogue, or from under Admin Zone > Content > [tt]<Catalogue name>[/tt].
@@ -200,17 +200,21 @@ Admin Zone > Content > Catalogues > Edit catalogue, or from under Admin Zone > C
 You cannot change field data types after you have created them (except between field types that have the same "storage" type) as this would affect the integrity of any data that may have already been entered into them. A workaround is to export to a spreadsheet, delete the field, create a new field with the same name and the new type, and reimport the spreadsheet.
 
 You can delete a catalogue from the bottom of its edit form.
+[/surround]
 
 [title="2"]Adding/editing/deleting categories.[/title]
 
 [surround]
-[media width="150" description="There are a whole host of options available after catalogue activity" float="right"]data_custom/images/docs/tut_catalogues/catalogues_do_next.png[/media]
-[media width="150" description="Adding an entry to a catalogue" float="right"]data_custom/images/docs/tut_catalogues/catalogues_add_entry.png[/media]
+[media_set]
 [media width="150" description="Choosing a catalogue to add an entry to" float="right"]data_custom/images/docs/tut_catalogues/catalogues_choose_to_add_to.png[/media]
+[media width="150" description="Adding an entry to a catalogue" float="right"]data_custom/images/docs/tut_catalogues/catalogues_add_entry.png[/media]
+[media width="150" description="There are a whole host of options available after catalogue activity" float="right"]data_custom/images/docs/tut_catalogues/catalogues_do_next.png[/media]
+[/media_set]
 Add or edit categories from:
 Admin Zone > Content > [tt]<Catalogue name>[/tt].
 
 You can delete a category from the bottom of its edit form. A root catalogue category cannot be deleted, however.
+[/surround]
 
 [title="2"]Adding/editing/deleting entries[/title]
 
@@ -222,7 +226,6 @@ You can delete an entry from the bottom of its edit form.
 [title="2"]Viewing catalogues[/title]
 
 You view catalogues via the [tt]catalogues[/tt] module ([tt]site:catalogues:index:<catalogue-name>[/tt] page-link gets you to a catalogue's index, which lists all categories under the catalogue). Links to individual catalogues are automatically added under Content on the default menus.
-[/surround]
 
 [title="2"]Permissions[/title]
 
@@ -256,7 +259,7 @@ For example, take the [tt]CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP.tpl[/tt] templat
 		<h3>{!CATALOGUE_GENERIC,{CATALOGUE_TITLE*}}</h3>
 	{+END}
 
-	<table class="map-table wide-table results-table spaced-table">
+	<table class="map-table wide-table results-table spaced-table responsive-blocked-table">
 		{+START,IF,{$DESKTOP}}
 			<colgroup>
 				<col class="catalogue-fieldmap-field-name-column" />
@@ -265,21 +268,26 @@ For example, take the [tt]CATALOGUE_DEFAULT_FIELDMAP_ENTRY_WRAP.tpl[/tt] templat
 		{+END}
 
 		<tbody>
+			{$SET,just_done_title,}
 			{FIELDS}
 		</tbody>
 	</table>
 
 	{+START,IF_PASSED,BREADCRUMBS}
 		{+START,IF_NON_EMPTY,{BREADCRUMBS}}
-			<nav class="breadcrumbs" itemprop="breadcrumb" role="navigation"><p>{!LOCATED_IN,{BREADCRUMBS}}</p></nav>
+			<nav class="breadcrumbs" itemprop="breadcrumb"><p>{!LOCATED_IN,{BREADCRUMBS}}</p></nav>
 		{+END}
 	{+END}
 
 	{+START,IF_NON_PASSED_OR_FALSE,ENTRY_SCREEN}
 		<div class="clearfix">
-			{+START,IF,{$NOT,{GIVE_CONTEXT}}}
+			{+START,IF,{$MATCH_KEY_MATCH,_WILD:catalogues:category}}
 				<p class="left">
-					<a target="_self" href="#"><img class="top-vertical-alignment" title="{!BACK_TO_TOP}" alt="{!BACK_TO_TOP}" width="24" height="24" src="{$IMG*,icons/tool_buttons/top}" /></a>
+					<a rel="back_to_top" target="_self" href="#" title="{!BACK_TO_TOP}">{+START,INCLUDE,ICON}
+						NAME=tool_buttons/top
+						ICON_CLASS=back-to-top-by-buttons
+						ICON_SIZE=24
+					{+END}</a>
 				</p>
 			{+END}
 
@@ -460,6 +468,7 @@ Most content types in Composr allow you to choose custom fields for them. This i
 [title="3"]Upload security[/title]
 
 Note that upload security (for file, picture, and video fields) is not perfect for custom fields. The security is checked when accessing a file field if it is a catalogue entry, but there is no mechanism to check the permissions of the content for which custom fields are attached.
+
 A similar caveat holds true for Custom Profile Fields, which share the same field types.
 
 [title="2"]Special kinds of catalogues[/title]

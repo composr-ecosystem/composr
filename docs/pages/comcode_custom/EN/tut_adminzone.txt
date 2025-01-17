@@ -1,7 +1,7 @@
 [title sub="Written by Allen Ellis"]Composr Tutorial: Admin Zone overview[/title]
 
 [media width="150" description="The Admin Zone at first glance" float="right"]data_custom/images/docs/tut_adminzone/adminzone_first_glance.png[/media]
-{!menus:DOC_ADMIN_ZONE} It can be accessed from anywhere by choosing the 'Admin Zone' zone link which appears at the bottom of every default-themed Composr page. You may be prompted to login again to confirm your current session -- this is for added security.
+{!menus:DOC_ADMIN_ZONE} It can be accessed from anywhere by clicking the Admin Zone icon which appears at the bottom of every default-themed Composr page (when logged in as a staff member). You can also get an 'Admin Zone' link in the user menu (again when logged in as a staff member). You may be prompted to login again to confirm your current session -- this is for added security.
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -38,35 +38,34 @@ The search result page also allows you to easily run a separate search for the s
 
 [surround]
 [title="3"]To-do list[/title]
-
 [media width="150" description="The to-do list" float="right"]data_custom/images/docs/tut_adminzone/adminzone_todo_list.png[/media]
-The first section in your content area is your to-do list. This is an automatically generated list of things that need to be done on your website. Some are day-to-day updates, such as changing your image of the day or adding news. Some are less frequent and more critical, such as making backups and sending newsletters.
+The first section in your content area is your to-do list. This is an automatically generated list of things that need to be done on your website. Some are day-to-day updates, such as changing your awards (top content) or adding news. Some are less frequent and more critical, such as making backups and sending newsletters.
 
-Composr will attempt to mark whether or not these actions have been completely recently. For example, if it has been more than 24 hours since you updated your image of the day, it will be marked as 'not done'. You can choose how often you would like to do these activities (for example, making backups monthly instead of weekly) by going to the Setup Section then the 'Configuration' icon and then 'Administrative options'.
+Composr will attempt to mark whether or not these actions have been completely recently. You can choose how often you would like to do these activities (for example, making backups monthly instead of weekly) by going to the Setup Section then the 'Configuration' icon and then 'Administrative options'.
 
 If there are options which are not validated then a link to edit these is included.
+[/surround]
 
+[surround]
 [title="3"]Version Information[/title]
+[media width="150" description="Version checks" float="right"]data_custom/images/docs/tut_adminzone/adminzone_version.png[/media]
 
 This section shows information about the current version of Composr that you are using, and whether or not it is the most recent one. If not, you will be given a link to upgrade to the latest version.
 [/surround]
 
+[surround]
 [title="3"]Notes[/title]
-
 [media width="150" description="The note area" float="right"]data_custom/images/docs/tut_adminzone/adminzone_notes.png[/media]
 This is an area for you and your staff to make notes. You can write anything you need in this space, and it will be shared between you and all of your other staff.
+[/surround]
 
 [title="3"]Tips[/title]
 
 You will be provided with a large number of handy tips. They are organised into 4 levels of increasing difficulty with a combined total of about 60 tips.
 
-[title="3"]Watch-list[/title]
-
-This section allows you to compare some statistics of your website, to others. The sites included can be changed via the edit button on the block.
-
 [title="3"]Links[/title]
 
-This section provides a selection of useful links. The links may be edited via the edit button on the block.
+This section provides a selection of useful links. The links may be edited via the edit button on the block. This could be handy, for example, if you create Comcode pages on the Admin Zone for staff policies and guidelines. You could also use it for links to competitors or frequently used sites for quick tracking.
 
 [title="3"]Action log[/title]
 
@@ -83,6 +82,8 @@ You are able to filter in a number of ways:
  - Make the display more compact by excluding repeated actions (disable "Include repeated actions") -- if the sort order is by popularity then this will show each action type only once, otherwise it will show each action type and content combination only once
  - Include major user activities, such as password resets (typically for keeping an eye on potential abuse)
  - Sort by the most common actions (change "Sort by" to "Popularity") -- if you do this you probably want to exclude repeated actions too
+
+There are more powerful filtering tools at your disposal on the Action Log screen under Audit > Action logs (audit trail).
 [/surround]
 
 [title="2"]Miscellaneous other Admin features[/title]

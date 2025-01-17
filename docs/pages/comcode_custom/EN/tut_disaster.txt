@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Disaster recovery[/title]
 
-[i]The Composr 'error log' screen points to this tutorial (as well as the 'critical error' screen and the 'system scheduler hooks' screen). If you think you have found a bug, please [page=":contact:free"]report it[/page]. The rest of this tutorial deals with potential disaster situations -- an error in the error log does not imply a disaster has happened.[/i]
+[i]The Composr 'error log' screen points to this tutorial (as well as the 'critical error' screen and the 'system scheduler hooks' screen). If you think you have found a bug, please [page="_SEARCH:report-issue"]report it[/page]. The rest of this tutorial deals with potential disaster situations -- an error in the error log does not imply a disaster has happened.[/i]
 
 This tutorial will go through some solutions to 'disastrous' scenarios that could happen on an unstable web server configuration. It does not cover all that could go wrong by any means, as there are literally an infinite number of things that could go wrong if Composr is running in an unreliable environment.
 
@@ -50,12 +50,15 @@ Obviously this needs a greater level of access than ordinary members would have.
  - Disk access
 
 [title="3"]Via the database[/title]
-
+[surround]
 For this, I am assuming that you are using [concept]Conversr[/concept]. If you are using another forum then the method will be similar, but will be done upon the data of that forum.
 
-[media width="150" description="Change the settings and 'Go'" float="right"]data_custom/images/docs/tut_disaster/disaster_pass_3.png[/media]
-[media width="150" description="Edit the row for the username for which the password should be changed" float="right"]data_custom/images/docs/tut_disaster/disaster_pass_2.png[/media]
+[media_set]
 [media width="150" description="Select to browse the f_members table" float="right"]data_custom/images/docs/tut_disaster/disaster_pass_1.png[/media]
+[media width="150" description="Edit the row for the username for which the password should be changed" float="right"]data_custom/images/docs/tut_disaster/disaster_pass_2.png[/media]
+[media width="150" description="Change the settings and 'Go'" float="right"]data_custom/images/docs/tut_disaster/disaster_pass_3.png[/media]
+[/media_set]
+
 [list="1"]
 [*] Enter phpMyAdmin
 [*] Browse the contents of the Composr f_members table (named [tt]cms_f_members[/tt] if you used the default table prefix).
@@ -68,6 +71,7 @@ For this, I am assuming that you are using [concept]Conversr[/concept]. If you a
 [/list]
 
 You should now be able to log in to Composr using your new password.
+[/surround]
 
 [title="3"]Via the disk[/title]
 
@@ -112,7 +116,7 @@ To fix this, edit the Comcode page and assign a new submitter via the edit form.
 
 To do it en-masse, you can run this in Commandr (this example assumes you are reassigning from member #5 to member #2):
 [code="Commandr"]
-:$GLOBALS['SITE_DB']->query_update('comcode_pages',array('p_submitter'=>2),array('p_submitter'=>5));
+:$GLOBALS['SITE_DB']->query_update('comcode_pages',['p_submitter'=>2],['p_submitter'=>5]);
 [/code]
 and then clear the Comcode page cache from Admin Zone > Tools > Cleanup tools.
 
@@ -126,7 +130,7 @@ If you have associated an account with Facebook, you can remove it by doing a pa
 
 [title="2"]Problems with addons[/title]
 
-If you find an addon is crashing your site, the safe mode link ([tt]http://yourbaseurl/index.php?keep_safe_mode=1[/tt]) can help. It should let you into your site to uninstall the addon causing the problem.
+If you find an addon is crashing your site, the safe mode link ([tt]http://yourbaseurl/index.php?keep_safe_mode=1[/tt]) can help. It should let you into your site to uninstall (or update, as may be the case for non-bundled addons) the addon causing the problem.
 
 The above requires for to be logged in at admin, which you may not be or be able to do. If you can't then you can force Safe Mode on using the [tt]http://yourbaseurl/config_editor.php[/tt] script. Load up the [tt]http://yourbaseurl/config_editor.php[/tt] script, login, look for the "Whether Composr is to be forced into Safe Mode, meaning no custom files will load and most caching will be disabled" option, tick (check) the option, and then save the configuration. Turn the option back off after you've solved your problem.
 

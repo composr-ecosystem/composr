@@ -15,10 +15,10 @@ Under U.K. law, and other jurisdictions, there is anti-discrimination legislatio
 In addition to making a site accessible by the disabled, good accessibility practice also helps usability. For example,
  - by making sure that web pages are given a so-called [concept]semantic[/concept] structure, they automatically become more usable on text-only web browsers. A system administrator needing to access an intranet externally via a remote console would find this particularly useful.
  - forms become more usable, as you do not need to click directly on the sometimes small check-boxes, radio-buttons, and lists to activate them: you can click on any part of the label as well. This makes filling in forms a lot quicker, as less precision mouse work is required.
- - A good way to test the quality of a website is to see if this is possible on it: on most it is not.
+  - A good way to test the quality of a website is to see if this is possible on it: on most it is not.
  - by improving navigation for those who cannot navigate between links as fast as others, navigation is also sped up for others. For example, by creating a site-map, everyone benefits.
 
-Composr complies with the highest level of the WCAG (to the latest version at the time of writing, 1.0) guidelines, level 3. Few websites are close to reaching level 1, but our inbuilt webstandards checking technology allows Composr users to get an edge in this area. Composr also meets section 508 guidelines, the XHTML and CSS specification, as well as many other minor considerations that other software has no automated way of checking for. Composr conforms to these standards throughout -- from screens that only users will view, up to those an administrator uses -- and meets the highest level of the [concept]ATAG[/concept].
+Composr complies with the highest level of the WCAG (version 1.0; we are actively working on version 2.2 compliance) guidelines, level 3. Few websites are close to reaching level 1, but our inbuilt webstandards checking technology allows Composr users to get an edge in this area. Composr also meets section 508 guidelines, the XHTML and CSS specification, as well as many other minor considerations that other software has no automated way of checking for. Composr conforms to these standards throughout -- from screens that only users will view, up to those an administrator uses -- and meets the highest level of the [concept]ATAG[/concept].
 [/surround]
 
 [contents]decimal,lower-alpha[/contents]
@@ -26,19 +26,19 @@ Composr complies with the highest level of the WCAG (to the latest version at th
 [title="2"]Webmaster concerns[/title]
 
 [media width="150" description="Composr displays HTML and any errors in an easily readable fashion" float="right"]data_custom/images/docs/tut_accessibility/accessibility_webstandards_checker.png[/media]
-After you have decided on the layout of your website, and created appropriate pages, you will need to create a site-map. The site-map is linked to from the bottom of every Composr page, and you will see that Composr comes with a default place-holder.
+After you have decided on the layout of your website, and created appropriate pages, you will need to create a site-map (although Composr has a default built-in site-map generator to get started). The site-map can be accessed from a link at the bottom of every page (in the footer). This accesses the user-friendly site-map. An additional search engine friendly site-map generator (which builds XML files) is also included in Composr and builds itself automatically under [tt]data_custom/sitemaps[/tt].
 
 The complexity of your site-map depends upon the complexity of your website. A small website may be able to just point the user to the left hand menu, while a large website should detail the full site structure, with links to all pages that should be directly accessible.
 
 [media width="150" description="This image displays how colour can be used to improve usability, but without it being required to understand an interface" float="left"]data_custom/images/docs/tut_accessibility/accessibility_colour_useful_not_needed.png[/media]
-The checkpoint tables included in this document, under the template compliance section, include checkpoints that apply to webmaster rather, or in addition to, the design of Composr itself. Therefore it is important to read this table and act in accordance with it. Webmaster concerns are mainly:[html]<ul><li>Fill in optional captions for media</li>
-<li>Layout your site in a clear and consistent manner</li>
-<li>Do not fill your site with multimedia without providing information about that multimedia</li>
-<li>Avoid using Comcode tags that make the page dynamic in the user web browser, such as [ticker] and [jumping]</li></ul>[/html]
+The checkpoint tables included in this document, under the template compliance section, include checkpoints that apply to webmaster rather, or in addition to, the design of Composr itself. Therefore it is important to read this table and act in accordance with it. Webmaster concerns are mainly:[html]<ul><li>Fill in optional captions for media where possible</li>
+<li>Lay out your site in a clear and consistent manner</li>
+<li>Do not fill your site with multimedia without providing textual context about that multimedia</li>
+<li>Avoid using Comcode tags that make the page dynamic in the user web browser, such as [ticker] and [jumping]. If you do use them, do not rely on them (have an alternative which does not use them).</li></ul>[/html]
 
 It is possible to use Comcode in such a way that a page becomes invalid. Usually this is not something that would be accidentally triggered, as there is a correlation between common sense and webstandards checking for most of these scenarios. An example error would occur if you put a [tt][block][/tt] tag inside a [tt][url][/tt] tag: intuitively, this does not make sense, as a block could not be a sensible link title.
 
-It is also possible to degrade validation by creating different items of content that share the same title. For example, if two forums share the same title, it is likely that on the forum page there will by an error due to two separate links sharing the same link text. Composr avoids this when it is reasonable to think that two links may share a title, by providing additional distinguishing information for the link, but does not universally distinguish all links in the portal in such a way, as to do so would merely make the link-text closer to that of the URL, undermining the accessibility in itself by making them overly complex. To work-around this, simply try to choose distinctive titles for your content.
+It is also possible to degrade validation by creating different items of content that share the same title. For example, if two forums share the same title, it is likely that on the forum page there will be an error due to two separate links sharing the same link text. Composr avoids this when it is reasonable to think that two links may share a title, by providing additional distinguishing information for the link, but does not universally distinguish all links in the portal in such a way, as to do so would merely make the link-text closer to that of the URL, undermining the accessibility in itself by making them overly complex. To work-around this, simply try to choose distinctive titles for your content.
 
 [title="2"]Template compliance[/title]
 
@@ -50,8 +50,11 @@ This section will detail Composr compliance with the guidelines, with any releva
 <table class="columned-table results-table wide-table autosized-table">
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				In General (Priority 1)
+			</th>
+			<th>
+				Compliance
 			</th>
 		</tr>
 	</thead>
@@ -61,7 +64,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-text-equivalent">1.1</a>&nbsp;Provide
 				a text equivalent for every non-text element (e.g., via &quot;alt&quot;,
 				&quot;longdesc&quot;, or in element content). <em>This includes</em>:
-				images, graphical representations of text (including symbols),
+				images, graphical representations of text (including symbols, emoticons, and icons),
 				image map regions, animations (e.g., animated GIFs), applets and
 				programmatic objects, ascii art, frames, scripts, images used as
 				list bullets, spacers, graphical buttons, sounds (played with or
@@ -98,7 +101,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-order-style-sheets">6.1</a>&nbsp;Organize
+				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-order-style-sheets">6.1</a>&nbsp;Organise
 				documents so they may be read without style sheets. For example,
 				when an HTML document is rendered without associated style sheets,
 				it must still be possible to read the document.
@@ -147,9 +150,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use images and image maps (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -180,9 +184,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use tables (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -211,9 +216,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use frames (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -231,9 +237,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use applets and scripts (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -253,9 +260,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use multimedia (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -287,9 +295,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if all else fails (Priority 1)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -317,9 +326,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 <table class="columned-table results-table wide-table autosized-table">
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				In General (Priority 2)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -334,7 +344,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 			</td>
 			<td>
 				<p>Composr is designed to high graphic
-				standards that precludes such bad contrast.</p>
+				standards (in particular via the Theme Wizard) that precludes such bad contrast.</p>
 				<p>This applies to web-masters.</p>
 			</td>
 		</tr>
@@ -346,7 +356,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Composr complies (SVG statistics, for example).</p>
+				<p>Composr complies.</p>
 			</td>
 		</tr>
 		<tr>
@@ -460,10 +470,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Unlike most web systems, Composr will not
-				show &ldquo;you are being redirected&rdquo; pages. Refresh is
-				either automatic (often via the location header), or a user must
-				confirm by clicking a continue link.</p>
+				<p>Most redirects in Composr are controlled by the location header or a prompt which the user must confirm. There are a few exceptions where headers have already been sent and thus a meta (markup) redirect is the only option. However, as of the time of this writing, most modern user-agents can block automatic redirects now.</p>
 			</td>
 		</tr>
 		<tr>
@@ -475,7 +482,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Composr complies. Note that despite the
+				<p>Composr complies by using on-page overlays wherever possible. Note that despite the
 				wording of this check-list entry, it is allowed to cause a pop-up
 				when there is sufficient warning, which Composr always provides.</p>
 			</td>
@@ -488,7 +495,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Composr complies.</p>
+				<p>Composr complies up to version 1.0. We are working on 2.2 compliance for version 11.</p>
 			</td>
 		</tr>
 		<tr>
@@ -540,7 +547,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Composr provides automatic sitemap generation functionality, a default sitemap page, and an advanced menu editor.</p>
+				<p>Composr provides automatic sitemap generation functionality, a default sitemap page, and an advanced menu editor. A Comcode <kbd>contents</kbd> tag is available for automatically generating a Table of Contents on any page.</p>
 			</td>
 		</tr>
 		<tr>
@@ -557,9 +564,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use tables (Priority 2)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -573,7 +581,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 			</td>
 			<td>
 				<p>Composr complies. Note that layout tables <strong>are</strong> allowed,
-				but Composr hardly uses them anywhere (only when a CSS limitation needs to be overcome).</p>
+				but Composr hardly uses them anywhere (only when a CSS limitation needs to be overcome) and prefers grids and flex-boxes.</p>
 			</td>
 		</tr>
 		<tr>
@@ -591,9 +599,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use frames (Priority 2)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -612,9 +621,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use forms (Priority 2)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -648,9 +658,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use applets and scripts (Priority 2)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -723,9 +734,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 <table class="columned-table results-table wide-table autosized-table">
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				In General (Priority 3)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -738,7 +750,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 			</td>
 			<td>
 				<p>Composr complies.</p>
-				<p>This applies to web-masters.</p>
+				<p>This applies to web-masters. You can use the Comcode <kbd>abbr</kbd> tag to accomplish this.</p>
 			</td>
 		</tr>
 		<tr>
@@ -898,9 +910,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use images and image maps (Priority 3)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -920,9 +933,10 @@ This section will detail Composr compliance with the guidelines, with any releva
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use tables (Priority 3)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -963,16 +977,17 @@ This section will detail Composr compliance with the guidelines, with any releva
 				</p>
 			</td>
 			<td>
-				<p>Assistive technologies now provide this.</p>
+				<p>Not applicable; assistive technologies now provide this.</p>
 			</td>
 		</tr>
 	</tbody>
 
 	<thead>
 		<tr>
-			<th colspan="2">
+			<th>
 				And if you use forms (Priority 3)
 			</th>
+			<th>Compliance</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -983,7 +998,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 				place-holding characters in edit boxes and text areas.</p>
 			</td>
 			<td>
-				<p>Assistive technologies now provide this.</p>
+				<p>Not applicable; assistive technologies now provide this.</p>
 			</td>
 		</tr>
 	</tbody>
