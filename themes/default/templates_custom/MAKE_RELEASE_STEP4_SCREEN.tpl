@@ -12,6 +12,10 @@
 	{$,cleaning up}
 	<li>{!MAKE_RELEASE_STEP4_DB}</li>
 
+	{$,publishing the build 1}
+	<li>{!MAKE_RELEASE_STEP4_UPLOAD,{COMMAND_TO_TRY*},{NEW_VERSION_DOTTED*}}</li>
+	<li>{!MAKE_RELEASE_STEP4_TAG,{$REPLACE*, ,-,{NEW_VERSION_DOTTED}}}</li>
+
 	{$,update homesite}
 	<li>
 		{!MAKE_RELEASE_STEP4_HOMESITE,{BRAND_DOMAIN*}}
@@ -27,11 +31,12 @@
 		</ul>
 	</li>
 
-	{$,publishing the build}
-	<li>{!MAKE_RELEASE_STEP4_UPLOAD,{COMMAND_TO_TRY*},{NEW_VERSION_DOTTED*}}</li>
-	<li>{!MAKE_RELEASE_STEP4_TAG,{$REPLACE*, ,-,{NEW_VERSION_DOTTED}}}</li>
+	{$,publishing the build 2}
 	<li>{!MAKE_RELEASE_STEP4_PUBLISH,{PUSH_URL*},{$INSERT_FORM_POST_SECURITY},{CHANGES*}}</li>
 	<li>{!MAKE_RELEASE_STEP4_TEST,{$BRAND_BASE_URL*}}</li>
+
+	{$,API}
+	<li>{!MAKE_RELEASE_STEP4_API,{$BRAND_BASE_URL*}}</li>
 
 	{$,third party integrations}
 	{+START,IF,{$NOT,{IS_BLEEDING_EDGE}}}{+START,IF,{$NOT,{IS_OLD_TREE}}}
@@ -101,20 +106,6 @@
 				<li>{!MAKE_RELEASE_STEP4_ERD_DOCS}</li>
 				<li>{!MAKE_RELEASE_STEP4_ERD_TABLE_DETAILS,{$PAGE_LINK,_SEARCH:sql-show-tables-by-addon}}</li>
 				<li>{!MAKE_RELEASE_STEP4_ERD_GIT}</li>
-			</ul>
-		</li>
-
-		{$,API}
-		<li>
-			{!MAKE_RELEASE_STEP4_API}
-			<ul>
-				<li>{!MAKE_RELEASE_STEP4_API_GRAPHVIZ}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_MEMORY}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_PEAR}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_PHPDOCUMENTOR}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_SYMLINK}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_BUILD}</li>
-				<li>{!MAKE_RELEASE_STEP4_API_GIT}</li>
 			</ul>
 		</li>
 

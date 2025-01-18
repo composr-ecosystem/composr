@@ -130,6 +130,9 @@ _meta_tree
 /.htaccess
 .idea
 /data_custom/modules/google_appengine/*
+/data_custom/modules/api/*
+!/data_custom/modules/api/.htaccess
+!/data_custom/modules/api/index.html
 !/data_custom/modules/google_appengine/index.html
 /cron.yaml
 /dos.yaml

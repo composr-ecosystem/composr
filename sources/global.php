@@ -1233,8 +1233,6 @@ function list_untouchable_third_party_directories() : array
         'data_custom/ckeditor',
         'data_custom/pdf_viewer',
         'data/polyfills',
-        'docs/api',
-        'docs/api-template',
         'docs/jsdoc',
         'exports',
         'imports',
