@@ -13,9 +13,10 @@ Manage author(s) from Admin Zone > Content > Authors.
 There is a permission to allow members to setup author profiles that bind to their own member profile. If the 'setup author' page was not entered from a link to setup/edit a referenced author, it will default to defining/editing the author of the username of the current user: it is through this that a member sets up their own author profile.
 
 To set up a profile for another author, it is first necessary to add some author supporting content, and then to choose to set up the author from the Admin Zone author management page.
+[/surround]
 
 [title="2"]View a Author[/title]
-
+[surround]
 [media width="150" description="Viewing an author profile" float="left"]data_custom/images/docs/tut_authors/authors_view.png[/media]
 Links are placed on author-supporting content view pages to view details of the content author, as well as in the Conversr member profile of a member with a bound author profile.
 

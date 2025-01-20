@@ -677,6 +677,7 @@ class Module_admin_ecommerce_reports
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('f03a34c67382573793f5f4e128ce4ae7')));
         }
 
         // Prepare Filtercode
@@ -1182,6 +1183,7 @@ class Module_admin_ecommerce_reports
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c10e06066afb571f92a1c5145f443fba')));
         }
 
         // Prepare Filtercode

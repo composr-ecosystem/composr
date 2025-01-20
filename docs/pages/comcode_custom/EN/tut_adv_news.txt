@@ -28,9 +28,11 @@ Pinging will only happen for news categories which may be accessed by guests.
 [title="2"]Personal Categories / Blogs[/title]
 
 [surround]
+[media_set]
 [media width="150" description="The blog in action" float="right"]data_custom/images/docs/tut_adv_news/adv_news_blog_2.png[/media]
 [media width="150" description="The blog is linked to in the member profile" float="right"]data_custom/images/docs/tut_adv_news/adv_news_profile.png[/media]
 [media width="150" description="A blog being started by adding news to a category that will automatically be created" float="right"]data_custom/images/docs/tut_adv_news/adv_news_blog.png[/media]
+[/media_set]
 Composr has advanced support for blogging: members in permitted usergroups may have their own personal news categories, otherwise known as 'blogs' (short for 'web logs').
 
 A member's blog is displayed in a tab on their member profile (Conversr-only). Depending on how you set up your news block on your main site, they may or may not display in it also.
@@ -40,13 +42,13 @@ To create a 'blog', a member only needs to choose to add news, and select their 
 There is also a blogs CMS module separate to the news CMS module, under Admin Zone > Content > Blogs. It has to be enabled via the "Separate blogs" configuration option. It is a stripped down version of the main news posting module, designed to make blog posting simpler. This is provided for two reasons:
 1) as a nicety so that you don't need to explain 'blogs are news' to your users
 2) so you can lock down access, so that members may submit to blogs but not website news
-The presence of the blogs CMS module does not stop you using the regular news CMS module to submit blog posts.
+The presence of the blogs CMS module does not stop you using the regular news CMS module to submit blog posts (however, regular news entries will not show up on the edit choice screen for blogs, and likewise blogs will not show up on the edit choice screen for news).
 
 Permissions required for blogs are:
  - Permission to access the [tt]cms[/tt] zone [set in Admin Zone > Security > Permissions tree editor]
  - Permissions to access the [tt]cms:cms_blogs[/tt] module (it's on by default) [set in Admin Zone > Security > Permissions tree editor]
- - The 'Have personal categories' privilege [set in Admin Zone > Security > Privileges, or as 'Have blog' in the Permissions tree editor on the [tt]cms:cms:news[/tt] module if you want to set it just to apply for [tt]cms:cms_blogs[/tt]]
- - The 'Add mid-impact content' privilege [set in Admin Zone > Security > Privileges, or as 'Add news' in the Permissions tree editor on the [tt]cms:cms:news[/tt] module if you want to set it just to apply for [tt]cms:cms_blogs[/tt]]
+ - The 'Have personal categories' privilege [set in Admin Zone > Security > Privileges, or as 'Have blog' in the Permissions tree editor on the [tt]cms:cms_news[/tt] module if you want to set it just to apply for [tt]cms:cms_blogs[/tt]]
+ - The 'Add mid-impact content' privilege [set in Admin Zone > Security > Privileges, or as 'Add news' in the Permissions tree editor on the [tt]cms:cms_news[/tt] module if you want to set it just to apply for [tt]cms:cms_blogs[/tt]]
 [/surround]
 
 [title="2"]Advanced filtering of the news archive[/title]

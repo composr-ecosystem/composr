@@ -21,7 +21,7 @@ class api_classes_documented_test_set extends cms_test_case
     public function testAPIClassesDocumented()
     {
         /*
-        NB: This only bothers with stuff we are going to include in the PHPDocumentor scan. Otherwise we don't care as Composr doesn't (packages work on a file level, this isn't Java).
+        NB: This only bothers with stuff we are going to include in the API compile scan. Otherwise we don't care as Composr doesn't (packages work on a file level, this isn't Java).
         */
 
         foreach (['sources', 'sources/database', 'sources/database/shared', 'sources/forum'] as $d) {
@@ -47,7 +47,7 @@ class api_classes_documented_test_set extends cms_test_case
                     for ($i = 0; $i < $num_matches; $i++) {
                         $this->assertTrue(
                             preg_match('# +\* @package\s+\w+\n\t* +\*/\n\t*(abstract\s+)?class ' . preg_quote($matches[2][$i], '#') . '#', $c) != 0,
-                            'Undefined package for PHPDocumentor-exposed class: ' . $d . '/' . $file . ' (' . $matches[2][$i] . ')'
+                            'Undefined package for class: ' . $d . '/' . $file . ' (' . $matches[2][$i] . ')'
                         );
                     }
                 }

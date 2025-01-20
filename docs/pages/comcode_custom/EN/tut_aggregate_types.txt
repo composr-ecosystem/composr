@@ -13,8 +13,8 @@ This is advanced functionality designed to be set up by experienced developers.
 [surround]
 [media width="150" description="Editing the aggregate type XML" float="right"]data_custom/images/docs/tut_aggregate_types/edit_types.png[/media]
 The administrator, looking to make use of aggregate content types, would follow the following two-step process:
-1) Define aggregate content types in XML, from Admin Zone > Structure > Aggregate content types > Edit XML definition.
-2) Add instances of aggregate content types, from Admin Zone > Structure > Aggregate content types > Add aggregate content type instance.
+1) Define aggregate content types in XML, from Admin Zone > Structure > Aggregate content types > Edit aggregate types.
+2) Add instances of aggregate content types, from Admin Zone > Structure > Aggregate content types > Add an aggregate content type instance.
 
 The key feature of aggregate content types of course is that step 2 may be repeated many times, to build out complex structures with great efficiency.
 

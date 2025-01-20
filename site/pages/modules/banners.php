@@ -509,6 +509,7 @@ class Module_banners
             ];
             if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
                 log_hack_attack_and_exit('ORDERBY_HACK');
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('b360702a7c145c89b3d424b697e35650')));
             }
 
             $hr = [

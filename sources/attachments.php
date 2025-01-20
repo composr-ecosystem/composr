@@ -231,6 +231,7 @@ function attachments_script()
     header('Content-Type: ' . $mime_type);
     if ((strpos($original_filename, "\n") !== false) || (strpos($original_filename, "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2f18a512b37b5812a2140349a9390639')));
     }
     header('Content-Disposition: inline; filename="' . escape_header($original_filename, true) . '"');
 
@@ -238,6 +239,7 @@ function attachments_script()
     if (!url_is_local($full)) {
         if ((strpos($full, "\n") !== false) || (strpos($full, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cb57e3340eb15e5da8de198f5a8e0823')));
         }
         header('Location: ' . escape_header($full)); // assign_refresh not used, as no UI here
         return;

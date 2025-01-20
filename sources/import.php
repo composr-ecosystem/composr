@@ -186,6 +186,7 @@ function i_force_refresh()
 {
     if ((strpos($GLOBALS['I_REFRESH_URL'], "\n") !== false) || (strpos($GLOBALS['I_REFRESH_URL'], "\r") !== false)) {
         log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e93d89c350cb520a83c4f84ca71ccb95')));
     }
 
     global $I_REFRESH_URL, $I_REFRESH_TIME, $I_REFRESH_DID_SOMETHING;

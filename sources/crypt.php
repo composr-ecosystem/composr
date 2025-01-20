@@ -193,7 +193,16 @@ function get_secure_random_password(?int $strength = null, string $username = ''
     $digits = str_split('0123456789');
     $lowercase = str_split('qwertyuiopasdfghjklzxcvbnm');
     $uppercase = str_split('QWERTYUIOPASDFGHJKLZXCVBNM');
-    $special = str_split('!@#$%^&*+=-_?.,:;()/|~`\'"'); // <> is ignored as it is XML, [] is ignored as it is Comcode, and {} is ignored as it is Tempcode
+
+    /*
+        Unused characters:
+        <> (XML)
+        [] (Comcode)
+        {} (Tempcode)
+        / (Conflicts with member CSV exports and imports)
+        $ (bcrypt hash symbol)
+    */
+    $special = str_split('!@#%^&*+=-_?.,:;()|~`\'"'); // <> is ignored as it is XML, [] is ignored as it is Comcode, and {} is ignored as it is Tempcode
 
     $password = [];
     $min_characters = intval(get_option('minimum_password_length'));

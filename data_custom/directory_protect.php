@@ -59,9 +59,11 @@ $filename = basename($file);
 
 if (strpos($file, '..') !== false) {
     log_hack_attack_and_exit('PATH_HACK');
+    warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
 }
 if (cms_strtolower_ascii(substr($file, -4)) == '.php') {
     log_hack_attack_and_exit('TRY_TO_DOWNLOAD_SCRIPT');
+    warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
 }
 
 $_full = get_custom_file_base() . '/' . $file;

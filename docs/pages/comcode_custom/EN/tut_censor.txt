@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Dealing with annoying users[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Dealing with annoying users[/title]
 
 Composr provides a number of ways to deal with the annoying users or the users who do not adhere to your site policies (for a good discussion of site policies see the [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page] tutorial).
 
@@ -7,7 +7,7 @@ Some of these tools actively enforce your policy, some of them allow you to 'mod
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Active filters (word filter and field filter)[/title]
-
+[surround]
 [media width="150" description="Working with the word filter" float="right"]data_custom/images/docs/tut_censor/censor_word.png[/media]
 {!wordfilter:DOC_WORDFILTER}
 
@@ -17,7 +17,7 @@ Admin Zone > Security > Word filter.
 The word filter makes no attempt to try and detect when users try to 'cheat it', as this would be a futile struggle: if users abuse the filter, then they are almost certainly knowingly that they are doing so, and thus setting themselves up for punishment.
 
 In addition to the word filter there is a more sophisticated filtering system, the [page="_SEARCH:tut_fields_filter"]The form field filter system[/page].
-
+[/surround]
 [title="2"]Validation[/title]
 
 Composr, by default, will not allow most forms of non-trusted content to appear live on the website without validation by the staff. When a user that is not in a trusted usergroup posts content, then they will have no choice but to have it posted as not validated, and a notification will be dispatched to the staff. The staff can then choose what to do with the content (as part of their "moderation" duties).
@@ -50,9 +50,11 @@ As all these methods work on members, but only banning by IP address works for g
 [/surround]
 
 [surround]
+[media_set]
 [media width="150" description="The standing tab of a member which lists 2 formal warnings" float="right"]data_custom/images/docs/tut_censor/censor_warning.png[/media]
 [media width="150" description="Making a warning / potentially other punitive actions" float="right"]data_custom/images/docs/tut_censor/censor_make_warning.png[/media]
 [media width="150" description="Links for member warning from their profile" float="right"]data_custom/images/docs/tut_censor/member_links.png[/media]
+[/media_set]
 All the various punishment tools are brought together for convenience on one screen named "Warn member" (Conversr only).
 
 This screen can be accessed from either:
@@ -62,7 +64,7 @@ This screen can be accessed from either:
 [title="3"]Warnings Form[/title]
 
 The warnings form consists of the following options that can be utilised to easily deal with problematic members or spammers:
- - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings, whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile (but if you issue punitive actions, those might still show up while they are active).
+ - [b]Warning Type[/b]: A "Formal Warning" counts towards the member's total number of warnings (think of it as a "community strike"), whereas an "Off-the-book Warning" does not. Furthermore, off-the-book warnings are not listed to the member on their profile (but if you issue punitive actions, those might still show up while they are active).
  - [b]Punitive Actions[/b]
   - [b]Ban the member's IP address[/b]: Bans the last-known IP address of the member so they (and others) can no longer access the website from that IP. The ban is performed on the .htaccess file so they cannot even access the website anymore. Note that if you ban the IP address but not the member, they can still log in from another IP address / device.
   - [b]Ban member[/b]: This prevents the member from being able to log in to their account anymore, but they can still use the site as a guest. Additionally, other visitors can no longer view their profile. Note that it is still possible for a member to register a new account (e.g. from a different IP and using a different username and IP address).
@@ -182,8 +184,8 @@ This module shows the recent actions performed by you and your staff. Virtually 
  - [b]IP Address[/b] is the [concept]IP address[/concept] of the member who performed this action.
  - [b]Date and Time[/b] is the date and time when the action occurred. You may click this date to view further details on the submission as well as do (un)banning related to it.
  - [b]Action[/b] is the name of the action they performed.
- - [b]First Parameter[/b] is one of the parameters of that action -- which will differ from action to action.
- - [b]Second Parameter[/b] is one of the parameters of that action -- which will differ from action to action.
+ - [b]First Parameter[/b] is one of the parameters of that action -- which will differ from action to action (usually an ID).
+ - [b]Second Parameter[/b] is one of the parameters of that action -- which will differ from action to action (usually context).
 
 There are also 'sort by' and 'show per page' options at the bottom of this module to help you refine which recent actions you see.
 

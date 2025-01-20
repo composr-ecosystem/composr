@@ -45,7 +45,7 @@ You can delete a forum grouping from the bottom of its edit form.
 
 [title="2"]Topics in a forum[/title]
 
-Within a forum, there are a number of to modify a topic, to change their behaviour:
+Within a forum, there are a number of tools to modify a topic, to change their behaviour:
  - A topic may be 'pinned' (also known as 'stickied' in some systems). A pinned topic is placed at the top of the topic list, usually as it contains important information
  - A topic may be made 'cascading'. Cascaded topics appear in all forums in the forum tree, underneath (and including) the forum they are placed in. The cascade property is often used to make forum-wide announcements
  - A topic may be 'closed'. Only those with the necessary privilege may post in a closed topic
@@ -115,9 +115,11 @@ If your users are confused by the quick reply function (for example, they miss t
 [title="2"]Topic polls[/title]
 
 [surround]
-[media width="150" description="Viewing a poll (post-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_2.png[/media]
-[media width="150" description="Viewing a poll (pre-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_1.png[/media]
+[media_set]
 [media width="150" description="Adding a poll" float="right"]data_custom/images/docs/tut_forums/forums_poll_add.png[/media]
+[media width="150" description="Viewing a poll (pre-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_1.png[/media]
+[media width="150" description="Viewing a poll (post-voting)" float="right"]data_custom/images/docs/tut_forums/forums_poll_view_2.png[/media]
+[/media_set]
 Topics may have a poll attached to them (by any member) by default, so as to gauge opinion tied to a discussion. These polls are separate to the main Composr poll system, and have different options.
 
 Polls have options to restrict or allow:

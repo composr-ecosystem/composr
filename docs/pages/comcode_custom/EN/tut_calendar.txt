@@ -44,15 +44,19 @@ You can delete an event from the bottom of its edit form.
 When you add an event, you may define the following special settings:
  - The event type.
  - The start date and time. This defaults to an arbitrary time in the future. For a recurring event, this is the first time the event happens.
- - The end date and time. This is optional, and should only be set for an event that specifically has an end (many events can be considered points in time).
- - The recurrence type. For example, you can decide that recurrence is on a weekly basis.
- - The recurrence pattern. This is a source of popular confusion, but it is actually a very powerful tool. Significant in-line help is given for this, but basically it allows you to say things like 'this happens every weekday'. In our example, we have allowed the Cricket team to have a week off after every three weeks of practice.
- - The number of recurrences. In our example, the Cricket team only practices 25 times (therefore they have around 32 weeks between the start and end of their season, because of the weeks off).
+ - The end date and time. This is optional, and should only be set for an event that specifically has an end (many events can be considered points in time). Note that for recurring events, this is the end date/time for the first occurrence, not for the overall recurrence window.
+ - The recurrence type. For example, you can decide that recurrence is on a daily basis.
+ - The recurrence pattern. This is a source of popular confusion, but it is actually a very powerful tool. Significant in-line help is given for this, but basically it allows you to say things like 'this happens every weekday'. In our example, we have allowed the Cricket team to have a week off after every three weeks of practice (We start the event on a Monday, set it to daily recurrence, and then set recurrence pattern to [tt]1111100111110011111000000000[/tt]).
+  - To better understand the recurrence pattern, break it up into groups of 7 as every week has 7 days: [tt]1111100[/tt], [tt]1111100[/tt], [tt]1111100[/tt], and [tt]0000000[/tt].
+  - Each 0 or 1 represents a day and whether (1) or not (0) the event occurs on that day. So the [tt]1[/tt]s indicate the Monday-Friday of practice, followed by two [tt]0[/tt]s as the team does not practice on weekends.
+  - However, after three groups of 7 days, we conclude with a full 7 days of [tt]0[/tt]s to indicate the team has that week off.
+  - The pattern then repeats until the number of recurrences specified has been reached.
+ - The number of recurrences (when using recurrence patterns, this only counts [tt]1[/tt]s). In our example, let's say the Cricket team has a 28-week season. But every 4 weeks they have off, so effectively they have 21 weeks of practice. There are 5 recurrences (practices) per week (one per weekday), so that means we have a total of 105 recurrences. That is what we would put in this field.
  - Whether the event is public. Private events are generally used if the event is intended (by the event submitter) for a diary-like usage of the calendar system.
  - Priority. This is displayed in the interface, to help make it clear how a calendar user should plan their time.
- - Reminder signing-up. You can sign yourself, and members of select usergroups, up for reminders. You may also select how much notice there is for that reminder.
+ - Reminder signing-up. You can sign yourself, and members of select usergroups, up for reminders. You may also select how much notice there is for that reminder in hours. So you could have the Cricket team sign up accounts, put them all in a usergroup, and then have them get reminders a few hours before every practice.
 
-For monthly events you can also specify a special day-of-week position, from the start or end of the month. For example, the 2nd Tuesday of the month. If you wish to specify something like this, but once a year (e.g. the 2nd Tuesday of April, each year), specify a monthly recurrence with a recurrence pattern of [tt]100000000000[/tt].
+For monthly events you can also specify a special day-of-week position, from the start or end of the month. For example, the 2nd Tuesday of the month. If you wish to specify something like this, but once a year (e.g. the 2nd Tuesday of April, each year), specify a monthly recurrence with a recurrence pattern of [tt]100000000000[/tt] (making sure the event starts in April).
 
 A member may remove reminders for events, and also have multiple reminders with different notice times.
 [/surround]
@@ -60,10 +64,12 @@ A member may remove reminders for events, and also have multiple reminders with 
 [title="2"]Views[/title]
 
 [surround]
+[media_set]
 [media width="150" description="The calendar day view" float="right"]data_custom/images/docs/tut_calendar/calendar_view_day.png[/media]
 [media width="150" description="The calendar week view" float="right"]data_custom/images/docs/tut_calendar/calendar_view_week.png[/media]
 [media width="150" description="The calendar month view" float="right"]data_custom/images/docs/tut_calendar/calendar_view_month.png[/media]
 [media width="150" description="The calendar year view" float="right"]data_custom/images/docs/tut_calendar/calendar_view_year.png[/media]
+[/media_set]
 The calendar has 5 views:
 1) at the top level, you can view a whole year
 2) you can view a whole month
@@ -80,7 +86,7 @@ Social > Calendar on the default menus).
 [media width="150" description="Calendar interest filtering" float="right"]data_custom/images/docs/tut_calendar/calendar_interests.png[/media]
 The user interface has been very carefully designed so as to allow very quick and easy navigation between these views, allowing you to focus in and out, and move along, from where you are viewing.
 
-The less focused the view, the less detail that is shown. On the year view you not see detail on any specific event happening on a day, but you can see trends and gauge how busy the individual days are. On the month view you can see specific events, but it is less easy to see how a day is time-tabled. On the week view you can see a full time-table, but you can only see event titles by hovering the mouse. On the day view, you can see parallel activity streams, and actual event details.
+The less focused the view, the less detail that is shown. On the year view you not only see details on any specific event happening on a day, but you can see trends and gauge how busy the individual days are. On the month view you can see specific events, but it is less easy to see how a day is time-tabled. On the week view you can see a full time-table, but you can only see event titles by hovering the mouse. On the day view, you can see parallel activity streams, and actual event details.
 
 The views support filtering of event-types via a series of check-boxes (tick-boxes).
 
@@ -90,10 +96,10 @@ From the screen-shots of the calendar views you can see how the recurrence patte
 [/surround]
 
 [title="3"]Block[/title]
-
 [surround]
 [media width="150" description="Upcoming events via the listing mode of the [tt]side_calendar[/tt] block" float="right"]data_custom/images/docs/tut_calendar/listing.png[/media]
 The [tt]side_calendar[/tt] block allows embedding of a mini-month view of the calendar, or a listing of upcoming events.
+[/surround]
 
 [title="2"]Time-zone issues[/title]
 
@@ -103,7 +109,8 @@ Special temporal events such as 'Daylight saving time', 'Leaps', 'Relativistic e
 
 The Composr calendar is strongly tied to the Gregorian calendar, as well as the yyyy/mm/dd ISO standard for display of dates.
 Changing this is not really viable: the internals of the calendar are extremely complex, as dates and time are inherently extremely complex.
-[/surround][title="2"]Recurrence fixing[/title]
+
+[title="2"]Recurrence fixing[/title]
 
 [box="Important -- take a backup" width="25em" float="right"]
 It is advisable to take a database backup before fixing an event, just in case the process does not complete as you expect it to. The recurrence programming code in the calendar system is (has to be) extremely complex, and this is a place where a minor bug or user mistake could wreak havoc.
@@ -140,7 +147,7 @@ To schedule a command for execution, add an event with the event type of 'System
 [/list]
 [b]Make sure the WYSIWYG editor is off[/b] when using this event type.
 
-For scheduled commands to be executed you need to have the system scheduler configured as specified in the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial.
+For scheduled commands to be executed you need to have the system scheduler configured as specified in the [page="_SEARCH:tut_configuration"]basic configuration[/page] tutorial. And ideally the Cron should run every minute to ensure system commands run on time.
 
 [concepts
  1_key="Event"                1_value="An entry in the calendar system that may recur"

@@ -21,9 +21,11 @@ This assumes the [tt]match_key_permissions[/tt] addon is installed.
 [title="3"]An example: controlling member-directory access[/title]
 
 [surround]
-[media width="150" description="Observe that permissions are now being enforced." float="right"]data_custom/images/docs/tut_adv_permissions/permissions_match_keys_ex3.png[/media]
-[media width="150" description="Set the denys." float="right"]data_custom/images/docs/tut_adv_permissions/permissions_match_keys_ex2.png[/media]
+[media_set]
 [media width="150" description="Make sure the prerequisite addon is installed." float="right"]data_custom/images/docs/tut_adv_permissions/permissions_match_keys_ex1.png[/media]
+[media width="150" description="Set the denys." float="right"]data_custom/images/docs/tut_adv_permissions/permissions_match_keys_ex2.png[/media]
+[media width="150" description="Observe that permissions are now being enforced." float="right"]data_custom/images/docs/tut_adv_permissions/permissions_match_keys_ex3.png[/media]
+[/media_set]
 [b]Important[/b]: Understand that checking means 'deny access' when it comes to match-key permissions. It's the opposite of how permission checkboxes usually work.
 
 You may wish to prevent members viewing the member directory, but let them view their own profile

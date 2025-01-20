@@ -793,8 +793,7 @@ class Hook_health_check_email extends Hook_Health_Check
             'CONTENT' => '',
         ], get_site_default_lang(), false, 'MAIL', '.tpl', 'templates', $GLOBALS['FORUM_DRIVER']->get_theme(''));
         $html_version = $tpl->evaluate();
-        $html_version_stripped = html_entity_decode(strip_tags($html_version), ENT_QUOTES);
-        $html_version_stripped = trim(cms_preg_replace_safe('#[\s-]+#', ' ', $html_version_stripped));
+        $html_version_stripped = $this->html_to_plain_text($html_version);
 
         $tpl = do_template('MAIL', [
             '_GUID' => '5767b9123a0871fb11b0d9bb60e5b98e',
@@ -807,7 +806,10 @@ class Hook_health_check_email extends Hook_Health_Check
         $text_version = $tpl->evaluate();
         $text_version_stripped = trim(cms_preg_replace_safe('#[\s-]+#', ' ', $text_version));
 
-        $this->assertTrue($html_version_stripped == $text_version_stripped, 'The HTML and text mail templates are not consistent, which can score you spam points');
+        $percent = 0.0;
+        similar_text($html_version_stripped, $text_version_stripped, $percent);
+
+        $this->assertTrue($percent > 90.0, 'The MAIL templates are not consistent between the HTML and text versions (expected a similarity of > 90%, but got ' . float_format($percent) . '%), which can score you spam points');
     }
 
     /**
@@ -884,5 +886,40 @@ class Hook_health_check_email extends Hook_Health_Check
         $count = count_directory_contents_recursively(get_file_base() . '/data_custom/failed_mail', IGNORE_ACCESS_CONTROLLERS, ['log']);
 
         $this->assertTrue($count == 0, 'Directory [tt]data_custom/failed_mail[/tt] contains ' . integer_format($count) . ' log files. These should be reviewed and then deleted as they are e-mails which did not get sent out.');
+    }
+
+    /**
+     * Normalise some HTML text into plain-text which would typically match plain-text e-mails.
+     *
+     * @param  LONG_TEXT $html The HTML to normalise
+     * @return string The plain-text and normalised version of the HTML
+     */
+    protected function html_to_plain_text(string $html) : string
+    {
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+
+        // Remove unnecessary elements we do not need to compare
+        $xpath = new DOMXPath($dom);
+        foreach (['//script', '//style'] as $tag) {
+            foreach ($xpath->query($tag) as $node) {
+                $node->parentNode->removeChild($node);
+            }
+        }
+
+        // Parse a tags as "Link text: link URL" but only if they contain both text and an href
+        foreach ($dom->getElementsByTagName('a') as $link) {
+            $link_text = $link->textContent;
+            $link_href = $link->getAttribute('href');
+            if (($link_text != '') && ($link_href != '')) {
+                $replacement = $link_text . ': ' . $link_href;
+                $link->parentNode->replaceChild($dom->createTextNode($replacement), $link);
+            }
+        }
+
+        // Get plain text from the HTML body
+        $body_content = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+        $plain_text = html_entity_decode(strip_tags($body_content), ENT_QUOTES);
+        return trim(cms_preg_replace_safe('#[\s-]+#', ' ', $plain_text)); // Normalise whitespace
     }
 }

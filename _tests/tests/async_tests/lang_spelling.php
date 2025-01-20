@@ -360,9 +360,11 @@ class lang_spelling_test_set extends cms_test_case
         if (strpos($string, 'FlexForm') !== false) {
             $ob->assertTrue(false, 'The word \'FlexForm\' was used in ' . $path . '. This should be changed to \'Flexform\'.');
         }
-
         if (preg_match('#(^|[^\w])(cron|CRON)([^\w]|$)#', $string) != 0) {
             $ob->assertTrue(false, 'The word \'Cron\' was misspelled in ' . $path . '.');
+        }
+        if (preg_match('#(^|[^\w])(webp|WEBP)([^\w]|$)#', $string) != 0) {
+            $ob->assertTrue(false, 'The word \'WebP\' was misspelled in ' . $path . '.');
         }
         // page-link, but we can't test for that because "page link" is a valid phrase too
 

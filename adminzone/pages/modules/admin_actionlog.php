@@ -242,6 +242,7 @@ class Module_admin_actionlog
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c10954e000e5502e8588bbf14a4eda2a')));
         }
 
         require_code('templates_results_table');

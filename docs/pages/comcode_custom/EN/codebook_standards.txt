@@ -664,6 +664,13 @@ Use [tt]log_it[/tt] calls
 | For any non-trivial admin action, do a [tt]log_it[/tt] call for it, and implement good quality metadata in an [tt]actionlog[/tt] hook for that.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
+[color="red"]Don't assume [tt]log_hack_attack_and_exit[/tt] will exit[/color]
+| Security
+| All development
+| Manually
+| Do not assume [tt]log_hack_attack_and_exit[/tt] will exit; webmasters can configure different hack-attack codes to be silenced from the user (advanced banning) in which case it will not exit. Proceed the call with an internal error ([tt]warn_exit[/tt]), missing resource error, or whatever error or logic is appropriate given the context. Never proceed with an error outright explaining or mentioning the hack-attack (the purpose of user silence is that the user should not know they triggered a hack-attack specifically).
+|-
+| [size="0.8"]{$INC,cs_count,1})[/size]
 Use the correct redirection APIs
 | Portability
 | Composr development +

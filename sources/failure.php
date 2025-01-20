@@ -596,14 +596,13 @@ function _log_hack_attack_matches(array $specifier, string $reason, string $reas
 }
 
 /**
- * Log a hackattack, then displays an error message. It also attempts to send an e-mail to the staff alerting them of the hackattack.
+ * Log a hackattack, and depending on advanced banning settings might also notify the staff and/or exit with an error.
  *
  * @param  ID_TEXT $reason The reason for the hack-attack. This has to be a language string codename
  * @param  SHORT_TEXT $reason_param_a A parameter for the hack-attack language string (this should be based on a unique ID, preferably)
  * @param  SHORT_TEXT $reason_param_b A more illustrative parameter, which may be anything (e.g. a title)
  * @param  integer $risk_score The default risk score for this hack attack; could be overridden by advanced banning
  * @ignore
- * @exits
  */
 function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', string $reason_param_b = '', int $risk_score = 10)
 {
@@ -690,7 +689,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // Automatic ban needed?...
 
-    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]) + $risk_score);
+    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]) + $risk_score);
     $hack_threshold = intval(get_option('hack_ban_threshold'));
 
     // Super administrators do not get risk scores
@@ -719,7 +718,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     require_lang('security');
 
     $ip_ban_todo = null;
-    if (($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
+    if ((!$silent_to_staff_log) && ($count >= intval($hack_threshold)) && (get_option('autoban') != '0') && ($GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip]) === null)) {
         // Test we're not banning a good bot...
 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {

@@ -176,7 +176,7 @@ function uninstall_cns()
  */
 function install_cns(?float $upgrade_from = null)
 {
-    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
+    cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
     require_code('cns_members');
     require_code('cns_topics');
@@ -233,16 +233,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date_time'], ['cf_type' => 'date']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date'], ['cf_type' => 'just_date']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'time'], ['cf_type' => 'just_time']);
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_allow_template_search', 'BINARY');
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_icon', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_section', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_tempcode', 'LONG_TEXT');
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_type', 'ID_TEXT');
-        $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_autofill_hint', 'ID_TEXT');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
         $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
@@ -1130,6 +1120,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_status_member_id', ['ga_status_member_id']);
         $GLOBALS['FORUM_DB']->create_index('f_group_approvals', 'ga_promotion_to', ['ga_new_group_id', 'ga_status']);
 
+        $GLOBALS['FORUM_DB']->drop_table_if_exists('f_pposts_fulltext_index'); // LEGACY: nu_search from v10
         $GLOBALS['FORUM_DB']->create_table('f_pposts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',
             'i_for' => '*MEMBER',
@@ -1423,6 +1414,7 @@ function install_cns(?float $upgrade_from = null)
             'i_occurrence_rate', // For sorting
         ]);
 
+        $GLOBALS['FORUM_DB']->drop_table_if_exists('f_posts_fulltext_index'); // LEGACY: nu_search from v10
         $GLOBALS['FORUM_DB']->create_table('f_posts_fulltext_index', [
             'i_post_id' => '*AUTO_LINK',
 
@@ -1641,13 +1633,10 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_cache_points_at_voting_time', 'INTEGER', 'pv_points_when_voted');
         $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
         $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_pposts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_posts_fulltext_index', 'i_poster_id', 'MEMBER', 'i_posting_member');
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts', 'last_edit_by');
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_posts_fulltext_index', 'main');

@@ -203,6 +203,7 @@ class Module_admin_community_billboard extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('423d04c0003951549938f1e9f9742fb2')));
         }
 
         // Prepare Filtercode

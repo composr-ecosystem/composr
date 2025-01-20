@@ -80,6 +80,13 @@ class Module_points
         require_code('points');
 
         if ($upgrade_from === null) {
+            add_privilege('POINTS', 'use_points', true);
+            add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
+            add_privilege('POINTS', 'send_points_to_self', false);
+            add_privilege('POINTS', 'view_points_ledger', false);
+        }
+
+        if (($upgrade_from === null) || ($upgrade_from < 9)) { // v11
             $GLOBALS['SITE_DB']->create_table('points_ledger', [
                 'id' => '*AUTO',
                 'date_and_time' => 'TIME',
@@ -95,7 +102,7 @@ class Module_points
                 'locked' => 'BINARY', // 1 = status cannot be changed
                 'is_ranked' => 'BINARY', // Whether this transaction counts towards the member's rank points (to system = affects sender negatively; from system or transaction between members = affects recipient)
 
-                // FUDGE: These fields are not preserved in cms_merge at this time (e.g. auto-reversing from content deletion will not work)
+                // TODO: These fields are not preserved in cms_merge at this time (e.g. auto-reversing from content deletion will not work)
                 't_type' => 'ID_TEXT', // Content type or category of transaction
                 't_subtype' => 'ID_TEXT', // Content action or subcategory of transaction
                 't_type_id' => 'ID_TEXT', // Content or row ID of t_type
@@ -108,10 +115,62 @@ class Module_points
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchical structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
             $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
 
-            add_privilege('POINTS', 'use_points', true);
-            add_privilege('POINTS', 'trace_anonymous_points_transactions', false);
-            add_privilege('POINTS', 'send_points_to_self', false);
-            add_privilege('POINTS', 'view_points_ledger', false);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sending_member', 'receiving_member']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['receiving_member', 'sending_member']);
+            $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
+
+            $GLOBALS['SITE_DB']->create_table('escrow', [
+                'id' => '*AUTO',
+                'date_and_time' => 'TIME',
+                'update_date_and_time' => 'TIME',
+                'amount' => 'INTEGER',
+                'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
+                'sending_member' => 'MEMBER',
+                'receiving_member' => '?MEMBER',
+                'reason' => 'SHORT_TRANS__COMCODE',
+                'agreement' => 'LONG_TRANS__COMCODE',
+                'expiration_time' => '?TIME',
+                'sender_status' => 'BINARY', // 1 = sender marked satisfied
+                'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
+                'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
+                'content_type' => 'ID_TEXT',
+                'content_id' => 'ID_TEXT',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sending_member', ['sending_member']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'receiving_member', ['receiving_member']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'date_and_time', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_status', ['sender_status']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_status', ['recipient_status']);
+            $GLOBALS['SITE_DB']->create_index('escrow', 'status', ['status']);
+
+            $GLOBALS['SITE_DB']->create_table('escrow_logs', [
+                'id' => '*AUTO',
+                'escrow_id' => 'AUTO_LINK',
+                'date_and_time' => 'TIME',
+                'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
+                'member_id' => '?MEMBER',
+                'information' => 'LONG_TRANS__COMCODE',
+            ]);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'escrow_id', ['escrow_id']);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'date_and_time', ['date_and_time']);
+            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'member_id', ['member_id']);
+
+            add_privilege('POINTS', 'send_points', true);
+            add_privilege('POINTS', 'use_points_escrow', true);
+            add_privilege('POINTS', 'moderate_points_escrow', false);
+            add_privilege('POINTS', 'moderate_points', false);
+            add_privilege('POINTS', 'amend_point_transactions', false);
+
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_rank', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11) && ($upgrade_from >= 9)) { // LEGACY
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'update_date_and_time', 'TIME');
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_type', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_id', 'ID_TEXT');
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'receiving_member', '?MEMBER');
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
@@ -138,38 +197,18 @@ class Module_points
             $GLOBALS['SITE_DB']->delete_index_if_exists('escrow', 'recipient_id');
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY
+        if (($upgrade_from !== null) && ($upgrade_from < 12) && ($upgrade_from >= 9)) { // LEGACY: 11.beta5; account for new is_ranked field and rename to rank points
+            // Life-time points changed to rank points
+            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('points_lifetime', 'points_rank', 20, 1, 0, 0, 0, '', 'integer');
+            rename_config_option('points_show_personal_stats_points_lifetime', 'points_show_personal_stats_points_rank');
+
+            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'is_ranked', 'BINARY', 1);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: v11
             global $CUSTOM_FIELD_CACHE, $MEMBER_CACHE_FIELD_MAPPINGS;
             $CUSTOM_FIELD_CACHE = [];
             $MEMBER_CACHE_FIELD_MAPPINGS = [];
-
-            $GLOBALS['SITE_DB']->rename_table('gifts', 'points_ledger');
-
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'amount_points', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'linked_ledger_id', '?AUTO_LINK');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'status', 'INTEGER');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'locked', 'BINARY');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_subtype', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 't_type_id', 'ID_TEXT');
-
-            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'amount', 'INTEGER', 'amount_gift_points');
-            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_from', 'MEMBER', 'sending_member');
-            $GLOBALS['SITE_DB']->alter_table_field('points_ledger', 'gift_to', 'MEMBER', 'receiving_member');
-
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'linked_ledger_id', ['linked_ledger_id']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'status', ['status']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'amount_gift_points', ['amount_gift_points']); // admin_points
-
-            // t_* searching indexes; t_subtype and t_type_id require t_type for context and so are not indexed independently
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_subtype', ['t_type', 't_subtype', 't_type_id']); // Hierarchical structure of t_* searching: we can search t_type, t_type & t_subtype, or t_type, t_subtype, & t_type_id
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 't_search_no_subtype', ['t_type', 't_type_id']); // We can also search t_type & t_type_id, but this requires a separate index
-
-            // Add legacy explanation and default values for all the gift records
-            $GLOBALS['SITE_DB']->query_update('points_ledger', ['amount_points' => 0, 'status' => LEDGER_STATUS_NORMAL, 'locked' => 0, 't_type' => 'legacy', 't_type_id' => 'gifts'], []);
-
-            // Never allow negative points in our new ledger; update to the absolute value, swap sender and recipient, and mark as refund.
-            $GLOBALS['SITE_DB']->query('UPDATE ' . get_table_prefix() . 'points_ledger SET amount_gift_points=' . db_function('ABS', ['amount_gift_points']) . ', sending_member=receiving_member, receiving_member=sending_member, status=' . strval(LEDGER_STATUS_REFUND) . ' WHERE amount_gift_points<0');
 
             // Migrate all charge-log entries to points_ledger, and delete the chargelog table
             $start = 0;
@@ -185,6 +224,12 @@ class Module_points
                         $sending_member = $chargelog['member_id'];
                         $status = LEDGER_STATUS_NORMAL;
                     }
+
+                    // A bit of a fudge but good enough for our use; we need to indicate warnings so they affect rank points
+                    $is_warning = false;
+                    if (strpos($chargelog['reason'], 'Warning ') === 0) {
+                        $is_warning = true;
+                    }
                     $map = [
                         'date_and_time' => $chargelog['date_and_time'],
                         'amount_gift_points' => 0,
@@ -193,12 +238,12 @@ class Module_points
                         'receiving_member' => $receiving_member,
                         'anonymous' => 0,
                         'linked_ledger_id' => null,
-                        't_type' => 'legacy',
-                        't_subtype' => '',
-                        't_type_id' => 'chargelog',
+                        't_type' => $is_warning ? 'warning' : 'legacy',
+                        't_subtype' => $is_warning ? 'add' : '',
+                        't_type_id' => $is_warning ? '' : 'chargelog',
                         'status' => $status,
                         'locked' => 0,
-                        'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
+                        'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
                     ];
                     $map += insert_lang_comcode('reason', $chargelog['reason'], 3);
                     $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -207,7 +252,6 @@ class Module_points
                 $start += 500;
             } while (array_key_exists(0, $chargelogs));
             unset($chargelogs);
-
             $GLOBALS['SITE_DB']->drop_table_if_exists('chargelog');
 
             delete_privilege('have_negative_gift_points');
@@ -242,7 +286,7 @@ class Module_points
                             't_type_id' => 'points_gained_given',
                             'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL, // Refunding gained points back to the system
                             'locked' => 0,
-                            'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
+                            'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
                         ];
                         $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Gained-Given discrepancy', 4);
                         $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -259,7 +303,7 @@ class Module_points
 
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_given');
 
-            // Delete the points_used and gift_points_used fields but not before checking if we need to add a legacy record to the ledger.
+            // Delete the points_used and gift_points_used CPFs but not before checking if we need to add a legacy record to the ledger.
             $start = 0;
             do {
                 $rows = $GLOBALS['SITE_DB']->query_select('points_ledger', ['SUM(amount_points) AS points', 'SUM(amount_gift_points) AS gift_points', 'sending_member'], [], ' AND sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' GROUP BY sending_member', 100, $start);
@@ -281,7 +325,7 @@ class Module_points
                                 't_type_id' => 'points_used',
                                 'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
-                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
                             ];
                             $map += insert_lang_comcode('reason', 'Upgrader: Fixing Points-Used discrepancy', 4);
                             $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -303,7 +347,7 @@ class Module_points
                                 't_type_id' => 'gift_points_used',
                                 'status' => ($difference < 0) ? LEDGER_STATUS_REFUND : LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
-                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
                             ];
                             $map += insert_lang_comcode('reason', 'Upgrader: Fixing Gift-Points-Used discrepancy', 4);
                             $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
@@ -368,7 +412,7 @@ class Module_points
                                 't_type_id' => $field,
                                 'status' => LEDGER_STATUS_NORMAL,
                                 'locked' => 0,
-                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code
+                                'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
                             ];
                             if (intval($row[$field_id]) < 0) { // Never have negative points
                                 $sending_member = $map['sending_member'];
@@ -391,74 +435,50 @@ class Module_points
             foreach ($deprecated_fields as $field => $title) {
                 $GLOBALS['FORUM_DRIVER']->install_delete_custom_field($field);
             }
+
+            // Migrate all gift entries to points_ledger, and delete the gifts table
+            $start = 0;
+            do {
+                $gifts = $GLOBALS['SITE_DB']->query_select('gifts', ['*'], [], '', 500, $start);
+                foreach ($gifts as $i => $gift) {
+                    if ($gift['amount'] < 0) { // For negative amounts, it is a refund; reverse sender and recipient (we do absolute value in the query_insert)
+                        $from = $gift['gift_to'];
+                        $to = $gift['gift_from'];
+                        $amount = abs($gift['amount']);
+                        $status = LEDGER_STATUS_REFUND;
+                    } else {
+                        $from = $gift['gift_from'];
+                        $to = $gift['gift_to'];
+                        $amount = abs($gift['amount']);
+                        $status = LEDGER_STATUS_NORMAL;
+                    }
+
+                    $map = [
+                        'date_and_time' => $gift['date_and_time'],
+                        'amount_gift_points' => $amount,
+                        'amount_points' => 0,
+                        'sending_member' => $from,
+                        'receiving_member' => $to,
+                        'anonymous' => $gift['anonymous'],
+                        'linked_ledger_id' => null,
+                        't_type' => 'legacy',
+                        't_subtype' => 'gifts',
+                        't_type_id' => '',
+                        'status' => $status,
+                        'locked' => 0,
+                        'is_ranked' => 1, // Will get adjusted in module v12 upgrade code (secondary)
+                    ];
+                    $map += insert_lang_comcode('reason', $gift['reason'], 3);
+                    $GLOBALS['SITE_DB']->query_insert('points_ledger', $map);
+                }
+
+                $start += 500;
+            } while (array_key_exists(0, $gifts));
+            unset($gifts);
+            $GLOBALS['SITE_DB']->drop_table_if_exists('gifts');
         }
 
-        if (($upgrade_from === null) || ($upgrade_from < 9)) {
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'send_to', ['sending_member', 'receiving_member']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'receive_from', ['receiving_member', 'sending_member']);
-            $GLOBALS['SITE_DB']->create_index('points_ledger', 'points', ['amount_points', 'amount_gift_points']);
-
-            $GLOBALS['SITE_DB']->create_table('escrow', [
-                'id' => '*AUTO',
-                'date_and_time' => 'TIME',
-                'update_date_and_time' => 'TIME',
-                'amount' => 'INTEGER',
-                'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
-                'sending_member' => 'MEMBER',
-                'receiving_member' => '?MEMBER',
-                'reason' => 'SHORT_TRANS__COMCODE',
-                'agreement' => 'LONG_TRANS__COMCODE',
-                'expiration_time' => '?TIME',
-                'sender_status' => 'BINARY', // 1 = sender marked satisfied
-                'recipient_status' => 'BINARY', // 1 = recipient marked satisfied
-                'status' => 'INTEGER', // See ESCROW_STATUS_* in points_escrow.php
-                'content_type' => 'ID_TEXT',
-                'content_id' => 'ID_TEXT',
-            ]);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'original_points_ledger_id', ['original_points_ledger_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'sending_member', ['sending_member']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'receiving_member', ['receiving_member']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'date_and_time', ['date_and_time']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'sender_status', ['sender_status']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'recipient_status', ['recipient_status']);
-            $GLOBALS['SITE_DB']->create_index('escrow', 'status', ['status']);
-
-            $GLOBALS['SITE_DB']->create_table('escrow_logs', [
-                'id' => '*AUTO',
-                'escrow_id' => 'AUTO_LINK',
-                'date_and_time' => 'TIME',
-                'log_type' => 'ID_TEXT', // Will be a language string from points.ini, one of LOG_ESCROW_*
-                'member_id' => '?MEMBER',
-                'information' => 'LONG_TRANS__COMCODE',
-            ]);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'escrow_id', ['escrow_id']);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'date_and_time', ['date_and_time']);
-            $GLOBALS['SITE_DB']->create_index('escrow_logs', 'member_id', ['member_id']);
-
-            add_privilege('POINTS', 'send_points', true);
-            add_privilege('POINTS', 'use_points_escrow', true);
-            add_privilege('POINTS', 'moderate_points_escrow', false);
-            add_privilege('POINTS', 'moderate_points', false);
-            add_privilege('POINTS', 'amend_point_transactions', false);
-
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_balance', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('points_rank', 20, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0, '', 'integer');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 11) && ($upgrade_from >= 9)) { // LEGACY
-            $GLOBALS['SITE_DB']->add_table_field('escrow', 'update_date_and_time', 'TIME');
-            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_type', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->add_table_field('escrow', 'content_id', 'ID_TEXT');
-            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'receiving_member', '?MEMBER');
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta5; account for new is_ranked field and rename to rank points
-            // Life-time points changed to rank points
-            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('points_lifetime', 'points_rank', 20, 1, 0, 0, 0, '', 'integer');
-            rename_config_option('points_show_personal_stats_points_lifetime', 'points_show_personal_stats_points_rank');
-
-            $GLOBALS['SITE_DB']->add_table_field('points_ledger', 'is_ranked', 'BINARY', 1);
-
+        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta5; account for new is_ranked field
             // By default, debits to the system do not affect rank points (they're usually purchases)
             $GLOBALS['SITE_DB']->query_update('points_ledger', ['is_ranked' => 0], ['receiving_member' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
 

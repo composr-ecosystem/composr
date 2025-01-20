@@ -7,8 +7,8 @@ The developers have put a lot of effort into making Composr very secure. We:
  - scan and scrutinise security hot-spots (such as database queries)
  - design the Composr architecture to abstract away common security hot-spots wherever possible
  - have designed Composr to actively detect and log possible security issues via defining and enforcing tight interfaces into Composr, and consistency rules
- - develop on our own version of PHP that can detect XSS security holes and potential errors via automatic type-conversion problems
-If you find a flaw in Composr's security please contact us so that we may have time to fix the problem before hackers get a chance to exploit it on innocent users.
+ - run a special development mode during testing which enforces strict typing, checks for XSS vulnerabilities, and warns of other detected issues
+If you find a flaw in Composr's security please [page="_SEARCH:report-issue"]contact us[/page] so that we may have time to fix the problem before hackers get a chance to exploit it on innocent users.
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -25,21 +25,21 @@ Passwords:
  - Temporary passwords, so that staff may set up accounts without needing to know the final password that will be used
 
 Login restrictions:
- - Approval process when a member accesses via a new IP address (a form of two-factor authentication) [optional, per-usergroup]
+ - Approval process when a member accesses the site via a new IP address (a form of two-factor authentication) [optional, per-usergroup]
  - IP address banning, including wildcard banning
  - Integrated blocks/escalation-process for IP addresses identified as malicious, using various third party services
- - Login sessions are locked to IP address, so that if a hacker steals a session ID they cannot normally use it
+ - Login sessions are locked to IP address, so that if a hacker steals a session ID they still cannot use it unless they are on the same IP
  - Configurable session expiry time (shorter = reduced potential for a hacker using a stolen session ID, longer = more convenience)
- - Ability to prevent privileged actions being performed by users who were automatically logged in via cookies (it forces them to confirm their login); ability to reverse ("concede") a confirmed login to help improve security around insecure workstations that are kept logged in
- - Approval of new members (optional)
+ - Ability to prevent privileged actions being performed or zones being accessed by users who were automatically logged in via cookies (it forces them to confirm their login); ability to reverse ("concede") a confirmed login to help improve security around insecure workstations that are kept logged in
+ - Manual approval / validation of new members (optional)
 
 Auditing systems:
  - Audit logging of almost all administrative actions
  - Logging of all user actions and IP address history
  - Sophisticated tools to analyse the above
- - Logging of failed logins
- - Hack-attack detection / logging / banning (described in further detail in this tutorial)
- - E-mails to members when their username, e-mail address (e-mail is sent to the old address), password, or phone number is changed
+ - Logging of failed login attempts
+ - Hack-attack detection / logging / notifying / banning (described in further detail in this tutorial)
+ - Obfuscated e-mails to members when their username, e-mail address (e-mail is sent to the old address), password, or phone number is changed
 
 Framework security:
  - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and form security tokens
@@ -51,7 +51,7 @@ Framework security:
   - disabling of common attack vectors by default such as 'UNION' database queries (only enabling them when necessary)
   - automatic input sanitisation in standardised input-access APIs
  - Configurable levels of HTML filtering, to prevent XSS attacks (Cross-Site-Scripting attacks), including full CSP implementation
- - Our own version of PHP used during development -- featuring strict types and a detector for XSS security holes
+ - Development mode with strict typing and XSS detection
  - Our Code Quality Checker tool has the ability to scan for security hotspots in the code (areas that need careful quality reviews)
  - "Kid-gloves modes" that automatically impose restrictions and filters on third-party code unless the programmers of them explicitly declare that they understand key security issues
  - Prevention of attacks carried out by the upload of malicious files, via various forms of automatic filtering. Per-directory disabling of PHP code as an extra level of security (Apache-only)
@@ -77,17 +77,18 @@ We are always coming up with new ideas for security. If you want us to keep goin
 
 Your ideal webhost should:
  - Ensure the server is configured well for SSL (it should not allow degrading of encryption ciphers that are known as insecure). There are [url="tools to help you scan"]https://www.ssllabs.com/ssltest/[/url].
- - Keep the server patched with secure versions of software
+ - Keep the server patched with secure and updated versions of software
  - Have suEXEC or equivalent (if it is shared hosting), and PHP [tt]open_basedir[/tt]. This is described below under "Optimum server environment for shared hosting". It is much better to actually have a VPS, Cloud IaaS hosting, or a dedicated server.
  - Not install unnecessary server services (as this increases the likelihood of an attack -- it just takes one system-level vulnerability to take a server down)
 
 You should consider:
- - Enabling SSL for the whole site (soon web browsers are going to be giving out warnings when you browse a website that is not fully running SSL)
- - Using [url="Cloudflare"]https://www.cloudflare.com/[/url] for the free DDOS protection, or a more advanced service such as [url="SiteLock"]https://www.sitelock.com/[/url] or [url="Sucuri"]https://sucuri.net/[/url]
+ - Enabling SSL for the whole site (this is a modern expectation; your site will get severely penalised in SEO rankings, and browsers will give big warnings, if you do not)
+ - Using [url="Cloudflare"]https://www.cloudflare.com/[/url] for free DDOS protection and some CDN cache features, or a more advanced service such as [url="SiteLock"]https://www.sitelock.com/[/url] or [url="Sucuri"]https://sucuri.net/[/url]
 
 You should be wary about:
  - PHP "disable_functions" (this increases security by disabling arbitrary parts of PHP -- this should only be done by consent with a programmer, to confirm those parts that were decided to be disabled are not actually necessary for functionality)
  - ModSecurity (Composr does have inbuilt features, as described above -- and ModSecurity rules have a tendency to block legitimate administrative requests, such as use of Commandr or theme editing)
+  - Using ModSecurity in a "log only" mode may, however, be useful
  - Suhosin/SuPHP (actually Suhosin/SuPHP is okay if you have control over its settings or know for sure that nobody is going to set anything that is too restrictive)
 
 The best way to ensure your hosting is secure is to choose a webhost that you're confident in and/or a server management team who will carry out their system administration tasks diligently. There are a thousand ways a bad host or a bad team could make things insecure, but if they stick to default/careful software configurations and industry-standard practices then usually things will be in decent shape.
@@ -98,7 +99,7 @@ It is an unfortunate fact that shared webhosting environments are almost always 
 
 This section is highly complex, the summary to it all is that if you care about security a lot, don't use shared webhosting. The risk of the host, or you, getting it wrong, is very high.
 
-If you run a website with particularly privileged information, or security is critical for other reasons, we highly advise you operate your web server from a dedicated server(s).
+If you run a website with particularly privileged information, or security is critical for other reasons, even if it is just a simple eCommerce website, we highly advise you operate your web server from a dedicated server(s).
 
 The main issue with shared hosting, is that, unless either:
 [list="1"]
@@ -181,6 +182,7 @@ Advice for website maintenance:
  - Don't re-use passwords across different services (if one is found you don't want everything to tumble like a house of cards)
  - Keep your own computers secure and patched (if your own machine becomes infected and you are being targeted actively by a hacker then anything you do becomes exploitable)
  - Remove the maintenance password from the [tt]_config.php[/tt], only put it back when you need access to Composr's low-level configuration/upgrade system
+  - This is particularly important because pages using the maintenance password do not load up Composr's full system, therefore brute-force detection and handling is not active (although Composr tries to write an entry to the system log on every failed attempt to access something with the wrong maintenance password).
 
 [title="2"]Some philosophy[/title]
 
@@ -208,7 +210,7 @@ Security logs can be reached from:
 Admin Zone > Audit > Security logging
 
 [media width="150" description="A security alert for a real hack-attempt" float="right"]data_custom/images/docs/tut_security/security_attack.png[/media]
-If you get alerts that suggest someone is actively trying to hack into your website, it is advisable to ban their IP address at the web server level as soon as humanely possible (unless they have already been automatically banned). This is just a precaution, but it is possible (although unlikely) that a skilled hacker who is referring to Composr source code has only accidentally triggered an alert, and may have found an alternative vulnerability in your site already, or may find one soon. Of course we know of no such vulnerabilities, and we do in fact consider it unlikely that a direct vulnerability will be found in Composr, but it is always best to be cautious with regards security. You should also be aware that a hacker may change their IP address, simply by changing their Internet connection, or working through proxies: you may decide in this case of a serious attack, to consult authorities, passing them the IP address of the offender and the hack-attack e-mail.
+If you get alerts that suggest someone is actively trying to hack into your website, it is advisable to ban their IP address (or range) at the web server level as soon as humanely possible (unless they have already been automatically banned). This is just a precaution, but it is possible (although unlikely) that a skilled hacker who is referring to Composr source code has only accidentally triggered an alert, and may have found an alternative vulnerability in your site already, or may find one soon. Of course we know of no such vulnerabilities, and we do in fact consider it unlikely that a direct vulnerability will be found in Composr, but it is always best to be cautious with regards security. You should also be aware that a hacker may change their IP address, simply by changing their Internet connection, or working through proxies: you may decide in this case of a serious attack, to consult authorities, passing them the IP address of the offender and the hack-attack e-mail.
 
 Most security logs are accidental (caused by mistyped URLs, or buggy software) or are caused by bots. The screen-shot shows a typical hack-attack by a bot that crawls the web looking for vulnerable scripts: in this case, the bot is trying to use a parameter of the Composr poll voting form to send an e-mail, on the basis that by trying to abuse every form it finds, it will eventually find one that does work as a spam relay: it would then latch on to this and use the victim website as a mass spam relay, for as long as it can. In this case it hit a Composr site, so was logged.
 
@@ -217,26 +219,31 @@ Most security logs are accidental (caused by mistyped URLs, or buggy software) o
 The following types of alert (hack-attack codenames) are defined:
  - [tt]DODGY_GET_HACK[/tt], A suspicious URL was given that includes characters looking like they may be there to do dodgy things. As URLs are generally clean of symbols, it is safe for Composr to detect dangerous looking ones, such as file system paths, new line characters, and HTML symbols
  - [tt]EVIL_POSTED_FORM_HACK[/tt], This may be due to a social engineering attack, where a logged in administrator has been tricked into filling in a form targeted to delete something from the website (CSRF)
+ - [tt]EVIL_POSTED_FORM_NO_TOKEN_HACK[/tt], The user tried to submit a form without including a CSRF token (probably a bot, but this can also happen when the user uses the back button in their browser)
+ - [tt]EVIL_POSTED_FORM_UNKNOWN_TOKEN_HACK[/tt], The user supplied a CSRF token when submitting a form which expired or otherwise does not exist in the database (could just as easily be expired tokens as it could be malicious)
+ - [tt]EVIL_POSTED_FORM_MISMATCHED_TOKEN_HACK[/tt], The user supplied a CSRF token that belongs to another user when submitting a form; this is almost always a case of a stolen CSRF token (and thus this will invalidate the token), but in rare cases can happen if logging out before submitting a form.
+ - [tt]EVIL_POSTED_FORM_EXPIRED_TOKEN_HACK[/tt], The user submitted a form with a CSRF token which was explicitly marked expired in the database; usually not malicious and often a cause of accidentally submitting a form twice
  - [tt]VOTE_CHEAT[/tt], The user tried to vote outside the allowed range of options (e.g. 11 or -2). I can think of no way this could be done accidentally
- - [tt]SCRIPT_UPLOAD_HACK[/tt], The user tried to upload a PHP script. This may well be innocent (if they are uploading a saved web-page with [tt].php[/tt] in the URL for example, or if they are uploading a script they expect people to be able to download in raw form)
+ - [tt]SCRIPT_UPLOAD_HACK[/tt], The user tried to upload a PHP script. This may well be innocent (if they are uploading a saved web-page with [tt].php[/tt] in the URL for example, or if they are uploading a script they expect people to be able to download in raw form). But we do not allow it regardless because an uploaded PHP script could be executed server-side (either on the site server or on a server of a user who downloaded it).
  - [tt]ASCII_ENTITY_URL_HACK[/tt], The user introduced HTML into a Comcode HTML tag that used ASCII-encoded entities. This is likely to be innocent, but is blocked because it can be used to trick JavaScript filtration
  - [tt]SCRIPT_URL_HACK[/tt] / [tt]SCRIPT_URL_HACK_2[/tt], This is highly likely to be a hack attempt, as a user explicitly specified a URL which was code and not a real URL
- - [tt]BLACKHOLE_SPAM_HACK[/tt], This is a blocked spam attempt, where the anti-spam blackhole feature was activated -- this would only happen if a spam bot was posting and can be detected early, so doesn't go through the spam heuristics system
+ - [tt]BLACKHOLE_SPAM_HACK[/tt], This is a blocked spam attempt where a bot filled in a hidden field they should not have filled in -- Almost always malicious, and is detected early by the antispam system
  - [tt]DOWNLOAD_PRIVATE_URL_HACK[/tt], The user tried to add a download with a manual URL that links to private files that are not meant to be downloadable. This may be an honest mistake. A more detailed explanation follows further in this tutorial
  - [tt]TRY_TO_DOWNLOAD_SCRIPT[/tt], The user tried to add a download with a manual URL that links to a PHP file. This is very likely to be a hack attempt to try downloading potentially sensitive code (e.g. [tt]_config.php[/tt] or [tt]data_custom/errorlog.php[/tt]). A more detailed explanation follows further in this tutorial
- - [tt]TICKET_OTHERS_HACK[/tt], The user tried to access support tickets from another user. This is either a bug (we know of no way it would happen normally), or a hack attempt
- - [tt]ORDERBY_HACK[/tt], Tried to change the SQL ordering attribute, perhaps for SQL injection
+ - [tt]TICKET_OTHERS_HACK[/tt], The user tried to access support tickets from another user. This is either a bug (we know of no way it would happen normally), or a malicious attempt
+ - [tt]ORDERBY_HACK[/tt], Tried to change the SQL ordering attribute, perhaps for SQL injection -- This can be a software bug if a sorting mechanism on the UI triggered it (which should be reported promptly), or it is malicious
  - [tt]BYPASS_VALIDATION_HACK[/tt], The user tried to specify that their content be validated even though they had no form option to specify it as such. The user is therefore very likely to be trying to hack the site by specifying options that don't exist for them in the hope they will go unfiltered
  - [tt]HEADER_SPLIT_HACK[/tt], A URL was submitted that contains a blank line. The submitter of the content with this URL is very likely to be a hacker, as there is no conventional way this situation could be come by
- - [tt]EVAL_HACK[/tt], The EVAL command would have executed arbitrary code if it was not blocked. This is extremely likely to be a hack attempt and should be taken seriously
- - [tt]PATH_HACK[/tt], Tried to use a file path redirection to get outside intended directory
- - [tt]PHP_DOWNLOAD_INNOCENT[/tt], Somehow a PHP file got referenced in the download system. This should have been filtered by 'TRY_TO_DOWNLOAD_SCRIPT', but was not. This is a serious security breach if it happens
- - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details a certain number of times over a certain period as configured (brute-force attack)
- - [tt]ANTISPAM[/tt], The user came up against anti-spam heuristics or an integrated anti-spam service
- - [tt]CAPTCHAFAIL[/tt], The user failed filling in the CAPTCHA
- - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
+ - [tt]EVAL_HACK[/tt], The EVAL command would have potentially executed arbitrary code if it was not blocked. This is extremely likely to be a hack attempt and should be taken seriously
+ - [tt]PATH_HACK[/tt], Tried to use a file path redirection to get outside intended directory -- This is almost always malicious, but in rare cases it could be a software bug (we know of no way it would happen normally)
+ - [tt]PHP_DOWNLOAD_INNOCENT[/tt], Somehow a PHP file got referenced in the download system. This should have been filtered by 'TRY_TO_DOWNLOAD_SCRIPT', but was not. This is a serious security breach if it happens, and you should evaluate your site / server security immediately if you see this.
+ - [tt]BRUTEFORCE_LOGIN_HACK[/tt], Someone gave incorrect login details a certain number of times over a certain period as configured (brute-force attack attempt) -- Usually malicious, but it could also be an impatient user who forgot their password and does not want to use the 'forgot password' feature
+ - [tt]ANTISPAM[/tt], The user came up against anti-spam heuristics or an integrated anti-spam service, and their action was interrupted
+ - [tt]CAPTCHAFAIL[/tt], The user failed filling in the CAPTCHA correctly
+ - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA correctly while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
  - [tt]HACK_ATTACK_PASSWORD_CHANGE[/tt], The user gave an invalid confirmation code while finalising a password reset
  - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
+ - [tt]SENSITIVE_RESOURCE_HACK[/tt], The user tried to access a (usually public) sensitive resource using an ID or GUID that does not exist -- It could be a user trying to access something that was deleted, but it could also be someone trying to scrape the site for existing entries (especially if it happens more than once with different IDs / GUIDs)
  - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
 After an IP address accumulates a certain amount from risk scores ("Hack-attack risk score ban threshold" configuration option) it will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
@@ -264,7 +271,7 @@ The error is saying that the server tried to check the URL was valid but that it
 
 This error could also be caused by some server configuration issue too. For example:
 1) If the server cannot download files from itself properly to check, and whatever it does manage to access is returning HTTP '200' (file found) messages. This seems unlikely but it can be surprising what weird situations happen "in the wild".
-2) If something on the server is interfering with downloads. Something like the new Apache [tt]mod_spdy[/tt] module could cause something like this. That might alter images during transfer and Composr would not receive the file it expected to be checking.
+2) If something on the server is interfering with downloads. Something like the Apache [tt]mod_spdy[/tt] module could cause something like this. That might alter images during transfer and Composr would not receive the file it expected to be checking.
 
 [title="3"]Tuning alert behaviour (advanced)[/title]
 
@@ -279,11 +286,11 @@ Each rule can take the following attributes:
   - [tt]param_a_pattern[/tt] -- a wildcard pattern to match against the first parameter (optional, default matches all)
   - [tt]param_b_pattern[/tt] -- a wildcard pattern to match against the second parameter (optional, default matches all)
  - Setting attributes:
-  - [tt]silent_to_user[/tt] -- set to [tt]true[/tt] if the user should not be told a hack-attack was raised (optional, default false)
+  - [tt]silent_to_user[/tt] -- set to [tt]true[/tt] if the user should not be told a hack-attack was raised (optional, default false) (if this is true, [tt]log_hack_attack_and_exit[/tt] for this codename will not exit; furthermore, this generally means a generic internal error will be thrown instead)
   - [tt]silent_to_staff_notifications[/tt] -- set to [tt]true[/tt] if the staff should not be sent a notification (optional, default false)
-  - [tt]silent_to_staff_log[/tt] -- set to [tt]true[/tt] if the hack-attack should not show in the UI browser of the logs (optional, default false)
-  - [tt]risk_score[/tt] -- set to a score according to how severe this hack-attack is perceived (10 or more is almost certainly an intentional hack-attack); once an IP address reaches the "Hack-attack risk score ban threshold", they are auto-banned (optional, default 10)
-  - [tt]syndicate_as_spammer[/tt] -- set to [tt]true[/tt] if the hack-attack is related to spam and thus any ban should be syndicated out to any anti-spam partners (optional, default false)
+  - [tt]silent_to_staff_log[/tt] -- set to [tt]true[/tt] if the hack-attack should be auto-deleted / not show up in the security log (optional, default false) (if true, then this hack attack will not count against the IP address' overall risk score)
+  - [tt]risk_score[/tt] -- set to a score according to how severe this hack-attack is perceived; once an IP address reaches the "Hack-attack risk score ban threshold", they are auto-banned (optional, default 10) (ignored if [tt]silent_to_staff_log[/tt] is true)
+  - [tt]syndicate_as_spammer[/tt] -- set to [tt]true[/tt] if the hack-attack is strongly related to spam and thus, if banned because of it, should be syndicated out to any anti-spam partners (optional, default false)
 
 [title="3"]Failed logins[/title]
 
@@ -303,11 +310,11 @@ The "Avoid broad input filtering security layer" privilege turns off filtering t
 This generally protects against:
  - Request parameters that look like the file paths of particularly sensitive files
  - Request parameters that look like particularly dangerous HTML, or miscellaneous vectors for injecting CSS or JavaScript code
-It is generally a good idea to not given untrusted users this privilege, as the need for such users to be able to post text that looks like file paths, dangerous HTML, or JavaScript, is not very high.
+It is generally a good idea to not give untrusted users this privilege, as the need for such users to be able to post text that looks like file paths, dangerous HTML, or JavaScript, is not very high.
 
 There are many privileges relating to Comcode filtering. These are detailed in the [page="_SEARCH:tut_adv_comcode"]Advanced Comcode[/page] tutorial.
 
-We also have of internal checks that always run, many related to "Alert types" (see above), including:
+We also have internal checks that always run, many related to "Alert types" (see above), including:
 [list="a"]
 [*] Constraining of input parameters for filename-only scenarios ([tt]filter_naughty[/tt], [tt]PATH_HACK[/tt])
 [*] Constraining of input parameters for codename-only scenarios ([tt]filter_naughty_harsh[/tt], [tt]EVAL_HACK[/tt])
@@ -329,7 +336,7 @@ In summary, we have defence across a number of layers, and code without making p
 Content Security Policy (CSP) is an added layer of security that helps to detect and mitigate certain types of attacks, including Cross Site Scripting (XSS) and data injection attacks. 
 CSP prohibits developers from using inline event handlers and inline script tags.
 
-All code bundled with Composr strictly adheres to these guidelines and thus is completely free of inline event handlers and script elements. 
+All code bundled with Composr strictly adheres to these guidelines. 
 
 Adherence to CSP for custom code is optional, CSP can be enabled/disabled/tuned in the configuration. To maintain CSP adherence requires a higher degree of discipline when designing your website.
 
@@ -443,9 +450,10 @@ There is no clear risk.
 | No limitations implemented in Composr
 (webmasters could not realistically meet these CSP limitations)
 |}
-* Nonces are configurable in HTML/templates via placing [tt]{$CSP_NONCE_HTML}[/tt] in the opening tag. An XSS hacker has no way to know the nonce, so can't inject script/style requiring it. At the current time nonces are only supported in CSP by script and CSS files, but the W3C is discussing changes this.
+* Nonces are configurable in HTML/templates via placing [tt]{$CSP_NONCE_HTML}[/tt] in the opening tag. An XSS hacker has no way to know the nonce (it is cryptographically generated on the server side), so can't inject script/style requiring it. At the current time nonces are only supported in CSP by script and CSS files, but the W3C is discussing changing this.
 
 Note that the "Trusted partner sites" configuration options automatically include "www." if not specified.
+
 The "Allowed iframe ancestors" configuration option and "Allowed iframe descendants" configuration option allow wildcarding to allow any request (and "Allowed iframe descendants" does by default due to the low risk and commonality of frame use).
 
 There are many settings related to CSP in the Composr security options (Admin Zone > Setup > Configuration > Security options), including:
@@ -456,7 +464,7 @@ There are many settings related to CSP in the Composr security options (Admin Zo
 
 Limitations:
  - We highly advise to not use Internet Explorer because it does not have fully support for CSP 2, or even really CSP 1 (it is under a special beta header only). Microsoft Edge is fine though.
- - Unfortunately when WYSIWYG is in use then CSP is disabled, due to limitations with CkEditor.
+ - Unfortunately when WYSIWYG is in use then CSP protection restrictions are relaxed, due to limitations with CkEditor.
  - Particular parts of Composr may have CSP restrictions relaxed based on the behaviours they need to allow.
 
 If you are a programmer and want to customise the CSP rules in more detail, override the [tt]sources/csp.php[/tt] file.
@@ -483,11 +491,12 @@ To remove the possibility of search engines indexing the login screens of your A
 [title="2"]File-type safelisting[/title]
 
 In the security configuration, Composr defines a list of file types that may be uploaded to the website, via the various upload mechanisms that exist in Composr, such as that of the download module and the attachment system. By default, this safelist is roughly (this is not kept up-to-date):
- - [tt]sql,odt,ods,ps,pdf,doc,txt,psd,tga,tif,gif,png,bmp,jpg,jpeg,avi,mov,mpg,mpeg,asf,wmv,ram,ra,rm,qt,mov,zip,tar,rar,gz,wav,mp3,ogg,torrent,php[/tt]
+ - [tt]php|htm|asp|jsp|png|jpg|jpe|txt|pdf|odt|ods|odp|doc|mdb|xls|xml|rss|ppt|svg|gif|psd|rtf|bmp|avi|mpg|mpe|webm|mp4|mov|wmv|ram|rm|asf|ra|wma|wav|mp3|ogg|torrent|csv|ttf|tar|gz|rar|bz2[/tt]
+ - Note that not everyone can upload every type of file specified; some file extensions may only be uploaded by privileged members.
 
 It is important to understand that there are two sides to the security of file uploads:
 1) on the server-side, it must be impossible for a file to be uploaded that might execute on the server, instead of download (such as a php file). You may have noticed that php is an allowed file extension in the list: this is because php uploads are explicitly blocked internally, but only in the situation where the file would be stored on disk with its original extension (which the attachment system does not do)
-2) on the client-side, it must be impossible for a file to be uploaded that might get downloaded and automatically execute a malicious action on a client computer. One example of such a file type is, to the surprise of most, 'html'. [tt].html[/tt] files can contain JavaScript, which could be used, if the file was downloaded from the main website domain, to transmit the user's login cookies to any arbitrary hacker. Therefore it is crucial that HTML files, and other files (svg, xml are suspected to be dangerous at this time) are not added to the list
+2) on the client-side, it must be impossible for a file to be uploaded that might get downloaded and automatically execute a malicious action on a client computer. One example of such a file type is, to the surprise of most, 'html'. [tt].html[/tt] files can contain JavaScript, which could be used, if the file was downloaded from the main website domain, to transmit the user's login cookies to any arbitrary hacker. Therefore it is crucial that these files are not added to the list
 
 [title="2"]Protect your domain name[/title]
 
@@ -524,9 +533,9 @@ To force members to be vetted, you need to enable the 'Require member validation
 
 [title="3"]SSL[/title]
 
-When you access a website via an HTTPS URL, rather than an HTTP URL, you are using <abbr title="Transport Layer Security">TLS</abbr> (or the older protocol, <abbr title="Secure Sockets Layer">SSL</abbr>).
+When you access a website via an HTTPS URL, rather than an HTTP URL, you are using [abbr="Transport Layer Security"]TLS[/abbr] (or the older protocol, [abbr="Secure Sockets Layer"]SSL[/abbr]).
 
-An HTTPS page view encrypts bi-directional traffic securely (to avoid unauthorised tampering and interception by third-parties) but also imposes a small performance cost on the server. Nowadays websites will warn users if they visit a non-HTTPS site.
+An HTTPS page view encrypts bi-directional traffic securely (to avoid unauthorised tampering and interception by third-parties) but also imposes a small performance cost on the server. Nowadays browsers will warn users if they visit a non-HTTPS site.
 
 To use HTTPS you must have an SSL/TLS certificate installed on your server. SSL certificates vary in price immensely, but you can get a free one from the [url="Let's Encrypt"]https://letsencrypt.org/[/url] project (this requires provisioning via their software installed on your server).
 
@@ -536,9 +545,7 @@ Note that a page viewed under HTTPS must use HTTPS for all images and other embe
 
 [title="4"]Migrating HTTP websites[/title]
 
-It you change the protocol (or domain name) in the base URL, Composr will automatically provide redirects to the corrected version of the URL.
-The CSP implementation will also provide automatic redirects. We just don't rely on all clients having a CSP implementation.
-Ideally these redirects would happen for all requests though, not just dynamic PHP requests. There are some default rules in the [tt]recommended.htaccess[/tt] for this.
+If you change the protocol (or domain name) in the base URL, Composr will automatically provide redirects to the corrected version of the URL. The CSP implementation will also provide automatic redirects. We just don't rely on all clients having a CSP implementation. Ideally these redirects would happen for all requests though, not just dynamic PHP requests. There are some default rules in the [tt]recommended.htaccess[/tt] for this.
 
 If you are on Apache then you can add this to your [tt].htaccess[/tt] file to tell web users to use HTTPS for the whole domain:
 [code="htaccess"]
@@ -556,7 +563,8 @@ Don't add any rules to just redirect HTTP traffic to the root of the domain beca
 
 [media width="150" description="Securing a zone so that an explicitly logged-in session is required" float="right"]data_custom/images/docs/tut_security/security_require_session.png[/media]
 Composr has "confirmed" and "non-confirmed" sessions.
-When you login to the Composr site you have a "confirmed" session. If you then come back to the site and automatically are logged in via cookies then that session is "non-confirmed". This distinction is common on many sites as a security feature.
+
+When you login to the Composr site you have a "confirmed" session. If you then come back to the site and automatically are logged in via cookies then that session is "non-confirmed". If you login through WebDAV or another hook, your session will also be "non-confirmed" (and note that doing this will also change any active "confirmed" session to a "non-confirmed" one). This distinction is common on many sites as a security feature.
 
 It is possible to configure zones so that they require a confirmed session to access them. This means that a user can only access the zone if they have actively chosen, in the specific web browser window that is currently being used, to login: login cookies alone cannot gain them access.
 
@@ -564,20 +572,21 @@ This might seem like a very strange thing to enforce, but there is a very good r
 
 Additionally, if someone else accesses your computer you don't necessarily want the cookie login to let them have complete website control.
 
-The Admin Zone is configured to require confirmed-sessions by-default because it has lots of very dangerous features. You may choose to also secure the [tt]site[/tt] zone in the similar fashion.
+The Admin and CMS Zones are configured to require confirmed-sessions by-default because they have lots of very dangerous or high-impact features. You may choose to also secure the [tt]site[/tt] zone in the similar fashion (if separate from the Welcome zone, and if the site zone is restricted to logged-in members).
 
 Essentially the idea of confirmed vs non-confirmed sessions is a trade-off. You can maintain cookie-based logins, but to do the higher level of actions you need to confirm yourself.
 
 Composr does provide a secondary defence against this scenario, by checking referrers, but we do not consider referrers secure based on two facts:
 1) this seems an area where there may be web browser vulnerabilities, or unfortunate situations, that lead to inaccuracy of this data
 2) user firewalls, ironically, often block this data (for privacy reasons), preventing us from using it to add to security
+
 We also have security tokens on forms as a third defence.
 
 [title="4"]Conceded mode[/title]
 
-Conceded mode is a link to turn a confirmed session into a non-confirmed session if you worry someone else might use your computer while you're away (for example).
+Conceded mode is a link to turn a confirmed session into a non-confirmed session if you worry someone else might use your computer while you're away (for example). It is a bit like a partial log out.
 
-It is a bit like a partial log out.
+This must be enabled for conceded mode links to show; go to Admin Zone > Setup > Configuration > Block options.
 
 [title="3"]Restricting logins[/title]
 
@@ -596,9 +605,11 @@ While many files are world writable, this file is a particular target, because i
 
 To solve this problem, simply remove execute permission for the [tt]_config.php[/tt] file.
 
-It may seem an obvious solution, to not use an executable file to store configuration information. However this file contains critical data, and therefore if it was a file that would be downloaded if accessed instead of executed, this critical data would be exposed; the usual advice is to put the file outside of a downloadable location, or to restrict download, but this is tenuous due to differing web environments Composr must on: in trying to increase security, there would be a big likelihood we could incidentally decrease it.
+It may seem an obvious solution, to not use an executable file to store configuration information. However this file contains critical data, and therefore if it was a file that would be downloaded if accessed instead of executed, this critical data would be exposed; the usual advice is to put the file outside of a downloadable location, or to restrict download, but this is tenuous due to differing web environments Composr must accommodate: in trying to increase security, there would be a big likelihood we could incidentally decrease it.
 
 [title="3"]Maintenance password[/title]
+
+This was formerly called the "master password" in Composr version 10.
 
 For added security you can remove the:
 [code="PHP"]
@@ -606,25 +617,26 @@ $SITE_INFO['maintenance_password'] = '...';
 [/code]
 line from [tt]_config.php[/tt].
 
-It is best to remove it completely, not comment it out. This prevents maintenance password based logins to tools such as the code editor and upgrader.
+It is best to remove it completely, not comment it out or put it in control logic. This prevents maintenance password based logins to tools such as the code editor and upgrader.
 
 It means:
 1) If someone found a vulnerability that allowed them to read the hashed maintenance password out of [tt]_config.php[/tt], they could not use software-specific rainbow tables to get the original password and therefore login.
-2) Bruce force login attempts cannot work.
+2) Bruce force login attempts cannot work (because nothing will work).
 
 [title="3"]Maintenance scripts[/title]
 
-To provide additional protection beyond the maintenance password you may want to set IP-based restrictions (or temporary access blocks) to the following scripts:
+To provide additional, or alternative, protection beyond removing the maintenance password you may want to set IP-based restrictions (or temporary access blocks) to the following scripts:
  - [tt]rootkit_detection.php[/tt]
  - [tt]upgrader.php[/tt]
  - [tt]uninstall.php[/tt]
  - [tt]data/upgrader2.php[/tt]
  - [tt]config_editor.php[/tt]
  - [tt]code_editor.php[/tt]
+ - [tt]delete_alien_files.php[/tt] (although you should get rid of this when not using it)
 
 Follows are sample access rules for an Apache [tt].htaccess[/tt] file to provide a temporary access block:
 [code="htaccess"]
-<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor)\.php)$>
+<FilesMatch ^((rootkit_detection|upgrader|uninstall|data/upgrader2|config_editor|code_editor|delete_alien_files)\.php)$>
 	Require all denied
 </FilesMatch>
 [/code]
@@ -640,6 +652,7 @@ For IIS, the [tt]web.config[/tt] file's [tt]hiddenSegments[/tt] can be extended:
 	<add segment="upgrader2.php" />
 	<add segment="config_editor.php" />
 	<add segment="code_editor.php" />
+	<add segment="delete_alien_files.php" />
 </hiddenSegments>
 [/code]
 

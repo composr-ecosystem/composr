@@ -977,6 +977,7 @@ function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, 
     if (($allowed_sorts !== null) && (!in_array($url_sort, $allowed_sorts))) {
         if (($strict_error) && (!in_array($url_sort, $banal_default_sorts))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('106eee2bc5485ff1a7baad7389447f0c')));
         }
 
         // Determine a banal fall-back we can use
@@ -1000,6 +1001,7 @@ function read_abstract_sorting_params(string $_url_sort, ?array $allowed_sorts, 
     if (!in_array($dir, ['ASC', 'DESC'])) {
         if ($strict_error) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('dd44470f1f735b629f0a05e82226f34d')));
         }
         $dir = 'ASC';
     }

@@ -394,7 +394,7 @@ class Module_admin_privacy
         list($_result) = $data;
         $http_result = @json_decode($_result, true);
         if (($http_result === false) || ($http_result['success'] === false)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2b897dae185d5cc9b44b392cb6959adb')));
         }
 
         $data = $http_result['response_data']['data'];

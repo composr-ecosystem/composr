@@ -487,6 +487,7 @@ class Module_downloads
             && (cms_strtoupper_ascii($sort) != cms_strtoupper_ascii('fixed_random ASC'))
         ) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('07c49107b2945bdfbd9801c87cfe6cf0')));
         }
         $_selectors = [
             'title ASC' => 'TITLE',

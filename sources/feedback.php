@@ -628,6 +628,7 @@ function actualise_specific_rating(?int $rating, string $page_name, int $member_
     if ($rating !== null) {
         if (($rating > 10) || ($rating < 1)) {
             log_hack_attack_and_exit('VOTE_CHEAT');
+            return;
         }
     }
 
@@ -979,6 +980,7 @@ function actualise_post_comment(bool $allow_comments, string $feedback_type, str
                 if ($rating !== null) {
                     if (($rating > 10) || ($rating < 1)) {
                         log_hack_attack_and_exit('VOTE_CHEAT');
+                        continue;
                     }
 
                     $GLOBALS['SITE_DB']->query_insert('review_supplement', [

@@ -69,10 +69,12 @@ A Composr backup consists of a [tt].tar[/tt] file (or [tt].tar.gz[/tt] file), wh
  - A [tt]restore_data.php[/tt] file that contains the actual database structure and contents. This can not be directly executed, but is saved as a PHP file to stop hackers being able to download the contents of your database by accessing the URL.
 
 [box="Database backup"]
+[surround]
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
 Each backup option will include a script that can restore your SQL database in the event that you lose your SQL database. However note that:
 1) If you are not using Composr's inbuilt forum system (Conversr) then it will not backup your forum tables, irrespective of whether they are in the same database as Composr.
 2) The script is in a custom Composr format, not a traditional SQL dump format -- it can only be restored by the self-executing PHP script.
+[/surround]
 [/box]
 
 [title="3"]Restoration, did it work?[/title]

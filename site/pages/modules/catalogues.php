@@ -367,6 +367,7 @@ class Module_catalogues
         }
 
         if (($upgrade_from === null) || ($upgrade_from < 10)) {
+            $GLOBALS['SITE_DB']->drop_table_if_exists('ce_fulltext_index'); // Comes from v10 NB addon nu_search; is flushable so just delete it for re-creation.
             $GLOBALS['SITE_DB']->create_table('ce_fulltext_index', [
                 'i_catalogue_entry_id' => '*AUTO_LINK',
 

@@ -45,7 +45,7 @@ By default image banners will open a new window when clicked, unless the banner 
 
 [title="4"]Text[/title]
 
-You can add textual banners, which by default look exactly like Google Text ads. The best thing though is that you can set them to be 'hot text', which means that any Comcode will be scanned for use of the keywords, with matches leading to inline display of the text banners.
+You can add textual banners, which by default look similar to Google text ads. The best thing though is that you can set them to be 'hot text', which means that any Comcode will be scanned for use of the keywords, with matches leading to inline display of the text banners.
 
 [title="4"]Frames[/title]
 
@@ -90,7 +90,7 @@ If you turn on the "Permissions" configuration option (Admin Zone > Setup > Conf
 
 [title="3"]Who may avoid banners[/title]
 
-Any usergroup with the "Avoid banners" permission will not see banners. Super-administrators will have this permission (as they always have all permissions), and hence super-administrators will never see banners. To test banners from a super-administrator account (such as the default 'admin' account), use the 'SU' feature (see the [page="_SEARCH:tut_permissions"]Testing access and privileges[/page] tutorial, Access control and privileges section) to switch to the test account: add [tt]&keep_su=test[/tt] onto the end of a URL.
+Any usergroup with the "Avoid banners" privilege will not see banners. Super-administrators always have this privilege (just like every other privilege). But you can enable the "Show banners to admins" configuration option (Admin Zone > Setup > Configuration > Feature options) to bypass this behaviour so admins see banners. This option is enabled by default.
 
 [title="2"]Geocoding[/title]
 
@@ -115,6 +115,7 @@ You may run your own banner network (a banner exchange program). Each banner add
 
 Banners are displayed on a site network using an iframe going to a URL like:
 [tt]http://yourbaseurl/banner.php?source=sitename&b_type=bannertype[/tt]
+
 The full HTML code for this is given out when you add a banner. The [tt]source[/tt] comes from the name of the banner you added, which for purposes of a banner network, is considered also as the codename of the site also showing banners in the network.
 
 A source site won't be served its own banners to show. If you wish you may just strip out the source parameter if you don't need such a restriction -- if, for example, you are just using the banner sharing code externally for some other purpose.
@@ -136,25 +137,34 @@ You can delete a banner from the bottom of its edit form.
 
 [*] Copy this code from the [tt]GLOBAL_HTML_WRAP.tpl[/tt] template:
 [code="HTML"]
-   {$SET,BANNER,{$BANNER}} {$,This is to avoid evaluating the banner parameter twice}
-   {+START,IF_NON_EMPTY,{$GET,BANNER}}
-      <div class="global-banner" style="text-align: right">{$GET,BANNER}</div>
-   {+END}
+	{$,The banner}
+	{+START,IF,{$DESKTOP}}
+		{+START,IF,{$SHOW_HEADER}}
+			{$SET-,BANNER,{$BANNER}} {$,This is to avoid evaluating the banner twice}
+			{+START,IF_NON_EMPTY,{$GET,BANNER}}
+				<div class="global-banner block-desktop container">{$GET,BANNER}</div>
+			{+END}
+		{+END}
+	{+END}
 [/code]
 
-[*] Change this bit of the above:
+[*] Change the copied code to:
 [code="Tempcode"]
-{$BANNER}
+	{$,The banner}
+	{+START,IF,{$DESKTOP}}
+		{+START,IF,{$SHOW_HEADER}}
+			{$SET-,BANNER_example,{$BANNER,example}} {$,This is to avoid evaluating the banner twice}
+			{+START,IF_NON_EMPTY,{$GET,BANNER_example}}
+				<div class="global-banner block-desktop container">{$GET,BANNER_example}</div>
+			{+END}
+		{+END}
+	{+END}
 [/code]
-to:
-[code="Tempcode"]
-{$BANNER,example}
-[/code]
-Where [tt]example[/tt] is changed for whatever type string you've used for the banner set you want to show.
+Where [tt]example[/tt] (in all cases) is changed for whatever type string you've used for the banner set you want to show.
 
-[*] Change the [tt]global-banner[/tt] CSS class used in the code snippet to a new CSS class of your own choosing (or just pull it out if you don't require any special styling around your banner).
+[*] Change the [tt]global-banner[/tt] CSS class used in the code snippet to a new CSS class of your own choosing (or just pull it out if you don't require any special styling around your banner). Or, if you want to override / extend [tt]global-banner[/tt], add another class after it such as [tt]global-banner-example[/tt] and define it in CSS: [tt].global-banner.global-banner-example[/tt].
 
-[*] Place the code in any template you like (or multiple ones). Obviously you'll need to write it in such a way as for it to fit well into the layout. This is a standard CSS/XHTML themeing issue.
+[*] Place the code in any template you like (or multiple ones). Obviously you'll need to write it in such a way as for it to fit well into the layout. This is a standard CSS/XHTML themeing issue. You may or may not also wish to remove the Tempcode directives for only showing on desktop or if the header is shown.
 [/list]
 
 [title="2"]Selling advertising[/title]
@@ -167,9 +177,9 @@ Alternatively, members may directly submit banners (i.e. without using eCommerce
 
 [title="2"]Troubleshooting[/title]
 
-If banners won't show check:
+If banners won't show, check:
 1) Banners are enabled in the configuration.
-2) You are not viewing as a super-administrator or any other usergroup that has 'Avoid banners' permission.
+2) You are not viewing as a usergroup that has 'Avoid banners' permission (or "Show banners to admins" is enabled).
 3) Your banner is validated.
 4) Your banner has not expired.
 5) Your banner has hits assigned, is a permanent banner, or is a default banner and there aren't non-default banners obscuring it.
@@ -200,7 +210,7 @@ Enter the following in the fields:
 [*] Tick (check) "Holds textual banners"
 [*] Set the dimensions to [tt]250[/tt]&times;[tt]250[/tt]
 [*] Set the Filesize to [tt]300[/tt]. Large files can cause your site to run slowly; however since we are creating a textual banner we have to enter the maximum characters the banner can have, and 300 seems a good number[/list]
-[*] Add the banner type after entering all the details by clicking "Add banner type"
+[*] Add the banner type after entering all the details by clicking "Add"
 [/list]
 [/surround]
 

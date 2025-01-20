@@ -14,9 +14,6 @@ If members have not selected a date of birth, no birthday can show for them.
 
 Conversr contains a feature to automatically create/link-to a shared birthday topic for a member. By default, this is linked both from [tt]main_bottom_bar[/tt] and the notifications.
 
-The [tt]CNS_BIRTHDAY_LINK.tpl[/tt] template controls how the [tt]main_bottom_bar[/tt] birthday links will be shown.
-You can change this to change what link is provided. For example, the Giftr addon replaces the topic link with a link to send an e-gifts.
-
 The notifications are sent using these language strings, defined in the [tt]cns[/tt] language file:
 [code="INI"]
 BIRTHDAY_NOTIFICATION_MAIL_SUBJECT=It's {2}'s birthday
@@ -53,21 +50,20 @@ There is also a usergroup setting, "Open membership", that defines whether membe
 It is possible that some reassignments will not be possible, in which case, records may be dropped; for example, if both members share a secondary usergroup, Composr would fail [due to database key constraints] to assign both membership records to the same user, and hence drop one of them. You do not need to worry as this is handled automatically.
 
 [title="2"]Custom Profile Fields[/title]
-
 [surround]
-[media width="150" description="Custom Profile Fields are edited by editing member profiles.
-
-Side note: If you (as staff) edit the profile of another member then none of the CPFs will be set as required regardless of how they are configured, as the assumption is that you should not have to fill in unknown fields of a member that you are editing." float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf_edit.png[/media]
+[media_set]
+[media width="150" description="Custom Profile Fields are edited by editing member profiles. Side note: If you (as staff) edit the profile of another member then none of the CPFs will be set as required regardless of how they are configured, as the assumption is that you should not have to fill in unknown fields of a member that you are editing." float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf_edit.png[/media]
 [media width="150" description="Custom Profile Fields are optionally shown where members post" float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf_space_1.png[/media]
 [media width="150" description="Custom Profile Fields are all shown in member profiles (those that the viewer has permission to view)" float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf_space_2.png[/media]
 [media width="150" description="Adding a Custom Profile Field" float="right"]data_custom/images/docs/tut_adv_members/adv_members_cpf.png[/media]
+[/media_set]
 {!cns:DOC_CUSTOM_PROFILE_FIELDS} A 'locked' Custom Profile Field can not be edited or deleted, as it is used by Composr's own code.
 
 You can manage Custom Profile Fields from: Admin Zone > Setup > Custom Profile Fields.
 You can delete a Custom Profile Field from the bottom of its edit form.
 
 There are a number of Custom Profile Field options that you may set that allow CPFs to function for a number of different purposes, including:
- - Storing hidden details on member (for example, a list of rule infractions, such as to aid decisions on cumulative punishment)
+ - Storing hidden details on member (for example, a list of rule infractions, such as to aid decisions on cumulative punishment [although normally you would just use the warnings system for this])
  - Allowing members to specify details about themselves (for example, their occupation)
  - Forcing members to specify certain additional details (for example, on a forum for staff of a company, you could make members enter their job role, so as to reduce the chance of a non-employee from joining and remaining an active member)
  - Allowing members of a certain sub-communities (via their usergroup) to specify details appropriate to that sub-community (for example, those in the 'Football' usergroup of a school discussion forum could specify the position they play, while those in the 'Music' usergroup could specify the instrument they play).
@@ -144,7 +140,7 @@ By default, and in most cases, the values of the CPFs are not publicly viewable.
 
 [title="3"]Why some CPFs are locked[/title]
 
-Some CPFS are only activated by certain addons. They are preinstalled as they may be shared between addons, yet may not be used by any. They show so you can know they are there, but are no made available for use to reduce feature-bloat. If no addons currently use them, they show in the list as unused and inaccessible. If you want them, you can install an addon that uses them, or simply add your own alternative CPF. The [tt]ecommerce[/tt] addon uses quite a few.
+Some CPFs are only activated by certain addons. They are preinstalled as they may be shared between addons, yet may not be used by any. They show so you can know they are there, but are no made available for use to reduce feature-bloat. If no addons currently use them, they show in the list as unused and inaccessible. If you want them, you can install an addon that uses them, or simply add your own alternative CPF. The [tt]ecommerce[/tt] addon uses quite a few.
 
 [title="3"]{$IS_MAINTAINED,cpf_encryption,Encrypted CPFs} (advanced)[/title]
 
@@ -181,9 +177,9 @@ When editing the value of an encrypted CPF, the encrypted data will be shown. To
 
 [title="4"]Changing the settings on an existing field[/title]
 
-The "Encryption" checkbox only affects new data entered into a field. If you subsequently removing Encryption from a field existing data will remain encrypted and remain encryptable. If you subsequently add Encryption to a field existing data will remain unencrypted.
+The "Encryption" checkbox only affects new data entered into a field. If you are subsequently removing Encryption from a field existing data will remain encrypted and remain encryptable. If you subsequently add Encryption to a field existing data will remain unencrypted.
 
-The <kbd>cpf_decrypt</kbd>/<kbd>cpf_encrypt</kbd> Commandr commands allow you to bulk-change the encryption status of existing data.
+The [tt]cpf_decrypt[/tt] / [tt]cpf_encrypt[/tt] Commandr commands allow you to bulk-change the encryption status of existing data.
 
 [title="3"]Statistics[/title]
 
@@ -257,9 +253,10 @@ As long as you have the newsletters addon installed, welcome e-mails will piggy-
 For the e-mail sent from the "Add member account" form, an additional [tt]{password}[/tt] reference is supported. This references the password entered on the form. It is not available in welcome e-mails because it is saved into the database in a hash-format which cannot be converted back to the original password: an important and standard security practice.
 
 [title="2"]Importing/exporting members[/title]
-
+[surround]
 [media width="150" description="Importing members from a CSV spreadsheet file" float="right"]data_custom/images/docs/tut_adv_members/member_import.png[/media]
 You can use [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet files to put member data into your website, or to export it. There are many different reasons you might want to do this, but in simple terms, organisations often need to shuffle member data between different systems and this is a good/normal way to do it.
+[/surround]
 
 [title="3"]Exporting[/title]
 
@@ -335,11 +332,10 @@ Composr has support for 'implicit usergroups' which are usergroup memberships de
 [title="3"]Limitations and background sync[/title]
 
 Usually when Composr handles checks of when someone is in a usergroup it goes through some fool-proof methods to do it by looking at just that particular user. Sometimes Composr needs to efficiently find all members in a usergroup, and bypasses checking implicit groups and LDAP for performance/simplicity.
-To mitigate this, Composr has a system scheduler hook that is disabled by default that can be turned on by an Commandr command to synchronise implicit usergroups as normal usergroup memberships. To turn that on:
-[code="Commandr"]
-:set_value('implicit_usergroup_sync','1');
-[/code]
-If this is set then anyone put into the usergroup manually that does not match the implicit usergroup check would end up being removed again.
+
+To mitigate this, Composr has a system scheduler hook that is disabled by default to synchronise implicit usergroups as normal usergroup memberships. To turn that on, go to the Admin Zone > Audit > Low-level logging > System scheduler hooks and then enable the [tt]Sync implicit usergroups[/tt] hook.
+
+If this is enabled then anyone put into the usergroup manually that does not match the implicit usergroup check would end up being removed again.
 
 If synching is not enabled, or group memberships come from LDAP, then the following things will not work as expected when it comes to them:
  - member search by usergroup
@@ -355,10 +351,11 @@ If synching is not enabled, or group memberships come from LDAP, then the follow
 [title="2"]Forced password resets[/title]
 
 You can force a member to change their password upon next login (e.g. if you want to promote increased security for some reason), via this Commandr command:
-[code="Bash"]
-echo bcrypt_temporary > /members/bob/m_password_compat_scheme
+[code]
+echo bcrypt_temporary > /database/f_members/401/m_password_compat_scheme
 [/code]
-(this assumes you are doing it for a member, [tt]bob[/tt]).
+(this assumes you are doing it for member ID [tt]401[/tt]).
+
 You can also run SQL queries. To force all members to change their passwords (useful, for example, in the event you are made aware of a data breach):
 [code="SQL"]
 UPDATE cms_f_members SET m_password_compat_scheme='bcrypt_temporary' WHERE m_password_compat_scheme='bcrypt';

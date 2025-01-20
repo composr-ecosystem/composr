@@ -35,7 +35,7 @@ function init__input_filter()
  * Check an input field isn't 'evil'.
  *
  * @param  string $name The name of the parameter
- * @param  string $val The value retrieved
+ * @param  string $val The value retrieved, passed by reference
  * @param  ?boolean $posted Whether the parameter is a POST parameter (null: undetermined)
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  */
@@ -48,17 +48,27 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
     if (($filters & INPUT_FILTER_JS_URLS) != 0) {
         if (preg_match('#^\s*(((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)\s*:#i', $val) !== 0) {
             log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+            $val = '';
+            return;
         }
         if (preg_match('#^\s*(d\s*a\s*t\s*a\s*)\s*:.*,#i', $val) !== 0) {
             log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
+            $val = '';
+            return;
         }
     }
 
     if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<#mi', $val) !== 0)) {
         if ($name === 'page') { // Stop loops
-            $_GET[$name] = '';
+            if ($posted) {
+                $_POST[$name] = '';
+            } else {
+                $_GET[$name] = '';
+            }
         }
         log_hack_attack_and_exit('DODGY_GET_HACK', $name, $val);
+        $val = '';
+        return;
     }
 
     if (($filters & INPUT_FILTER_TRIMMED) != 0) {

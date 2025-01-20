@@ -14,9 +14,9 @@ This tutorial does not cover validation, which is covered in the [page="_SEARCH:
 [media width="150" description="The CAPTCHA" float="right"]data_custom/images/docs/tut_antispam/captcha.png[/media]
 CAPTCHA is the conventional tool to stop guest actions (such as joining, or posting) without first proving you're human. It can also be configured for new members.
 
-Composr uses a unique method behind-the-scenes to generate the CAPTCHA (the 'CSS' method), which has proven very effective. Composr by default also combines the use of JavaScript to make it harder for CAPTCHA harvesters to solve it (the CAPTCHA is loaded as an iframe via JavaScript so that pure web-page browser agents, such as harvesters, cannot see it).
+Composr uses a unique method behind-the-scenes to generate the CAPTCHA (the 'CSS' method), which has proven very effective against automated bots (it may be less effective against humans being paid to spam, or against Artificial Intelligence with image recognition). Composr by default also combines the use of JavaScript to make it harder for CAPTCHA harvesters to solve it (the CAPTCHA is loaded as an iframe via JavaScript so that pure web-page browser agents, such as harvesters, cannot see it).
 
-Generally-speaking, CAPTCHA will fully protect you from spam. The exception tends to be when real humans do set up accounts, then spam using them. Some spammers subcontract CAPTCHA solution to humans on low-salaries. Other spammers serve target site's CAPTCHAs out to video sites (for example) where viewers unwittingly are made to solve them in order to be allowed to watch a video.
+Generally-speaking, CAPTCHA will protect you from most spam. The exception tends to be when real humans do set up accounts, then spam using them. Some spammers subcontract CAPTCHA solution to humans on low-salaries. Other spammers serve target site's CAPTCHAs out to video sites (for example) where viewers unwittingly are made to solve them in order to be allowed to watch a video. Still others use Artificial Intelligence / image recognition to solve them.
 Therefore, we have additional controls.
 
 Alternative CAPTCHA systems, such as solving maths problems, or recognising cats, or answering domain-problems (i.e. something specific about the subject of the website the CAPTCHA is on), are very popular. However this is purely "security through obscurity". A spammer can easily target a specific site's collection of answers, then spam that site enormously -- because unlike the regular CAPTCHAs, these CAPTCHAs work on a much more limited set of problems and solutions. That said, they can work for smaller sites -- and we do offer this functionality.
@@ -58,7 +58,7 @@ Some anti-spam services (RBLs, Stop Forum Spam) will provide a 'confidence level
 The confidence level is then compared about a number of configured thresholds:
  - Approval (the staff will have to validate a content submission, even if privileges normally say it would go through immediately)
  - Block (the attempted action will be blocked)
- - Ban (the user's IP address will be banned)
+ - Ban (the user's IP address will be banned for the configured Block list cache time)
 
 Other options include:
  - Specifying how long spam results are cached for
@@ -112,18 +112,18 @@ The developer addon hard-codes the CPF ID being checked against, and the expecte
 [title="2"]Setting rules[/title]
 
 If spam is being posted by real humans, those humans may not realise you have [tt]nofollow[/tt], and other measures that minimise the effectiveness of their spam.
-It may be a good idea to explicitly mention your policies on your join page so that human spammers will know they are wasting their time, and thus avoid wasting your time too. The composr.app site has a good example you can follow.
+It may be a good idea to explicitly mention your policies on your join page so that human spammers will know they are wasting their time, and thus avoid wasting your time too. The composr.app site has a good example you can follow (in the [page="_SEARCH:rules"]rules[/page]).
 
 [title="2"]What we don't do[/title]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
 We're not a fan of all anti-spam systems. Here's a run-down of what we don't do:
- - Some popular spam checking tools will run checks through a commercial third-party server. We'd rather deliver our code to you within Composr, for improved performance, reliability, and in line with our Open Source philosophy.
+ - Some popular spam checking tools will run checks through a commercial third-party server. We'd rather deliver our code to you within Composr, for improved performance, reliability, and in line with our Open Source philosophy (e.g. third party services often sell or use your data).
  - Various alternative CAPTCHA systems (as explained above, under 'CAPTCHA')
 
 [title="2"]Making a spam report to the developers[/title]
 
-It is possible that occasionally a spammer may get through Composr's options. If so, please make a thorough report via the {$BRAND_BASE_URL} forum -- so that we have the chance to properly look into how it got through.
+It is possible that occasionally a spammer may get through Composr's options. If so, please make a thorough report via the Contact Us page on {$BRAND_BASE_URL}  (choose "Report a spam attack on my Composr site") -- so that we have the chance to properly look into how it got through.
 
 Include:
 [list="a"]
@@ -133,15 +133,15 @@ Include:
 [*] The spammer's user-agent
 [*] The time of the incident
 [*] Whether the spam was by a guest (and if so, if you have guest posting permissions configured)
-[*] An audit trail of pages the spammer went through (to help us identify if it is a bot)
-[*] What is on the spammers member profile (if appropriate)
+[*] An audit trail of pages the spammer went through (to help us identify if it is a bot) (Go to Admin Zone > Security > Members > Investigate user)
+[*] What is on the spammers member profile (if applicable)
 [/list]
 
 Avoid being anecdotal or emotional -- give clear and concise facts.
 
 Once you've made your report hopefully someone can then tell you what case category you are in:
 [list="a"]
-[*] Incorrect Composr set up -- in which case someone may be able to advise
+[*] Incorrect or weak Composr security set up -- in which case someone may be able to advise
 [*] Manual spammer attack
 [*] Insufficient protection within Composr -- in which case we can consider making Composr improvements
 [/list]

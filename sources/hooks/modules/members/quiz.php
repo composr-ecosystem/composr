@@ -74,6 +74,7 @@ class Hook_members_quiz
         ];
         if (!array_key_exists($order, $_selectors)) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5c716d5eea045f50bbccc91e08ed945f')));
         }
         $selectors = new Tempcode();
         foreach ($_selectors as $selector_value => $selector_name) {

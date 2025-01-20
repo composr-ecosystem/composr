@@ -130,6 +130,7 @@ function catalogue_file_script()
 
         if ((strpos($original_filename, "\n") !== false) || (strpos($original_filename, "\r") !== false)) {
             log_hack_attack_and_exit('HEADER_SPLIT_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('11a56a5090e557ceb603ef42df294cef')));
         }
         if (get_option('immediate_downloads', true) === '1' || get_param_integer('inline', 0) == 1) {
             require_code('mime_types');

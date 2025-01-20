@@ -320,6 +320,7 @@ function render_catalogue_category_entry_buildup(?int $category_id, string $cata
             list($order_by, $direction) = explode(' ', $order_by_high_level);
             if (($direction != 'ASC') && ($direction != 'DESC')) {
                 log_hack_attack_and_exit('ORDERBY_HACK');
+                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('90a33088b389539a8e279eb60b1e81d4')));
             }
             if (((!is_numeric($order_by)) || (!isset($fields[intval($order_by)]))) && (!in_array($order_by, ['fixed_random', 'average_rating', 'compound_rating', 'add_date', 'distance']))) {
                 $order_by = null; // Invalid

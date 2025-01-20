@@ -16,7 +16,7 @@ This defines two comparisons. Both must hold true for any result returned (i.e. 
 
 In this example, the first is an [tt]=[/tt] comparison, and the second is an [tt]>[/tt] comparison. Anyone who knows very basic maths will understand what these mean.
 
-[tt]something[/tt] and [tt]somethingelse[/tt] would be database field names for the main database table of whatever content type is being filtered.
+[tt]something[/tt] and [tt]somethingelse[/tt] would (usually) be database field names for the main database table of whatever content type is being filtered.
 
 [title="2"]The full language[/title]
 
@@ -26,7 +26,8 @@ The field names must match field names in the content type's main database table
  - [tt]meta_keywords[/tt] (the SEO keywords / tagging)
  - [tt]meta_description[/tt] (the SEO description)
  - [tt]field_<id>[/tt] (custom fields, where [tt]<id>[/tt] is the field ID of the custom field)
-You are allowed to specify that comparisons may work on multiple fields, by separating field names with pipe ([tt]|[/tt]) symbols. This is particular useful for a search filter, to make the typed string look across multiple fields.
+ - [tt]fixed_random[/tt] (does not actually do any filtering but will return results randomly)
+You are allowed to specify that comparisons may work on multiple fields, by separating field names with pipe ([tt]|[/tt]) symbols. This is particularly useful for a search filter, to make the typed string look across multiple fields.
 
 We support the following comparison types...
 [surround="right float-separation"]
@@ -162,7 +163,7 @@ As explained above, Filtercode works by reading GET/POST parameters and matching
 
 The concept of writing Filtercode filter strings, and matching forms, can be a bit daunting. This is why the [tt]main_content_filtering[/tt] block exists. It will automatically construct filters and forms for content types.
 
-You don't actually need to use this block in production at all. It is a good way to build up a default form, which you can then get HTML from as a starting point.
+You don't actually need to use this block in production at all (although we use it in Composr as a "Filter" box on some Admin Zone screens which could have particularly long or complex results tables). It is a good way to build up a default form, which you can then get HTML from as a starting point.
 
 There are two steps in getting your HTML ready:
 1) Show the block for your content type, with no parameters

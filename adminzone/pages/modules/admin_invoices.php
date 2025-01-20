@@ -328,6 +328,7 @@ class Module_admin_invoices
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('e349a4aa3ae75e6c81eff6462f12c75e')));
         }
 
         // Prepare Filtercode

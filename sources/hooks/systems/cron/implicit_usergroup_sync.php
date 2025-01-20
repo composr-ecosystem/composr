@@ -32,10 +32,6 @@ class Hook_cron_implicit_usergroup_sync
      */
     public function info(?int $last_run, ?bool $calculate_num_queued) : ?array
     {
-        if (get_value('implicit_usergroup_sync') !== '1') {
-            return null;
-        }
-
         if (get_forum_type() != 'cns') {
             return null;
         }
@@ -44,7 +40,7 @@ class Hook_cron_implicit_usergroup_sync
             'label' => 'Sync implicit usergroups',
             'num_queued' => null,
             'minutes_between_runs' => 5,
-            'enabled_by_default' => true,
+            'enabled_by_default' => false,
         ];
     }
 

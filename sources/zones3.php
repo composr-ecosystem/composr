@@ -686,9 +686,6 @@ function save_comcode_page(string $zone, string $new_file, ?string $lang = null,
     if ($file === null) {
         $file = $new_file; // Not renamed
     }
-    if ($parent_page === null) {
-        $parent_page = '';
-    }
 
     if ($add_time === null) {
         $add_time = $GLOBALS['SITE_DB']->query_select_value_if_there('comcode_pages', 'p_add_date', ['the_zone' => $zone, 'the_page' => $file]);
@@ -782,6 +779,11 @@ function save_comcode_page(string $zone, string $new_file, ?string $lang = null,
         'the_zone' => $zone,
         'the_page' => $new_file,
     ]);
+
+    if ($parent_page === null) {
+        $parent_page = '';
+    }
+
     $GLOBALS['SITE_DB']->query_insert('comcode_pages', [
         'the_zone' => $zone,
         'the_page' => $new_file,

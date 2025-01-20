@@ -25,19 +25,23 @@ All 3 methods take you to a standard "new topic" screen. Fill out all the fields
 The new Private Topic will have also appeared in your Private Topics list, so you can easily access it. To get to your Private Topics list, click on the "Private Topics" button in the top bar and click "Inbox" ([url="image" rel="lightbox"]data_custom/images/docs/tut_correspondence/correspondence_hovering_over_pt_link.png[/url]). The page lists all the Private Topics you have ever started, or been a participant in, in much the same way as a normal forum ([url="image" rel="lightbox"]data_custom/images/docs/tut_correspondence/correspondence_pt_page.png[/url]).
 
 [surround]
+[media_set]
 [media width="150" description="The link to start a new Private Topic" float="left"]data_custom/images/docs/tut_correspondence/correspondence_hovering_over_startpt_link.png[/media]
 [media width="150" description="Creating a Private Topic (1)" float="left"]data_custom/images/docs/tut_correspondence/correspondence_create_pt_page.png[/media]
 [media width="150" description="Creating a Private Topic (2)" float="left"]data_custom/images/docs/tut_correspondence/correspondence_create_pt_page1.png[/media]
 [media width="150" description="Our new Private Topic" float="left"]data_custom/images/docs/tut_correspondence/correspondence_new_pt.png[/media]
 [media width="150" description="The Private Topics link" float="left"]data_custom/images/docs/tut_correspondence/correspondence_hovering_over_pt_link.png[/media]
+[/media_set]
 [/surround]
 
 [title="3"]Private Topic notifications[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Our Private Topic listed on the Private Topics page" float="right"]data_custom/images/docs/tut_correspondence/correspondence_pt_page.png[/media]
 [media width="150" description="Notification of a new personal message" float="right"]data_custom/images/docs/tut_correspondence/correspondence_forum_notification_message.png[/media]
 [media width="150" description="An e-mail notification of a new Private Topic" float="right"]data_custom/images/docs/tut_correspondence/correspondence_thunderbird_notification_e_mail.png[/media]
+[/media_set]
 When a new post is added by another conversant in a Private Topic that you are part of, you will be notified by the system of its presence. If your notification settings allow it, you will be e-mailed about the new post ([url="image" rel="lightbox"]data_custom/images/docs/tut_correspondence/correspondence_thunderbird_notification_e_mail.png[/url]), and you will always be notified by a little message at the top of the site ([url="image" rel="lightbox"]data_custom/images/docs/tut_correspondence/correspondence_forum_notification_message.png[/url]).
 [/surround]
 
@@ -68,9 +72,11 @@ As Private Topics behave in a similar fashion to normal topics, they are moderat
 [title="2"]Inline personal posts (whispers)[/title]
 
 [surround]
+[media_set]
 [media width="150" description="A personal post as displayed" float="right"]data_custom/images/docs/tut_correspondence/correspondence_whisper.png[/media]
-[media width="150" description="Typing in a personal post" float="left"]data_custom/images/docs/tut_correspondence/correspondence_whisper_form.png[/media]
+[media width="150" description="Typing in a personal post" float="right"]data_custom/images/docs/tut_correspondence/correspondence_whisper_form.png[/media]
 [media width="150" description="The button to whisper to a poster" float="right"]data_custom/images/docs/tut_correspondence/correspondence_whisper_link.png[/media]
+[/media_set]
 Another innovation we have developed for Conversr is that of inline personal posts (henceforth known as "whispers" for brevity's sake). Whispers allow forum-goers to privately reply within a public forum topic.
 
 The whispers are like regular posts but marked as only viewable by the sender and receiver, and nobody else (apart from staff).

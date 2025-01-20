@@ -104,7 +104,7 @@ Here are the main content types (your meat & potatoes of publishing)...
 ! Quizzes
 | [tt]quiz[/tt]
 | Have tests, competitions, and surveys, consisting of multiple questions, with a variety of answer inputting methods. Visitors may fill the quizzes in and results get processed.
-| None.
+| None directly, but you can group like quizzes together based on quiz name.
 |
 |-
 ! Catalogues
@@ -116,7 +116,7 @@ Here are the main content types (your meat & potatoes of publishing)...
 ! [i]Custom[/i]
 |
 | Using custom PHP code you can extend the system with new content types that fully integrate with all standard Composr features. Seriously consider this over inbuilt types or a catalogue if you want to do something custom that is fancy or expansive. Requires an experienced programmer.
-| None.
+| It depends on your integration; for example, if you tie a module into Composr's standard CRUD module implementation, then you can easily support categories. You do not have to do this; you can still support categories without CRUD.
 |
 |}
 
@@ -309,7 +309,7 @@ If you would like to create a formal catalogue, head over to Admin Zone > Conten
 
 If you'd like to add to Wiki+, you can choose it from your menus of your main website and begin to edit the tree structure to create new pages, and then edit them and post within them, as required. You should read the [page="_SEARCH:tut_wiki"]Wiki+[/page] tutorial for more information.
 
-If you desire integration of an existing system into your website and are not a developer yourself, professional developers are available for such work.
+If you desire integration of an existing system into your website and are not a developer yourself, [page="_SEARCH:partners"]professional developers[/page] are available for such work.
 
 [title="3"]Adding images[/title]
 

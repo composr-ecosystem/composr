@@ -1,6 +1,8 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: The Composr emoticon system[/title]
 
-{$IS_MAINTAINED,emoticons,Emoticons} (also known as smilies) are little images used to convey 'emotion' within text. These are an important part of informal communication on the Internet, as body language and tone are not available to (sub-consciously) transmit the same information.\n\nWithout use of emoticons, it can be impossible (unless the writer took great care to express themselves fully) to gauge unwritten details, such as the importance of what is being written, or the writer's emotional perspective on it.
+{$IS_MAINTAINED,emoticons,Emoticons} (also known as smilies or emojis) are little images used to convey 'emotion' within text. These are an important part of informal communication on the Internet, as body language and tone are not available to (sub-consciously) transmit the same information.
+
+Without use of emoticons, it can be impossible (unless the writer took great care to express themselves fully) to gauge unwritten details, such as the importance of what is being written, or the writer's emotional perspective on it.
 
 If you are using a third-party forum, that forum will be responsible for management of emoticons, and Composr will use those from the forum.
 
@@ -18,9 +20,9 @@ Images are associated with the 'code' that is typed to place the emoticon. You m
 
 Emoticons are given a relevancy level, which determines which areas they are listed for use in. The relevancy levels are described in the interface.
 You can also determine whether an emoticon can be used as a 'topic emoticon' (an emoticon placed next to a topic on the forum). It is best to only use standard sized emoticons as topic emoticons.
+[/surround]
 
 [block cache="0"]main_emoticon_codes[/block]
-[/surround]
 
 [concepts
  1_key="Emoticon"   1_value="A small graphical of a facial expression placed into the flow of text by typing a special symbol that often resembles the face as laid sideways; provides emotional sub-text"

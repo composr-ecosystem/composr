@@ -31,7 +31,7 @@ class telemetry_test_set extends cms_test_case
         require_code('version');
 
         if (!is_encryption_enabled_telemetry()) {
-            $this->assertTrue(false, 'Skipped test; telemetry is not enabled.');
+            $this->assertTrue(false, 'Skipped test; telemetry is not enabled or available for this site.');
             return;
         }
 
@@ -40,7 +40,7 @@ class telemetry_test_set extends cms_test_case
             'version' => cms_version_pretty(), // Encrypted and contains full version
             'website_url' => get_base_url(),
         ];
-        $_payload = encrypt_data_telemetry(serialize($__payload));
+        $_payload = encrypt_data_site_telemetry(serialize($__payload));
         $payload = json_encode($_payload);
 
         $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry/';
@@ -75,7 +75,7 @@ class telemetry_test_set extends cms_test_case
         $_payload = encrypt_data_site_telemetry(serialize($__payload));
         $payload = json_encode($_payload);
 
-        if ($payload !== false) {
+        if ($payload === false) {
             $this->assertTrue(false, 'Failed to convert payload to JSON.');
             return;
         }

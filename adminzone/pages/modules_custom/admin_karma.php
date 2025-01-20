@@ -241,6 +241,7 @@ class Module_admin_karma
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c19ff8f969045f7e92d28c24c8b85485')));
         }
 
         list($max_rows, $rows) = karma_get_logs($active_filters, $max, $start, $sortable, $sort_order);

@@ -92,7 +92,7 @@ Block access when closed
 | Stability
 | All development
 | Manually
-| Any URL that a user may reasonably navigate to manually that is not passed through [tt]index.php[/tt], must show the closed site message by its own means. Look to see how other code does it for example.
+| Any URL that a user may reasonably navigate to manually that is not passed through [tt]index.php[/tt] or [tt]data/unsubscribe.php[/tt], must show the closed site message by its own means. Look to see how other code does it for example.
 |}
 
 [title="3"]Files[/title]

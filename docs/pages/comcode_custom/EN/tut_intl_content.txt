@@ -43,6 +43,8 @@ Then the Commandr command required is:
 
 Depending on the size of your database, the command could take hours to run. You can monitor it progress through tables via MySQL ([tt]SHOW FULL PROCESSLIST[/tt]).
 
+[box="Take a backup!"][b]Take a backup of your database before running these commands![/b] If the process fails, your site could be in a corrupt state.[/box]
+
 [title="2"]Language choice for CMS actions[/title]
 
 To understand what the content translation can do, and how it works, we need to consider the following cases:

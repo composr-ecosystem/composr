@@ -381,7 +381,7 @@ class Module_admin_lookup
         // Tack on risk score
         $risk_score = null;
         if (($ip != '') && (addon_installed('securitylogging'))) {
-            $risk_score = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip]));
+            $risk_score = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]));
         }
 
         // Display it all...

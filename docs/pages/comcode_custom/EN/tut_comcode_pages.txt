@@ -13,13 +13,15 @@ This tutorial covers some basic information relating to Comcode pages.
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Default pages[/title]
-
+[surround]
 [media width="150" description="The list of Comcode pages to be edited/deleted" float="right"]data_custom/images/docs/tut_comcode_pages/comcode_pages.png[/media]
 Comcode pages may be selected for editing either:
 [list="a"]
 [*] From Admin Zone > Content > Pages (Comcode pages), which gives you a table to choose from.
 [*] By clicking the edit link underneath a page being viewed.
+[*] Directly editing the txt file for the page in a text editor of your choosing.
 [/list]
+[/surround]
 
 The default Comcode pages are...
 [html]
@@ -68,7 +70,7 @@ The default Comcode pages are...
 			<td>Welcome</td>
 			<td><kbd>privacy</kbd></td>
 			<td>Privacy Policy (generated automatically by Composr by default).</td>
-			<td>Possible</td>
+			<td>Likely (the default does not include everything such as data breach procedures)</td>
 		</tr>
 		<tr>
 			<td>Welcome</td>
@@ -153,17 +155,19 @@ Method 1:
 Method 2:
 [list="a"]
 [*] Go to Admin Zone > Content > Pages (Comcode pages)
-[*] Scroll down
-[*] Give a new page name in the [tt]<zone>:<page-name>[/tt] format Composr uses in the list of pages that already exist (where a page in the Welcome Zone would just be [tt]:<page-name>[/tt])
-
-(If you don't use a colon, a default zone will be picked)
+[*] Scroll down to the bottom
+[*] Choose your zone, and type a page codename to use
 [/list]
+
+You can optionally also select a template to use to help you get started. We will cover templates further down.
 [/surround]
 
-Method 3: by manually adding a [tt]txt[/tt] file in the [tt]pages/comcode_custom[/tt] directory of the zone you want to add the Comcode page.
+Method 3: by manually adding a [tt]txt[/tt] file in the [tt]pages/comcode_custom/(language code)[/tt] directory of the zone you want to add the Comcode page.
 
 [box="A note about manually adding Comcode pages"]
 By default, when you add a new txt file for a Comcode page, the Comcode page will be validated and will go live. If you have the [tt]validation[/tt] addon installed and do not want new Comcode pages to go live by default, you can go to Admin Zone > Setup > Configuration > Content editing options > Comcode, and untick "Validate new Comcode pages". With this unticked, new Comcode pages manually created (or pulled from Git) will not be validated until you manually validate them.
+
+Note that they will not show up in the list of content needing validated until the first time someone tries to load the page. They will also not show up under Content > Pages (Comcode pages) until the first time someone tries to load them.
 [/box]
 
 [title="3"]Proceeding to edit the page[/title]
@@ -192,7 +196,7 @@ It is beyond the scope of this tutorial to explain Comcode: see the [page="_SEAR
 
 [title="2"]Deleting pages[/title]
 
-You can delete a Comcode page from the bottom of its edit form.
+You can delete a Comcode page from the bottom of its edit form or by simply deleting its txt file from the filesystem ([tt](zone)/pages/comcode_custom/(language code)[/tt]).
 [/surround]
 
 [title="2"]Page templates[/title]

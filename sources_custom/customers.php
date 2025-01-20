@@ -31,6 +31,7 @@ function get_user_currency()
             if ($return_default === false) {
                 if (preg_match('/^[a-zA-Z]$/', $user_currency) == 0) {
                     log_hack_attack_and_exit('HACK_ATTACK');
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2627d75c38515b0286ab0613ac49bb40')));
                 }
             }
         } else {
@@ -49,6 +50,7 @@ function get_credits_profile_field_id($field_name = 'cms_support_credits')
     require_code('cns_members');
     if (preg_match('/\W/', $field_name)) {
         log_hack_attack_and_exit('HACK_ATTACK');
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('7b3f32b463105ee18edd933e359656b7')));
     }
     $fields = cns_get_all_custom_fields_match(
         null, // groups

@@ -13,17 +13,7 @@ This tutorial will give basic instructions for installation of the various piece
 [media float="right" framed="0" width="300"]data_custom/images/docs/tut_install_windows_desktop/bitnami.png[/media]
 It is well worth pointing out that there are a number of 'all in one' packages that may be used to install AMP ([concept]Apache[/concept], [concept]MySQL[/concept] and [concept]PHP[/concept]) without any special configuration for them to appropriately bind to each other. This may be preferable and we will cover it first. However, by doing so you inevitably will not know as much about the environment that was created for you.
 
-[title="3"]Bitnami[/title]
-
-There is a [url="Composr software stack for Bitnami"]https://bitnami.com/stack/composr[/url] that allows easy installation on Windows (and OS X and Linux too).
-
-Bitnami is professionally-maintained and a good choice. They also provide all kinds of hosting and virtual machine services.
-
-The stack bypasses the Setup Wizard, with a default set of addons installed. You may want to run the Setup Wizard yourself to get more control over the default configuration.
-
 [title="3"]WampServer[/title]
-
-[i]WampServer appears to be discontinued. Similar alternatives are in the next section.[/i]
 
 WampServer lets you mass install the software for running an Apache-based server.
 
@@ -50,19 +40,20 @@ We aren't in a position to tell you which is best at this time, we're just listi
 [title="2"]Manually installing the software[/title]
 
 [title="3"]Web server[/title]
-
+[surround]
 [media float="right" framed="0"]data_custom/images/docs/tut_install_windows_desktop/apache.png[/media]
 The first thing you will need is a web server.
 
 Depending on your version of Windows, you may have the Windows web server available to you (Internet Information Server).
 
 However we recommend that you just install Apache. Go to http://httpd.apache.org and download and install whichever Windows release you are comfortable with. The PHP folk recommend to avoid version 2, but if you are only running Composr locally for yourself, it doesn't matter. You may wish to enable [tt]mod_rewrite[/tt] in Apache.
+[/surround]
 
 [title="3"]PHP[/title]
 
 [surround]
 [media float="right" framed="0"]data_custom/images/docs/tut_install_windows_desktop/php.png[/media]
-Next you will need a copy of PHP installed. Go to http://php.net and download and install the latest stable Windows release.
+Next you will need a copy of PHP installed. Go to [url="the PHP home site"]http://php.net[/url] and download and install the latest stable Windows release.
 
 Follow the instructions to get it integrated with your web server: these may be rather complex, but it would be self-defeating for us to try and re-write them for you.
 [/surround]
@@ -98,9 +89,11 @@ If you want to install a supported third-party forum on your computer, follow th
 [title="4"]Setting file permissions, Extracting files[/title]
 
 [surround]
-[media width="150" description="Setting permission inheriting for a file (perhaps one copied into the web directory from somewhere that did not have it)" float="right"]data_custom/images/docs/tut_install_windows_desktop/windows_perm_reset.png[/media]
-[media width="150" description="Setting permissions (2)" float="right"]data_custom/images/docs/tut_install_windows_desktop/windows_perm2.png[/media]
+[media_set]
 [media width="150" description="Setting permissions (1)" float="right"]data_custom/images/docs/tut_install_windows_desktop/windows_perm1.png[/media]
+[media width="150" description="Setting permissions (2)" float="right"]data_custom/images/docs/tut_install_windows_desktop/windows_perm2.png[/media]
+[media width="150" description="Setting permission inheriting for a file (perhaps one copied into the web directory from somewhere that did not have it)" float="right"]data_custom/images/docs/tut_install_windows_desktop/windows_perm_reset.png[/media]
+[/media_set]
 Because you are unlikely to have an account based FTP/HTTP setup like webhosts provide, using the quick installer is probably not the truly quickest option. Fortunately due to the (wonderful!) inheritable Windows permissions system, and the fact you are at your own computer, you can just extract the manual installer files and run through the installation without having to set any file permissions or do any uploading.
 
 Before you extract the files, you must make sure that the web directory, or sub-directory thereof, has been configured to have the right file permissions:

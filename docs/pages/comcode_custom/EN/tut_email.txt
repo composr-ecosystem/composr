@@ -7,31 +7,28 @@ E-mail can be a complex thing. There are a number of e-mail protocols with stand
 
 [title="2"]E-mails in Composr[/title]
 
-Composr constructs its e-mails using language strings: each different e-mail is built from a different language string (or sometimes a text template). These strings/templates are written in Comcode. Composr sends out e-mails in dual format -- both [abbr="HyperText Markup Language"]HTML[/abbr] and plain text, so that people can disable HTML in their e-mail software if they wish to. Plain text versions are made by automatic tidying-up of the Comcode (i.e. making it a little more human-readable), and HTML versions are made by parsing the Comcode to HTML and then putting that HTML inside the [tt]MAIL.tpl[/tt] template.
+Composr constructs its e-mails using language strings: each different e-mail is built from a different language string (or sometimes a text template). These strings/templates are written in Comcode. Composr sends out e-mails in dual format -- both [abbr="HyperText Markup Language"]HTML[/abbr] and plain text, so that people can disable HTML in their e-mail software if they wish to. Plain text versions are made by automatic tidying-up of the Comcode (i.e. making it a little more human-readable), and HTML versions are made by parsing the Comcode to HTML and then putting that HTML inside the [tt]MAIL.tpl[/tt] template (by default).
 
 Composr goes to great lengths to reduce the chance of e-mails being marked as spam, and (by default) embeds all CSS and images inside the e-mail instead of linking (so that the user does not need images enabled to see them -- most users do not as it can aid spammer tracking).
 
 Just taking one example, the [tt]MAIL_NEW_PASSWORD_TEXT[/tt] language string from the [tt]cns[/tt] language file, which is:
 [code="Comcode"]
-The password for your account (username: {4}) has successfully been changed to '{1}'. You may log back into {3} from...
-
-[url="{2}"]{2}[/url]
-
-
-If you wish to change your password to something more memorable you can do so by [url="{5}"]editing your account[/url].
+The password for your account (username: {4}) has successfully been changed to the following:\n\n[b]{1}[/b]\n\nYou may log back into {3} from...\n\n[url="{2}"]{2}[/url]\n\n\nIf you wish to change your password to something more memorable you can do so by [url="{5}"]editing your account[/url].
 [/code]
 
 You can see it is fed with various parameters, and is written in [page="_SEARCH:tut_comcode"]Comcode[/page].
 
 [box="Remember mobile devices"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
 When designing an e-mail layout, make sure it will look okay on a narrow smartphone screen in portrait mode.
+[/surround]
 [/box]
 
 [title="2"]Configuration options[/title]
 
 Configuration options warranting particular discussion are:
- - "Link to images in e-mails rather than embed" -- by default this option is disabled, and when disabled makes Composr embed all images directly within e-mails rather than remotely linking to them. This means that users will see images immediately without having to grant permission for their e-mail client to download them.
+ - "Link to images in e-mails rather than embed" -- by default this option is disabled, and when disabled makes Composr embed all images directly within e-mails rather than remotely linking to them. This means that users will see images immediately without having to grant permission for their e-mail client to download them. But it means a significant increase in the size of the e-mail.
  - "E-mail 'from' address method" -- by default this option is set to separate From and Reply-To addresses, to reduce chance of e-mails being considered fraudulent.
 
 [title="2"]Mail server overview[/title]
@@ -87,7 +84,7 @@ Possible reasons for getting onto a spamlist:[list="a"]
 [*] You have [b]bought mailing lists[/b]. Rarely if ever buy mailing lists, users will mark you as a spammer.
 [*] You have [b]annoyed your legitimate readers[/b]. If you send low-quality e-mails, such as ones that have low quality content, use too much data, use dodgy looking link redirects, or are hard to unsubscribe from, you have a higher chance of being reported as a spammer.
 [/list]
-[*] [b]Your message content appears spammy[/b], which sometimes can happen inadvertently. Very carefully check your spam folder. Spam filters typically run a complex set of calculations to detect if something is 'spam'. It could well by a domain SPF setting is wrong, and combined with Composr e-mails being more complex than some other software, that knocking it over a spam threshold. That is just one of many possibilities that should be looked into if it is indeed a spam-filtering issue.
+[*] [b]Your message content appears spammy[/b], which sometimes can happen inadvertently. Very carefully check your spam folder. Spam filters typically run a complex set of calculations to detect if something is 'spam'. It could well be a domain SPF setting is wrong, and combined with Composr e-mails being more complex than some other software, that knocking it over a spam threshold. That is just one of many possibilities that should be looked into if it is indeed a spam-filtering issue.
 Here are some scanner tools you can use:[list="a"]
 [*] [url="GlockApps"]https://glockapps.com/spam-testing/[/url]
 [*] [url="mailtester"]https://www.mail-tester.com/[/url]
@@ -96,7 +93,7 @@ Here are some scanner tools you can use:[list="a"]
 These tools will scan for various other issues beyond content problems, they're very useful.
 To send a test e-mail to a few services at once using Commandr:
 [code="Commandr"]
-:$emails = array('scanner_a@example.com', 'scanner_b@example.com', 'scanner_c@example.com', 'you@example.com'); require_code('mail'); dispatch_mail('Verifying delivery', 'This is a message being sent to verify that e-mails are being correctly delivered. Thank you.', '', $emails, null, '', '', array('bypass_queue' => true));
+:$emails = ['scanner_a@example.com', 'scanner_b@example.com', 'scanner_c@example.com', 'you@example.com']; require_code('mail'); dispatch_mail('Verifying delivery', 'This is a message being sent to verify that e-mails are being correctly delivered. Thank you.', '', $emails, null, '', '', ['bypass_queue' => true]);
 [/code]
 When previewing an outgoing newsletter (if you have the [tt]newsletters[/tt] addon installed), it automatically runs a spam check.
 Some specific things to look out for when writing your content:[list="a"]
@@ -115,7 +112,7 @@ Some specific things to look out for when writing your content:[list="a"]
 [*] The [b]Return-Path in e-mails is pointing to an incorrect or invalid e-mail account[/b], so that bounce/receipt e-mails themselves bounce. You may need to enable the "Pass website e-mail address to 'sendmail'" configuration option. You can check your e-mail by manually viewing the headers of an e-mail sent to you.
 [/list]
 [*] You have your own server and using it for SMTP but [b]your SMTP port is blocked[/b] by the webhost or ISP. Some companies do this to reduce the chance of their network being blocked for spamming. If this is the case no e-mails will be sent at all and you need to discuss the correct configuration with your webhost/ISP.
-[*] You are [b]missing an unsubscribe link[/b] on your newsletter template. It's there by default, and it is a good idea to leave it.
+[*] You are [b]missing an unsubscribe link[/b] on your newsletter or mail template. It's there by default, and it should remain there as per CAN-SPAM standards.
 [*] It's [i]unlikely[/i], but [i]it could be some host/software-specific bug[/i]. You can open a bug report if you're willing to give the developers access to run tests on your server, after you've checked it's not a spam folder, and only if you're not on a low-quality free webhost.
 [/list]
 
@@ -204,11 +201,9 @@ There are a couple of common possibilities for this:
 1) Large number of errors happening in the background
 2) Comment/forum spammers
 
-If the "Send error e-mails to the developers" option is on (and it is by default), and a lot of errors are happening in the background, up to 50 e-mails per day may be sent to the developers about these errors. You can confirm this be seeing if there are a lot of errors in the [tt]data_custom/errorlog.php[/tt] file (or Admin Zone > Audit > Low-level logging).
+If many members have e-mail notifications enabled (especially instant ones opposed to digests) and spammers are spamming comment forms / forums, that can lead to a lot of e-mail notifications going out. Enabling notification digests and potentially locking down instant e-mails from troublesome notifications will help remedy this.
 
-If many members have notifications enabled and spammers are spamming comment forms / forums, that can lead to a lot of e-mail notifications going out.
-
-You can see some of the e-mails sent from the e-mail log (Admin Zone > Audit > E-mail queue/log). Note that a few kinds of e-mail aren't included here, like error e-mails sent directly to the developers, or particularly security-sensitive e-mail.
+You can see some of the e-mails sent from the e-mail log (Admin Zone > Audit > E-mail queue/log). Note that a few kinds of e-mail aren't included here, like particularly security-sensitive or critical e-mail.
 
 [title="2"]Testing a server's mail support[/title]
 
@@ -223,14 +218,14 @@ mail('you@example.com','Test','Test');
 [title="2"]Requesting help[/title]
 
 If you are not able to get e-mail working then it is almost certainly a result of your system configuration. Someone helping would likely need to have admin access to your site, or perhaps even to the whole SMTP server you are using. Never-the-less, if you are requesting help then at least make sure you answer the following questions so they have some insight into your configuration:
-1) Are you self-hosted or are you on shared hosting?
-2) Is your server Windows or is it Linux?
+1) Are you self-hosted, on a VPS, or are you on shared hosting?
+2) Is your server Windows, Mac, or Linux?
 3) If you are on Windows: Have you properly configured the SMTP settings in the server's [tt]php.ini[/tt] file?
 4) Is Composr configured to use its own SMTP settings, or they are blank and PHP's mailer is used?
 5) If you have not configured Composr to use its own SMTP settings: Are you on a local hosted SMTP server (same server as web server), or are you or a remote relay?
 6) Have you checked your spam folder?
-7) Have you have looked at the SMTP server logs?
-8) Have you installed the [tt]better_mail[/tt] addon?
+7) Have you have looked at the server SMTP logs / queue?
+8) Have you installed the [tt]better_mail[/tt] non-bundled addon and tried that to see if your issues have been resolved?
 9) If you have configured Composr to use its own SMTP settings: Is your SMTP configuration secured via some kind of SSL?
 10) If you have configured Composr to use its own SMTP settings, and if it is SSL: What exact SSL configuration do you need to use?
 11) If you have configured Composr to use its own SMTP settings: Do you need to connect to SMTP with any special port settings?

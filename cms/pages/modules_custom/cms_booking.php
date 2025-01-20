@@ -243,6 +243,7 @@ class Module_cms_booking extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('94d9fe91eb33522797a06b25aa92d287')));
         }
 
         $fh = [];
@@ -502,6 +503,7 @@ class Module_cms_booking_supplements extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('c343af8bb50857499eae653fcf5bcb28')));
         }
 
         $fh = [];
@@ -701,6 +703,7 @@ class Module_cms_booking_blacks extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5d297a79287c5ab9bcbcb3968f71924d')));
         }
 
         $fh = [];
@@ -972,6 +975,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
         ];
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('3d7bf02566bd5e70b7c60366d798e92c')));
         }
 
         $fh = [];

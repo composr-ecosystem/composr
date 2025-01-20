@@ -74,6 +74,7 @@ function check_ticket_access(string $ticket_id) : int
         access_denied(do_lang('TICKET_OTHERS_HACK'));
     }
     log_hack_attack_and_exit('TICKET_OTHERS_HACK');
+    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8e391b250405584abd4286397a47bf85')));
 
     return $ticket_owner; // Will never get here
 }

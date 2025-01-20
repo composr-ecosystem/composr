@@ -99,11 +99,11 @@ The Composr "Cookie notice" configuration option (Admin Zone > Setup > Configura
 13) Cookies just store names and values, and never any data that a web server or normal JavaScript would not have been able to discern -- because it is the web server or browser that sets the cookie.
 14) JavaScript provides its cookie support by a virtual variable, [tt]document.cookie[/tt]. The variable can be set and read, but the process is not actually direct.
 15) A common server-side coding mistake is to set a cookie and then refer to the cookie value within the same server response -- yet the cookie would not have been activated until the response had been sent.
-16) Some web servers (including Apache) restrict cookie data length, refusing to server data if the length is exceeded.
+16) Some web servers (including Apache) restrict cookie data length, refusing to serve data if the length is exceeded.
 17) Cookie names should not contain certain special characters like '=' as these have special meanings within HTTP and there is no standard escaping mechanism for cookie names. (Unexpected bugs may happen if you attempt to set such cookies)
-18) Cookies were invented by Netscape, not by the usual standards bodies (the IETF or W3C), and definitely not by the Cookie Monster.
+18) Cookies were invented by Netscape, not by the usual standards bodies (the IETF or W3C), and definitely not by the Cookie Monster (it was a given that he would be referenced in this tutorial eventually ;)).
 19) On some web servers it is not possible to set a cookie at the same time as doing an HTTP redirect.
-20) The name 'cookie' was given for no particular reason, but is the origin of endless bad jokes.
+20) The name 'cookie' might have originated from the term 'magic cookie'. These were small pieces of exchanged information used to authorise users. Magic cookies were likely inspired by fortune cookies where the message inside is useless until you open the cookie.
 
 [concepts
  1_key="Cookie"           1_value="A piece of data stored on a users computer related to your website, and passed to your web server whenever the user access it"

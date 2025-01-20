@@ -5,7 +5,7 @@ This tutorial will explain and detail some of the fringe features of web technol
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Favicons[/title]
-
+[surround]
 [media width="179" description="The default webclipicon, viewing the multiple sizes within" float="right"]data_custom/images/docs/tut_fringe/webclipicon.png[/media]
 [media width="71" description="The default favicon, viewing the multiple sizes within" float="right"]data_custom/images/docs/tut_fringe/favicon.png[/media]
 Microsoft created a technology that allows websites to have their own little icons, that has since been adopted by all major web browsers. These icons often show up (depending on the web browser):
@@ -54,6 +54,7 @@ To add to the home screen on an iOS device:
 6) check back on the home screen
 
 Unfortunately iOS has deep caching for the webclip icons, which you cannot clear. Fortunately the default [tt]HTML_HEAD.tpl[/tt] adds a cache-busting parameter which is the file modification time of the image. You still need to remove then re-add the home icon for your site though.
+[/surround]
 
 [title="2"]Web fonts[/title]
 
@@ -72,25 +73,22 @@ Unlike a word processor, whatever is being edited is going to end up inserted in
  - If the theme font default is changed, it will sweep across all content automatically
  - You can have different fonts in different contexts. For example, perhaps e-mails should have a different font to the main website.
 
-The default Composr theme defines a font in the [tt]global.css[/tt] as follows:
-[code="CSS"]
-body, .email-body, textarea, input, td, th {
-	/* 'Open Sans' is a Google font, and only will be enabled if uncommented in HTML_HEAD.tpl -- so normally it is Segoe UI (Windows, newer version of Tahoma) or Tahoma that is active (available on Windows and Mac since Leopard) or a similar humanist sans-serif font */
-	font-family: 'Open Sans', 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
-}
-[/code]
+Fonts to use are defined per theme and can be configured in the Admin Zone > Setup > Configuration > Theme options.
 
 [title="2"]Media file compatibility[/title]
 
 [title="3"]Images[/title]
 
-The advice here is simple: use PNG, JPEG, GIF, or SVG formats, but never other formats, such as BMP. Remember that renaming a file is not akin to changing its format: the file internally must actually be in the format its file extension specifies.
+The advice here is simple: use common lossy formats such as PNG, JPEG, WebP, or GIF, but never or rarely other formats, such as BMP or SVG. Remember that renaming a file is not akin to changing its format: the file internally must actually be in the format its file extension specifies.
 
-Usually you should always use PNG.
-There are three exceptional cases though:
-1) If you need animation, use GIF (soon will be able to do animation using [url="APNG"]http://caniuse.com/#feat=apng[/url] though)
-2) If you do not need transparency, and don't mind some quality loss, use JPEG
-3) If you have vector art (saves images as lines instead of pixels), use SVG
+Usually you should use PNG or WebP as they provide the widest compatibility and highest ratio of compression to quality.
+
+There are a few exceptional cases though:
+1) PNG does not support animations, but you can use [url="APNG"]http://caniuse.com/#feat=apng[/url] instead if you do not want to use other formats
+2) Use GIF for animated images with a low color count if you want a smaller file size
+3) Use JPEG for photographs and complex images if you do not need animations or transparency, do not mind some quality loss, and want a smaller file size
+4) Use SVG for vector art within themes (you should not use SVG anywhere else in Composr, such as attachments, uploads, or embedded images, because Content Security Policy might block them; SVGs are special XML which can be abused by hackers)
+5) Do not use WebP if you need Composr to process lossy or lossless specific operations; since Composr cannot easily detect if WebP is lossy or lossless, it will skip checks for such (e.g. [tt]is_image[/tt]). Use another format like PNG instead.
 
 [title="3"]Sound and Video[/title]
 
@@ -99,6 +97,8 @@ Sound and video formats are an area of extreme complexity unfortunately, as is t
 Unlike for most file types, video files cannot be identified fully be file extension. The file extensions identifies the 'container format' (such as MPEG or AVI) but not the 'codec' used for the video data and which codec was used for the sound data. Codecs are often proprietary, e.g. tied to Windows, and they often aren't installed on user's computers. Some codecs and container formats require specific software, as vendors such as Microsoft, Apple and Real tend to lock each others formats out, as they battle for supremacy.
 
 Our practical advice is to always use h.264/mp3, which has worked on all major browsers for a number of years. HTML5 natively supports h.264 video. Use an mp4 container format for video. Composr includes an integrated HTML5 player.
+
+An emerging video format, [url="WebM"]http://caniuse.com/#feat=webm[/url], can also be used, but is not yet widely supported.
 
 [title="4"]MPEG[/title]
 
@@ -115,7 +115,7 @@ The clear points of confusion are:
 1) mp3 is an audio codec, not "MPEG-3". The '3' comes from 'part 3', not the overall MPEG number. [i]MPEG-3[/i] doesn't exist to avoid confusion.
 2) mp4 is the MPEG-4 container format, but that doesn't mean you should put what is typically referred to as MPEG-4 video in it (because that's not web-safe, only h.264 is).
 
-For web-safe videos you need to use either the aac or mp3 audio codec, the h.264 video codec, and the mp4 container format.
+For web-safe videos you need to use either the aac or mp3 audio codec, the h.264 video codec, and the mp4 container format. You could also use the VP8 or VP9 video codec (designed by Google rather than MPEG), but these are not yet widely supported.
 
 [title="2"]The custom graphics block (advanced)[/title]
 
@@ -161,16 +161,15 @@ You have probably spotted that all these examples are using a new block, [tt]mai
 
 You may wish to set up profiles on popular social media sites, such as:
  - Facebook
- - Twitter
+ - X (Formerly Twitter)
  - YouTube
  - Pinterest
  - LinkedIn
+ - BlueSky
 
 You may also wish to have a presence on question and answer sites, such as:
  - Quora
  - Stack Exchange
-
-We have built a spreadsheet [url="tracking how Composr can integrate"]https://docs.google.com/spreadsheets/d/1_yaJeGzDIsxq33I7Wg9I-lTBDk3YS22WPBwJ971v5tI/[/url] with different 3rd party websites.
 
 [concepts
  1_key="SVG"       1_value="Scalable Vector Graphics, a file format for storing vector images (line-based images, as opposed to pixel-based images)."

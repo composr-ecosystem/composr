@@ -280,6 +280,7 @@ class Module_admin_errorlog
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0c3b29666050550c8e314f6f5b648272')));
         }
         if ($sort_order == 'DESC') {
             $stuff = array_reverse($stuff);

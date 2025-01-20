@@ -21,13 +21,15 @@ And the following special ones:
  - {$IS_MAINTAINED,import_html_site,HTML website importer}
  - {$IS_MAINTAINED,import_cms_merge,Merge from another copy of the latest version of Composr}
 
+Support for other versions and software can be implemented by a [page=":partners"]Composr partner[/page] or other developer; this is not officially-maintained functionality by the core developers.
+
 [title="3"]Data format importing[/title]
 
 We try and support import of neutral data formats into Composr. For example, [abbr="Comma-Separated-Values"]CSV[/abbr] spreadsheet files, or importing all the downloads in a directory. These features may help ease a transition and are linked from the importers list also (as shortcuts). Neutral formats are an important part of our approach because having an importer for everything is clearly not viable.
 
 [title="3"]Getting a new importer written for you[/title]
 
-New importers can be written. It costs around $1000 to develop an importer, but obviously the cost is highly dependent on the software involved. Importers can be developed by any skilled PHP developer (instructions are in the Code Book). A developer quoting to write an importer would probably not be quoting to do a full site conversion -- make sure you are clear in what you ask for.
+New importers can be written by the community (they are not officially supported or maintained by the core developer team). The cost is highly dependent on the software involved and the developer you hire. Importers can be developed by any skilled PHP developer (instructions are in the Code Book). A developer quoting to write an importer would probably not be quoting to do a full site conversion -- make sure you are clear in what you ask for.
 
 [title="2"]Memory limits[/title]
 
@@ -36,14 +38,14 @@ Importers may use a lot of memory in order to transfer large amounts of data, so
 [title="2"]Using importers[/title]
 
 [surround]
+[media_set]
 [media width="150" description="A configuration file may be required. This screen-shot illustrates what they are and where they tend to be." float="left"]data_custom/images/docs/tut_importer/importer_target_config_file.png[/media]
 [media width="150" description="Choosing an importer session" float="left"]data_custom/images/docs/tut_importer/importer_session.png[/media]
 [media width="150" description="The list of importers" float="left"]data_custom/images/docs/tut_importer/importer_choose.png[/media]
 [media width="150" description="Import setup" float="left"]data_custom/images/docs/tut_importer/importer_options.png[/media]
 [media width="150" description="Import choice of import actions" float="left"]data_custom/images/docs/tut_importer/importer_options2.png[/media]
-[/surround]
+[/media_set]
 
-[surround]
 When you have chosen a product to import from, Composr will ask you for some details. Importers work by connecting to the database of the product being imported. In addition, some require the presence of a configuration file for the product at an accessible path on your server, and will auto-detect database settings from this file. It is recommended that you leave your old site installed and running, although perhaps at a moved location, so that the importer can find all the associated files that it may want to import.
 
 It is [b]strongly recommended[/b] that you backup your site files and database before running an importer, in case the importer fails in some way (perhaps an incomplete, or unsatisfactory import, or duplication of data by a poorly written third-party importer).
@@ -198,7 +200,7 @@ However, it is advisable to keep the directory, database, and import session, ar
 
 [title="2"]Additional help[/title]
 
-As importing may not always go smoothly, you may want to arrange to have a professional developer help with the process. If you run a website that you are able to justify temporarily hiring us, you may wish to contact a developer before import, so that someone can be prepared to assist, or perform the whole process themselves.
+As importing may not always go smoothly, you may want to arrange to have a [page=":partners"]professional developer[/page] help with the process. You may wish to contact a developer before import, so that someone can be prepared to assist, or perform the whole process themselves.
 
 [title="2"]See also[/title]
 

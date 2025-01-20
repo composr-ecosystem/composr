@@ -66,16 +66,16 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>User submittable</p>
 			</td>
 			<td>
-				<p>Not really</p>
+				<p>Not advised</p>
+			</td>
+			<td>
+				<p>Yes (as blogs)</p>
 			</td>
 			<td>
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>Yes</p>
-			</td>
-			<td>
-				<p>Yes</p>
+				<p>Yes (as posts)</p>
 			</td>
 			<td>
 				<p>Yes</p>
@@ -98,7 +98,7 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>No</p>
+				<p>Yes (posts only)</p>
 			</td>
 			<td>
 				<p>Yes</p>
@@ -161,10 +161,10 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>Moderately</p>
+				<p>Mostly</p>
 			</td>
 			<td>
-				<p>No</p>
+				<p>Somewhat (e.g. field type validation)</p>
 			</td>
 			<td>
 				<p>No</p>
@@ -179,13 +179,13 @@ Downloads may be used to release information indirectly, essentially via storing
 		</tr>
 		<tr class="zebra-1">
 			<td>
-				<p>Regularly browsed</p>
+				<p><abbr title="In most cases, you can convey that content regularly changes by displaying a last edited date">Regularly browsed</abbr></p>
 			</td>
 			<td>
 				<p>No</p>
 			</td>
 			<td>
-				<p>Moderately</p>
+				<p>Somewhat</p>
 			</td>
 			<td>
 				<p>No</p>
@@ -197,7 +197,7 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>No</p>
+				<p>No (except when using the "New version" feature)</p>
 			</td>
 		</tr>
 		<tr class="zebra-0">
@@ -205,7 +205,7 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Structured data</p>
 			</td>
 			<td>
-				<p>No, unless you use Custom Comcode tags for this</p>
+				<p>Somewhat (Comcode tags and Comcode page children)</p>
 			</td>
 			<td>
 				<p>No</p>
@@ -214,14 +214,13 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>No</p>
+				<p>Somewhat (tree structure to organise data)</p>
 			</td>
 			<td>
-				<p>Moderately (via Post Templates)</p>
+				<p>Somewhat (Post Templates)</p>
 			</td>
 			<td>
-				<p>Any file type can be presented for
-				download.</p>
+				<p>Yes (e.g. spreadsheets, CSV files, SQLite files)</p>
 			</td>
 		</tr>
 		<tr class="zebra-1">
@@ -235,7 +234,7 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>Yes</p>
 			</td>
 			<td>
-				<p>No</p>
+				<p>Can be (expiring catalogue entries)</p>
 			</td>
 			<td>
 				<p>No</p>
@@ -255,16 +254,16 @@ Downloads may be used to release information indirectly, essentially via storing
 				<p>No</p>
 			</td>
 			<td>
-				<p>No (and you wouldn't!)</p>
+				<p>No</p>
 			</td>
 			<td>
 				<p>No</p>
 			</td>
 			<td>
-				<p>Yes</p>
+				<p>Somewhat</p>
 			</td>
 			<td>
-				<p>Yes, very!</p>
+				<p>Yes</p>
 			</td>
 			<td>
 				<p>No</p>

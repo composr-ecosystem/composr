@@ -397,9 +397,11 @@ In Composr by default there are the following 'kinds' of 'product':
 Only the products you want will be available.
 When a member buys something, the staff are informed of it via e-mail of appropriate details.
 
+[media_set]
 [media width="150" description="Configuring products" float="right"]data_custom/images/docs/tut_ecommerce/purchasing_products_config.png[/media]
 [media width="150" description="Configuring prices" float="right"]data_custom/images/docs/tut_ecommerce/purchasing_products_prices.png[/media]
 [media width="150" description="The purchasing module" float="right"]data_custom/images/docs/tut_ecommerce/purchasing_products.png[/media]
+[/media_set]
 Product kinds fit into the following general categories:
  - [b]One-off purchase[/b]: purchases made from the [tt]purchase[/tt] module ([tt]site:purchase[/tt] page-link, Content > Purchasing on the default menus) (above: e-mail addresses, topic pinning, name highlighting, banners, custom products, permission products, gambling)
  - [b]Subscription[/b]: one-off purchases made from the [tt]purchase[/tt] module ([tt]site:purchase[/tt] page-link, Content > Purchasing on the default menus) and managed from the [tt]subscriptions[/tt] module ([tt]site:subscriptions[/tt] page-link, linked from member accounts) (above: usergroup subscriptions)
@@ -485,11 +487,12 @@ You can configure the maximum file size for sent files. Files above this size wi
 Externally hosted files will also be omitted.
 
 [title="3"]Custom products[/title]
-
+[surround]
 [media width="150" description="Configuring custom products via the inventory management screen" float="right"]data_custom/images/docs/tut_ecommerce/inventory_custom.png[/media]
 Staff set up custom products by description and price, then members may buy them. Staff then must manually dispatch the custom product, whatever it is.
 This is done via the inventory management screen at:
 Admin Zone > Setup > eCommerce inventory management
+[/surround]
 
 [title="3"]E-mail accounts (advanced)[/title]
 
@@ -549,19 +552,23 @@ The queue is accessed via the Staff Checklist on the Admin Zone dashboard. Note 
 
 Messages may be manually added in the Admin Zone (a link is on the dashboard checklist), but regular users will be purchasing them. When that happens, you are notified of the new message have been added.
 
+[media_set]
 [media width="150" description="Managing community billboard messages in the queue" float="left"]data_custom/images/docs/tut_ecommerce/community_billboard_manage.png[/media]
 [media width="150" description="Adding a community billboard message from the Admin Zone" float="left"]data_custom/images/docs/tut_ecommerce/community_billboard_add.png[/media]
 [media width="150" description="Configuring the default community billboard message" float="left"]data_custom/images/docs/tut_ecommerce/default_community_billboard.png[/media]
 [media width="150" description="The community billboard message could be shown in the footer" float="left"]data_custom/images/docs/tut_ecommerce/community_billboard_actual.png[/media]
+[/media_set]
 [/surround]
 
 [title="2"]Subscription products[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Adding a capability for a usergroup subscription" float="right"]data_custom/images/docs/tut_ecommerce/ecommerce_subscription.png[/media]
 [media width="150" description="A link to the payment gateway to purchase." float="right"]data_custom/images/docs/tut_ecommerce/upgrade_3.png[/media]
 [media width="150" description="The description of the usergroup subscription is shown. You'd normally put a more extensive description here, explaining why someone should upgrade." float="right"]data_custom/images/docs/tut_ecommerce/upgrade_2.png[/media]
 [media width="150" description="Link to upgrade via a usergroup subscription." float="right"]data_custom/images/docs/tut_ecommerce/upgrade.png[/media]
+[/media_set]
 Currently, subscriptions do not support shipping fees and therefore cannot be used for physical products requiring shipping.
 
 Usergroup subscriptions are implemented on top of subscriptions.

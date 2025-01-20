@@ -6,7 +6,7 @@ The tutorial isn't ordered in any particular way -- it is a series of separate p
 
 [contents]decimal,lower-alpha[/contents]
 
-[title="2"]Controlling the flow through add screens)[/title]
+[title="2"]Controlling the flow through add screens[/title]
 
 You may want to provide a link to an add screen then redirect the user somewhere else after they've finished. i.e. don't show them the default "what would you like to do next?" screen, send them somewhere specific.
 

@@ -117,7 +117,7 @@ function handle_permission_check_logging(int $member_id, string $op, array $para
 
 /**
  * Show a helpful access-denied page. Has a login ability if it senses that logging in could curtail the error.
- * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). Using warn_exit with INTERNAL_ERROR is for those situations, or log_hack_attack_and_exit.
+ * Note that this function should only be used for cases where access is being denied based on credentials, not for when access is blocked for other reasons (such as to enforce flow security). Using warn_exit with INTERNAL_ERROR is for those situations, or log_hack_attack_and_exit + warn_exit.
  *
  * @param  ID_TEXT $class The class of error (e.g. PRIVILEGE). This is a language string codename.
  * @param  string $param The parameter given to the error message

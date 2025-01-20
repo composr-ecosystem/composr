@@ -3,7 +3,6 @@
 /data/ace/*
 /data/ckeditor/*
 /data/polyfills/*
-/docs/api-template/*
 /exports/*
 /mobiquo/smartbanner/appbanner.js
 /mobiquo/tapatalkdetect.js

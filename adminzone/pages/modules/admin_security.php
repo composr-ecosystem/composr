@@ -237,6 +237,7 @@ class Module_admin_security
         list($_sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($_sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('72c3c2beee885d2fafd97b8581f537e5')));
         }
 
         // Prepare Filtercode
