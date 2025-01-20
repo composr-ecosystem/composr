@@ -127,6 +127,7 @@ class Module_api
         // Get all available classes (directories)
         $api_path = get_file_base() . '/data_custom/modules/api';
         $directories = get_directory_contents($api_path, '', IGNORE_ACCESS_CONTROLLERS, false, false);
+        sort($directories);
 
         $rows = new Tempcode();
         foreach ($directories as $i => $directory) {
@@ -207,6 +208,8 @@ class Module_api
         $header_row = results_header_row([do_lang_tempcode('NAME')]);
 
         $functions = get_directory_contents($api_path . '/' . $class, '', IGNORE_ACCESS_CONTROLLERS, false, true, ['bin']);
+        sort($functions);
+
         $rows = new Tempcode();
         foreach ($functions as $i => $function) {
             if ($function == '___class_definitions.bin') {
