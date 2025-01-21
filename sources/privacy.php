@@ -543,7 +543,7 @@ abstract class Hook_privacy_base
 
         // Anonymise additional fields
         $additional_anonymise_fields = $table_details['additional_anonymise_fields'];
-        $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
+        $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username);
         foreach ($additional_anonymise_fields as $additional_anonymise_field) {
             if (($is_owner) && ($reverse_logic_return)) { // Nothing to anonymise if the owner is downloading their own data
                 break;
@@ -705,10 +705,9 @@ abstract class Hook_privacy_base
      * @param  array $row The raw database row
      * @param  ?MEMBER $member_id The given member ID in search criteria (null: not provided)
      * @param  string $username The given username in search criteria (blank: not provided)
-     * @param  string $email_address The given email address in search criteria (blank: not provided)
      * @return boolean Whether we are confident this individual owns this content
      */
-    public function is_owner(string $table_name, array $table_details, array $row, ?int $member_id, string $username, string $email_address) : bool
+    public function is_owner(string $table_name, array $table_details, array $row, ?int $member_id, string $username) : bool
     {
         $this->modify_table_details($table_name, $table_details, $row, 'is_owner');
 
@@ -727,17 +726,11 @@ abstract class Hook_privacy_base
             return true;
         }
 
-        // If no owner ID field, exactly one e-mail field, and e-mail provided matches that field, they are owner (this would always fail for serialized e-mail fields, as it should)
-        if (($table_details['owner_id_field'] === null) && (count($table_details['email_fields']) == 1) && ($email_address != '') && ($row[$table_details['email_fields'][0]] == $email_address)) {
-            return true;
-        }
-
         // If any unique criteria match a database field that is a key, then consider them owner
         $metadata = $this->get_field_metadata($table_name);
         $criteria = [
             'additional_member_id_fields' => $member_id,
             'username_fields' => $username,
-            'email_fields' => $email_address,
         ];
         foreach ($criteria as $field_name => $input) {
             if (($input === null) || ($input == '')) {

@@ -76,13 +76,13 @@ class Hook_privacy_mentorr extends Hook_privacy_base
      * @param  string $email_address The given email address in search criteria (blank: not provided)
      * @return boolean Whether we are confident this individual owns this content
      */
-    public function is_owner(string $table_name, array $table_details, array $row, ?int $member_id, string $username, string $email_address) : bool
+    public function is_owner(string $table_name, array $table_details, array $row, ?int $member_id, string $username) : bool
     {
         if ($table_name != 'members_mentors') {
-            return parent::is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
+            return parent::is_owner($table_name, $table_details, $row, $member_id, $username);
         }
 
-        $is_owner_1 = parent::is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
+        $is_owner_1 = parent::is_owner($table_name, $table_details, $row, $member_id, $username);
         if ($is_owner_1) {
             return true;
         }

@@ -135,7 +135,7 @@ class Hook_privacy_catalogues extends Hook_privacy_base
                 require_code('catalogues2');
 
                 // Owner of a field is the same as owner of the entry
-                $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address);
+                $is_owner = $this->is_owner($table_name, $table_details, $row, $member_id, $username);
 
                 $fields = get_catalogue_entry_field_values($row['c_name'], $row);
                 $new_fields = [];

@@ -146,7 +146,7 @@ class Hook_task_privacy_purge
 
                 case PRIVACY_METHOD__DELETE:
                     // Delete is only allowed on records which the individual owns; else, anonymise
-                    if ($hook_ob->is_owner($table_name, $table_details, $row, $member_id, $username, $email_address)) {
+                    if ($hook_ob->is_owner($table_name, $table_details, $row, $member_id, $username)) {
                         $hook_ob->delete($table_name, $table_details, $row);
                     } else {
                         $hook_ob->anonymise($table_name, $table_details, $row, $username, $ip_addresses, $member_id, $email_address, $others);
