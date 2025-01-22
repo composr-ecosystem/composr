@@ -125,68 +125,23 @@ function endpoint_script()
             $authorized = false;
             $member = null;
 
-            // Try member authorization (member, staff, or super_admin types)
-            if (!empty(array_intersect(['member', 'staff', 'super_admin'], $info['authorization']))) {
-                if (!@cms_empty_safe($_SERVER['PHP_AUTH_USER']) && !@cms_empty_safe($_SERVER['PHP_AUTH_PW'])) {
-                    $login_array = $GLOBALS['FORUM_DRIVER']->authorise_login($_SERVER['PHP_AUTH_USER'], null, $_SERVER['PHP_AUTH_PW']);
-                    $member = $login_array['id'];
-                    if ($member !== null) {
-                        if (in_array('member', $info['authorization'])) {
-                            $authorized = true;
-                        } elseif (in_array('staff', $info['authorization'])) {
-                            $authorized = $GLOBALS['FORUM_DRIVER']->is_staff($member);
-                        } elseif (in_array('super_admin', $info['authorization'])) {
-                            $authorized = $GLOBALS['FORUM_DRIVER']->is_super_admin($member);
-                        }
-                    }
+            $auth_hooks = find_all_hook_obs('systems', 'endpoint_authorization', 'Hook_endpoint_authorization_');
+            foreach ($auth_hooks as $auth_hook => $auth_hook_ob) {
+                $member = null; // Reset our pass by reference between each hook
+                $authorized = $auth_hook_ob->run($info['authorization'], $member, $hook_type, $hook, $type, $id);
+                if ($authorized === true) {
+                    break; // No need to proceed if we have a matched authorisation
                 }
             }
 
-            // Try maintenance password authorization (maintenance_password type)
-            if ((!$authorized) && in_array('maintenance_password', $info['authorization']) && (preg_match('#^Basic #', $_SERVER['HTTP_AUTHORIZATION']) != 0)) {
-                $password_given = base64_decode(substr($_SERVER['HTTP_AUTHORIZATION'], 6));
-                if (strpos($password_given, STRING_MAGIC_NULL_BASE64) === 0) { // Strip STRING_MAGIC_NULL_BASE64 if it exists
-                    $password_given = substr($password_given, (strlen(STRING_MAGIC_NULL_BASE64) + 1)); //+1 because of the colon after STRING_MAGIC_NULL_BASE64
-                }
-                require_code('crypt_maintenance');
-                if (check_maintenance_password($password_given, true)) {
-                    $authorized = true;
-                    require_code('users_active_actions');
-                    $member = get_first_admin_user();
-                }
-            }
-
-            // Try session authorization via the keep_session parameter (note we do not validate IP address; these endpoints might be called internally)
-            if ((!$authorized) && in_array('keep_session', $info['authorization'])) {
-                global $SESSION_CACHE;
-                $session = get_param_string('keep_session');
-                $member_row = null;
-                if (
-                    ($session != '') &&
-                    ($SESSION_CACHE !== null) &&
-                    (array_key_exists($session, $SESSION_CACHE)) &&
-                    ($SESSION_CACHE[$session] !== null) &&
-                    (array_key_exists('member_id', $SESSION_CACHE[$session])) &&
-                    ($SESSION_CACHE[$session]['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
-                ) {
-                    $member_row = $SESSION_CACHE[$session];
-                }
-
-                if ($member_row !== null) { // We have a matching session
-                    $member = $member_row['member_id'];
-                    if (is_guest($member)) { // Nope, guests are not considered authorized!
-                        $member = null;
-                    } else {
-                        $authorized = true;
-                    }
-                }
-            }
-
-            if (($authorized) && ($member !== null)) {
+            // Create a session if we authorised to a member
+            if (($authorized === true) && ($member !== null)) {
                 require_code('users_inactive_occasionals');
                 create_session($member);
-            } else {
-                // Log access denied
+            }
+
+            // Log and throw access denied if we did not get authorised
+            if ($authorized === false) {
                 $_log_file = get_custom_file_base() . '/data_custom/endpoints.log';
                 if (is_file($_log_file)) {
                     require_code('files');
@@ -197,7 +152,7 @@ function endpoint_script()
                     fclose($log_file);
                 }
 
-                access_denied('ACCESS_DENIED', 'REST endpoint ' . $rest_path);
+                access_denied('ACCESS_DENIED', 'Endpoint ' . $rest_path);
             }
         }
 
