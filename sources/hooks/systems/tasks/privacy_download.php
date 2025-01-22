@@ -98,7 +98,7 @@ class Hook_task_privacy_download
                             $rows = $db->query('SELECT * FROM ' . $db->get_table_prefix() . $table_name . $selection_sql, $max, $start);
 
                             foreach ($rows as $_row) {
-                                if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username, $email_address)) {
+                                if (!$hook_ob->is_owner($table_name, $table_details, $_row, $member_id, $username)) {
                                     // For records the member does not own, anonymise data not belonging to them, and do not proceed further to getting files
                                     $row = $hook_ob->anonymise($table_name, $table_details, $_row, $username, $ip_addresses, $member_id, $email_address, $others, true);
                                     $serialised = $hook_ob->serialise($table_name, $row);

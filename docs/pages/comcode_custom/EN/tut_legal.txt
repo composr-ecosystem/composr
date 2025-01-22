@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Legal and social responsibilities[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Legal and social responsibilities[/title]
 
 [media width="350" description="" float="right"]data_custom/images/docs/tut_legal/image.png[/media]
 If you are running a website, in particular a large or corporate website, there are important legal and social issues that need to be understood, and procedures or rules need to be put in place.
@@ -17,6 +17,8 @@ It is inevitable that some members will break the rules, maliciously or accident
 Rules can also be the place where you define your Terms of Service.
 
 Composr provides a number of default rules pages that can be chosen using the Setup Wizard, or when creating a new Comcode page from a page template. The rules page is linked into your menus, and is displayed for enforced agreement when a member joins the site. This page can be edited like any Composr Comcode page.
+
+You can also run the Commandr command [tt]:set_value('use_tos', '1');[/tt] if you want Composr to use the language "Terms of Service" instead of "rules". This happens automatically if you choose the "Corporate Terms of Service" rules template in the Setup Wizard.
 [/surround]
 
 [title="2"]Privacy[/title]
@@ -179,6 +181,16 @@ However, even with all this, there are 3/4 million (at the time of writing) line
 If a vulnerability is found, the developers [page="_SEARCH:tut_software_feedback"]would like to know about it[/page], and will deal with it promptly and responsibly, for the sake of all our users.
 
 It is also possible that miscreants will attempt to use your website as a vehicle for mischief directed at others. There are not many ways to do this, and we know of no ways to cause serious abuses, but you should keep it in mind that it may be possible, and consider adding a disclaimer into your legal page for it.
+
+[title="2"]Adult material[/title]
+
+If you plan to host adult material on your website, you may be subject to laws and restrictions by your government which you must comply. Some governments may have a very open approach to online adult material, others may require that you block such material from children, and others ban such material completely under all circumstances.
+
+The definition of "adult material" may also vary depending on your location. Generally, it includes all sexual or sexually provocative material. Depending on location, it may also include non-sexual "simple nudity" or exposure. Or it could even include those wearing clothing of a sexually provocative nature regardless of exposure. It is important to check with your local laws on this and on what they require.
+
+The rules governing what you must do if you host such content also vary. A lot of the time, you will be required to block access to such material from those who are not of legal age or have not proven themselves (e.g. providing government-issued identification) as legal age. You can easily control access to such content using a custom "adult" usergroup, and denying view access to relevant categories and content to everyone except those in the adult usergroup.
+
+Make sure that if you are collecting information to verify someone as legal of age for access to adult material, you include a section in your Privacy Policy about what you do with that information and how long you retain it.
 
 [title="2"]Social[/title]
 

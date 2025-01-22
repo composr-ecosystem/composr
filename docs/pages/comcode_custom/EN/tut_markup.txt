@@ -68,6 +68,10 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>It is advised to set this up to reduce spam and fraud.</td>
 		</tr>
 		<tr>
+			<td>[abbr="Domain-based Message Authentication, Reporting, and Conformance"][url="https://mxtoolbox.com/dmarc/details/what-is-dmarc"]DMARC[/url][/abbr]</td>
+			<td>This protocol defines what should happen if an e-mail fails SPF or DKIM.</td>
+			<td>You don't need to know about this unless you want to define special behaviour for e-mails which fail DKIM or SPF validation.</td>
+		<tr>
 			<td>OAuth</td>
 			<td>A protocol allowing your website to authenticate itself to act as a user on a target website.</td>
 			<td>OAuth is used for creating some API connections.</td>
@@ -104,7 +108,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>PHP</td>
 			<td>This is the programming language Composr is written in.</td>
-			<td>Knowledge of PHP is only required if changing core Composr code.</td>
+			<td>Knowledge of PHP is only required if changing core Composr code or developing addons.</td>
 		</tr>
 		<tr>
 			<td>JavaScript (aka [url="https://ecma-international.org/publications-and-standards/standards/ecma-262/"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
@@ -119,12 +123,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>[abbr="Scalable Vector Graphics"][url="http://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>
 			<td>Vector graphics standard, used for icons and drawing statistics graphs.</td>
-			<td>You are unlikely to need any awareness of this.</td>
+			<td>You are unlikely to need any awareness of this aside from the fact CSP may block your ability to render SVGs as embedded images.</td>
 		</tr>
 		<tr>
 			<td>[url="https://developers.google.com/search/docs/crawling-indexing/robots/robots_txt"]robots.txt[/url]</td>
 			<td>Robots exclusion standard. Google's version of the specification is the most accurate to what search engines now support. We also use the [tt]X-Robots-Tag[/tt] header.</td>
-			<td>Knowing this may be important for [abbr="Search Engine Optimisation"]SEO[/abbr].</td>
+			<td>Knowing this may be important for [abbr="Search Engine Optimisation"]SEO[/abbr] and for [abbr="Note that this is a specification; bots do not always respect it"]specifying how bots should access your site[/abbr].</td>
 		</tr>
 		<tr>
 			<td>[url="https://developers.google.com/search/docs/crawling-indexing/robots-meta-tag"]Robots meta tag and X-Robots-Tag HTTP header[/url]</td>
@@ -187,7 +191,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		<tr>
 			<td>[abbr="JavaScript Object Notation"][url="http://www.json.org/"]JSON[/url][/abbr]</td>
 			<td>This is a popular alternative to XML and is commonly used for web APIs between servers or between servers and web browsers.</td>
-			<td>You won't need to know JSON.</td>
+			<td>Composr uses JSON in a few niche locations such as eCommerce tax tracking, telemetry, and [tt]data/endpoint.php/[/tt] API endpoints; otherwise you will not need to know JSON.</td>
 		</tr>
 		<tr>
 			<td>[abbr="Structured Query Language"][url="http://en.wikipedia.org/wiki/Sql"]SQL[/url][/abbr]</td>
@@ -266,12 +270,16 @@ Composr itself provides the following protocols and languages...
 
 	<tbody>
 		<tr>
-			<td>Tempcode</td>
+			<td>[page="_SEARCH:tut_tempcode"]Tempcode[/page]</td>
 			<td>This is Composr's template technology (Composr combines data with XHTML templates in order to construct XHTML web pages).</td>
 		</tr>
 		<tr>
-			<td>Comcode</td>
+			<td>[page="_SEARCH:tut_comcode"]Comcode[/page]</td>
 			<td>This is Composr's easy-to-use content language (lumps of text are written in this, and there are optional ways of encoding sophisticated behaviours; it compiles to more complex XHTML/CSS/JavaScript, via templates).</td>
+		</tr>
+		<tr>
+			<td>Chatcode</td>
+			<td>A sub-set of Comcode for use in chat rooms (e.g. to start new chat rooms automatically with people you mention).</td>
 		</tr>
 		<tr>
 			<td>Dublin Core extensions</td>
@@ -434,7 +442,7 @@ Now, some HTML elements...
 				<p><kbd>&lt;div&gt;</kbd></p>
 			</td>
 			<td>
-				<p>Defines a document section. (See CSS section
+				<p>Defines a document container. (See CSS section
 				below.)</p>
 			</td>
 		</tr>
@@ -443,7 +451,7 @@ Now, some HTML elements...
 				<p><kbd>&lt;em&gt;</kbd></p>
 			</td>
 			<td>
-				<p>Adds emphasis to the text it surrounds.</p>
+				<p>Adds emphasis to the text it surrounds (usually rendered in italics).</p>
 			</td>
 		</tr>
 		<tr class="zebra-0">
@@ -478,6 +486,7 @@ Now, some HTML elements...
 				is the most important (you should have one of these at the
 				beginning of your page, quoting your page title), <kbd>&lt;h6&gt;</kbd>
 				is the least important.</p>
+				<p>You must follow logical process when using headings (do not use headings for text formatting); you cannot have an <kbd>&lt;h3&gt;</kbd> heading without first having an <kbd>&lt;h2&gt;</kbd> heading. And the <kbd>&lt;h3&gt;</kbd> heading / section must be a sub-set of the <kbd>&lt;h2&gt;</kbd> heading / section in terms of context.
 			</td>
 		</tr>
 		<tr class="zebra-1">

@@ -99,7 +99,7 @@ Take note:
 
 [title="3"]Core APIs[/title]
 
-All the Composr APIs are [url="{$BRAND_BASE_URL}/docs/api/"]documented online[/url] and visible via the PHP-doc comments. If you need to look up the purpose/usage of a function the easiest way is to do a file search from your code editor for "[tt]function <function-name>[/tt]", so you can jump to the PHP-doc comment for it.
+All the Composr APIs are [url="{$BRAND_BASE_URL}/docs/api.htm"]documented online[/url] and visible via the PHP-doc comments. If you need to look up the purpose/usage of a function the easiest way is to do a file search from your code editor for "[tt]function <function-name>[/tt]", so you can jump to the PHP-doc comment for it.
 
 Note that as a general rule, you shouldn't be using any function/method that begins [tt]_[/tt]. This indicates a private/helper function.
 
@@ -154,6 +154,11 @@ The following are the core Composr APIs (green is used to indicate the most impo
 | [color="green"]Configuration[/color]
 | [tt]sources/config.php[/tt]
 | Pre-loaded and available in global scope
+|-
+| Cryptographic security and obfuscation
+| [tt]sources/crypt.php[/tt]
+| [tt]sources/crypt_maintenance.php[/tt] (used specifically by maintenance scripts)
+| Needs [tt]require_code[/tt].
 |-
 | Encryption
 | [tt]sources/encryption.php[/tt]

@@ -33,7 +33,7 @@ Users that were not created during installation will need to join your site befo
 
 To join, users will have to agree to your rules, which are actually the same as those defined in your [tt]:_rules[/tt] Comcode page. In other words, to edit your rules, you need to edit this page. Once the rules are agreed to, they get a form to fill in with various details; for information on how to require additional details at joining, see the [page="_SEARCH:tut_adv_members"]Advanced Composr member system[/page] tutorial.
 
-The form includes, if enabled in the configuration, a security image ([concept]CAPTCHA[/concept]) that they must enter a numeric code from. There is also an audio equivalent to the image. Users with special needs might have difficulty with CAPTCHA: therefore you may, on occasion, need to add a member manually from the Admin Zone, and give them the details personally. The purpose of CAPTCHA is to prevent 'bots' (computer programs usually designed to wreak some form of havoc) from joining your site and abusing it.
+The form includes, if enabled in the configuration, a security image ([concept]CAPTCHA[/concept]) that they must enter a code from. There is also an audio equivalent to the image. Users with special needs might have difficulty with CAPTCHA: therefore you may, on occasion, need to add a member manually from the Admin Zone, and give them the details personally. The purpose of CAPTCHA is to prevent 'bots' (computer programs usually designed to wreak some form of havoc) from joining your site and abusing it.
 
 There are a number of constraints on how fields may be filled in, and some of these are configurable from the main Admin Zone Configuration. For example, special characters are not allowed in usernames, and by default, any e-mail address may only be used for one account.
 
@@ -85,6 +85,7 @@ The most common situations where it is convenient to pre-join a member are:
  - if you want to add a member to the site before directing them to it, so that you don't have to make them go through the process themselves, or so that you can properly control or quickly set all their details, such as username and usergroup.
  - if you want to add a member to the site before directing them to it, so that you can assign things to them before they reach the site (such as points).
  - if the member encountered a problem during the joining process, possibly due to a difficulty with the image confirmation code (some Internet service providers do not properly assign IP addresses to users that are stable for any significant length of time, such as AOL: this can cause problems with the storage and later retrieval/processing of the image confirmation code)
+[/surround]
 
 [title="3"]Other kinds of membership[/title]
 
@@ -95,7 +96,6 @@ Composr can also support automatic member joining via LDAP and http-auth. For mo
 Log in is normally done by username.
 
 However, if the "Restrict to one member per e-mail address" configuration option (Admin Zone > Setup > Configuration > User/usergroup options > Joining) is not set to "No" then members will be able to log in with e-mail address also (because Composr knows that this will be a unique key for the user also).
-[/surround]
 
 [title="2"]Profiles[/title]
 
@@ -176,10 +176,10 @@ Interesting editable fields for profiles include:
  - changing primary usergroup. Obviously the member can not do this themselves
  - changing the validation status of the account. There is an option for staff to require in the 'Forum options' of the main Admin Zone Configuration to set new members as not validated upon joining, to require staff validation before they may login; this can be used to perform this validation, or reverse it
  - banning of the member. Note that Composr will not let you ban yourself, for obvious reasons
+ - the date of birth field will be read-only (except when [other] staff are editing) if already set and birthday points are configured; this is to prevent abuse
 
-[surround]
 [title="3"]Edit signature[/title]
-
+[surround]
 [media width="150" description="Editing your/a member photo" float="right"]data_custom/images/docs/tut_members/members_edit_photo.png[/media]
 [media width="150" description="Editing your/a member signature" float="right"]data_custom/images/docs/tut_members/members_edit_signature.png[/media]
 Members may have a signature which is displayed beneath their forum posts. This is not a signature in terms of verifying identity, as it may be copied by other members: rather, it allows members to broadcast their identity and other details in a prominent position. Signatures often include things such as:
@@ -189,14 +189,15 @@ Members may have a signature which is displayed beneath their forum posts. This 
  - a link to a personal website
  - background information on themselves
 
+ It is common for websites to impose restrictions and rules with regard to signatures, as long or complex can be an annoying distraction from the flow of reading forum posts, and a 'bandwidth hog'. Members may decide not to view other members' signatures by editing their profile to preclude their display.
+[/surround]
+
 [title="3"]Edit photo[/title]
 
 Members may choose a photo of themselves (or staff can) for display in their profile.
 
 There is a privilege to specify whether members may view the photos of other members, as there is an obvious 'stalking'/'paedophile' issue that must be considered for forums with young members.
 [/surround]
-
-It is common for websites to impose restrictions and rules with regard to signatures, as long or complex can be an annoying distraction from the flow of reading forum posts, and a 'bandwidth hog'. Members may decide not to view other members' signatures by editing their profile to preclude their display.
 
 [title="3"]Edit avatar[/title]
 
@@ -257,11 +258,12 @@ You have 3 options when it comes to assigning default avatars to members.
 3) [b]Randomisation solution[/b]. By enabling the "Assign random avatars" configuration option.
 
 [title="3"]Edit title[/title]
-
+[surround]
 [media width="150" description="Editing your/a member title" float="right"]data_custom/images/docs/tut_members/members_edit_title.png[/media]
 If members are in a usergroup with the 'May choose a custom title' privilege, they may give themselves a personal title. This overrides the title of their primary usergroup for the member.
 
 Titles are displayed alongside forum posts, in the section that is accessed by 'hovering over' their username.
+[/surround]
 
 [title="3"]Deleting a member[/title]
 

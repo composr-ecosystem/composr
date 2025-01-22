@@ -13,12 +13,16 @@
  */
 
 /*
-    This qualification is designed to be used for manual awarding of achievements by member ID.
+    This qualification is designed to be used for manual awarding of achievements by member ID. It can also be used for manual achievement progress.
     You should not use any other qualification in the same block, including other member ones.
+    Note that manual progress tracking, if specified, will apply to all members defined; use separate member qualifications in separate blocks to separate progress by member.
+    Also note due to a caveat in the system, the qualification text will be hidden for the member if required is > 1 and count is 0.
 
     Supported parameters for this qualification:
-    1) ids  -- Required (but can be blank if no one earned the achievement yet); a comma-delimited list of member IDs which meet this qualification
-    2) text -- Optional Comcode-supported text or language string to display as a requirement (not defined: this is hidden)
+    1) ids      -- Required (but can be blank); a comma-delimited list of member IDs
+    2) text     -- Optional Comcode-supported text or language string to display as a requirement (not defined: qualification is hidden)
+    3) count    -- Optional number of something the members have to calculate progress (not defined: 1 if member is in ids, 0 if not)
+    4) required -- Optional number of count the members must get to satisfy this qualification (not defined: 1)
 */
 
 /**
@@ -63,6 +67,9 @@ class Hook_achievement_qualifications_member
 
         // Read in options
         $member_ids = explode(',', $params['ids']);
+        $count = isset($params['count']) ? intval($params['count']) : 1;
+        $required = isset($params['required']) ? intval($params['required']) : 1;
+
         foreach ($member_ids as $id) {
             if (is_numeric($id)) {
                 $awarded_members[] = intval($id);
@@ -71,10 +78,10 @@ class Hook_achievement_qualifications_member
 
         // Check requirement
         if (in_array($member_id, $awarded_members)) {
-            return [1, 1];
+            return [$count, $required];
         }
 
-        return [0, 1];
+        return [0, $required];
     }
 
     /**
@@ -93,10 +100,36 @@ class Hook_achievement_qualifications_member
             return null; // Hidden unless custom text defined
         }
 
-        $ret = do_lang($text, null, null, null, null, false);
-        if ($ret === null) {
-            return comcode_to_tempcode($text, null, true);
+        $member_ids = explode(',', $params['ids']);
+
+        // Special case: If this member is not in the defined qualification, and we are tracking progress across members, make sure we don't show duplicate messages
+        // The caveat is that the achievement will go hidden for members with no progress; but there is no way we can look ahead in config to properly manage this
+        if (($count_required > 1) && (!in_array(strval($member_id), $member_ids))) {
+            return null;
         }
-        return comcode_to_tempcode($ret, null, true);
+
+        // Custom text
+        $_ret = do_lang($text, null, null, null, null, false);
+        if ($_ret === null) {
+            $ret = comcode_to_tempcode($text, null, true);
+        } else {
+            $ret = comcode_to_tempcode($_ret);
+        }
+
+        // Progress
+        if ($count_required > 1) {
+            $progress = do_lang_tempcode('ACHIEVEMENT_PROGRESS', escape_html(integer_format($count_done)), escape_html(integer_format($count_required)));
+        } elseif ($count_required == 1) {
+            if ($count_done > 0) {
+                $progress = do_lang_tempcode('ACHIEVEMENT_PROGRESS_SATISFIED');
+            } else {
+                $progress = do_lang_tempcode('ACHIEVEMENT_PROGRESS_NOT_SATISFIED');
+            }
+        } else {
+            $progress = new Tempcode();
+        }
+
+        // Put it together
+        return $ret->attach(paragraph($progress));
     }
 }
