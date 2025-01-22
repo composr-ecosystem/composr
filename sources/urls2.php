@@ -83,7 +83,7 @@ function set_execution_context(array $new_get, string $new_zone = '_SEARCH', str
 }
 
 /**
- * Map spaces to %20 and put http:// in front of URLs starting www.
+ * Map spaces to %20 and put https:// in front of URLs starting www.
  *
  * @param  URLPATH $url The URL to fix
  * @return URLPATH The fixed result
