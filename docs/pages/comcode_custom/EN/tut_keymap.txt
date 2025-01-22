@@ -6,6 +6,8 @@ These key codes are based on the UK government standard for accessibility.
 
 On most web browsers you can activate a key shortcut by holding down the Alt key and pressing the key code (hold down the Ctrl key on a Mac). You may need to hold down the Shift key in addition.
 
+[box="Broken"]Currently, this functionality is broken in v11.[/box]
+
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Key map[/title]

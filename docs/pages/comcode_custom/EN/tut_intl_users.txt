@@ -26,10 +26,12 @@ If you need more up-to-date translations, you can get them directly from Transif
 The Composr website hosts a copy of our [tt]transifex[/tt] addon that allows you to generate any language pack addon from the latest files on Transifex. It's a very simple process that will generate a [tt].tar[/tt] file that you can import (upload) into Composr from Admin Zone > Structure > Addons, then the Import non-bundled addon(s) link at the bottom.
 
 [title="2"]Turning on a different language[/title]
-
+[surround]
 [media width="150" description="Changing the default site language" float="right"]data_custom/images/docs/tut_intl_users/intl_config_2.png[/media]
 To change the default language used on the whole site, use the [tt]http://yourbaseurl/config_editor.php[/tt] script (load up the URL, with [tt]yourbaseurl[/tt] substituted with your real base URL).
+[/surround]
 
+[surround]
 [media width="150" description="Language configuration" float="right"]data_custom/images/docs/tut_intl_users/intl_config.png[/media]
 It is possible to configure Composr such that members may select which language to use on your site, and pages are then presented in this language. There are a number of ways a user may choose a language:
  - via the language block (which inserts a [tt]keep_lang[/tt] parameter into the URL, to preserve their choice until they close the browser window)
@@ -40,7 +42,7 @@ As members can select their language by editing their member profile it may be n
 
 To test a language without editing anything you can append [tt]&keep_lang=FR[/tt] to the URL (this is an example for French). If the URL did not contain an "?" symbol already you would need to append [tt]?keep_lang=FR[/tt] instead.
 If this confuses you, put the [tt]side_language[/tt] block onto one of your panels. This does the same thing.
-
+[/surround]
 [title="3"]Debugging[/title]
 
 If you're having problems getting things working a good early diagnosis step is to check what your site is trying to do. If you look at your page source from inside your web browser, you will see something like the following near the top of the code:

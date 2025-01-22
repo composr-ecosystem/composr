@@ -457,7 +457,7 @@ function obfuscate_email_address(string $email) : string
 
 /**
  * Replace most characters in an e-mail with asterisks.
- * This will replace all characters except the first and last before the @, the top-level domain, and the first and last character after @ before the top-level domain.
+ * This will replace all characters except the first and last before the @, the top-level domain (e.g. .com), and the first and last character after @ before the top-level domain.
  *
  * @param  SHORT_TEXT $email_address The e-mail address to mask
  * @return SHORT_TEXT The masked e-mail address
@@ -496,7 +496,7 @@ function mask_email_address(string $email_address) : string
 }
 
 /**
- * Replace most characters in a phone number with the @ symbol.
+ * Replace all but the last 3 digits in a phone number with the @ symbol.
  * Since phone numbers can be saved in a wide variety of formats depending on the country, it can be difficult to mask phone numbers.
  *
  * @param  SHORT_TEXT $phone_number The phone number to mask

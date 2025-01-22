@@ -2,6 +2,8 @@
 
 {!cns:DOC_LDAP}
 
+[box="Potentially out-dated"]This tutorial is potentially out-dated and has not yet been tested for v11[/box]
+
 [i]{$IS_MAINTAINED,ldap,LDAP support} is complex. If you're not sure what settings to use then you'll probably need someone with programming experience to step through it all, as LDAP can be very complex and involve non-standard/diverse schema.[/i]
 
 [contents]decimal,lower-alpha[/contents]

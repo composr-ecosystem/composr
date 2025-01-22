@@ -73,7 +73,7 @@ Sample functions:
 [code="JavaScript"]
 $util.random(); // Returns a random integer between zero and a trillion.
 
-// String interpolation
+// String interpolation (often used for language strings)
 $util.format('My name is {1}', ['Salman']); // "My name is Salman"
 
 $util.isNumeric('123'); // Returns true if the string is numeric

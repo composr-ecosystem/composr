@@ -20,7 +20,7 @@ In Composr, time-zones can be adjusted in two ways:
 1) adjusting the "Timezone" configuration option. This sets the default, and typically will be where your organisation is mainly centred around.
 2) adjusting member time-zones in their account settings ([concept]Conversr[/concept] only). This lets individual members set their own time-zones.
 
-You can also have guest time-zones auto-detected using the "Guest time-zone detection" configuration option (Admin Zone > Setup > Configuration > Site options > Internationalisation). This is a good idea if your visitors are geographically-distributed.
+You can also have guest time-zones auto-detected using the "Guest time-zone detection" configuration option (Admin Zone > Setup > Configuration > Site options > Internationalisation). This is a good idea if your visitors are geographically-distributed. But keep in mind this technique may be illegal in some jurisdictions due to data protection laws.
 
 [title="2"]Translations[/title]
 
@@ -368,8 +368,10 @@ It is generally better to look at outstanding translation tasks via Transifex. W
 Composr has some {$IS_MAINTAINED,theme_rtl,built-in support for right-to-left languages}. You need to change the [tt]dir[/tt], [tt]en_left[/tt] and [tt]en_right[/tt] language strings to activate it.
 
 [box="Tip"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]
 There are web browser extensions that let you flip text direction on your own web browser only, to help you better read English text/code when on a right-to-left site.
+[/surround]
 [/box]
 
 However there are two issues where some extra consideration is needed...
@@ -458,8 +460,7 @@ If there's no translation for CKEditor then you need to manually add one. The [t
 
 [title="4"]Template/CSS editor[/title]
 
-Composr uses a third-party code editor &ndash; a modified version of EditArea.
-You need to make sure you have translated versions of all [tt]data/editarea/lang/<lang>.js[/tt] files. There are quite a few translations already in there.
+Composr uses a third-party code editor &ndash; a modified version of Ace. There are no translation capabilities for this editor.
 
 That said, only the administrators will see the code editor, so it's not a big deal to get this translated.
 
