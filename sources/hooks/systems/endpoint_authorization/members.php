@@ -44,32 +44,6 @@ class Hook_endpoint_authorization_members
 
         $authorized = false;
 
-        // Try session authorization (note: this does not validate against IP address since this could be called locally)
-        $session = get_param_string('keep_session', null);
-        if ($session !== null) {
-            global $SESSION_CACHE;
-            $member_row = null;
-            if (
-                ($session != '') &&
-                ($SESSION_CACHE !== null) &&
-                (array_key_exists($session, $SESSION_CACHE)) &&
-                ($SESSION_CACHE[$session] !== null) &&
-                (array_key_exists('member_id', $SESSION_CACHE[$session])) &&
-                ($SESSION_CACHE[$session]['last_activity_time'] > time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time')))))
-            ) {
-                $member_row = $SESSION_CACHE[$session];
-            }
-
-            if ($member_row !== null) { // We have a matching session
-                $member = $member_row['member_id'];
-                if (is_guest($member)) {
-                    $member = null; // Session evaluated to guest; allow other authorisation methods to try authorising to an actual member if provided
-                } else {
-                    $authorized = true;
-                }
-            }
-        }
-
         // Try header authorization
         if ($member === null) {
             if (!@cms_empty_safe($_SERVER['PHP_AUTH_USER']) && !@cms_empty_safe($_SERVER['PHP_AUTH_PW'])) {
@@ -82,6 +56,20 @@ class Hook_endpoint_authorization_members
         if ($member === null) {
             $login_array = $GLOBALS['FORUM_DRIVER']->authorise_cookie_login();
             $member = $login_array['id'];
+        }
+
+        // Try session authorization
+        if ($member === null) {
+            require_code('users');
+
+            $session = get_session_id(true);
+            if ($session != '') {
+                global $SESSION_CACHE;
+                if (isset($SESSION_CACHE[$session])) {
+                    $authorized = true;
+                    $member = $SESSION_CACHE[$session]['member_id'];
+                }
+            }
         }
 
         // Check access level of the member if we got a member
