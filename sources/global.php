@@ -206,19 +206,23 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
                     }
                 }
 
+                $code_custom = null;
+                $code_orig = null;
+
                 // Compile in custom code (we do not need a _compiled file by default)
-                $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
+                $delete_custom = compile_included_code($path_custom, $codename, $light_exit, $code_custom);
 
                 // Compile in original code (pass in $orig code if we modified it so a _compiled file is generated)
                 if ($overlaps) {
-                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $orig);
+                    $code_orig = $orig;
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $code_orig);
                 } else {
-                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+                    $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $code_orig);
                 }
 
                 // We are clear to call the compiled code now
-                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
-                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
+                call_compiled_code($path_custom, $codename, $light_exit, $delete_custom, $code_custom);
+                call_compiled_code($path_orig, $codename, $light_exit, $delete_orig, $code_orig);
             } else {
                 // Note we load the original and then the override. This is so function_exists can be used in the overrides (as we can't support the re-definition) OR in the case of Mx_ class derivation, so that the base class is loaded first.
                 $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
@@ -231,9 +235,10 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         } else {
             // Have a custom but no original...
 
-            $delete_custom = compile_included_code($path_custom, $codename, $light_exit);
+            $delete_code = null;
+            $delete_custom = compile_included_code($path_custom, $codename, $light_exit, $delete_code);
 
-            call_compiled_code($path_custom, $codename, $light_exit, $delete_custom);
+            call_compiled_code($path_custom, $codename, $light_exit, $delete_custom, $delete_code);
         }
 
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -255,9 +260,10 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
     } else {
         // Have an original and no custom (no override)...
 
-        $delete_orig = compile_included_code($path_orig, $codename, $light_exit);
+        $code_orig = null;
+        $delete_orig = compile_included_code($path_orig, $codename, $light_exit, $code_orig);
 
-        call_compiled_code($path_orig, $codename, $light_exit, $delete_orig);
+        call_compiled_code($path_orig, $codename, $light_exit, $delete_orig, $code_orig);
 
         // Optional process tracking (has to run before init function called)
         if ((isset($_GET['keep_show_loading_code'])) && ($_GET['keep_show_loading_code'] === '1')) {
@@ -309,12 +315,14 @@ function require_code_no_override(string $codename)
  * @param  string $orig_path Path to the original or custom file (not _compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  ?string $code Custom file contents (null: use contents from $orig_path and avoid making a _compiled file if we do not need one)
- * @return boolean Whether we should delete any existing _compiled files for this, through call_compiled_code
+ * @param  ?string $code Custom file contents, passed by reference (null: use contents from $orig_path and avoid making a _compiled file if we do not need one)
+ * @return ?boolean Whether we should delete any existing _compiled files for this, through call_compiled_code (null: special case; we are ignoring _compiled files and evaluating $code instead)
  * @ignore
  */
-function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string $code = null) : bool
+function compile_included_code(string $orig_path, string $codename, bool $light_exit, ?string &$code = null) : ?bool
 {
+    global $SITE_INFO;
+
     // Files which have been compiled already will be tracked here; the next time this function runs, we assume we are appending onto the compiled file.
     // The files already defined do not support overrides and should have already been required / included by PHP at this point when necessary.
     static $already_compiled = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
@@ -362,6 +370,11 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
         if (strpos($code, '/*No strict_types*/') === false) {
             $prepend .= ' declare(strict_types=1);';
         }
+    }
+
+    // We are not compiling to files according to site info
+    if (isset($SITE_INFO['no_compiled_files']) && ($SITE_INFO['no_compiled_files'] == '1')) {
+        return null;
     }
 
     // Code must be able to compile into a PHP file
@@ -438,10 +451,11 @@ function compile_included_code(string $orig_path, string $codename, bool $light_
  * @param  string $path The file path to the original file (not the compiled one)
  * @param  string $codename The codename for the source module to load
  * @param  boolean $light_exit Whether to cleanly fail when an error occurs
- * @param  boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists
+ * @param  ?boolean $delete_compiled Whether we should ignore, and delete, the _compiled file, if it exists (null: ignore only, and evaluate $code if not null)
+ * @param  ?string $code If $delete_compiled is null, evaluate this code instead of loading in compiled code (null: no overridden code to evaluate; require in $path instead)
  * @ignore
  */
-function call_compiled_code(string $path, string $codename, bool $light_exit, bool $delete_compiled = false)
+function call_compiled_code(string $path, string $codename, bool $light_exit, ?bool $delete_compiled = false, ?string $code = null)
 {
     // The files already defined here are always required in before using the core software's methods of requiring code.
     static $already_called = ['sources/global.php', 'sources/minikernel.php', 'sources/bootstrap.php'];
@@ -461,13 +475,15 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
     $compiled_path = get_custom_file_base() . '/' . $compiled_relative_path;
 
     if (is_file($compiled_path)) {
-        if ($delete_compiled) {
-            clearstatcache(true, $compiled_path);
-            @unlink($compiled_path);
+        if ($delete_compiled !== false) {
+            if ($delete_compiled === true) {
+                clearstatcache(true, $compiled_path);
+                clearstatcache(true, $path);
+                @unlink($compiled_path);
+            }
 
             $calling_path = $path;
             $calling_relative_path = $relative_path;
-            clearstatcache(true, $path);
         } else {
             $calling_path = $compiled_path;
             $calling_relative_path = $compiled_relative_path;
@@ -485,24 +501,28 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
     try {
         $already_called[$calling_path] = true;
 
-        // We need to wait (but not too long) for locks to be released before we can include the file
-        $time = microtime(true);
-        $file = fopen($calling_path, 'r');
-        while (flock($file, LOCK_SH | LOCK_NB) === false) {
-            if ((microtime(true) - $time) > 5.0) {
-                throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
+        if (($code === null) || ($delete_compiled !== null)) {
+            // We need to wait (but not too long) for locks to be released before we can include the file
+            $time = microtime(true);
+            $file = fopen($calling_path, 'r');
+            while (flock($file, LOCK_SH | LOCK_NB) === false) {
+                if ((microtime(true) - $time) > 5.0) {
+                    throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
+                }
+
+                if (php_function_allowed('usleep')) {
+                    usleep(100000);
+                }
             }
 
-            if (php_function_allowed('usleep')) {
-                usleep(100000);
+            $result = require_once $calling_path;
+
+            if ($file !== false) {
+                fclose($file);
+                $file = false;
             }
-        }
-
-        $result = require_once $calling_path;
-
-        if ($file !== false) {
-            fclose($file);
-            $file = false;
+        } else {
+            $result = eval($code);
         }
 
         if ($result === false) {
@@ -520,10 +540,12 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, bo
         $result = false;
 
         $errormsg = $e->getMessage();
+        $errormsg .= ' (in ' . $e->getFile() . ', line ' . strval($e->getLine()) . ')';
     } catch (Error $e) {
         $result = false;
 
         $errormsg = $e->getMessage();
+        $errormsg .= ' (in ' . $e->getFile() . ', line ' . strval($e->getLine()) . ')';
     }
 
     if ($do_sed) {
