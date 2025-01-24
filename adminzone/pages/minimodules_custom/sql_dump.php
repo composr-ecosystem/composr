@@ -50,7 +50,7 @@ if (!$done) {
 
     require_code('files');
     $out_file = cms_fopen_text_write($out_file_path);
-    get_sql_dump($out_file, true, false, [], null, null, $intended_db_type);
+    get_sql_dump($out_file, true, true, false, [], null, null, $intended_db_type);
     fclose($out_file);
 }
 
