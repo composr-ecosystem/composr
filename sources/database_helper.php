@@ -380,6 +380,9 @@ function _helper_create_index(object $this_ref, string $table_name, string $inde
     if (strlen($index_name) + 7 > DB_MAX_IDENTIFIER_LENGTH) {
         fatal_exit('Inappropriate identifier, too long: ' . $index_name);
     }
+    if (strlen(implode(',', $fields)) >= 80) { // i_fields is type ID_TEXT in db_meta_indices and thus has a length limit
+        fatal_exit('Cannot create index ' . $index_name . ' on table ' . $table_name . '; you have too many fields (the comma-delimited list of field names must not exceed 80 characters)');
+    }
 
     $is_full_text = ($index_name[0] == '#');
 

@@ -1142,6 +1142,7 @@ function install_cns(?float $upgrade_from = null)
             'i_post_id',
         ]);
 
+        /* TODO: too long
         $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main', [
             'i_lang',
             'i_ngram',
@@ -1152,6 +1153,7 @@ function install_cns(?float $upgrade_from = null)
             'i_for',
             'i_occurrence_rate', // For sorting
         ]);
+        */
 
         $GLOBALS['FORUM_DB']->create_index('f_pposts_fulltext_index', 'main_2', [
             'i_lang',
@@ -1438,7 +1440,7 @@ function install_cns(?float $upgrade_from = null)
             'i_post_id',
         ]);
 
-        /* TODO: Index too long
+        /* TODO: too long
             $GLOBALS['FORUM_DB']->create_index('f_posts_fulltext_index', 'main', [
                 'i_lang',
                 'i_ngram',
