@@ -256,4 +256,34 @@ class tutorial_quality_test_set extends cms_test_case
         }
         closedir($dh);
     }
+
+    public function testHasNoOutsideScope()
+    {
+        if (in_safe_mode()) {
+            return;
+        }
+
+        $path = get_file_base() . '/docs/pages/comcode_custom/EN';
+        $dh = opendir($path);
+        while (($file = readdir($dh)) !== false) {
+            if (($file === '.') || ($file === '..')) {
+                continue;
+            }
+
+            if (($this->only !== null) && ($this->only != $file)) {
+                continue;
+            }
+
+            if (!is_file($path . '/' . $file)) { // Possible sub-directories like _old_backups
+                continue;
+            }
+
+            $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
+
+            if (preg_match('/\b(out(?:side| of) (?:the )?scope of (?:this )?tutorial|outside tutorial\'?s? scope)\b/i', $c)) {
+                $this->assertTrue(false, $file . ': The phrase \'outside the scope of this tutorial\' (or similar) is not concise. Put a link to the correct tutorial there (and in \'See also\') so users know where to go.');
+            }
+        }
+        closedir($dh);
+    }
 }
