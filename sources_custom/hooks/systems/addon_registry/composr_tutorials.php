@@ -1411,8 +1411,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_wiki/wiki_tree_edit.png',
             'data_custom/images/docs/tut_wysiwyg/index.html',
             'data_custom/images/docs/tut_wysiwyg/wysiwyg.png',
-            'data_custom/modules/api/.htaccess',
-            'data_custom/modules/api/index.html',
             'data_custom/modules/docs/documents_jungle.zip',
             'data_custom/modules/docs/documents_paradise.zip',
             'data_custom/modules/docs/index.html',

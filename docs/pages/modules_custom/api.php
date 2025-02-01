@@ -38,6 +38,385 @@ class Module_api
     }
 
     /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        $tables = [
+            'api_classes',
+            'api_functions',
+            'api_function_params',
+            'api_functions_fulltext_index',
+        ];
+        $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        // NB: We do not need upgrade code for this module because all the data can be re-compiled, so we just drop what we have and start over
+        $this->uninstall();
+
+        $GLOBALS['SITE_DB']->create_table('api_classes', [
+            'id' => '*AUTO',
+            'c_name' => 'ID_TEXT',
+            'c_source_url' => 'URLPATH',
+            'c_is_abstract' => 'BINARY',
+            'c_implements' => 'LONG_TEXT', // Comma-delimited list
+            'c_traits' => 'LONG_TEXT', // Comma-delimited list
+            'c_extends' => 'ID_TEXT',
+            'c_package' => 'ID_TEXT',
+            'c_type' => 'MINIID_TEXT',
+            'c_comment' => 'BINARY',
+
+            'c_edit_date' => 'TIME',
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_classes', 'by_package', ['c_package', 'c_name']);
+
+        $GLOBALS['SITE_DB']->create_table('api_functions', [
+            'id' => '*AUTO',
+            'class_id' => 'AUTO_LINK',
+            'class_name' => 'ID_TEXT', // Needed for more efficient class searching instead of using the api_classes table directly
+            'f_name' => 'ID_TEXT',
+            'f_php_return_type' => 'ID_TEXT',
+            'f_php_return_type_nullable' => 'BINARY',
+            'f_description' => 'LONG_TEXT',
+            'f_flags' => 'LONG_TEXT', // Comma-delimited list
+            'f_is_static' => 'BINARY',
+            'f_is_abstract' => 'BINARY',
+            'f_is_final' => 'BINARY',
+            'f_visibility' => 'MINIID_TEXT',
+            'f_return_type' => 'ID_TEXT', // Blank: none
+            'f_return_description' => 'LONG_TEXT',
+            'f_return_set' => 'SHORT_TEXT',
+            'f_return_range' => 'SHORT_TEXT',
+
+            'f_edit_date' => 'TIME',
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions', 'by_class_name', ['class_name', 'f_name']);
+        $GLOBALS['SITE_DB']->create_index('api_functions', 'by_class_id', ['class_id', 'f_name']);
+
+        $GLOBALS['SITE_DB']->create_table('api_function_params', [
+            'id' => '*AUTO',
+            'function_id' => 'AUTO_LINK',
+            'p_name' => 'ID_TEXT',
+            'p_php_type' => 'ID_TEXT',
+            'p_php_type_nullable' => 'BINARY',
+            'p_type' => 'ID_TEXT',
+            'p_set' => 'SHORT_TEXT',
+            'p_range' => 'SHORT_TEXT',
+            'p_ref' => 'BINARY',
+            'p_is_variadic' => 'BINARY',
+            'p_default' => 'SERIAL', // Only way we can get a properly typed default (blank: no default)
+            'p_description' => 'LONG_TEXT',
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_function_params', 'by_function_id', ['function_id', 'p_name']);
+
+        $GLOBALS['SITE_DB']->create_table('api_functions_fulltext_index', [
+            'i_f_id' => '*AUTO_LINK',
+
+            'i_lang' => '*LANGUAGE_NAME',
+            'i_ngram' => '*INTEGER',
+            'i_ac' => '*INTEGER',
+
+            'i_occurrence_rate' => 'REAL',
+
+            // De-normalised stuff from main content tables for any major filters that shape the results provided
+            //  (other stuff will come in via join back to the main content table)
+            'i_add_time' => 'TIME',
+            'i_f_name' => 'ID_TEXT',
+            'i_c_id' => 'AUTO_LINK',
+            'i_submitter' => 'MEMBER',
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'content_id', [ // Used for clean-outs and potentially optimising some JOINs if query planner decides to start at the content table
+            'i_f_id',
+        ]);
+
+        /* TODO: too long
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_f_name',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+        */
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_2', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_3', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_4', [
+            'i_lang',
+            'i_ngram',
+            'i_f_name',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_5', [
+            'i_lang',
+            'i_ngram',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_6', [
+            'i_lang',
+            'i_ngram',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_7', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_8', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_f_name',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_9', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_10', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_11', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_f_name',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_12', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_13', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_14', [
+            'i_lang',
+            'i_ngram',
+            'i_f_name',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_15', [
+            'i_lang',
+            'i_ngram',
+            'i_f_name',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_16', [
+            'i_lang',
+            'i_ngram',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_17', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_f_name',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_18', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_19', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_20', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_f_name',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_21', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_f_name',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_22', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_23', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_f_name',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_24', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_f_name',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_25', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_26', [
+            'i_lang',
+            'i_ngram',
+            'i_f_name',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_27', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_f_name',
+            'i_c_id',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_28', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_f_name',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_29', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_add_time',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_30', [
+            'i_lang',
+            'i_ngram',
+            'i_ac',
+            'i_f_name',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_31', [
+            'i_lang',
+            'i_ngram',
+            'i_add_time',
+            'i_f_name',
+            'i_c_id',
+            'i_submitter',
+            'i_occurrence_rate', // For sorting
+        ]);
+
+        $GLOBALS['SITE_DB']->create_index('api_functions_fulltext_index', 'main_32', [
+            'i_lang',
+            'i_ngram',
+            'i_occurrence_rate', // For sorting
+        ]);
+    }
+
+    /**
      * Find entry-points available within this module.
      *
      * @param  boolean $check_perms Whether to check permissions
@@ -115,255 +494,208 @@ class Module_api
      */
     public function api_index() : object
     {
-        require_code('files2');
         require_code('templates');
         require_code('templates_results_table');
 
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 100);
 
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // Build WHERE query from Filtercode
+        $where = [];
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'api_classes');
+
         $header_row = results_header_row([do_lang_tempcode('NAME')]);
 
-        // Get all available classes (directories)
-        $api_path = get_file_base() . '/data_custom/modules/api';
-        $directories = get_directory_contents($api_path, '', IGNORE_ACCESS_CONTROLLERS, false, false);
-        sort($directories);
+        // Get all available distinct classes
+        $count_rows = $GLOBALS['SITE_DB']->query_select_value('api_classes r', 'COUNT(DISTINCT r.c_name)', [], $end);
+        $classes = $GLOBALS['SITE_DB']->query_select('api_classes r', ['DISTINCT r.c_name'], [], $end . ' ORDER BY r.c_name', $max, $start);
 
         $rows = new Tempcode();
-        foreach ($directories as $i => $directory) {
-            if ($i < $start) {
-                continue;
-            }
-            if ($i >= ($start + $max)) {
-                continue;
-            }
-
-            $class_link = hyperlink(build_url(['page' => 'api', 'type' => $directory], get_module_zone('api')), $directory, false, true);
+        foreach ($classes as $class) {
+            $class_link = hyperlink(build_url(['page' => 'api', 'type' => $class['c_name']], get_module_zone('api')), $class['c_name'], false, true);
             $rows->attach(results_entry([$class_link], false));
         }
 
-        $results_table = results_table(do_lang_tempcode('API_DOC_TITLE'), $start, 'start', $max, 'max', count($directories), $header_row, $rows);
+        $filtercode = [
+            'c_name<c_name_op><c_name>',
+            'c_source_url<c_source_url_op><c_source_url>',
+            'c_is_abstract=<c_is_abstract>',
+            'c_implements<c_implements_op><c_implements>',
+            'c_traits<c_traits_op><c_traits>',
+            'c_extends<c_extends_op><c_extends>',
+            'c_package=<c_package>',
+            'c_type=<c_type>',
+            'c_comment=<c_comment>',
+        ];
+        $filtercode_labels = [
+            'c_name=' . do_lang('API_DOC_CLASS_NAME'),
+            'c_source_url=' . do_lang('API_DOC_SOURCE_FILE'),
+            'c_is_abstract=' . do_lang('API_DOC_IS_ABSTRACT'),
+            'c_implements=' . do_lang('API_DOC_IMPLEMENTS'),
+            'c_traits=' . do_lang('API_DOC_TRAITS'),
+            'c_extends=' . do_lang('API_DOC_EXTENDS'),
+            'c_package=' . do_lang('API_DOC_PACKAGE'),
+            'c_type=' . do_lang('TYPE'),
+            'c_comment=' . do_lang('COMMENT'),
+        ];
+        $filtercode_types = [
+            'c_package=list',
+            'c_type=list'
+        ];
+
+        $results_table = results_table(do_lang_tempcode('API_DOC_TITLE'), $start, 'start', $max, 'max', $count_rows, $header_row, $rows);
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'api_classes',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         return do_template('TUTORIAL_API_INDEX', [
             '_GUID' => 'd76c1cb2617a5ac29eeb1371788cb0e5',
             'TITLE' => get_screen_title(do_lang('API_DOC_TITLE'), false),
             'CLASS_LINKS' => $results_table,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
     }
 
     public function api_class(string $class) : object
     {
-        require_code('files');
-        require_code('files2');
         require_code('templates');
         require_code('templates_results_table');
 
-        $api_path = get_file_base() . '/data_custom/modules/api';
-
         // Class definitions
         if ($class == '__global') {
-            $class_definitions = null;
+            $class_definitions = null; // Every file has a global class, so let's not list them all
         } else {
-            $definitions_path = $api_path . '/' . filter_naughty_harsh($class) . '/___class_definitions.bin';
-            if (!is_file($definitions_path)) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'class'));
-            }
-            $__class_definitions = cms_file_get_contents_safe($definitions_path);
-            if ($__class_definitions === false) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('81f63bcb6c325b4bb8b13470bbb40e2a')));
-            }
-            $_class_definitions = unserialize($__class_definitions);
-            if ($_class_definitions === false) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8fc14b9e6e645e59950383e357a26153')));
+            $rows = $GLOBALS['SITE_DB']->query_select('api_classes', ['*'], ['c_name' => $class], ' ORDER BY c_name');
+            if (count($rows) == 0) {
+                warn_exit(do_lang_tempcode('MISSING_RESOURCE', escape_html('api_classes')));
             }
 
             $class_definitions = [];
-            foreach ($_class_definitions as $path => $class_data) {
+            foreach ($rows as $row) {
                 $class_implements = [];
-                foreach ($class_data['implements'] as $implements) {
+                foreach (explode(',', $row['c_implements']) as $implements) {
+                    if ($implements == '') {
+                        continue;
+                    }
                     $class_implements[] = hyperlink(build_url(['page' => 'api', 'type' => $implements], get_module_zone('api')), $implements, false, true);
                 }
 
+                $class_traits = [];
+                foreach (explode(',', $row['c_traits']) as $trait) {
+                    if ($trait == '') {
+                        continue;
+                    }
+                    $class_traits[] = $trait;
+                }
+
                 $class_extends = null;
-                if (array_key_exists('extends', $class_data) && ($class_data['extends'] !== null)) {
-                    $class_extends = hyperlink(build_url(['page' => 'api', 'type' => $class_data['extends']], get_module_zone('api')), $class_data['extends'], false, true);
+                if ($row['c_extends'] != '') {
+                    $class_extends = hyperlink(build_url(['page' => 'api', 'type' => $row['c_extends']], get_module_zone('api')), $row['c_extends'], false, true);
                 }
 
                 $class_definitions[] = [
-                    'PATH' => $path,
-                    'IS_ABSTRACT' => ((array_key_exists('is_abstract', $class_data)) && ($class_data['is_abstract'] === true)) ? do_lang('YES') : do_lang('NO'),
+                    'PATH' => $row['c_source_url'],
+                    'IS_ABSTRACT' => ($row['c_is_abstract'] == 1) ? do_lang('YES') : do_lang('NO'),
                     'IMPLEMENTS' => $class_implements,
-                    'TRAITS' => (array_key_exists('traits', $class_data) && is_array($class_data['traits'])) ? $class_data['traits'] : null,
+                    'TRAITS' => $class_traits,
                     'EXTENDS' => $class_extends,
-                    'TYPE' => (array_key_exists('type', $class_data)) ? $class_data['type'] : do_lang('UNKNOWN'),
-                    'PACKAGE' => (array_key_exists('package', $class_data)) ? $class_data['package'] : do_lang('UNKNOWN'),
+                    'TYPE' => $row['c_type'],
+                    'PACKAGE' => $row['c_package'],
                 ];
             }
         }
 
-        // Class functions (and links)
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 100);
 
-        $header_row = results_header_row([do_lang_tempcode('NAME')]);
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
 
-        $functions = get_directory_contents($api_path . '/' . $class, '', IGNORE_ACCESS_CONTROLLERS, false, true, ['bin']);
-        sort($functions);
+        // Build WHERE query from Filtercode
+        $where = [];
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'api_functions');
+
+        // Get all available distinct functions from this class
+        $count_rows = $GLOBALS['SITE_DB']->query_select_value('api_functions r', 'COUNT(DISTINCT r.f_name)', ['class_name' => $class], $end);
+        $functions = $GLOBALS['SITE_DB']->query_select('api_functions r', ['DISTINCT r.f_name'], ['class_name' => $class], $end . ' ORDER BY r.f_name', $max, $start);
 
         $rows = new Tempcode();
-        foreach ($functions as $i => $function) {
-            if ($function == '___class_definitions.bin') {
-                continue;
-            }
-            if ($i < $start) {
-                continue;
-            }
-            if ($i >= ($start + $max)) {
-                continue;
-            }
-
-            $function_parsed = str_replace('.bin', '', $function);
-            $function_link = hyperlink(build_url(['page' => 'api', 'type' => $class, 'id' => $function_parsed], get_module_zone('api')), $function_parsed, false, true);
+        foreach ($functions as $function) {
+            $function_link = hyperlink(build_url(['page' => 'api', 'type' => $class, 'id' => $function['f_name']], get_module_zone('api')), $function['f_name'], false, true);
             $rows->attach(results_entry([$function_link], false));
         }
 
-        $results_table = results_table(do_lang_tempcode('API_DOC_CLASS_FUNCTIONS'), $start, 'start', $max, 'max', count($functions) - 1, $header_row, $rows);
+        $header_row = results_header_row([do_lang_tempcode('NAME')]);
+
+        $filtercode = [
+            'f_name<f_name_op><f_name>',
+            'f_description<f_description_op><f_description>',
+            'f_flags<f_flags_op><f_flags>',
+            'f_is_static=<f_is_static>',
+            'f_is_abstract=<f_is_abstract>',
+            'f_is_final=<f_is_final>',
+            'f_visibility=<f_visibility>',
+            'f_return_type=<f_return_type>',
+        ];
+        $filtercode_labels = [
+            'f_name=' . do_lang('NAME'),
+            'f_description=' . do_lang('DESCRIPTION'),
+            'f_flags=' . do_lang('API_DOC_FLAGS'),
+            'f_is_static=' . do_lang('API_DOC_IS_STATIC'),
+            'f_is_abstract=' . do_lang('API_DOC_IS_ABSTRACT'),
+            'f_is_final=' . do_lang('API_DOC_IS_FINAL'),
+            'f_visibility=' . do_lang('API_DOC_VISIBILITY'),
+            'f_return_type=' . do_lang('API_DOC_RETURN'),
+        ];
+        $filtercode_types = [
+            'f_visibility=list',
+            'f_return_type=list',
+        ];
+
+        $results_table = results_table(do_lang_tempcode('API_DOC_CLASS_FUNCTIONS'), $start, 'start', $max, 'max', $count_rows, $header_row, $rows);
+
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'api_functions',
+            'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
+        ]);
 
         return do_template('TUTORIAL_API_CLASS', [
             '_GUID' => '93ee8a49a157577db90853401648c0bd',
             'TITLE' => get_screen_title('tutorials:API_DOC_CLASS_TITLE', true, [escape_html($class)]),
             'CLASS_DEFINITIONS' => $class_definitions,
             'CLASS_FUNCTIONS' => $results_table,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
     }
 
     public function api_function(string $class, string $function) : object
     {
-        require_code('files');
-        require_code('files2');
+        require_code('tutorials');
         require_code('templates');
         require_code('templates_results_table');
 
-        // Function definitions
-        $api_path = get_file_base() . '/data_custom/modules/api';
-        $functions_path = $api_path . '/' . filter_naughty_harsh($class) . '/' . filter_naughty_harsh($function) . '.bin';
-        if (!is_file($functions_path)) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'function'));
-        }
-        $__function_definitions = cms_file_get_contents_safe($functions_path);
-        if ($__function_definitions === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('eec2ce6e04d7546792b9331fbff15aa7')));
-        }
-        $_function_definitions = unserialize($__function_definitions);
-        if ($_function_definitions === false) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2d54c094b3c75ff8b4c9089263a8be1f')));
+        $db_functions = $GLOBALS['SITE_DB']->query_select('api_functions', ['*'], ['class_name' => $class, 'f_name' => $function], ' ORDER BY f_name');
+        if (count($db_functions) == 0) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', escape_html('api_function')));
         }
 
         $function_definitions = [];
         $i = 0;
-        foreach ($_function_definitions as $path => $function_data) {
-            $parameters = null;
-            if (array_key_exists('parameters', $function_data) && (count($function_data['parameters']) > 0)) {
-                $header = [
-                    do_lang_tempcode('NAME'),
-                    do_lang_tempcode('TYPE'),
-                    do_lang_tempcode('DEFAULT'),
-                    do_lang_tempcode('SET'),
-                    do_lang_tempcode('API_DOC_RANGE'),
-                    do_lang_tempcode('DESCRIPTION'),
-                ];
-                $header_row = results_header_row($header);
-
-                $rows = new Tempcode();
-                foreach ($function_data['parameters'] as $parameter) {
-                    // We need to convey the default value in such a way we can differentiate between a literal value and something else
-                    if (array_key_exists('default', $parameter)) {
-                        if ($parameter['default'] === false) {
-                            $param_default = do_lang_tempcode('API_DOC_FALSE');
-                        } elseif ($parameter['default'] === true) {
-                            $param_default = do_lang_tempcode('API_DOC_TRUE');
-                        } elseif ($parameter['default'] === null) {
-                            $param_default = do_lang_tempcode('API_DOC_NULL');
-                        } elseif (is_array($parameter['default'])) {
-                            $param_default = protect_from_escaping(json_encode($parameter['default'], JSON_PRETTY_PRINT));
-                        } elseif (is_object($parameter['default'])) {
-                            $param_default = protect_from_escaping('<em>Object</em>');
-                        } else {
-                            $param_default = protect_from_escaping(escape_html(strval($parameter['default'])));
-                        }
-                        if ($param_default == '') {
-                            $param_default = do_lang_tempcode('API_DOC_BLANK');
-                        }
-                    } else {
-                        $param_default = do_lang_tempcode('API_DOC_REQUIRED_PARAMETER');
-                    }
-
-                    if (array_key_exists('set', $function_data)) {
-                        $param_set = escape_html($parameter['set']);
-                    } else {
-                        $param_set = '<em>N/A</em>';
-                    }
-
-                    if (array_key_exists('range', $function_data)) {
-                        $param_range = escape_html($parameter['range']);
-                    } else {
-                        $param_range = '<em>N/A</em>';
-                    }
-
-                    $map = [
-                        escape_html('$' . $parameter['phpdoc_name']),
-                        $this->type_tooltip($parameter['type']),
-                        $param_default,
-                        $param_set,
-                        $param_range,
-                        (array_key_exists('description', $function_data)) ? escape_html($parameter['description']) : do_lang('NA'),
-                    ];
-
-                    $rows->attach(results_entry($map, false));
-                }
-
-                $parameters = results_table(do_lang_tempcode('API_DOC_PARAMETERS'), get_param_integer('param_' . strval($i) . '_start', 0), 'param_' . strval($i) . '_start', get_param_integer('param_' . strval($i) . '_max', 0), 'param_' . strval($i) . '_max', count($function_data['parameters']), $header_row, $rows);
-            }
-
-            $map = [
-                'PATH' => $path,
-                'DESCRIPTION' => (array_key_exists('description', $function_data)) ? $function_data['description'] : null,
-                'RETURN_TYPE' => (array_key_exists('php_return_type', $function_data)) ? $this->type_tooltip($function_data['php_return_type'], $function_data['php_return_type_nullable']) : null,
-                'FLAGS' => (array_key_exists('flags', $function_data)) ? $function_data['flags'] : null,
-                'IS_STATIC' => (array_key_exists('is_static', $function_data)) && ($function_data['is_static'] === true) ? do_lang('YES') : do_lang('NO'),
-                'IS_ABSTRACT' => ((array_key_exists('is_abstract', $function_data)) && ($function_data['is_abstract'] === true)) ? do_lang('YES') : do_lang('NO'),
-                'IS_FINAL' => ((array_key_exists('is_final', $function_data)) && ($function_data['is_final'] === true)) ? do_lang('YES') : do_lang('NO'),
-                'VISIBILITY' => (array_key_exists('visibility', $function_data)) ? $function_data['visibility'] : do_lang('UNKNOWN'),
-                'PARAMETERS' => $parameters,
-            ];
-
-            if (array_key_exists('return', $function_data) && ($function_data['return'] !== null)) {
-                if (array_key_exists('set', $function_data['return'])) {
-                    $param_set = escape_html($function_data['return']['set']);
-                } else {
-                    $param_set = '<em>N/A</em>';
-                }
-
-                if (array_key_exists('range', $function_data['return'])) {
-                    $param_range = escape_html($function_data['return']['range']);
-                } else {
-                    $param_range = '<em>N/A</em>';
-                }
-
-                $map['RETURN_TYPE_CMS'] = (array_key_exists('type', $function_data['return']) ? $this->type_tooltip($function_data['return']['type']) : do_lang('UNKNOWN'));
-                $map['RETURN_SET'] = $param_set;
-                $map['RETURN_RANGE'] = $param_range;
-                $map['RETURN_DESCRIPTION'] = (array_key_exists('description', $function_data['return']) ? escape_html($function_data['return']['description']) : null);
-            } else {
-                $map['RETURN_TYPE_CMS'] = null;
-                $map['RETURN_SET'] = null;
-                $map['RETURN_RANGE'] = null;
-                $map['RETURN_DESCRIPTION'] = null;
-            }
-
-            $function_definitions[] = $map;
-
-            $i++;
+        foreach ($db_functions as $db_function) {
+            $function_definitions[] = prepare_api_function_for_render($db_function, $i);
         }
 
         return do_template('TUTORIAL_API_FUNCTION', [
@@ -371,34 +703,5 @@ class Module_api
             'TITLE' => get_screen_title('tutorials:API_DOC_FUNCTION_TITLE', true, [escape_html($class), escape_html($function)]),
             'FUNCTION_DEFINITIONS' => $function_definitions,
         ]);
-    }
-
-    /**
-     * Create an abbr tag explaining the given type.
-     *
-     * @param  ?ID_TEXT $type The type (null: none)
-     * @param  ?boolean $nullable Whether this can be null (null: find out from the type)
-     * @return string The HTML
-     */
-    protected function type_tooltip(?string $type, ?bool $nullable = null) : string
-    {
-        if ($type === null) {
-            return '<em>N/A</em>';
-        }
-
-        $abbr_title = do_lang('API_DOC_TYPE__' . str_replace(['?', '~', '*'], ['', '', ''], $type), null, null, null, null, false);
-        if ($abbr_title === null) {
-            return $type;
-        }
-
-        $ret = '<abbr title="' . $abbr_title;
-        if (($nullable === true) || (($nullable === null) && strpos($type, '?') !== false)) {
-            $ret .= do_lang('API_DOC_TYPE_NULLABLE');
-        }
-        if (strpos($type, '~') !== false) {
-            $ret .= do_lang('API_DOC_TYPE_FALSEABLE');
-        }
-        $ret .= '">' . $type . '</abbr>';
-        return $ret;
     }
 }

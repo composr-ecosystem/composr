@@ -60,4 +60,8 @@
 			{+END}
 		</ul>
 	{+END}
+
+	<h4>{!PREVIEW}</h4>
+
+	{PREVIEW}
 {+END}

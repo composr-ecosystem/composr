@@ -673,9 +673,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
 
         // Configuration backups
         ['_config\.php\.bak\.*', ''],
-
-        // API documentation files (they are re-generated with the admin_compile_api module)
-        ['(?!index\.html$)(?!\.htaccess$).*', 'data_custom/modules/api'],
     ];
 
     $ignore_filename_patterns = [ // Case insensitive; we'll use this only when we *need* directories that would match to be valid
