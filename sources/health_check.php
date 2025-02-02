@@ -748,7 +748,12 @@ abstract class Hook_Health_Check
 
             $url .= $key . '=' . urlencode($val);
         }
-        $results = @json_decode(http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]), true);
+        $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
+        if ($contents === null) {
+            return null;
+        }
+
+        $results = @json_decode($contents, true);
         return $results;
     }
 }
