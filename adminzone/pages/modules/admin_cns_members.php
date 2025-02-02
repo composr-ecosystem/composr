@@ -333,6 +333,8 @@ class Module_admin_cns_members
      */
     public function step2() : object
     {
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         // Read in data...
 
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
