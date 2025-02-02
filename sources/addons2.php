@@ -1163,6 +1163,11 @@ function find_updated_addons() : array
 
     require_code('http');
     list($_addon_data) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 5/*5 minute cache*/);
+    if ($_addon_data === null) {
+        return []; // Just silently exit with no available addons to update
+        //warn_exit(do_lang('INTERNAL_ERROR', comcode_escape('a1a699cb5dd65a23b8d2a331e0c4ae2e')));
+    }
+
     $addon_data = @json_decode($_addon_data, true);
     if (($addon_data === null) || (!$addon_data['success'])) {
         return []; // Just silently exit with no available addons to update

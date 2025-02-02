@@ -2798,7 +2798,7 @@ function tempcode_error(object $e, string $code)
         syslog(LOG_ERR, $error_label);
     }
     if (php_function_allowed('error_log')) {
-        @error_log(brand_name() . ' Tempcode: ERROR ' . $error_label, 0);
+        @error_log(brand_name() . ' Tempcode: ERROR ' . $error_label . '. ' . $e->getTraceAsString(), 0);
     }
 
     fatal_exit($error_message);
