@@ -3107,11 +3107,11 @@ function _get_autocomplete_attribute_value(string $name, $provided_autocomplete)
 /**
  * Look for editing conflicts, and setup editing pinging.
  *
- * @param  ?ID_TEXT $id The ID we're editing (null: get from param, 'id')
+ * @param  ~?ID_TEXT $id The ID we're editing (null: get from environment, 'id') (blank: not using a screen that has an ID) (false: particularly sensitive operation; check against all IDs and types on this page)
  * @param  boolean $only_staff Whether to only care about staff conflicts
  * @return array A pair: warning details, ping URL
  */
-function handle_conflict_resolution(?string $id = null, bool $only_staff = false) : array
+function handle_conflict_resolution($id = null, bool $only_staff = false) : array
 {
     if (($only_staff) && (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) {
         return [null, null];
@@ -3129,9 +3129,14 @@ function handle_conflict_resolution(?string $id = null, bool $only_staff = false
     }
 
     // Populate warning details with a message about who is currently editing this (within the last minute), if applicable
-    $last_edit_screen_time = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND ' . db_string_equal_to('the_type', cms_mb_substr(get_param_string('type', 'browse'), 0, 80)) . ' AND ' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC', 10);
+    if ($id !== false) {
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND (' . db_string_equal_to('the_type', cms_mb_substr(get_param_string('type', 'browse'), 0, 80)) . ' OR ' . db_string_equal_to('the_type', '') . ') AND (' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' OR ' . db_string_equal_to('the_id', '') . ') AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC';
+    } else {
+        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC';
+    }
+    $rows = $GLOBALS['SITE_DB']->query($sql, 10);
     $people_working = [];
-    foreach ($last_edit_screen_time as $row) {
+    foreach ($rows as $row) {
         $username = $GLOBALS['FORUM_DRIVER']->get_username($row['the_member'], true, USERNAME_DEFAULT_NULL);
         if ($username !== null) {
             $people_working[] = $username;
@@ -3149,7 +3154,11 @@ function handle_conflict_resolution(?string $id = null, bool $only_staff = false
 
     // Now determine our ping URL for AJAX to ping regularly to signal the user is still editing this
     $keep = symbol_tempcode('KEEP');
-    $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . '&type=' . urlencode(get_param_string('type', 'browse')) . '&id=' . urlencode($id) . $keep->evaluate();
+    if ($id !== false) {
+        $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . '&type=' . urlencode(get_param_string('type', 'browse')) . '&id=' . urlencode($id) . $keep->evaluate();
+    } else {
+        $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . $keep->evaluate();
+    }
 
     return [$warning_details, $ping_url];
 }
