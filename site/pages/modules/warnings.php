@@ -241,7 +241,7 @@ class Module_warnings extends Standard_crud_module
             ]));
         }
         if ($warning_details !== null) {
-            $this->add_text->attach($warning_details);
+            $this->add_text->attach(paragraph($warning_details));
         }
 
         // Information about their history, and the rules - to educate the warner/punisher
