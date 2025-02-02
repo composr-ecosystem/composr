@@ -3122,19 +3122,32 @@ function handle_conflict_resolution(?string $id = null, bool $only_staff = false
     }
 
     if ($id === null) {
-        $id = get_param_string('id', post_param_string('id', null));
+        $id = either_param_string('id', null);
         if ($id === null) {
             return [null, null];
         }
     }
 
-    $last_edit_screen_time = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND ' . db_string_equal_to('the_type', cms_mb_substr(get_param_string('type', 'browse'), 0, 80)) . ' AND ' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' AND the_member<>' . strval(get_member()) . ' ORDER BY the_time DESC', 1);
-    if ((array_key_exists(0, $last_edit_screen_time)) && ($last_edit_screen_time[0]['the_time'] > time() - 20)) {
-        $username = $GLOBALS['FORUM_DRIVER']->get_username($last_edit_screen_time[0]['the_member']);
-        $warning_details = do_template('WARNING_BOX', ['_GUID' => '10c4e7c0d16df68b38b66d162919c068', 'WARNING' => do_lang_tempcode('EDIT_CONFLICT_WARNING', escape_html($username))]);
+    // Populate warning details with a message about who is currently editing this (within the last minute), if applicable
+    $last_edit_screen_time = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND ' . db_string_equal_to('the_type', cms_mb_substr(get_param_string('type', 'browse'), 0, 80)) . ' AND ' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC', 10);
+    $people_working = [];
+    foreach ($last_edit_screen_time as $row) {
+        $username = $GLOBALS['FORUM_DRIVER']->get_username($row['the_member'], true, USERNAME_DEFAULT_NULL);
+        if ($username !== null) {
+            $people_working[] = $username;
+        }
+    }
+    if (count($people_working) > 0) {
+        if (count($people_working) < 10) { // Let's not list off all the members if there are 10 or more of them editing the same thing (which is very unusual anyway)
+            $warning_details = do_template('WARNING_BOX', ['_GUID' => '10c4e7c0d16df68b38b66d162919c068', 'WARNING' => do_lang_tempcode('EDIT_CONFLICT_WARNING', escape_html(implode(', ', $people_working)))]); // TODO: support lists for different languages
+        } else {
+            $warning_details = do_template('WARNING_BOX', ['_GUID' => 'TODO', 'WARNING' => do_lang_tempcode('_EDIT_CONFLICT_WARNING')]);
+        }
     } else {
         $warning_details = null;
     }
+
+    // Now determine our ping URL for AJAX to ping regularly to signal the user is still editing this
     $keep = symbol_tempcode('KEEP');
     $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . '&type=' . urlencode(get_param_string('type', 'browse')) . '&id=' . urlencode($id) . $keep->evaluate();
 
