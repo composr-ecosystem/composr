@@ -291,7 +291,7 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                 'identifier_index' => 1,
                 'written_context_index' => null,
                 'followup_page_links' => [
-                    'MERGE_MEMBERS' => '_SEARCH:admin_cns_merge_members',
+                    'MERGE_MEMBERS' => '_SEARCH:admin_cns_members:merge',
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                 ],
             ],
