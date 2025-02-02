@@ -1,17 +1,19 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Basic forum moderation[/title]
 
-The term 'moderation' is usually (in web applications) applied only to discussion forums and refers to the managing of topics, posts and polls, and managing the community in general (Composr also uses the term for chatroom and Wiki+ moderation, but these are not discussed in this tutorial).
+The term 'moderation' is now very broad in terms of meaning. It could refer to the act of editing content or to the act of punishing an unruly member. For our intents and purposes in Composr, the term 'moderation' is usually applied only to discussion forums and refers to the managing of topics, posts and polls, and managing the community in general (Composr also uses the term for chatroom and Wiki+ moderation, but these are not discussed in this tutorial). We instead use the term 'warn' for punishing a member, and is covered in the [page="_SEARCH:tut_censor"]dealing with annoying users[/page] tutorial.
 
-This tutorial will explain what is possible in Composr, although these features are all very easy to find and use.
+This tutorial will explain what is possible in Composr for moderation, although these features are all very easy to find and use.
 
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Moderating topics[/title]
 
 [surround]
+[media_set]
 [media width="150" description="Moderation actions are presented underneath topics when they are individually viewed" float="right"]data_custom/images/docs/tut_moderation/mod_topic.png[/media]
 [media width="150" description="Mass moderation of topics is performed by selecting topics and then choosing an action" float="right"]data_custom/images/docs/tut_moderation/mod_topics.png[/media]
 [media width="150" description="When editing a topic, various options may be simultaneously changed" float="right"]data_custom/images/docs/tut_moderation/mod_edit_topic.png[/media]
+[/media_set]
 Topics may be individually moderated from inside the topic, or mass moderated from the forum-view, by using the 'mark topic' feature in conjunction with the 'topic actions' drop-down list.
 
 Topic moderation actions are:
@@ -29,9 +31,11 @@ All these actions are very straight-forward.
 [title="2"]Moderating posts[/title]
 
 [surround]
-[media width="150" description="Mass moving posts results in this screen" float="right"]data_custom/images/docs/tut_moderation/mod_move_posts.png[/media]
-[media width="150" description="Mass moderation of posts is performed by selecting posts and then choosing an action" float="right"]data_custom/images/docs/tut_moderation/mod_posts.png[/media]
+[media_set]
 [media width="150" description="Moderation links are present underneath posts" float="right"]data_custom/images/docs/tut_moderation/mod_post.png[/media]
+[media width="150" description="Mass moderation of posts is performed by selecting posts and then choosing an action" float="right"]data_custom/images/docs/tut_moderation/mod_posts.png[/media]
+[media width="150" description="Mass moving posts results in this screen" float="right"]data_custom/images/docs/tut_moderation/mod_move_posts.png[/media]
+[/media_set]
 Posts may be individually moderated, or mass moderated. Both these actions are done from inside the topic where the posts reside.
 
 Post moderation actions are:

@@ -1,7 +1,8 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Searching your website[/title]
 
 As you add content to your website, it becomes increasingly important that your visitors are able to find your content when they need to. Composr includes a 'search' feature, which allows you to search your entire website for content.
-Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities of the [concept]fast custom index[/concept].
+
+Under-the-hood this is implemented using either database [concept]full-text search[/concept] capabilities or the software's [concept]fast custom index[/concept].
 
 [contents]decimal,lower-alpha[/contents]
 
@@ -30,9 +31,9 @@ This is the text box where you type the content that you're searching for.
 
 [title="3"]Natural vs Boolean searching[/title]
 
-By default [concept]natural search[/concept]es are used. These are inexact but don't require so much precision by the user. For example a search for "Jump the biggest bar" might match even if "biggest" isn't in the result. Results are ranked based on how well they match. Word sequence does not matter.
+By default [concept]natural search[/concept] is used. These are inexact but don't require so much precision by the user. For example a search for "Jump the biggest bar" might match even if "biggest" isn't in the result. Results are ranked based on how well they match. Word sequence does not matter.
 
-You may also do [concept]boolean search[/concept]es which are more exact. To activate boolean search, just use any of the following [concept]boolean operator[/concept]s in your query:
+You may also do a [concept]boolean search[/concept] which is more exact. To activate boolean search, just use any of the following [concept]boolean operator[/concept]s in your query:
  - Put speech marks around words that you would like to occur in sequence
  - Put a '-' before a word to shun it
  - Put a '+' before a word to require it.
@@ -60,16 +61,16 @@ In this field, you can specify what order you would like your results shown in.
 Placing a checkmark beside each content type will cause Composr to search for entries in these content types. Clearing the checkbox will cause Composr not to search in these locations.
 
 [title="2"]Advanced searches[/title]
-
+[surround]
 [media width="150" description="Performing an advanced search for a specific content type" float="right"]data_custom/images/docs/tut_search/search_advanced.png[/media]
 Many forms of content allow additional filters which allow you to:
 1) search underneath a chosen category
 2) perform template searches on individual fields (these apply as searches on top of the main search query)
 3) specify some extra checkbox options
 An advanced search limits you to that individual content type. The advanced searching screen is reached by clicking one of the 'Advanced' links on the main search screen.
+[/surround]
 
 [title="2"]Searching from the Forum[/title]
-
 [surround]
 [media width="150" description="The search button on the forum" float="left"]data_custom/images/docs/tut_search/search_forum.png[/media]
 To initiate a search while in the forum (our own [concept]Conversr[/concept] forum), you need to click the 'Search' button on the forum or use the contextual search box on the forum member bar. The contextual search will search beneath your current forum if you are on a forum-view screen, or within your current topic if you are on a topic-view screen.

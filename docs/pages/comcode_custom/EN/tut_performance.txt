@@ -39,9 +39,10 @@ The Composr caches are:
  - [b]theme image cache[/b]: this removes the need for Composr to search for theme image files whenever they are referenced by code (a code could translate to perhaps 10 different URLs, due to the flexibility of the system)
  - [b]values caches[/b]: this isn't a specific cache, but caching of values such as member post counts removes the need for Composr to recalculate them on-the-fly
  - [b]persistent cache[/b]: this caches common data outside the database, in some kind of persistent cache handler (see the next section)
- - [b]advanced admin cache[/b]: this can be turned on in the Admin Zone configuration to let admins have cached pages on their computer that are immediately (without server communication) interstitially displayed (for roughly 1 second) while the server generates the up-to-date page
+ - [b]background template compilation[/b]: this can be turned on in the Performance configuration to let admins have cached pages on their computer that are immediately (without server communication) interstitially displayed (for a few seconds) while the server generates the up-to-date page
  - [b]static cache[/b]: this can be turned on from the Installation Options editor to feed static pages to bots or Guests
  - [b]self learning cache[/b]: this can be turned on from the Installation Options editor and allows pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront
+ - [b]code override cache[/b]: Composr compiles source code files which are overridden by custom code or non-bundled addons into the [tt]_compiled[/tt] directory; this allows future quick loading and native PHP cache support despite the overrides
 
 [box="Technical note for programmers"]
 Composr is not designed to "cache everything as it will be displayed" because the high dynamic nature of the system makes that impossible. Instead, Tempcode is typically cached against relevant parameters, which provides a "half way" between determined output and neutral data.
@@ -86,23 +87,27 @@ Do not set the persistent cache's memory (typically done in the PHP extension co
 General tips:
  - [b]Don't have addons installed that you don't need[/b]. Some may have general performance requirements, such as catalogues (adds custom fields checking to all content types) -- while others may just have general over-head in terms of sitemap generation, language string presence, moniker registration, and hook execution.
  - Enable the [b]disable_smart_decaching[/b] option in the installation options. You can make it intelligent, by only allowing smart decaching if the FTP log was modified recently.
- - If you get a lot of 404 errors, it is best to make a [b]static 404 page[/b] instead of using Composr's which can be relatively intensive. You activate a custom 404 page by putting a reference to it in the [tt].htaccess[/tt] file (Apache only; our [tt]recommended.htaccess[/tt] file does this for Composr's). Or for IIS, there is sample code in the [tt]web.config[/tt] file.
- - Enable the "Output compression" configuration option. Unless you're using Cloudflare's optimisation features, in which case disable it so Cloudflare can do that instead.
+ - If you get a lot of 404 errors (or if bots love to hit your 404 page because of the sitemap on it), it is best to make a [b]static 404 page[/b] instead of using Composr's which can be relatively intensive. You activate a custom 404 page by putting a reference to it in the [tt].htaccess[/tt] file (Apache only; our [tt]recommended.htaccess[/tt] file does this for Composr's). Or for IIS, there is sample code in the [tt]web.config[/tt] file.
+ - Enable the "Output compression" configuration option to compress output data (unless your server already does this, or you are using Cloudflare; these are recommended over using Composr's).
  - Sending e-mails can be an intensive task because Composr has to work out what CSS to include for each e-mail, put templating together, and connect through and send to the e-mail server. [b]Turning on the "E-mail queue" configuration option[/b] will avoid this happening immediately during user actions, deferring it. It will make forum posting, for example, faster.
- - Disabling URL monikers can help with performance; however this will also impact SEO if you think your URL paths are key to that.
+  - Turning this on will also reduce the risk you run into issues with getting blocklisted for spam or hitting outbound mail limits on your host.
+ - Disabling URL monikers can help with performance; however this will also impact SEO if you think your URL paths are key to that; disable only if you really have to.
  - If you use [tt]www[/tt] in your base URL, set an explicit cookie domain in [tt]_config.php[/tt] to include that. This will cause Google Analytics cookies to be set on the [tt]www[/tt] subdomain, reducing the cookie volume on other domains.
- - Deny guest access to pages that are necessarily computational intensive -- to stop bots consuming too many resources.
+  - Make extra sure first that you redirect all [tt]non-www[/tt] traffic to your [tt]www[/tt] URL.
+ - Deny guest access to pages that are necessarily computational intensive -- to stop bots consuming too many resources. Ideally, you should take advantage of the separation between the Welcome and Site zones instead of making them one zone.
  - For MySQL you can configure Composr to use persistent database connections. This is not recommended on shared hosting because it may annoy the webhost, but if you have a dedicated server it will cut down load times as a new database connection does not need to be established. These are enabled through the "Installation Options" ([tt]http://yourbaseurl/config_editor.php[/tt]).
- - There are many possible config options, or [tt]set_value[/tt] commands to tune performance described in the [page="_SEARCH:codebook_3"]Code Book[/page].
+  - This may not be necessary except if you receive a lot of traffic to your site.
+ - There are many possible config options, or [tt]set_value[/tt] commands to tune performance described in the [page="_SEARCH:codebook_3"]Code Book[/page]. Have a look at them and set ones you believe to be relevant.
  - Servers may have incorrectly firewalled DNS resolution, in which case the Composr "Spammer checking level" setting must be set to "Never" to avoid a 28 second timeout happening on each anti-spammer check.
 
 Moderation tips:
  - Avoid very long forum topics -- split them up if they get too long. This is because jumping to the latest post has to search back through all posts in the topic to work out pagination positioning. Additionally just going deep into the topic uses a lot of resources for the same kind of reason.
- - If you have large numbers of topics then consider deleting topics that have little value.
+ - If you have large numbers of topics then consider archiving topics that have little value and moving them to a separate archive forum.
 
 Stay on the well-trodden path:
  - Even though Composr supports various database vendors it is optimised for MySQL. You should also run the latest stable version so that you benefit from all their performance optimisations.
  - Even though Composr supports various third party forums it is optimised for Conversr.
+ - Even though Composr has the option for content translations it is a performance impact and should not be enabled unless necessary.
 
 [title="3"]Aggressive caching for bots[/title]
 
@@ -128,6 +133,7 @@ $SITE_INFO['disable_smart_decaching'] = '1'; // Don't check file times to check 
 $SITE_INFO['no_disk_sanity_checks'] = '1'; // Assume that there are no missing language directories, or other configured directories; things may crash horribly if they are missing and this is enabled
 $SITE_INFO['hardcode_common_module_zones'] = '1'; // Don't search for common modules, assume they are in default positions
 $SITE_INFO['prefer_direct_code_call'] = '1'; // Assume a good opcode cache is present, so load up full code files via this rather than trying to save RAM by loading up small parts of files on occasion
+$SITE_INFO['no_compiled_files'] = '1'; // Do not use the _compiled directory to store and load in code overrides; use PHP eval instead (this is a performance impact on memory and will affect stack traces, but it may make site loading faster on slow disks if you have lots of non-bundled addons or overridden code)
 
 /* Very minor ones */
 $SITE_INFO['charset'] = 'utf-8'; // To avoid having to do lookup of character set via a preload of the language file
@@ -150,9 +156,9 @@ If you're on a shared host, requests floods can even get you suspended, or your 
 
 To enable Composr's [b]inbuilt rate limiting[/b], add this to [tt]_config.php[/tt]:
 [code="PHP"]
-$SITE_INFO['rate_limiting'] = '1';
-$SITE_INFO['rate_limit_time_window'] = '10';
-$SITE_INFO['rate_limit_hits_per_window'] = '5';
+$SITE_INFO['rate_limiting'] = '1'; // 1 = enable
+$SITE_INFO['rate_limit_time_window'] = '10'; // Time window in seconds
+$SITE_INFO['rate_limit_hits_per_window'] = '5'; // The number of permitted hits within the given time window before requests are denied
 [/code]
 
 This produces soft errors with the correct HTTP header. The errors happen early, before Composr boots up.
@@ -168,7 +174,7 @@ Note that Composr does raise the limit on its own when really needed.
 $SITE_INFO['max_execution_time'] = '10'; // Ten second maximum execution time
 [/code]
 
-Note that PHP's time limit does not count time taken doing database queries and other external tasks, except on Windows servers.
+Note that PHP's time limit does not count time taken doing database queries and other external tasks, except on Windows servers. Also note that PHP's maximum execution time does not factor in other potential time limits (e.g. upstream limits such as Nginx or Cloudflare, server limits). However, generally when an upstream (gateway) timeout occurs, the PHP process continues running until it's finished or the PHP execution time is reached.
 
 [title="3"]Ensure configuration is set[/title]
 
@@ -177,6 +183,8 @@ Go through and save them all, or run this Commandr command:
 [code="Commandr"]
 :require_code('config2'); foreach (array_keys($GLOBALS['CONFIG_OPTIONS_CACHE']) as $key) if (get_option($key)!==NULL) set_option($key,get_option($key));
 [/code]
+
+This will cause all non-saved values to get saved in the database as the defaults.
 
 [title="3"]'keep' parameters[/title]
 
@@ -203,8 +211,8 @@ Comcode tips:
  - You can add [tt]{$,page hint: Quick Cache}[/tt] into Comcode pages to enable the equivalent of quick block caching for that page.
 
 Miscellaneous tips:
- - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is not commented as there are problems on some servers
- - Merge always-needed CSS and JS files into the global files via the "Globally-included CSS/JS files" configuration options
+ - Serve pre-compressed CSS and JS files, by uncommenting lines in [tt]themes/*/templates_cached/.htaccess[/tt] (Apache only); it is commented by default as there are problems on some servers (especially Windows)
+ - Merge always-needed CSS and JS files into the global files via the "Globally-included CSS/JS files" configuration options. This will increase the size of the compiled global files but will reduce network queries.
 
 
 [title="3"]Content Delivery Networks (CDNs)[/title]
@@ -331,7 +339,7 @@ An alternative is to implement a No-SQL database driver into Composr. There is n
 
 [title="4"]Composr adaptations[/title]
 
-Composr has in the past tested up to a million of the following:
+Composr has in the past tested up to a million of the following (it has not yet been done for version 11):
  - Comment topic posts for a single resource
  - Ratings for a single resource
  - Trackbacks for a single resource
@@ -448,23 +456,9 @@ You may have some kind of script that does database backups. Follows is some adv
 [*] Call [tt]mysqldump[/tt] with the [tt]--skip-lock-tables --quick --lock-tables=false[/tt] parameters. In MySQL 5.7+ there is a [tt]mysqlpump[/tt] command, which is an alternative to [tt]mysqldump[/tt]. It is more efficient and doesn't need tuning as much.
 
 [*] Do not backup the contents of certain volatile/large/non-important tables. For [tt]mysqldump[/tt] use multiple [tt]--ignore-table=database.table[/tt] parameters (you cannot omit the database name in this syntax). For [tt]mysqlpump[/tt] use a single [tt]--exclude-tables=table1,table2,table3[/tt] style parameter.
-The tables:
- - [tt]cache[/tt]
- - [tt]cached_comcode_pages[/tt]
- - [tt]captchas[/tt]
- - [tt]cron_caching_requests[/tt]
- - [tt]post_tokens[/tt]
- - [tt]messages_to_render[/tt]
- - [tt]ip_country[/tt]
- - [tt]sessions[/tt]
- - [tt]stats[/tt]
- - [tt]temp_block_permissions[/tt]
- - [tt]url_title_cache[/tt]
- - [tt]urls_checked[/tt]
- - [tt]digestives_tin[/tt]
-(put the table prefix in front of these names of course)
+You can use the provided [tt]db_export.php[/tt] script to help you with this.
 
-[*] Run the backup at a time when nobody is accessing the site.
+[*] Run the backup at a time when nobody is accessing the site (or close the site first).
 
 [*] Avoid backing up test databases, there's no need to stress your machine load to back up what does not need to be backed up.
 
@@ -584,7 +578,7 @@ A faster and more dedicated server will make Composr run faster. This may seem o
 
 CPU speed will be the most limiting factor for most websites: so this is the first thing that should be considered. Our analysis of web servers [i]targeted[/i] to enthusiasts and small businesses show that servers commonly only have around 10% of the performance of a good desktop machine -- look at the CPU family carefully, don't just count the Ghz! If you're not careful your 'server' may be a tiny ARM machine in a massive rack, with shared network storage.
 
-Go with an SSD in your machine if possible.
+Go with an SSD in your machine if possible. Or better yet, use a combination of SSD and HDD so you can get a reduced cost but can still utilise SSD for your mission-critical applications.
 
 [title="3"]The Cloud[/title]
 
@@ -646,7 +640,7 @@ In order to implement file change synchronisation, you need to create a simple P
  *
  * @param  PATH $filename File/directory name to sync on (may be full or relative path)
  */
-function master__sync_file($filename)
+function master__sync_file(string $filename)
 {
    // Implementation details up to the network administrators; might work via NFS, SCP, etc
 }
@@ -657,7 +651,7 @@ function master__sync_file($filename)
  * @param  PATH $old File/directory name to move from (may be full or relative path)
  * @param  PATH $new File/directory name to move to (may be full or relative path)
  */
-function master__sync_file_move($old, $new)
+function master__sync_file_move(string $old, string $new)
 {
    // Implementation details up to the network administrators; might work via NFS, SCP, etc
 }
@@ -788,7 +782,7 @@ There are various commands on Linux that are useful during diagnosis...
 |-
 | [tt]uptime[/tt]
 | Show the CPU load at different points in time
-| If the load level is higher than the number of CPU cores in the server, you have a serious issue.
+| If the load level is higher than the number of CPU cores in the server (especially on the 15-minute load), you have a serious issue.
 |-
 | [tt]ps -Af[/tt]
 | Show all active tasks
@@ -843,7 +837,7 @@ Some further tips:
 
 Staring at an Apache access log can be frustrating, especially if you have a lot of static file requests, or your server's traffic is split across different logs. You also can't graph a raw log.
 
-It may therefore be useful to use a custom script to visualise a log. Here is one I wrote for the composr.app web server (which runs ISPConfig):
+It may therefore be useful to use a custom script to visualise a log. Here is one written for the compo.sr web server (which ran ISPConfig) (this does not work for composr.app because composr.app runs Plesk):
 [codebox="PHP"]
 <?php
 
@@ -852,7 +846,7 @@ $cutoff = time() - 60 * 60 * 5;
 $php_only = true;
 $filter_403 = true;
 $common_fast_urls = array(
-    'https://composr.app/backend.php?type=rss&mode=news',
+    'https://compo.sr/backend.php?type=rss&mode=news',
 );
 
 error_reporting(E_ALL);
@@ -981,8 +975,7 @@ If you find the system scheduler is running slowly, you can find out which indiv
 [title="2"]Composr back-end development[/title]
 
 Tips:
- - If you have custom [tt].php[/tt] scripts that are called a lot, consider whether they could just be static files -- or if the output can be statically cached and a transparent webserver-level redirect can be used to bypass PHP. PHP has infinitely more overhead than a static file, and is often a bottleneck due to limited quantities of FastCGI workers.
- - See the non-bundled [tt]performance_compile[/tt] addon.
+ - If you have custom [tt].php[/tt] scripts that are called a lot, consider whether they could just be static files -- or if the output can be statically cached and a transparent webserver-level redirect can be used to bypass PHP. PHP has more overhead than a static file, and is often a bottleneck due to limited quantities of FastCGI workers.
 
 [title="3"]Profiling[/title]
 
@@ -996,11 +989,13 @@ Here are a few things to look at:
  - Functions called a lot (function calls are costly, perhaps the function isn't really needed that much)
  - Functions that take a long time to run individually (perhaps they can be optimised)
  - Functions that take a long time to run in aggregate (perhaps they can be optimised)
- - Disk operations called a log (e.g. [tt]is_file[/tt]) (perhaps they can be avoided)
+ - Disk operations called a lot (e.g. [tt]is_file[/tt]) (perhaps they can be avoided)
 
 [title="4"]tideways-xhprof[/title]
 
-Facebook developed xhprof, a fast profiler that can be used on live servers. It collects less detailed data than xdebug. xhprof was discontinued, but tideways-xhprof is a fork that is well maintained.
+Facebook developed xhprof, a fast profiler that can be used on live servers. It collects less detailed data than xdebug. xhprof was discontinued, and tideways-xhprof arose as a fork of it (although the fork, too, is discontinued).
+
+The below guide is for the out-dated tideways-xhprof fork.
 
 To use on a live server you can install the [url="tideways-xhprof"]https://github.com/tideways/php-xhprof-extension[/url] extension, then add this PHP code to your [tt]_config.php[/tt] file:
 [code="PHP"]
@@ -1056,7 +1051,7 @@ Newrelic and Tideways both provide high-quality performance monitoring dashboard
 
 [title="4"]Composr's inbuilt profiler[/title]
 
-Composr's built-in profiler is enabled via a hidden option (described in the Code Book, and comments in [tt]sources/profiler.php[/tt]).
+Composr's built-in profiler is enabled via a hidden option (described in the Code Book, and comments in [tt]sources/profiler.php[/tt]). Note that this will populate a lot of text files quickly, so only have it enabled when you need it.
 
 [title="4"]MySQL[/title]
 

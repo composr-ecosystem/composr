@@ -10,7 +10,7 @@ If something goes wrong with Composr/MySQL/the-server that leaves your database 
 
 [surround]
 [media width="150" description="phpMyAdmin as found in the Plesk webhosting control panel" float="right"]data_custom/images/docs/tut_sql/sql_plesk.png[/media]
-MySQL is designed as a lightweight database system, not as a full database management system (DBMS). As a result, and as a result of you not being likely to be sitting in front of the server, you will need a tool to perform database management remotely. Most webhosts provide control panel systems to do account management, and these almost always include the 'phpMyAdmin' tool. It is beyond the scope of this tutorial to explain how to enter it, but it is usually linked to on the configuration page for a MySQL database. On Plesk the link is re-titled as 'DB WebAdmin'.
+MySQL is designed as a lightweight database system, not as a full database management system (DBMS). As a result, and as a result of you not being likely to be sitting in front of the server, you will need a tool to perform database management remotely. Most webhosts provide control panel systems to do account management, and these almost always include the 'phpMyAdmin' tool. It is beyond the scope of this tutorial to explain how to enter it, but it is usually linked to on the configuration page for a MySQL database. On Plesk the link is sometimes re-titled as 'WebAdmin'.
 
 phpMyAdmin is powerful web application for managing databases and database contents.
 
@@ -20,23 +20,24 @@ It is also possible to install phpMyAdmin manually on almost any PHP webhosting 
 [title="2"]Corrupted databases[/title]
 
 [surround]
-[media width="150" description="Repairing tables" float="left"]data_custom/images/docs/tut_sql/sql_repair.png[/media]
+[media width="150" description="Repairing tables" float="right"]data_custom/images/docs/tut_sql/sql_repair.png[/media]
 MySQL has an unfortunate tendency to corrupt when a server crashes, or is stopped abruptly. Error messages may include:
  - Incorrect key file for table
  - Can't write; duplicate key in table
  - Table was marked as crashed and should be repaired
  - (...) is marked as crashed and last automatic repair failed
 
-Composr does provide an interface to the repair mechanism as an option under Admin Zone > Tools > Cleanup tools, but if corruption is bad, you may not be able to reach it. In this case, you will need to use phpMyAdmin, as shown in the screen-shot.
+Composr does provide an interface to the repair mechanism in the [tt]upgrader.php[/tt] script, but if corruption is very bad, you may not be able to reach it. In this case, you will need to use phpMyAdmin, as shown in the screen-shot.
 
 Note that if it looks like corruption has happened due to a physical disk problem, then it is absolutely crucial you back up Composr (and anything else on the server) as soon as humanely possible and make sure the server gets a disk scan, and if necessary, a new hard disk. Disk issues tend to spread, and files that touch the damaged area are 'scarred': an initially small problem could quickly irreparably destroy all your data.
 [/surround]
 
 [title="2"]Browsing the database[/title]
-
-[media width="150" description="Editing a row" float="right"]data_custom/images/docs/tut_sql/sql_edit_3.png[/media]
-[media width="150" description="Choosing a row to edit" float="right"]data_custom/images/docs/tut_sql/sql_edit_2.png[/media]
+[media_set]
 [media width="150" description="Choosing a table to edit rows of" float="right"]data_custom/images/docs/tut_sql/sql_edit_1.png[/media]
+[media width="150" description="Choosing a row to edit" float="right"]data_custom/images/docs/tut_sql/sql_edit_2.png[/media]
+[media width="150" description="Editing a row" float="right"]data_custom/images/docs/tut_sql/sql_edit_3.png[/media]
+[/media_set]
 Databases consist of:
  - tables
  - rows
@@ -48,23 +49,24 @@ A table is basically defined by a name, and the fields it contains. That table t
  - N/A
 NULL does not, however, indicate a blank string.
 
-All tables have a 'key' that allows the unique identification of any row without having to know the whole contents of that row. Usually keys are just unique numbers (IDs) assigned to rows automatically. Some people advocate choosing keys from data, but this presents problems if the data that makes up the key needs to change; for example, a username could be used as a key to a member table, but if the username was changed, Composr would need to changing potentially 1000s of references.
+All tables have a 'key' that allows the unique identification of any row without having to know the whole contents of that row. Usually keys are just unique numbers (IDs) assigned to rows automatically. Some people advocate choosing keys from data, but this presents problems if the data that makes up the key needs to change; for example, a username could be used as a key to a member table, but if the username was changed, Composr would need to change potentially 1000s of references.
 
 [box="Finding IDs"]
-To find the ID for some Composr content, the best way is usually to find a Composr URL that points to a page that is set to edit that ID; the ID will be included as a part of the URL.
+To find the ID for some Composr content, the best way is to log in as someone with Admin Zone access, go to the content, and look at the page-link in the footer. You will see something like [tt]zone:page:type:id[/tt], or [tt]zone:page:id=id[/tt], or for Comcode pages [tt]zone:page[/tt] (the ID is actually the whole thing).
 
-For example, in the URL 'index.php?page=news&type=view&id=30', the ID is 30. By convention, when IDs like this are being used as keys, they are almost always given the field name [tt]id[/tt] in the database.
+By convention, when IDs like this are being used as keys, they are almost always given the field name [tt]id[/tt] in the database. There are a few exceptions; for Comcode pages, the ID is composed of both the [tt]the_zone[/tt] and the [tt]the_page[/tt] database fields, and respectively, you need to take the zone and the page from the page-link.
 [/box]
 
 phpMyAdmin supports very user friendly features to browse the database tables, and to make changes. To browse a table, click the table icon to the left of the table names in the left hand frame, you can then browse and sort the table contents, and select rows for modification.
 
 [title="2"]Running queries[/title]
-
+[surround]
 [media width="150" description="Choosing to execute an SQL query" float="right"]data_custom/images/docs/tut_sql/sql_1.png[/media]
 [media width="150" description="Typing in the SQL query to execute" float="right"]data_custom/images/docs/tut_sql/sql_2.png[/media]
 A query is a command, or a question, sent to a database in a special language called 'SQL' (which informally is interpreted as 'structured query language').
 
 To run a query, you need to click the 'SQL' tab once you have chosen a database to view/edit. You then type in the query. In phpMyAdmin, it is often easier to use the interface to make changes, rather than working out what query to type. Occasionally the developers might suggest a query that could help solve a problem, as it is easier for us to give the query, than to explain all the mouse-clicks required. The screen-shots shown an example for executing a query to delete an item of news.
+[/surround]
 
 SQL is beyond the scope of this tutorial, but basic queries fit one of the following structures...
 
@@ -77,7 +79,7 @@ SQL is beyond the scope of this tutorial, but basic queries fit one of the follo
 
 [i]This is an advanced section designed for programmers, and you may wish to skip it.[/i]
 
-At the time of writing, Composr uses 204 tables when all bundled addons are installed.
+At the time of writing, Composr uses 283 tables when all bundled addons are installed.
 
 For the technically inclined, the database table structure is mostly in 4NF form, with the main exception being fields that are for caching purposes (such as post count) and other fields that remove the need for complex and slow 'JOIN's or 'EXIST's clauses.
 

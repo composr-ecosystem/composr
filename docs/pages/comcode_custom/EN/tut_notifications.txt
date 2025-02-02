@@ -5,16 +5,19 @@ Composr includes a highly-configurable notification system for members to be ale
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Choosing notifications[/title]
-
+[surround]
 [media width="150" description="Setting notifications" float="right"]data_custom/images/docs/tut_notifications/notifications.png[/media]
 There are a wide number of notifications that members can receive.
 Some are set to be enabled by default, and some are only available based on privileges or configuration.
 
 Some notifications allow fine-grained control, allowing you to choose to receive them only for certain notification categories. For example, with forum topic notifications you can choose to receive them only for certain forums. This is similar to what some forum software calls 'tracking'.
+[/surround]
 
-[box="Double notifications" width="25em" float="right"]
+[box="Double notifications"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/remember.png[/media]
 If you enable notifications on a particular type, but also categories of that type, you will get doubled up notifications. As Composr allows fine-grained control of different kinds of notification we don't want to add overwhelming complexity by trying to do 'smart de-duplication'. Therefore if you get duplicated notifications check your settings.
+[/surround]
 [/box]
 
 [title="2"]Forms of receipt[/title]
@@ -23,7 +26,7 @@ You can receive notifications through a number of means:
  - E-mail
  - Digest e-mail (i.e. in delayed batches; requires the system scheduler to be set up and the 'Enable digest notifications' setting to be enabled in Admin Zone > Setup > Configuration > Messages)
  - Private topics (requires the 'Enable private topic notifications' setting to be enabled in Admin Zone > Setup > Configuration > Messages)
- - {$IS_MAINTAINED,sms,SMS} (if configured, requires payment for each text message sent)
+ - {$IS_MAINTAINED,sms,SMS} (if configured, it may require payment for each text message sent)
  - Web notifications
 
 Note that private topic receipt is disabled for topic-derived notifications, in order to stop massive growth in database size.
@@ -119,9 +122,9 @@ Digest e-mails provide combined summaries of activity.
 
 It is possible digest e-mails could become very long. In this case, Composr would struggle to parse their Comcode, or the mail client may struggle with such large e-mails. Composr therefore implements a 256kb limit per digest.
 
-Members are informed if the limit is exceeded (while still given the subjects of each digest item). The member may then choose to change their settings to something more manageable (such as more regular, or smaller, digests).
+When a digest limit is reached, the remaining contents are deferred to another e-mail to be sent out an hour later.
 
-Digest e-mails are also typically viewable in the web browser in their full form providing that e-mail logging is enabled and the e-mail has not yet been cleaned up from the logs. A web version link is provided in the e-mail. This is, of course, subject to the web server's ability to handle the size of the e-mail and render it without reaching the PHP memory limit.
+Digest e-mails are also typically viewable in the web browser in their full form providing that e-mail logging is enabled and the e-mail has not yet been cleaned up from the logs. A web version link is provided in the e-mail. This is, of course, subject to the web server's ability to handle the size of the e-mail and render it without reaching the PHP memory limit. If even the web version is very long, it will be rendered in raw Comcode text format instead of parsing the Comcode into HTML (Tempcode).
 
 [title="3"]Debugging[/title]
 

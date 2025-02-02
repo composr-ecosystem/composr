@@ -16,37 +16,49 @@ Details on how to create a theme are outside the scope of this tutorial, and inc
 
 To actually make a theme pack that is ready for release, you just need to export your theme as an addon (as in the screen-shot).
 
+If your theme has only been tested with certain bundled addons it is a good idea to say which addons in the Description when filling out the addon info for export.
+
 [title="2"]Releasing your theme pack[/title]
 
-Once this is done, all you need to do is to upload the addon to our site:
-1) Go to [url="our website"]https://composr.app/[/url]
-2) Go to the Community section (you will be taken to the addons category for the most recent version)
-3) Go to the Themes category
-4) Use the 'Add a new download' link
-5) Fill in the Name/Upload/Author/Description and click the "Add a new download" button
-6) You will be invited on what to do next; we like it if users submit images to go with their theme so that's a good next step
+Once this is done, all you need to do is to upload the addon to our site.
 
-Your theme will at first not be validated (i.e. not live for download), but we will go and validate the theme as soon as we can after we receive it. Please be patient.
+[title="3"]...to the addon directory[/title]
+1) Go to [url="our website"]{$BRAND_BASE_URL}[/url].
+2) Log in to your account (or create one).
+3) Go to [page="_SEARCH:contact"]our Contact Us page[/page] (or Support > Contact Us).
+4) Select 'Submit a non-bundled addon or theme' and proceed.
+5) Fill out the short form, which includes uploading your theme pack.
+6) Proceed, which creates a Support Ticket with the Board members.
+7) Your theme will be reviewed according to our [page="_SEARCH:addon-submission"]addon submission guidelines[/page]. Once reviewed, you will receive a response on the Support Ticket.
 
-If your theme has only been tested with certain bundled addons it is a good idea to say which addons in the Description.
+If the submission is rejected, you will have two options:
+ - Fix what was noted by the core developers, and then export / re-submit again.
+ - Submit your theme to the forums instead
 
-[title="2"]Editing your theme pack[/title]
+If the submission is accepted, you will receive points and an achievement for it, and it will be listed in the addons directory for downloading and installing on any Composr site.
 
-If you have improved your theme somehow (e.g. fixed a bug), you'll want to replace the download with a newer version.
+If you later make updates to your theme (which is recommended to keep it working and optimal as Composr development progresses), follow the same submission process, except you will specify that you are submitting an updated theme rather than a new one. Additional points may be rewarded when you maintain and update your theme.
 
-You can edit your download via the edit link when viewing it.
+[title="3"]...to the forums[/title]
+Don't want to submit your theme to the Composr directory? That's fine too! You can always submit it to the forums with no prior approval required by the developers providing it does not violate any of our [page="_SEARCH:rules"]site rules[/page], such as containing viruses. Just know webmasters will not see it unless they explicitly go to the forums; it will not be listed in our addons directory. You will also not receive addon submission points nor achievements.
+
+If you later make updates to your theme (which is recommended to keep it working and optimal as Composr development progresses), just update your topic with the new version.
+
+The forum is a great place to submit themes which may not follow Composr's current vision or standards, or themes which are 'half-baked' and need community testing.
 
 [title="2"]How other users get your theme pack[/title]
 
-Theme packs are just packaged as normal Composr addons, so are installed from Admin Zone > Structure > Addons.
+For themes submitted to our directory, theme packs are just packaged as normal Composr addons, so are installed from Admin Zone > Structure > Addons.
 
 The user will need to import the addon into their own site, which they can do either by point and click (all {$BRAND_BASE_URL}'s addons are shown for easy import), or via uploading the [tt].tar[/tt] file after downloading it manually from {$BRAND_BASE_URL}.
 
 Once a theme is installed, it is available from Admin Zone > Style > Manage themes, and can be set as active.
 
+For themes submitted to the forum, webmasters must manually download your [tt].tar[/tt] file and upload/import it through Admin Zone > Structure > Addons > Import non-bundled addons. They must do the same thing when updating themes as well, though care must be taken not to accidentally overwrite any custom files.
+
 [title="2"]Automatic upgrades with new versions[/title]
 
-Themes are built for a specific version of Composr. Particularly, the CSS files used are based on those from the default theme.
+Themes are built for a specific version of Composr. Particularly, the CSS files used are (usually) based on those from the default theme.
 
 Sometimes a new version of Composr will change the CSS files, perhaps for reasons of styling a new feature, fixing a styling bug, or improving browser compatibility.
 
@@ -56,7 +68,7 @@ This upgrade process happens on individual site's that use your theme, and hence
 
 The process will never be perfect, so some manual fixes may be required. We also may change the process in the future, if/as we find better ways to do this.
 
-In any event, it is good for you to maintain the theme over time if anything has changed. Between Composr patch releases do it by editing your theme pack. Between Composr major releases do it by releasing a new version to the new Composr version's new Themes category.
+In any event, it is good for you to maintain the theme over time if anything has changed.
 
 [title="2"]See also[/title]
 

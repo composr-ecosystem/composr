@@ -1,0 +1,83 @@
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Server-side public API[/title]
+[surround]
+[media width="150" description="Other apps can interact with Composr through the API" float="right"]data_custom/images/docs/tut_endpoints/endpoints.png[/media]
+Composr employs a basic server-side public API framework for your site that can be used by third-party apps such as the [page="_SEARCH:tut_mobile_sdk"]Composr mobile SDK[/page]. You can develop your own endpoints for use by your own, or other, applications, using hooks under [tt]sources[_custom]/hooks/endpoints/[/tt].
+
+By default, Composr does not come with any endpoints. But non-bundled addons may include hooks to use, such as [tt]composr_mobile_sdk[/tt] and [tt]cms_homesite[/tt].
+
+You may want to install a browser extension such as [url="JSONView"]https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?hl=en[/url] when developing with the API. Mozilla Firefox has great JSON viewing built-in.
+[/surround]
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]URL Structure[/title]
+
+The API is split into a number of endpoints, which are given a 'hook' name, and categorised by 'hook type'. Hooks are located under [tt]sources[_custom]/hooks/endpoints/<hook-type>[/tt].
+
+Both REST-style and GET-parameter style requests can be made. We recommend using the REST-style URLs as they are widely supported and understood. But if you prefer Composr syntax, use the GET-parameter URLs instead.
+
+Here are 2 equivalent example API calls...
+ - [tt]POST http://yourbaseurl/data/endpoint.php?hook_type=somehooktype&hook=somehook&type=edit&id=someid[/tt] (GET-parameter style)
+ - [tt]PUT http://yourbaseurl/data/endpoint.php/somehooktype/somehook/someid[/tt] (REST style)
+  - Method PUT is mapped to Composr type "edit"
+  - The path after endpoint.php follows the structure [tt]<hook_type>/<hook>/<id>[/tt]
+Notice these differences:
+[list="1"]
+[*] Request method vs simple GET/POST with use of Composr-style [tt]type[/tt] parameter.
+They are mapped as follows (method=type): [tt]GET[/tt]=[tt]view[/tt], [tt]PUT[/tt]=[tt]edit[/tt], [tt]POST[/tt]=[tt]add[/tt], [tt]DELETE[/tt]=[tt]delete[/tt].
+[*] The path components after the PHP file, versus use of [tt]hook_type[/tt], [tt]hook[/tt], and [tt]id[/tt] GET parameters.
+[/list]
+
+Apart from the standardised [tt]type[/tt] and [tt]id[/tt] request parameters described above, input parameters are usually just put through as GET/POST parameters (i.e. not submitted via POSTed/PUT JSON data). Data can also be streamed to an endpoint (except in GET and HEAD requests) which is then parsed into the endpoint system via [tt]php://input[/tt] as a [tt]data[/tt] POST parameter. This is useful when using file streams to send data or when passing encrypted payloads.
+
+Different endpoints may use different parameters. It is up to the endpoint how to use the parameters, even the meaning of [tt]type[/tt] and [tt]id[/tt] is not defined and those parameters are not required by all endpoints.
+
+[title="2"]Authentication / Authorisation[/title]
+
+Endpoints can employ zero or more authorisation types listed below:
+
+[list]
+[*][b]None / false[/b]
+No authorisation is necessary to call the endpoint. This is typically used by the endpoints responsible for authorising someone (we usually cannot authorise someone if the authorisation endpoint itself requires authorisation) and for widely public content / functionality.
+[*][tt]member[/tt], [tt]staff[/tt], or [tt]super_admin[/tt]
+The person accessing the endpoint must authorise as one of the indicated members of the site, where [tt]member[/tt] is any member, [tt]staff[/tt] is any staff member (as defined by the forum driver), and [tt]super_admin[/tt] is any super-administrator (as defined by the forum driver).
+Authorisation can be performed one of these ways (if multiple methods are provided at the same time, the one closest to the top of the list will take priority):
+ - Providing an [tt]Authorization[/tt] header where the value is [tt]Basic <base-64 encoded username:password>[/tt] (the response headers will include a session cookie which you can use in future requests)
+ - (Composr Mobile SDK) Providing cookies or POST parameters ([tt]device_auth_member_id_cn[/tt]/[tt]device_auth_pass_hashed_cn[/tt]/[tt]device_auth_member_id_vl[/tt]/[tt]device_auth_pass_hashed_vl[/tt]) generated from the endpoint [tt]account/login[/tt]
+ - Providing login cookies in the request
+ - Providing a session cookie or a [tt]keep_session[/tt] URL query parameter in the request
+[*][tt]maintenance_password[/tt]
+The person accessing the endpoint must authorise using the maintenance password of the site. This should be passed as an [tt]Authorization[/tt] header with the value [tt]Basic <base-64 encoded maintenance password>[/tt]. Once authorised, the API endpoint will run on behalf of the first admin user. Note that if the maintenance password has been removed (as we generally recommend when not using maintenance scripts), then these endpoints will always throw access denied.
+[/list]
+
+If an endpoint lists more than one authorisation type, then only one of them have to pass for the endpoint to be available for use.
+
+Additional authorisation types can be developed in [tt]sources_custom/hooks/systems/endpoint_authorization[/tt]. Make sure if your addon utilises any authorisation types belonging to other addons that your addon info lists the other addons as a required dependency.
+
+[title="2"]Responses[/title]
+
+JSON is returned in the response as a structure like this:
+[code="JavaScript"]
+{
+	success: true|false,
+	error_details: string|null,
+	response_data: ...
+}
+[/code]
+
+Any endpoint may return an error as a false [tt]success[/tt], so the iOS/Android code must handle this. If there is an error, [tt]error_details[/tt] will always be set. Error messages are guaranteed to be human-readable and to be translatable, so you can show them directly to mobile users.
+
+The particular data returned within [tt]response_data[/tt] varies by endpoint.
+
+[concepts
+ 1_key="API"                     1_value="Application Program Interface; a way for programs to communicate with other programs"
+ 2_key="REST"							2_value="A read/write convention/protocol implemented in terms of standard HTTP web calls"
+ 3_key="JSON"							3_value="JavaScript object notation, a common language for transferring structured data over REST"
+]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_mobile"]Mobile design[/page]
+ - [page="_SEARCH:tut_mobile_sdk"]Mobile apps via Composr Mobile SDK[/page]
+
+{$,Quick Cache}{$SET,tutorial_tags,Mobile,Development,core,expert}{$SET,tutorial_add_date,Jan 2025}{$SET,tutorial_summary,Composr has a public server-side API framework for accessing the site through third-party apps.}[block]main_tutorial_rating[/block]

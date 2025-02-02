@@ -3,7 +3,7 @@
 This tutorial will explain how to move servers.
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
-Do not install Composr on the new one -- transference is done at the file and database level, not by importing Composr data into a new installation.
+Do not install Composr on the new one -- transference is done at the file and database level, not by importing Composr data into a new installation (which may instead be a route one would go when upgrading Composr site to a new major version).
 
 The Composr quick installer handles all the work to installing Composr on a server automatically. However, if you choose to move to another server, some of this work will need to be re-done. This tutorial will explain the issues involved here.
 
@@ -21,7 +21,7 @@ To copy to another server/hosting-account, you would need to copy both.
 
 [title="2"]Files[/title]
 
-Composr has an enormous number of files. The quick installer extracts all of these to the server so that you do not need to be concerned with transferring them individually.
+Composr has an enormous number of files (at the time of writing, over 8,000 excluding non-bundled addons). The quick installer extracts all of these to the server so that you do not need to be concerned with transferring them individually.
 
 The good news is that most webhosting control panels come with high quality file managers. To transfer files follow the following process:
 1) Log in to your control panel in the old server.
@@ -53,7 +53,7 @@ If you do not have such access:
 
 [title="2"]Database contents[/title]
 
-Almost your site data is stored in the database so it is crucial that database contents is backed up, transferred, and restored, to the new server.
+Almost all your site data is stored in the database so it is crucial that database contents is backed up, transferred, and restored, to the new server.
 
 Backup is best done using the shell, via the [tt]mysqldump[/tt] command.
 [code="Bash"]
@@ -89,6 +89,12 @@ You may need to update the following settings:
  - [tt]db_forums_host[/tt]
  - [tt]db_forums_user[/tt]
  - [tt]db_forums_password[/tt]
+
+[box="Don't need flushable data?"]
+If you don't need to transfer flushable data in your database (which can get very large), such as the stats table or cache tables, and you are running on a Linux server, you can instead run the [tt]db_export.sh[/tt] and [tt]db_import.sh[/tt] Bash scripts. Run [tt]db_export.sh[/tt] on the old site, and then, after updating [tt]_config.php[/tt] on the new site to the correct database credentials, run [tt]db_import.sh[/tt].
+
+This is generally not recommended unless you have a database size contraint on the new server.
+[/box]
 
 [title="2"]Changing URL[/title]
 

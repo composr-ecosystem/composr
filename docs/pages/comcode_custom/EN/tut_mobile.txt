@@ -68,7 +68,7 @@ Any regular expression will work, this is just an example. Composr recognises a 
 
 [title="2"]Mobile mode themeing[/title]
 
-You can use the Tempcode [tt]{$MOBILE}[/tt] symbol to make changes based on what mode things are running in:
+You can use the Tempcode [tt]{$MOBILE}[/tt] and [tt]{$DESKTOP}[/tt] symbols to make changes based on what mode things are running in:
 [code="Tempcode"]
 {+START,IF,{$MOBILE}}
 This shows to mobile devices.
@@ -108,7 +108,7 @@ Consider this sample code:
 	...
 {+END}
 [/code]
-On mobile mode perform this will perform some basic conversions on the enclosed HTML to make it mobile-friendly. It is very rough.
+On mobile mode this will perform some basic conversions on the enclosed HTML to make it mobile-friendly. It is very rough.
 
 At the time of writing this covers the following:
  - Converting tables into [tt]div[/tt]s, or making them responsive
@@ -191,10 +191,10 @@ This is the code Composr now uses in [tt]HTML_HEAD.tpl[/tt]:
 {$,iPhone/Android/etc should know they have an optimised design heading to them}
 {+START,IF,{$MOBILE}}
 	{+START,IF,{$NOT,{$_GET,overlay}}}
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 	{+END}
 	{+START,IF,{$_GET,overlay}}
-		<meta name="viewport" content="width=285, user-scalable=yes" />
+		<meta name="viewport" content="width=280, initial-scale=1, user-scalable=yes" />
 	{+END}
 {+END}
 {+START,IF,{$DESKTOP}}
@@ -207,7 +207,7 @@ This is the code Composr now uses in [tt]HTML_HEAD.tpl[/tt]:
 {+END}
 [/code]
 
-In Composr, mobile mode is used for smartphones. Tablets do not use mobile mobile. I realise in my explanations so far I have referred to tablets as mobile devices, but you'll need to put that aside now ;-). They are mobile devices in the sense they have a touch screen and a panned viewport, but not in the sense of Composr reducing down it's layout via it's mobile mode. As you can see, we define separately for mobile mode (again, smartphones) and non-mobile mode (essentially this means tablets, as desktops won't use the viewport setting).
+In Composr, mobile mode is used for smartphones. Tablets do not use mobile mode. I realise in my explanations so far I have referred to tablets as mobile devices, but you'll need to put that aside now ;-). They are mobile devices in the sense they have a touch screen and a panned viewport, but not in the sense of Composr reducing down its layout via its mobile mode. As you can see, we define separately for mobile mode (again, smartphones) and non-mobile mode (essentially this means tablets, as desktops won't use the viewport setting).
 
 I'm going to simplify things down a bit for my explanation, removing the stuff in our code about overlays. It's not worth the added confusion.
 
@@ -268,9 +268,9 @@ Google Chrome has excellent developer tools for simulating different mobile devi
 While mobile/tablet devices are amazing in their power, they are still fundamentally limited when compared to traditional desktop browsers.
 
 Here are some things to bear in mind:
- - Mobile processors are much slower than desktop processors. Don't overload your site with too much JavaScript.
+ - Mobile processors are (usually) much slower than desktop processors. Don't overload your site with too much JavaScript or animated / HD graphics.
  - Users will often be accessing on slow mobile connections, so keep your page weight reasonable.
- - Don't try and squeeze too many dynamic features on any single page. Instead you should take it as an opportunity to allow your design to 'breath' and spread features out over a number of pages.
+ - Don't try and squeeze too many dynamic features on any single page. Instead you should take it as an opportunity to allow your design to 'breathe' and spread features out over a number of pages.
  - The idea of 'hovering' (hovering the mouse) is not really there on mobile. Browsers let you tap to activate hover status, but it's really not very good.
   - Never put critical data inside tooltips. Consider tooltips an enhancement that benefit desktop users, rather than a key place where you can put important information.
   - Don't spend too much energy making fancy hover states (fades, colour changes, etc) for things if your audience is unlikely to see them.

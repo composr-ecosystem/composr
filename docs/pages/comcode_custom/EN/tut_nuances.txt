@@ -24,8 +24,7 @@ There are many advantages to use Conversr, such as:
  - the forum will use the same theme and basic templates as Composr
  - there is no need to learn concepts from two pieces of software: Conversr has perfect integration on all levels
  - Conversr is full of innovative features that other forum systems do not have (such as Private Topics and in-post whispers) -- it's actually a very powerful system in its own right
-
-Frankly speaking, using a third-party forum is far too clunky for the modern user to tolerate, costly to maintain, and may give you a headache. If we were recreating Composr today we wouldn't include support for third-party forums. We only continue to maintain the functionality because it is sometimes necessary to connect to pre-established membership systems.
+ - Conversr is maintained just as much as the core Composr code, unlike third-party forum drivers which may be outdated or completely broken
 
 [title="2"]A further word of caution[/title]
 
@@ -62,26 +61,30 @@ It is very common for Composr users to install Composr with the forum base URL w
 
 The forum base URL should not include a script name -- it should be a URL-prefix to your forums. For example,
  - [tt]http://forums.example.com[/tt] would be okay
+ - [tt]http://example.com/forums[/tt] would also be okay
+ - [tt]http://example.com/forum[/tt] (or any paths to an existing Composr zone) would probably not work because Composr has its own 'forum' zone; now if you had a redirect rule in place to redirect this to another site (e.g. the forum), then it would probably work (but the Composr forum zone cannot be accessed anymore)
  - [tt]http://forums.example.com/index.php[/tt] would not have been correct, as Composr won't be able to find emoticon image URLs by using this as a prefix (imagine [tt]http://forums.example.com/index.php/styles/emoticons/smile.png[/tt] -- clearly that would be wrong)
- - [tt]http://forums.example.com/[/tt] would work -- but the final slash is not required (we don't want to have double slashes in the generated URLs)
+ - [tt]http://forums.example.com/[/tt] would technically work, but this would result in a double-slash in the URL
 
 [title="2"]Show forum within website[/title]
-
+[surround]
+[media_set]
+[media width="150" description="The default forum link before you fix it..."]data_custom/images/docs/tut_nuances/nuances_forum_menu_1.png[/media]
+[media width="150" description="...and this is how you should make it be"]data_custom/images/docs/tut_nuances/nuances_forum_menu_2.png[/media]
 [media width="150" description="Configuring Composr to generate in-line forum links from:
-Admin Zone > Setup > Configuration > Site options > Advanced" float="left"]data_custom/images/docs/tut_nuances/nuances_3.png[/media]
-[media width="150" description="...and this is how you should make it be" float="right"]data_custom/images/docs/tut_nuances/nuances_forum_menu_2.png[/media]
-[media width="150" description="The default forum link before you fix it..." float="right"]data_custom/images/docs/tut_nuances/nuances_forum_menu_1.png[/media]
+Admin Zone > Setup > Configuration > Site options > Advanced"]data_custom/images/docs/tut_nuances/nuances_3.png[/media]
+[/media_set]
 Composr has a feature for {$IS_MAINTAINED,forum_in_portal,integration of your forum into the website}, so that it fits between your menus, and your header and footer. For this to work, Composr loads up the forum on-server, and integrates its HTML code and CSS into the HTML code and CSS of Composr; it also relays cookies, to give the illusion that you are interacting directly with the forum code.
 
 This feature can be turned on from the Admin Zone configuration module, and once on, any Composr generated forum link will be passed through the module (such as links to member profiles). You will also need to replace the forum link in the menu so as to pass through the 'forums' embedding module, as the menus are not managed by the configuration options. To do this, click the "edit menu" link underneath the menu, and make the change as identified in the screenshots.
 
 Be aware that the forum and Composr both will look a bit weird because it will be running with two sets of CSS sheets that have not been designed to work together. It is up to you to make things look seamless.
-
+[/surround]
 [title="3"]Example of making the CSS work together[/title]
 
 This example is for phpBB 3's default skin.
 
-If will help a lot with the integration if you add this to Composr's [tt]global.css[/tt]...
+It will help a lot with the integration if you add this to Composr's [tt]global.css[/tt]...
 [code="CSS"]
 .global-middle #wrap {
 	float: left;

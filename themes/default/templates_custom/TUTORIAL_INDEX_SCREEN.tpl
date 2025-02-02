@@ -18,7 +18,7 @@
 
 		{+START,LOOP,TUTORIALS}
 			<div class="box box---tutorials-screen-tutorial"><div class="box-inner">
-				<h3>{TITLE*}</h3>
+				<h3><a href="{URL*}">{TITLE*}</h3>
 
 				<a class="left spaced tutorial-thumbnail" href="{URL*}"><img width="100" height="100" src="{ICON*}" alt="" /></a>
 
