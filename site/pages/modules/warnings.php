@@ -200,6 +200,8 @@ class Module_warnings extends Standard_crud_module
      */
     public function get_form_fields(bool $new = true, string $explanation = '', int $is_warning = 1, ?int $member_id = null) : array
     {
+        require_code('form_templates');
+
         if ($member_id === null) {
             $member_id = get_param_integer('member_id', get_member());
         }
@@ -230,10 +232,22 @@ class Module_warnings extends Standard_crud_module
 
         $this->add_text = new Tempcode();
 
+        // Make sure if multiple staff are trying to warn the same member at the same time, they know about it
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id));
+        if ($ping_url !== null) {
+            $this->add_text->attach(do_template('HANDLE_CONFLICT_RESOLUTION', [
+                '_GUID' => 'TODO',
+                'PING_URL' => $ping_url,
+            ]));
+        }
+        if ($warning_details !== null) {
+            $this->add_text->attach($warning_details);
+        }
+
         // Information about their history, and the rules - to educate the warner/punisher
         if ($new) {
             $hidden->attach(form_input_hidden('member_id', strval($member_id)));
-            $this->add_text = do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]);
+            $this->add_text->attach(do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]));
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
