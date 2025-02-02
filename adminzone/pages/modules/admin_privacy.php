@@ -392,9 +392,13 @@ class Module_admin_privacy
         }
 
         list($_result) = $data;
+        if ($_result === null) {
+            return warn_screen($title, do_lang_tempcode('TELEMETRY_STATUS_ERROR', escape_html(get_brand_base_url())));
+        }
+
         $http_result = @json_decode($_result, true);
         if (($http_result === false) || ($http_result['success'] === false)) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2b897dae185d5cc9b44b392cb6959adb')));
+            return warn_screen($title, do_lang_tempcode('TELEMETRY_STATUS_ERROR', escape_html(get_brand_base_url())));
         }
 
         $data = $http_result['response_data']['data'];
