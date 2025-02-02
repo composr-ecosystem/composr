@@ -178,7 +178,7 @@ class Hook_sitemap_banner extends Hook_sitemap_content
      * @param  array $row Calendar type row
      * @param  array $struct Target structure
      */
-    protected function _find_theme_image(array $row, array &$struct)
+    public function _find_theme_image(array $row, array &$struct)
     {
     }
 }

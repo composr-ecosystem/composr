@@ -5415,6 +5415,7 @@ class Hook_import_cms_merge
 
     /**
      * Import alternative IDs of a given resource type.
+     * This must be called *after* importing the resources into the database and making note of their new IDs to map.
      *
      * @param  object $db The database connector to import from
      * @param  ID_TEXT $resource_type The value of resource_type in the db to import
