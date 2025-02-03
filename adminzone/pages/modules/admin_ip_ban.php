@@ -253,7 +253,7 @@ class Module_admin_ip_ban
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
 
         return do_template('IP_BAN_SCREEN', [
             '_GUID' => '963d24852ba87e9aa84e588862bcfecb',

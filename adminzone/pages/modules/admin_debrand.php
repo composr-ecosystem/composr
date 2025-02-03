@@ -170,6 +170,10 @@ class Module_admin_debrand
         $post_url = build_url(['page' => '_SELF', 'type' => 'actual'], '_SELF');
         $submit_name = do_lang_tempcode('PROCEED');
 
+        // In theory should never happen, but it's there just in case multiple people are trying to de-brand at the same time
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'fd47f191ac51f7754eb17e3233f53bcc',
             'HIDDEN' => '',
@@ -179,6 +183,8 @@ class Module_admin_debrand
             'TEXT' => do_lang_tempcode('WARNING_SUPER_DEBRAND_MAJOR_CHANGES'),
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

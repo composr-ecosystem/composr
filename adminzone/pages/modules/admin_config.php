@@ -639,7 +639,7 @@ class Module_admin_config
             $_groups[$group_codename] = $group_title;
         }
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution($category);
 
         // Render
         return do_template('CONFIG_CATEGORY_SCREEN', [
@@ -789,11 +789,16 @@ class Module_admin_config
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml_fields'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => 'cc21f921ecbdbdf83e1e28d2b3f75a3a',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/fields.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/fields.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -823,11 +828,16 @@ class Module_admin_config
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml_breadcrumbs'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => '456f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/breadcrumbs.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/breadcrumbs.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -857,11 +867,16 @@ class Module_admin_config
     {
         $post_url = build_url(['page' => '_SELF', 'type' => '_advanced_banning'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => '123f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/advanced_banning.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

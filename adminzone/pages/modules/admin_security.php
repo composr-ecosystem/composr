@@ -277,6 +277,10 @@ class Module_admin_security
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'clean', 'start' => $start, 'max' => $max], '_SELF');
 
+        // We have actionable items on this screen (clearing security alerts)
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         $tpl = do_template('SECURITY_SCREEN', [
             '_GUID' => 'e0b5e6557686b2320a8ce8166df07328',
             'TITLE' => $this->title,
@@ -286,6 +290,8 @@ class Module_admin_security
             'NUM_ALERTS' => strval($num_alerts),
             'URL' => $post_url,
             'FILTERCODE_BOX' => $filtercode_box,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');

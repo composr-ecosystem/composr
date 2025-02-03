@@ -197,6 +197,9 @@ class Module_admin_make_release
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step2', 'skip' => strval(get_param_integer('skip', 0))], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'e3f3611da7a35c1cd44ae636afdfe95a',
             'GET' => false,
@@ -208,6 +211,8 @@ class Module_admin_make_release
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'FIELDS' => $fields,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -552,6 +557,9 @@ class Module_admin_make_release
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step3'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '27fc1274f3bb4ef33c647c98737231ab',
             'GET' => false,
@@ -563,6 +571,8 @@ class Module_admin_make_release
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'FIELDS' => $fields,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -620,6 +630,10 @@ class Module_admin_make_release
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step4'], '_SELF');
 
+        // Actually we do not need this anymore at this point as the installers were built
+        //require_code('form_templates');
+        //list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '8c8928e30de3be54e13fa65029c18afa',
             'GET' => false,
@@ -631,6 +645,8 @@ class Module_admin_make_release
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'FIELDS' => new Tempcode(),
             'URL' => $post_url,
+            //'WARNING_DETAILS' => $warning_details,
+            //'PING_URL' => $ping_url,
         ]);
     }
 

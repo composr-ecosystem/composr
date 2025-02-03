@@ -385,7 +385,11 @@ class Module_admin_lang
             $files .= $file_result->evaluate();/*Conserve memory*/
         }
 
-        return do_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', ['_GUID' => '62d6f40ca69609a8fd33704a8a38fb6f', 'TITLE' => $this->title, 'FILES' => $files]);
+        return do_template('TRANSLATE_LANGUAGE_CRITICISE_SCREEN', [
+            '_GUID' => '62d6f40ca69609a8fd33704a8a38fb6f',
+            'TITLE' => $this->title,
+            'FILES' => $files
+        ]);
     }
 
     /**
@@ -511,6 +515,9 @@ class Module_admin_lang
         require_code('templates_pagination');
         $pagination = pagination(do_lang_tempcode('TRANSLATE_CONTENT'), $start, 'start', $max, 'max', $total, true);
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($lang);
+
         return do_template('TRANSLATE_SCREEN_CONTENT_SCREEN', [
             '_GUID' => 'af732c5e595816db1c6f025c4b8fa6a2',
             'MAX' => integer_format($max),
@@ -525,6 +532,8 @@ class Module_admin_lang
             'TITLE' => $this->title,
             'URL' => $url,
             'PAGINATION' => $pagination,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -790,6 +799,9 @@ class Module_admin_lang
         require_code('templates_pagination');
         $pagination = pagination(do_lang_tempcode('LANGUAGE_STRINGS'), $start, 'start', $max, 'max', $i);
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($lang . '::' . $lang_file);
+
         return do_template('TRANSLATE_SCREEN', [
             '_GUID' => 'b3429f8bd0b4eb79c33709ca43e3207c',
             'PAGE' => $lang_file,
@@ -799,6 +811,8 @@ class Module_admin_lang
             'TITLE' => $this->title,
             'URL' => $url,
             'PAGINATION' => $pagination,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

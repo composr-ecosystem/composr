@@ -255,7 +255,7 @@ class Module_admin_tickets
     }
 
     /**
-     * The UI to edit a ticket.
+     * The UI to edit a ticket type.
      *
      * @return Tempcode The UI
      */
@@ -288,6 +288,9 @@ class Module_admin_tickets
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '09e6f1d2276ee679f280b33a79bff089', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('DELETE'), do_lang_tempcode('DESCRIPTION_DELETE'), 'delete', false));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($ticket_type_id));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '0a505a779c1639fd2d3ee10c24a7905a',
             'SKIP_WEBSTANDARDS' => true,
@@ -299,6 +302,8 @@ class Module_admin_tickets
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
             'SUPPORT_AUTOSAVE' => true,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

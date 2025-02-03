@@ -467,7 +467,7 @@ class Module_cms_wiki
 
         $posting_form = get_posting_form(do_lang('SAVE'), 'admin/edit_this_category', $description, $edit_url, $hidden, $fields, do_lang_tempcode('PAGE_TEXT'), '', $fields2, $_description, [], null, false);
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
 
         return do_template('POSTING_SCREEN', [
             '_GUID' => 'de53b8902ab1431e0d2d676f7d5471d3',

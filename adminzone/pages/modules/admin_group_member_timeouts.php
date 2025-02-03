@@ -159,7 +159,7 @@ class Module_admin_group_member_timeouts
         $pagination = pagination(do_lang_tempcode('GROUP_MEMBER_TIMEOUTS'), $start, 'start', $max, 'max', $max_rows);
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
 
         $ret = do_template('GROUP_MEMBER_TIMEOUT_MANAGE_SCREEN', [
             '_GUID' => '83753cb500b04f741c0875f64dc6ad2f',

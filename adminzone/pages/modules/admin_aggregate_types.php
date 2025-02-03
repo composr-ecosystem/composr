@@ -459,11 +459,16 @@ class Module_admin_aggregate_types extends Standard_crud_module
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_xml'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false); // Editing XML also could affect editing instances
+
         return do_template('XML_CONFIG_SCREEN', [
             '_GUID' => '2303459e94b959d2edf8444188bbeea9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'XML' => file_exists(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') ? cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/aggregate_types.xml') : cms_file_get_contents_safe(get_file_base() . '/data/xml_config/aggregate_types.xml', FILE_READ_LOCK | FILE_READ_BOM),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

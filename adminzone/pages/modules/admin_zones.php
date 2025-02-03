@@ -262,7 +262,7 @@ class Module_admin_zones
     }
 
     /**
-     * The UI for the zone editor.
+     * The UI for the zone (panel/block) editor.
      *
      * @return Tempcode The UI
      */
@@ -488,7 +488,7 @@ class Module_admin_zones
             ]));
         }
 
-        list($warning_details, $ping_url) = handle_conflict_resolution($id);
+        list($warning_details, $ping_url) = handle_conflict_resolution($id, false); // false for type so this works on editing the actual zone settings too
 
         // Links to edit the panels
         $panel_top_edit_url_map = ['page' => 'cms_comcode_pages', 'type' => '_edit', 'lang' => $lang, 'page_link' => $id . ':panel_top'];
@@ -915,6 +915,9 @@ class Module_admin_zones
         $post_url = build_url($map, '_SELF');
         $submit_name = do_lang_tempcode('SAVE');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($zone, false); // false for type so this works on the block/panel editor as well
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '54a578646aed86da06f30c459c9586c2',
             'JS_FUNCTION_CALLS' => $js_function_calls,
@@ -926,6 +929,8 @@ class Module_admin_zones
             'URL' => $post_url,
             'TEXT' => '',
             'SUPPORT_AUTOSAVE' => true,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

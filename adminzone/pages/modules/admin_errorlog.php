@@ -152,7 +152,7 @@ class Module_admin_errorlog
         }
 
         if ($type == 'download_log') {
-            return $this->download_log();
+            $this->download_log(); // exits
         }
 
         if ($type == 'enable_cron_hook') {
@@ -421,12 +421,18 @@ class Module_admin_errorlog
 
         $clear_url = build_url(['page' => '_SELF', 'type' => 'clear_log', 'id' => 'errorlog'], '_SELF');
 
+        // We can clear and delete logs on this screen, so we need conflict resolution
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         $tpl = do_template('ERRORLOG_SCREEN', [
             '_GUID' => '9186c7beb6b722a52f39e2cbe16aded6',
             'TITLE' => $this->title,
             'ERRORS' => $errors,
             'LOGS' => $logs,
             'CLEAR_URL' => $clear_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');
@@ -583,11 +589,17 @@ class Module_admin_errorlog
 
         $table = results_table(do_lang_tempcode('CRON_HOOKS'), 0, 'start', 1000, 'max', 1000, $header_row, $result_entries);
 
+        // This is an actionable screen (enabling / disabling hooks), so we need conflict resolution
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '5e2911f8e43aec63f5a45f2a8fc375cd',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
             'URL' => null,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');
@@ -690,9 +702,9 @@ class Module_admin_errorlog
     /**
      * Download log actualiser.
      *
-     * @return Tempcode The result of execution
+     * @exits
      */
-    public function download_log() : object
+    public function download_log()
     {
         $log_file = filter_naughty(get_param_string('id'));
         if ($log_file == 'errorlog') {
@@ -709,7 +721,5 @@ class Module_admin_errorlog
 
         $GLOBALS['SCREEN_TEMPLATE_CALLED'] = '';
         exit();
-
-        return new Tempcode();
     }
 }

@@ -3,6 +3,11 @@
 
 {TITLE}
 
+{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+{+START,IF_PASSED,WARNING_DETAILS}
+	{WARNING_DETAILS}
+{+END}
+
 {+START,IF,{$NEQ,{LANG},EN}}
 	<p>
 		{!TRANSLATION_GUIDE,https://www.transifex.com/organization/ocproducts/dashboard/composr-cms-{$VERSION_NUMBER*,1},{LANG},{$TUTORIAL_URL,tut_intl}}

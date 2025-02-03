@@ -193,6 +193,9 @@ class Module_admin_referrals
         $is_qualified_list->attach(form_input_list_entry('0', $is_qualified === 0, do_lang_tempcode('NO')));
         $fields->attach(form_input_list(do_lang_tempcode('IS_QUALIFIED'), '', 'is_qualified', $is_qualified_list, null, false, false));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '7e28b416287fb891c2cd7029795e49f0',
             'TITLE' => $this->title,
@@ -202,6 +205,8 @@ class Module_admin_referrals
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

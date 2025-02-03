@@ -58,9 +58,14 @@ if ($type == 'save') {
     }
 }
 
+require_code('form_templates');
+list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
 return do_template('XML_CONFIG_SCREEN', [
     '_GUID' => 'feb50a2637586dbb75ed5ddb41e4f01b',
     'TITLE' => $title,
     'POST_URL' => $post_url,
     'XML' => $xml,
+    'WARNING_DETAILS' => $warning_details,
+    'PING_URL' => $ping_url,
 ]);

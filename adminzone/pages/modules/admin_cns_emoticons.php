@@ -210,6 +210,10 @@ class Module_admin_cns_emoticons extends Standard_crud_module
         $hidden->attach(form_input_hidden('test', '1'));
         handle_max_file_size($hidden);
 
+        // We need conflict resolution because importing could overwrite existing emoticons which someone might be editing
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '1910e01ec183392f6b254671dc7050a3',
             'TITLE' => $this->title,
@@ -219,6 +223,8 @@ class Module_admin_cns_emoticons extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => $hidden,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

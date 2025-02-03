@@ -3,6 +3,11 @@
 <div data-tpl="revisionsScreen">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	{+START,IF,{INCLUDE_FILTER_FORM}}
 		<div class="box box-revisions-screen clearfix"><div class="box-inner">
 			<form title="{!PRIMARY_PAGE_FORM}" action="{$URL_FOR_GET_FORM*,{$SELF_URL}}" method="get">

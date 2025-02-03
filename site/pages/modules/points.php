@@ -886,12 +886,18 @@ class Module_points
                     if ($confirm == 0) {
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_CREDIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance + $amount)), escape_html(get_timezoned_date_time(time(), false))]);
+
+                        require_code('form_templates');
+                        list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id_of), false);
+
                         return do_template('CONFIRM_SCREEN', [
                             '_GUID' => 'd47561c4e730c016894ffea26cf40fdf',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
                             'FIELDS' => build_keep_post_fields(),
+                            'WARNING_DETAILS' => $warning_details,
+                            'PING_URL' => $ping_url,
                         ]);
                     }
 
@@ -917,12 +923,18 @@ class Module_points
                     if ($confirm == 0) {
                         $member_points_balance = points_balance($member_id_of);
                         $preview = do_lang_tempcode('ARE_YOU_SURE_TRANSACTION_DEBIT', escape_html($member_of), escape_html(integer_format($amount)), [escape_html(integer_format($member_points_balance)), escape_html(integer_format($member_points_balance - $amount)), escape_html(get_timezoned_date_time(time(), false))]);
+
+                        require_code('form_templates');
+                        list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id_of), false);
+
                         return do_template('CONFIRM_SCREEN', [
                             '_GUID' => '5d8220d71226c59e222f9376af68bd64',
                             'TITLE' => $this->title,
                             'PREVIEW' => $preview,
                             'URL' => get_self_url(false, false, ['confirm' => 1]),
                             'FIELDS' => build_keep_post_fields(),
+                            'WARNING_DETAILS' => $warning_details,
+                            'PING_URL' => $ping_url,
                         ]);
                     }
 
@@ -1291,6 +1303,9 @@ class Module_points
 
             $url = build_url(['page' => '_SELF', 'type' => 'dispute_escrow', 'id' => $id], '_SELF');
 
+            // Only one person can dispute an escrow, so we need conflict resolution
+            list($warning_details, $ping_url) = handle_conflict_resolution(null, 'escrow');
+
             return do_template('FORM_SCREEN', [
                 '_GUID' => '7c7068dcdf6aa36c0ef83c61f24972a2',
                 'HIDDEN' => new Tempcode(),
@@ -1301,6 +1316,8 @@ class Module_points
                 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
                 'URL' => $url,
                 'JS_FUNCTION_CALLS' => [],
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
             ]);
         }
 
@@ -1379,6 +1396,8 @@ class Module_points
 
             $url = build_url(['page' => '_SELF', 'type' => 'moderate_escrow', 'id' => $id], '_SELF');
 
+            list($warning_details, $ping_url) = handle_conflict_resolution(null, 'escrow');
+
             require_javascript('points_escrow');
             return do_template('FORM_SCREEN', [
                 '_GUID' => '4160b8a06c60cd52dbdbfb3dba5b6452',
@@ -1390,6 +1409,8 @@ class Module_points
                 'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
                 'URL' => $url,
                 'JS_FUNCTION_CALLS' => ['modulePointsEscrowModerate'],
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
             ]);
         }
 

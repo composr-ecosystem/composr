@@ -1,6 +1,11 @@
 <div data-view="AddonInstallConfirmScreen">
 {TITLE}
 
+{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+{+START,IF_PASSED,WARNING_DETAILS}
+	{WARNING_DETAILS}
+{+END}
+
 {WARNINGS}
 
 <form title="{!PRIMARY_PAGE_FORM}" action="{URL*}" method="post" data-submit-modsecurity-workaround="1">

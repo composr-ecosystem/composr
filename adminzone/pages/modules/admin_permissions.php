@@ -449,6 +449,9 @@ class Module_admin_permissions
         $fields->attach(form_input_list(do_lang_tempcode('FROM'), do_lang_tempcode('PERMISSIONS_FROM'), 'from', $list1));
         $fields->attach(form_input_list(do_lang_tempcode('TO'), do_lang_tempcode('PERMISSIONS_TO'), 'to', $list2));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false); // This alters privileges across the board, so it is sensitive
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '9e20011006a26b240fc898279338875c',
             'SKIP_WEBSTANDARDS' => true,
@@ -459,6 +462,8 @@ class Module_admin_permissions
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -516,6 +521,9 @@ class Module_admin_permissions
         require_code('permissions2');
         $editor = get_permissions_matrix('', [], [], [], [], false);
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false); // Interactive, so anything can be edited thus must be treated sensitive
+
         return do_template('PERMISSIONS_TREE_EDITOR_SCREEN', [
             '_GUID' => '08bb679a7cfab45c0c29b5393666dd57',
             'USERGROUPS' => $all_groups,
@@ -524,6 +532,8 @@ class Module_admin_permissions
             'COLOR' => $color,
             'GROUPS' => $groups,
             'EDITOR' => $editor,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -673,6 +683,9 @@ class Module_admin_permissions
             $rows2->attach(do_template('PERMISSION_KEYS_MESSAGE_ROW', ['_GUID' => 'bf52d4ac938ce5c495b89d06a4cb9e5e', 'KEY' => $row['k_match_key'], 'MSG' => $msg, 'UID' => is_integer($row['id']) ? strval($row['id']) : $row['id']]));
         }
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('PERMISSION_KEYS_PERMISSIONS_SCREEN', [
             '_GUID' => '61a702db2df67adb2702ae6c7081b4ab',
             'TITLE' => $this->title,
@@ -681,6 +694,8 @@ class Module_admin_permissions
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
             'ROWS2' => $rows2,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -945,6 +960,9 @@ class Module_admin_permissions
         require_code('themes2');
         $color = ltrim(find_theme_seed($GLOBALS['FORUM_DRIVER']->get_theme()), '#');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($group_id));
+
         return do_template('PERMISSIONS_CONTENT_ACCESS_SCREEN', [
             '_GUID' => '2fe42ea12ddacb75cc66914c74a4ef8d',
             'TITLE' => $this->title,
@@ -952,6 +970,8 @@ class Module_admin_permissions
             'MODULES' => $modules,
             'URL' => $url,
             'COLOR' => $color,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -1391,6 +1411,9 @@ class Module_admin_permissions
             $rows->attach(do_template('PERMISSION_ROW', $tpl_map));
         }
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution();
+
         return do_template('PERMISSION_PRIVILEGES_SCREEN', [
             '_GUID' => '11974f0a137266a625991d3611b8e587',
             'TITLE' => $this->title,
@@ -1398,6 +1421,8 @@ class Module_admin_permissions
             'COLS' => $cols,
             'HEADER_CELLS' => $header_cells,
             'ROWS' => $rows,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

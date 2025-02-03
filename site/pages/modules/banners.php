@@ -557,6 +557,10 @@ class Module_banners
             $reset_url = build_url(['page' => '_SELF', 'type' => 'reset', 'source' => $source], '_SELF');
         }
 
+        // Conflict resolution for reset banner statistics (staff)
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($source, null, true);
+
         // ---
 
         return do_template('BANNER_VIEW_SCREEN', [
@@ -568,6 +572,8 @@ class Module_banners
             'RESULTS_TABLE' => $results_table,
             'RESET_URL' => $reset_url,
             'NAME' => $source,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

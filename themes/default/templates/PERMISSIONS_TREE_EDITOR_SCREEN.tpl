@@ -1,6 +1,11 @@
 <div data-view="PermissionsTreeEditorScreen" data-view-params="{+START,PARAMS_JSON,COLOR,USERGROUPS}{_*}{+END}">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<p>{!PERMISSIONS_TREE_EDITOR_ABOUT_PRIVILEGE,{$PAGE_LINK*,adminzone:admin_permissions:specific}}</p>
 
 	<div class="pte-sitemap-and-help-box-wrapper">

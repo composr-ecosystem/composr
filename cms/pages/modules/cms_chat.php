@@ -388,7 +388,22 @@ class Module_cms_chat
         if (addon_installed('points')) {
             $introduction = do_lang_tempcode('CHAT_MODERATION_REVERSE_POINTS');
         }
-        $tpl = do_template('CHAT_MODERATE_SCREEN', ['_GUID' => '940de7e8c9a0ac3c575892887c7ef3c0', 'URL' => $delete_url, 'TITLE' => $this->title, 'INTRODUCTION' => $introduction, 'CONTENT' => $content, 'LINKS' => $links]);
+
+        // We can mass delete from this screen, so we need conflict resolution
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
+        $tpl = do_template('CHAT_MODERATE_SCREEN', [
+            '_GUID' => '940de7e8c9a0ac3c575892887c7ef3c0',
+            'URL' => $delete_url,
+            'TITLE' => $this->title,
+            'INTRODUCTION' => $introduction,
+            'CONTENT' => $content,
+            'LINKS' => $links,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
+
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
     }
@@ -537,6 +552,10 @@ class Module_cms_chat
             require_lang('points');
             $fields->attach(form_input_tick(do_lang_tempcode('REVERSE_TRANSACTION'), do_lang_tempcode('REVERSE_TRANSACTION_DESCRIPTION'/*, 'chat_message'*/), 'reverse_point_transaction', false));
         }
+
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($myrow['id']));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'bf92ecd4d5f923f78bbed4faca6c0cb6',
             'HIDDEN' => '',
@@ -546,6 +565,8 @@ class Module_cms_chat
             'URL' => $post_url,
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => do_lang_tempcode('SAVE'),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -713,6 +734,9 @@ class Module_cms_chat
         $post_url = build_url(['page' => '_SELF', 'type' => '_delete', 'id' => $id], '_SELF');
         $submit_name = do_lang_tempcode('DELETE');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '31b488e5d4ff52ffd5e097876c0b13c7',
             'SKIP_WEBSTANDARDS' => true,
@@ -723,6 +747,8 @@ class Module_cms_chat
             'SUBMIT_ICON' => 'admin/delete3',
             'SUBMIT_NAME' => $submit_name,
             'TEXT' => $text,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

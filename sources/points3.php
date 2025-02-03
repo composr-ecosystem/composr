@@ -189,6 +189,15 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
         if (($enough_ok) && ($give_ok)) {
             // Show how many points are available also
             $send_url = build_url(['page' => 'points', 'type' => 'transact', 'id' => $member_id_of], get_module_zone('points'));
+
+            // Conflict resolution for those who can modify points
+            $warning_details = null;
+            $ping_url = null;
+            if (has_privilege($member_id_viewing, 'moderate_points')) {
+                require_code('form_templates');
+                list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id_of), false);
+            }
+
             $send_template = do_template('POINTS_SEND', [
                 '_GUID' => 'fa1749d5a803d86b1efbcfde2ad81702',
                 'SEND_URL' => $send_url,
@@ -200,6 +209,8 @@ function points_profile(int $member_id_of, ?int $member_id_viewing) : object
                 'VIEWER_GIFT_POINTS_BALANCE' => integer_format($viewer_gift_points_balance),
                 '_VIEWER_POINTS_BALANCE' => strval($viewer_points_balance),
                 'VIEWER_POINTS_BALANCE' => integer_format($viewer_points_balance),
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
             ]);
         } else {
             $send_template = do_lang_tempcode('PE_LACKING_POINTS');
@@ -560,12 +571,18 @@ function transaction_reverse_screen(int $id, int $confirm, object $title) : ?obj
         $_sending_member = (is_guest($sending_member)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($sending_member);
         $_receiving_member = (is_guest($receiving_member)) ? do_lang('SYSTEM') : $GLOBALS['FORUM_DRIVER']->get_username($receiving_member);
         $preview = do_lang_tempcode('ARE_YOU_SURE_REVERSE', escape_html(integer_format($amount_points)), escape_html(integer_format($amount_gift_points)), [escape_html($_sending_member), escape_html($_receiving_member)]);
+
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => '74f1a21b64dc67a9953a5823462bab38',
             'TITLE' => $title,
             'PREVIEW' => $preview,
             'URL' => get_self_url(false, false, ['confirm' => 1]),
             'FIELDS' => build_keep_post_fields(),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -614,6 +631,9 @@ function transaction_amend_screen(int $id, object $title, ?int $member_id_of = n
         }
         $url = build_url($map, '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'ce1752a0c5508a061bffbf242a13e5bd',
             'HIDDEN' => new Tempcode(),
@@ -624,6 +644,8 @@ function transaction_amend_screen(int $id, object $title, ?int $member_id_of = n
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $url,
             'JS_FUNCTION_CALLS' => [],
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

@@ -756,6 +756,10 @@ class Module_admin_themes
         }
 
         require_javascript('core_themeing');
+
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($theme);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '2734c55cd4d7cfa785d307d932ce8af1',
             'JS_FUNCTION_CALLS' => ['adminThemesEditTheme'],
@@ -767,6 +771,8 @@ class Module_admin_themes
             'SUBMIT_ICON' => 'admin/edit_this',
             'SUBMIT_NAME' => $submit_name,
             'SUPPORT_AUTOSAVE' => true,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -965,7 +971,7 @@ class Module_admin_themes
         // NB: Files are loaded via AJAX template_editor_load snippet hook, and saved via template_editor_save snippet hook
 
         // Conflict resolution
-        list($warning_details, $ping_url) = handle_conflict_resolution(''); // Intentionally blank, because only one person should edit any of all templates at any time (because they depend on each other)
+        list($warning_details, $ping_url) = handle_conflict_resolution(false); // Only one person should edit any of all templates at any time (because they depend on each other)
 
         // Screen preview feature
         $live_preview_url = get_param_string('live_preview_url', null, INPUT_FILTER_URL_INTERNAL);
@@ -1262,10 +1268,15 @@ class Module_admin_themes
             $field_themewizard = null;
         }
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(md5($theme . '_' . $lang . '_' . $id));
+
         return do_template('THEME_IMAGE_EDIT_SCREEN', [
             '_GUID' => 'b0e178ad1f840a07c4967f3c266c750b',
 
             'TITLE' => $this->title,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
 
             'WIDTH' => $width,
             'HEIGHT' => $height,

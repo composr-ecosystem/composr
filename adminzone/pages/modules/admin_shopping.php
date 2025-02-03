@@ -466,6 +466,10 @@ class Module_admin_shopping
             $submit_name = do_lang_tempcode('ADD');
         }
 
+        // Conflict resolution in case multiple staff are trying to add the same note
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution();
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'a5bd2fd3e7f326fd7559e78015d70715',
             'TITLE' => $this->title,
@@ -476,6 +480,8 @@ class Module_admin_shopping
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
             'SUPPORT_AUTOSAVE' => true,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

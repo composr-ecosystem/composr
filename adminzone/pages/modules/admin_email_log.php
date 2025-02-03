@@ -231,12 +231,17 @@ class Module_admin_email_log
         $mass_delete_url = build_url(['page' => '_SELF', 'type' => 'mass_delete'], '_SELF');
         $mass_send_url = build_url(['page' => '_SELF', 'type' => 'mass_send'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false); // We can mass send/delete from this screen
+
         $tpl = do_template('EMAIL_LOG_SCREEN', [
             '_GUID' => '8c249a372933e1215d8b9ff6d4bb0de3',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'MASS_DELETE_URL' => $mass_delete_url,
             'MASS_SEND_URL' => $mass_send_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');
@@ -487,6 +492,9 @@ class Module_admin_email_log
 
         $post_url = build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $id], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($id);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '84c9b97944b6cf799ac1abb5044d426a',
             'SKIP_WEBSTANDARDS' => true,
@@ -497,6 +505,8 @@ class Module_admin_email_log
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

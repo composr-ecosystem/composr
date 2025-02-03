@@ -353,11 +353,16 @@ class Module_admin_notifications
             'MEMBER_ID' => strval(get_member()),
         ]);
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($mode));
+
         return do_template('NOTIFICATIONS_MANAGE_SCREEN', [
             '_GUID' => '4f6af291a40c519377879555e24c2c81',
             'TITLE' => $this->title,
             'INTERFACE' => $interface,
             'ACTION_URL' => get_self_url(),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 }

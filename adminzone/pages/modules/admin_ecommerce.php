@@ -688,7 +688,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             ]);
         }
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
 
         return do_template('ECOM_PRODUCT_PRICE_SCREEN', [
             '_GUID' => '278c8244c7f1743370198dfc437b7bbf',

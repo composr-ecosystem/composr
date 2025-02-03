@@ -636,7 +636,7 @@ class Module_admin_cns_members
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution(false); // May have a few false-positives but is necessary so we also have confirm screen
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, 'delurk');
 
         return do_template('FORM_SCREEN', [
             '_GUID' => 'f911fc5be2865bdd065abf7c636530d4',
@@ -775,7 +775,7 @@ class Module_admin_cns_members
         $url = build_url(['page' => '_SELF', 'type' => '__delurk'], '_SELF');
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution(false); // May have a few false-positives but is necessary so we also have delurk screen
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, 'delurk');
 
         return do_template('CNS_DELURK_CONFIRM_SCREEN', [
             '_GUID' => '52870b8546653782e354533602531970',
@@ -925,7 +925,7 @@ class Module_admin_cns_members
         $text = '';
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution(false);
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '9196652a093d7f3a0e5dd0922f74cc51',
@@ -995,7 +995,7 @@ class Module_admin_cns_members
         $text = do_lang_tempcode('MERGE_MEMBERS_TEXT');
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution(false);
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '6f6b18d90bbe9550303ab41be0a26dcb',

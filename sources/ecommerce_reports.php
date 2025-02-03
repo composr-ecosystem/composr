@@ -315,6 +315,10 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
     }
     $results_table = results_table(do_lang_tempcode('catalogues:DEFAULT_CATALOGUE_PRODUCTS_TITLE'), 0, 'start', count($product_rows), 'max', count($product_rows), $header_row, $product_entries);
 
+    // Conflict resolution
+    require_code('form_templates');
+    list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
     // Show screen...
 
     return do_template('ECOM_ORDER_DETAILS_SCREEN', [
@@ -335,5 +339,7 @@ function build_order_details(object $title, int $id, object $text, bool $show_or
         'NOTES' => $order_row['notes'],
         'ORDER_ACTIONS' => $order_actions,
         'SHIPPING_ADDRESS' => $shipping_address,
+        'WARNING_DETAILS' => $warning_details,
+        'PING_URL' => $ping_url,
     ]);
 }

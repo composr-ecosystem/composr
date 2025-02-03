@@ -3106,12 +3106,14 @@ function _get_autocomplete_attribute_value(string $name, $provided_autocomplete)
 
 /**
  * Look for editing conflicts, and setup editing pinging.
+ * For particularly sensitive actions, you should pass false for $id and/or $type.
  *
- * @param  ~?ID_TEXT $id The ID we're editing (null: get from environment, 'id') (blank: not using a screen that has an ID) (false: particularly sensitive operation; check against all IDs and types on this page)
+ * @param  ~?ID_TEXT $id The ID we're editing (null: get from environment, 'id', no conflict resolution if not provided) (blank: not using a screen that has an ID) (false: scope against all IDs)
+ * @param  ~?ID_TEXT $page_type The page type (null: get from environment, 'type') (false: scope against all types on this page)
  * @param  boolean $only_staff Whether to only care about staff conflicts
- * @return array A pair: warning details, ping URL
+ * @return array A pair: warning details (Tempcode or null), ping URL
  */
-function handle_conflict_resolution($id = null, bool $only_staff = false) : array
+function handle_conflict_resolution($id = null, $page_type = null, bool $only_staff = false) : array
 {
     if (($only_staff) && (!$GLOBALS['FORUM_DRIVER']->is_staff(get_member()))) {
         return [null, null];
@@ -3128,12 +3130,25 @@ function handle_conflict_resolution($id = null, bool $only_staff = false) : arra
         }
     }
 
-    // Populate warning details with a message about who is currently editing this (within the last minute), if applicable
-    if ($id !== false) {
-        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND (' . db_string_equal_to('the_type', cms_mb_substr(get_param_string('type', 'browse'), 0, 80)) . ' OR ' . db_string_equal_to('the_type', '') . ') AND (' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' OR ' . db_string_equal_to('the_id', '') . ') AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC';
-    } else {
-        $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE ' . db_string_equal_to('the_page', cms_mb_substr(get_page_name(), 0, 80)) . ' AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60) . ' ORDER BY the_time DESC';
+    if ($page_type === null) {
+        $page_type = get_param_string('type', 'browse');
     }
+
+    $page = get_page_name();
+    if ($page_type == 'revisions') { // FUDGE: Editing a revision should apply across the whole site
+        //$page = ''; // Cannot use blank because that has special meaning
+        $page = STRING_MAGIC_NULL_BASE64;
+    }
+
+    // Populate warning details with a message about who is currently editing this (within the last minute), if applicable
+    $sql = 'SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE (' . db_string_equal_to('the_page', cms_mb_substr($page, 0, 80)) . ' OR ' . db_string_equal_to('the_page', STRING_MAGIC_NULL_BASE64) . ') AND the_member<>' . strval(get_member()) . ' AND the_time>=' . strval(time() - 60);
+    if ($page_type !== false) {
+        $sql .= ' AND (' . db_string_equal_to('the_type', cms_mb_substr($page_type, 0, 80)) . ' OR ' . db_string_equal_to('the_type', '') . ')';
+    }
+    if ($id !== false) {
+        $sql .= ' AND (' . db_string_equal_to('the_id', cms_mb_substr($id, 0, 80)) . ' OR ' . db_string_equal_to('the_id', '') . ')';
+    }
+    $sql .= ' ORDER BY the_time DESC';
     $rows = $GLOBALS['SITE_DB']->query($sql, 10);
     $people_working = [];
     foreach ($rows as $row) {
@@ -3154,11 +3169,14 @@ function handle_conflict_resolution($id = null, bool $only_staff = false) : arra
 
     // Now determine our ping URL for AJAX to ping regularly to signal the user is still editing this
     $keep = symbol_tempcode('KEEP');
-    if ($id !== false) {
-        $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . '&type=' . urlencode(get_param_string('type', 'browse')) . '&id=' . urlencode($id) . $keep->evaluate();
-    } else {
-        $ping_url = find_script('edit_ping') . '?page=' . urlencode(get_page_name()) . $keep->evaluate();
+    $ping_url = find_script('edit_ping') . '?page=' . urlencode($page);
+    if ($page_type !== false) {
+        $ping_url .= '&type=' . urlencode($page_type);
     }
+    if ($id !== false) {
+        $ping_url .= '&id=' . urlencode($id);
+    }
+    $ping_url .= $keep->evaluate();
 
     return [$warning_details, $ping_url];
 }

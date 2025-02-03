@@ -8,6 +8,11 @@
 <div data-tpl="filedumpScreen" data-tpl-params="{+START,PARAMS_JSON,file_link}{_*}{+END}">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<div class="filedump-screen">
 		<div class="clearfix"><div class="tabs" role="tablist">
 			<a aria-controls="g-thumbnails" role="tab" href="#!" id="t-thumbnails" class="tab tab-active tab-first js-click-select-tab-g" data-tp-tab="thumbnails"><span>{!VIEW_THUMBNAILS}</span></a>

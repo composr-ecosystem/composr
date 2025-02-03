@@ -123,12 +123,17 @@ class Module_admin_robots_txt
 
         $path = find_robots_txt_path();
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('ROBOTS_TXT_SCREEN', [
             '_GUID' => '656f56149832d459bce72ca63a1578b9',
             'TITLE' => $this->title,
             'POST_URL' => $post_url,
             'TEXT' => file_exists($path) ? cms_file_get_contents_safe($path, FILE_READ_LOCK) : '',
             'DEFAULT' => get_robots_txt(),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

@@ -13,6 +13,11 @@
 		<div class="orphaned-content">
 			<h2>{!ORPHANED_IMAGES}</h2>
 
+			{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+			{+START,IF_PASSED,WARNING_DETAILS}
+				{WARNING_DETAILS}
+			{+END}
+
 			{FORM2}
 		</div>
 	{+END}

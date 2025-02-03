@@ -479,6 +479,9 @@ class Module_admin_site_messaging
             $url = build_url(['page' => '_SELF', 'type' => '_add'], '_SELF');
         }
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'f4776e14f3e89782c6d11bc6b5d334ff',
             'HIDDEN' => $hidden,
@@ -488,6 +491,8 @@ class Module_admin_site_messaging
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -560,12 +565,18 @@ class Module_admin_site_messaging
         $row = $_row[0];
 
         $preview = do_lang_tempcode('ARE_YOU_SURE_DELETE_SITE_MESSAGE', escape_html(integer_format($id)), escape_html($row['m_title']));
+
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id), false);
+
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => '84c9d126a6806efcbd99bed5c1660d28',
             'TITLE' => $this->title,
             'PREVIEW' => $preview,
             'URL' => build_url(['page' => '_SELF', 'type' => '_delete', 'id' => $id], '_SELF'),
             'FIELDS' => new Tempcode(),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

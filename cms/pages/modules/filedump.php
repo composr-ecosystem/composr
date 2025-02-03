@@ -685,6 +685,9 @@ class Module_filedump
         $pagination_listing = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, null, null, 'tab--listing');
         $pagination_thumbnails = pagination(do_lang_tempcode('FILES'), $start, 'start', $max, 'max', $max_rows, false, null, null, 'tab--thumbnails');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(md5($subpath));
+
         return do_template('FILEDUMP_SCREEN', [
             '_GUID' => '3f49a8277a11f543eff6488622949c84',
             'TITLE' => $this->title,
@@ -704,6 +707,8 @@ class Module_filedump
             'FILTERED_DIRECTORIES' => $filtered_directories,
             'FILTERED_DIRECTORIES_MISSES' => $filtered_directories_misses,
             'SOMETHING_EDITABLE' => $something_editable,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

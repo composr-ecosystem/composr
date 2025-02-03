@@ -52,6 +52,11 @@
 			{+END}
 		</p>
 
+		{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+		{+START,IF_PASSED,WARNING_DETAILS}
+			{WARNING_DETAILS}
+		{+END}
+
 		<form title="{!SEND_POINTS}" method="post" action="{SEND_URL*}#tab--points">
 			{$INSERT_FORM_POST_SECURITY}
 
