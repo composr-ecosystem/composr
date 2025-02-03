@@ -34,6 +34,12 @@
 							</ul>
 						</li>
 					{+END}
+					{+START,IF_NON_EMPTY,{PREVIEW}}
+						<li>
+							<strong>{!PREVIEW}</strong>:
+							{PREVIEW}
+						</li>
+					{+END}
 				</ul>
 			</li>
 		{+END}

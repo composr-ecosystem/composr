@@ -515,6 +515,63 @@ function get_api_type_tooltip(?string $type, ?bool $nullable = null) : string
     return $ret;
 }
 
+function prepare_api_class_for_render(array $row) : array
+{
+    $class_implements = [];
+    foreach (explode(',', $row['c_implements']) as $implements) {
+        if ($implements == '') {
+            continue;
+        }
+        $class_implements[] = hyperlink(build_url(['page' => 'api', 'type' => $implements], get_module_zone('api')), $implements, false, true);
+    }
+
+    $class_traits = [];
+    foreach (explode(',', $row['c_traits']) as $trait) {
+        if ($trait == '') {
+            continue;
+        }
+        $class_traits[] = $trait;
+    }
+
+    $class_extends = null;
+    if ($row['c_extends'] != '') {
+        $class_extends = hyperlink(build_url(['page' => 'api', 'type' => $row['c_extends']], get_module_zone('api')), $row['c_extends'], false, true);
+    }
+
+    // PhpDoc
+
+    $preview = '[code="PHP"]';
+
+    // class declaration
+    if ($row['c_is_abstract'] == 1) {
+        $preview .= 'abstract ';
+    }
+    $preview .= 'class ' . $row['c_name'];
+
+    // extends
+    if ($row['c_extends'] != '') {
+        $preview .= ' extends ' . $row['c_extends'];
+    }
+
+    // implements
+    if (trim($row['c_implements']) != '') {
+        $preview .= ' implements ' . str_replace(',', ', ', $row['c_implements']);
+    }
+
+    $preview .= "\n" . '[/code]';
+
+    return [
+        'PATH' => $row['c_source_url'],
+        'IS_ABSTRACT' => ($row['c_is_abstract'] == 1) ? do_lang('YES') : do_lang('NO'),
+        'IMPLEMENTS' => $class_implements,
+        'TRAITS' => $class_traits,
+        'EXTENDS' => $class_extends,
+        'TYPE' => $row['c_type'],
+        'PACKAGE' => $row['c_package'],
+        'PREVIEW' => comcode_to_tempcode($preview),
+    ];
+}
+
 /**
  * Give an API function row from the database and get a template-ready map of details about the function.
  *
