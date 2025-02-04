@@ -48,7 +48,7 @@ class Hook_startup_multi_domain_login
 
     protected function session_syndicate_code($domain, $path)
     {
-        $url = 'http://' . $domain . '/' . $path . (($path == '') ? '' : '/') . 'data_custom/multi_domain_login.php';
+        $url = 'https://' . $domain . '/' . $path . (($path == '') ? '' : '/') . 'data_custom/multi_domain_login.php';
         $url .= '?session_expiry_time=' . urlencode(get_option('session_expiry_time'));
         $url .= '&session_id=' . urlencode(get_session_id());
         $url .= '&guest_session=' . (is_guest() ? '1' : '0');
