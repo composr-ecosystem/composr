@@ -11,7 +11,7 @@ To view the structural contents of your website, head over to the Admin Zone > S
 {!zones:DOC_ZONES}
 
 The default zones in Composr are for the following purposes:
- - [b]Welcome Zone[/b]: this zone gives users the chance to join or login. It could be modified to act more like a 'splash screen' if you desire that
+ - [b]Welcome Zone[/b] (root directory): this zone gives users the chance to join or login. It could be modified to act more like a 'splash screen' if you desire that
  - [b]Site[/b]: this is your main website; it includes primary content viewing, and permission based submission, editing, and deleting features. The contents of this zone may automatically be merged into the Welcome Zone via the 'Single public zone' option, which will simplify things for you
  - [b]Admin Zone[/b]: this is a section for site staff to manage the site
  - [b]Content Management[/b]: this is where content is added, edited and deleted
@@ -26,8 +26,8 @@ Some further information about zones is covered in the [page="_SEARCH:tut_subcom
 There are a few different types of Composr 'page':
  - [b]Comcode pages[/b] -- these are textual pages, written in Comcode (described in another tutorial)
  - [b]Modules[/b] -- these are formal code-based pages
- - [b]HTML pages[/b] -- these are pages written in HTML, and rarely used except for caching purposes
- - [b]Mini-modules[/b] -- these are like modules, except much easier to write; the developers do not use them for core Composr code, as they do not have the same 'fluff' around them that we need to maintain our clean architecture, but most technical users are better off writing these (if any new modules at all!) than full modules
+ - [b]HTML pages[/b] -- these are full static pages written in HTML, and rarely used except for caching purposes (generally we should use Comcode pages with the Comcode [tt]html[/tt] tag instead)
+ - [b]Mini-modules[/b] -- these are like modules, except much easier to write; the developers do not use them for core Composr code, as they do not have the same 'API' around them that we need to maintain our clean architecture. But most novice Composr developers may wish to start off using mini-modules as they can simply echo or return out what to show on the page.
 
 A page/zone combination is accessed by URL and it is invisible to the user, and most elements of Composr itself, what kind of pages are being used for any given URL.
 
@@ -49,6 +49,12 @@ The actual page loaded is based on searching the disk's zone directory for files
 
 [box="HTML pages"]
 HTML pages can be placed in a [tt]pages/html_custom[/tt] directory. It is preferable if URLs in the file are specified in full, rather than using relative URLs; this allows the page to be moved between zones without modification. If you do use relative URLs, they will be placed relative to the Composr zone URL, not the directory the HTML file is in.
+
+Composr will work some magic on the HTML contents (assuming they are enclosed in an [tt]html[/tt] HTML tag like a full HTML page):
+ - scans links and tries to find them in the same zone, in [tt]uploads/website_specific[/tt], in the [tt]pages/html_custom[/tt] directory itself, or in the Composr root directory; the link is then rewritten according to where the asset was found
+ - extracts scripts, styles, and link elements from the head section of the page (if defined) and feeds them into Composr's screen headers
+ - extracts key meta information from the page, if defined, and updates them accordingly on the page in Composr
+ - sends the HTML body into [tt]sources_custom/hooks/systems/site_html_pages[/tt] hooks for additional custom parsing and processing
 [/box]
 
 If you investigate the Composr directory structure, you will find subdirectories for these page types under a [tt]pages[/tt] directory in each zone. Some of the subdirectories are internally organised according to language, while others distinguish languages within the pages themselves.
@@ -64,7 +70,7 @@ This system is extremely powerful, allowing you to edit any page in Composr, inc
 
 [title="3"]Modules[/title]
 
-Composr comes with dozens of modules as standard. Most Composr pages are actually modules, and most of the Composr database tables are created by module self-installation code.
+Composr comes with dozens of modules as standard. Most Composr pages are actually modules, and most of the Composr database tables and site privileges are created by module self-installation code. Modules also dictate how data is to be upgraded between versions of Composr.
 
 [i]Information for programmers only...[/i]
 
@@ -75,7 +81,7 @@ Reinstalling or uninstalling a module will generally delete all data associated 
 [/box]
 If a module has been upgraded (i.e. The on-disk file has been replaced with a newer version), you may upgrade it (to upgrade/create on-disk and on-database data) in 3 ways:
 1) Simply use the module, and it will upgrade itself
-2) Run the [tt]http://yourbaseurl/upgrader.php[/tt] script, which will upgrade all modules on your site that need it, as well as clearing caches
+2) Run the [tt]http://yourbaseurl/upgrader.php[/tt] script (specifically database upgrade), which will upgrade all modules on your site that need it, as well as clearing caches
 3) Use the module management screen to upgrade the module
 There is also a concept of a 'hacked' module (a module modified as a part of a non-bundled addon): the process of performing any upgrades an on-disk file needs for this is the same as for a conventional module upgrade.
 
@@ -223,7 +229,7 @@ If we look into the [tt]GLOBAL_HTML_WRAP.tpl[/tt] template we can see it contain
 
 [title="4"]Attaching[/title]
 
-A good example of a template designed to be attached is the situation where one templates is repeated many times: a template that shows a single item in list of things is likely to be used like this.
+A good example of a template designed to be attached is the situation where one template is repeated many times: a template that shows a single item in a list of things is likely to be used like this.
 
 Attaching is almost always done in the PHP code, so I won't show an example of this in action.
 

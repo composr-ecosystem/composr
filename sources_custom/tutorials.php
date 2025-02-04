@@ -515,6 +515,12 @@ function get_api_type_tooltip(?string $type, ?bool $nullable = null) : string
     return $ret;
 }
 
+/**
+ * Give an API class row from the database and get a template-ready map of details about the class.
+ *
+ * @param  array $row The api_classes database row
+ * @return array Template-ready map of details
+ */
 function prepare_api_class_for_render(array $row) : array
 {
     $class_implements = [];

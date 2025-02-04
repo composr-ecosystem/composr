@@ -266,7 +266,7 @@ The following types of alert (hack-attack codenames) are defined in the system:
  - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA correctly while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
  - [tt]HACK_ATTACK_PASSWORD_CHANGE[/tt], The user gave an invalid confirmation code while finalising a password reset
  - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
- - [tt]SENSITIVE_RESOURCE_HACK[/tt], The user tried to access a (usually public) sensitive resource using an ID or GUID that does not exist -- It could be a user trying to access something that was deleted, but it could also be someone trying to scrape the site for existing entries (especially if it happens more than once with different IDs / GUIDs)
+ - [tt]SENSITIVE_RESOURCE_HACK[/tt], The user tried to access a sensitive, but technically public, resource using an ID or GUID that does not exist -- It could be a user trying to access something that was deleted, but it could also be someone trying to scrape the site for existing entries (especially if it happens more than once with different IDs / GUIDs)
  - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
 After an IP address accumulates a certain amount from risk scores ("Hack-attack risk score ban threshold" configuration option) it will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
