@@ -1,6 +1,0 @@
-[title]Edit insults[/title]
-
-The format is as follows:
-[tt]<Insult>=<Expected reply from insulted member>[/tt]
-
-[block="insults" title="Insults" scrolls="1"]main_notes[/block]
