@@ -109,7 +109,7 @@ class Hook_addon_registry_webdav
      */
     public function get_description() : string
     {
-        return 'Access your website repository as a folder on your computer. See the [url="' . get_brand_base_url() . '/docs/tut_repository.htm"]Repository Tutorial[/url] for more information. This addon is only tested with Apache, custom redirect configuration will be needed for IIS. This addon will NOT work with PHP 8 or higher.';
+        return 'Access your website repository as a folder on your computer. See the [url="' . get_brand_base_url() . '/docs/tut_repository.htm"]Repository Tutorial[/url] for more information. This addon is only tested with Apache, custom redirect configuration will be needed for IIS.';
     }
 
     /**

@@ -177,7 +177,7 @@ function external_db_user_add(array $record) : int
         }
     }
 
-    // Ask Composrto finish off the profile
+    // Ask Composr to finish off the profile
     require_lang('cns');
     require_code('cns_members');
     require_code('cns_groups');
