@@ -1024,7 +1024,7 @@ Composr has a multi-faceted testing strategy as there is no perfect solution for
 7) Public beta testing and bug reporting.
 8) Composr development mode, which applies lots of tricksy things, checking various things are done at run-time, and turning features on and off randomly, and doing some performance testing.
 9) Other things we use: MySQL strict mode, Strict JavaScript errors.
-10) Composr error e-mails (telemetry).
+10) Relaying errors (telemetry).
 
 [title="3"]Software for editing code[/title]
 

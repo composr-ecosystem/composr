@@ -8,12 +8,7 @@ Order Allow,Deny
 Deny from all
 </Files>
 
-<Files "fields.xml">
-Order Allow,Deny
-Deny from all
-</Files>
-
-<Files "breadcrumbs.xml">
+<Files "*.xml">
 Order Allow,Deny
 Deny from all
 </Files>

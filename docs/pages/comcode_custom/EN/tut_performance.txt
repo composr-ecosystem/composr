@@ -41,7 +41,7 @@ The Composr caches are:
  - [b]persistent cache[/b]: this caches common data outside the database, in some kind of persistent cache handler (see the next section)
  - [b]background template compilation[/b]: this can be turned on in the Performance configuration to let admins have cached pages on their computer that are immediately (without server communication) interstitially displayed (for a few seconds) while the server generates the up-to-date page
  - [b]static cache[/b]: this can be turned on from the Installation Options editor to feed static pages to bots or Guests
- - [b]self learning cache[/b]: this can be turned on from the Installation Options editor and allows pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront
+ - [b]self-learning cache[/b]: this can be turned on from the Installation Options editor and allows pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront
  - [b]code override cache[/b]: Composr compiles source code files which are overridden by custom code or non-bundled addons into the [tt]_compiled[/tt] directory; this allows future quick loading and native PHP cache support despite the overrides
 
 [box="Technical note for programmers"]
@@ -138,7 +138,7 @@ $SITE_INFO['no_compiled_files'] = '1'; // Do not use the _compiled directory to 
 /* Very minor ones */
 $SITE_INFO['charset'] = 'utf-8'; // To avoid having to do lookup of character set via a preload of the language file
 $SITE_INFO['known_suexec'] = '1'; // To assume .htaccess is writable for implementing security blocks, so don't check
-$SITE_INFO['dev_mode'] = '0'; // Don't check for dev mode by looking for traces of Git
+$SITE_INFO['dev_mode'] = '0'; // Don't check for dev mode by looking for traces of Git (you can also set this to '1' to force dev mode on)
 $SITE_INFO['no_extra_logs'] = '1'; // Don't allow extra permission/query logs
 $SITE_INFO['no_extra_bots'] = '1'; // Don't read in extra bot signatures from disk
 $SITE_INFO['no_extra_closed_file'] = '1'; // Don't support reading closed.html for closing down the site
