@@ -83,6 +83,7 @@ class Module_admin_privacy
                 break;
 
             case 'telemetry':
+                set_helper_panel_tutorial('tut_telemetry');
                 $this->title = get_screen_title('TELEMETRY_STATUS');
                 break;
         }
@@ -358,22 +359,38 @@ class Module_admin_privacy
     public function telemetry() : object
     {
         require_lang('privacy');
+        require_code('http');
 
         if (get_option('telemetry') == '0') {
-            warn_exit(do_lang_tempcode('TELEMETRY_DISABLED'));
+            // Check if we are still registered in the system
+            $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/telemetry?type=is_registered&url=' . rawurlencode(get_base_url());
+            $data = cache_and_carry('cms_http_request', [$url, ['timeout' => 6.0, 'trigger_error' => false]], 15, false, false);
+            if ($data !== null) {
+                list($_result) = $data;
+                if ($_result !== null) {
+                    $http_result = @json_decode($_result, true);
+                    if (($http_result !== false) && ($http_result['success'] === true)) {
+                        $final_data = $http_result['response_data'];
+                        if (($final_data !== null) && ($final_data['registered'] === true)) {
+                            attach_message(do_lang_tempcode('TELEMETRY_STILL_REGISTERED'), 'notice');
+                        }
+                    }
+                }
+            }
+
+            return warn_screen($this->title, do_lang_tempcode('TELEMETRY_DISABLED'), false);
         }
 
         require_code('encryption');
 
         if (!is_encryption_enabled_telemetry()) {
-            warn_exit(do_lang_tempcode('TELEMETRY_NOT_AVAILABLE'));
+            return warn_screen($this->title, do_lang_tempcode('TELEMETRY_NOT_AVAILABLE'), false);
         }
 
         $title = get_screen_title('TELEMETRY_STATUS');
 
         require_code('temporal');
         require_code('templates_map_table');
-        require_code('http');
 
         // Prepare request to the homesite
         $__payload = [
@@ -398,12 +415,12 @@ class Module_admin_privacy
 
         $http_result = @json_decode($_result, true);
         if (($http_result === false) || ($http_result['success'] === false)) {
-            return warn_screen($title, do_lang_tempcode('TELEMETRY_STATUS_ERROR', escape_html(get_brand_base_url())));
+            return warn_screen($title, do_lang_tempcode('TELEMETRY_STATUS_ERROR_2', escape_html(get_brand_base_url())));
         }
 
         $data = $http_result['response_data']['data'];
         if ($data === null) {
-            inform_exit(do_lang_tempcode('TELEMETRY_NOT_REGISTERED'));
+            return warn_screen($title, do_lang_tempcode('TELEMETRY_NOT_REGISTERED'));
         }
 
         $fields = [
