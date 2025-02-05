@@ -116,8 +116,9 @@ The jokes you can play are:
  - Emoticon Magnet -- Make the emoticons follow the cursor around the screen
  - Name Changer -- Apply a name changer for users within a usergroup
  - Avatar switch -- Make it appear to them that everyone is using their avatar and they don\'t have one
- - 1337 speech changer -- Make the post appear to have been written in 1337 speech to members of that user group
- - Piglatin -- Make the post appear to have been written in Piglatin to members of that user group.';
+ - 1337 speech changer -- Make the 057 appear to have been wr1773n in 1337 (leet) speech to members of that user group
+ - Piglatin -- Make the post appearway to have been rittenway in Piglatin to embersmay of that user roupgay.
+ - OWO speak -- change the text of cewtain usewgwoups so that evewy R and L is changed to a W.';
     }
 
     /**
