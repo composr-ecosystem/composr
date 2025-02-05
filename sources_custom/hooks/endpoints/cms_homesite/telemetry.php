@@ -224,9 +224,18 @@ class Hook_endpoint_cms_homesite_telemetry
                 require_code('encryption');
                 $_data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
                 $decrypted_data = @unserialize($_data);
-                if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data) || !array_key_exists('website_name', $decrypted_data) || !array_key_exists('public_key', $decrypted_data) || !array_key_exists('sign_public_key', $decrypted_data)) {
+                if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data) || !array_key_exists('website_name', $decrypted_data) || !array_key_exists('public_key', $decrypted_data) || !array_key_exists('sign_public_key', $decrypted_data) || !array_key_exists('challenge', $decrypted_data)) {
                     http_response_code(400);
                     return ['success' => false, 'error_details' => 'Telemetry data sent is corrupt and cannot be decrypted.'];
+                }
+
+                // Verify site ownership by accessing their installed.php endpoint for the telemetry challenge
+                require_code('http');
+                $url = $decrypted_data['website_url'] . '/data/installed.php';
+                $actual_challenge = http_get_contents($url);
+                if (($actual_challenge !== $decrypted_data['challenge'])) {
+                    http_response_code(403);
+                    return ['success' => false, 'error_details' => 'The site you attempted to register failed the telemetry challenge. Make sure we can access your /data/installed.php file at the moment of registration.'];
                 }
 
                 // Same public and signing key provided? The site may have changed their base URL.

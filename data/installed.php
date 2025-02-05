@@ -23,7 +23,7 @@
     installed here based on the presence of _config.php and sources/bootstrap.php. Since htaccess blocks _config.php,
     we must use an API like this to determine an installation.
 
-    The homesite will only query if you elected to provide statistics when you installed your site.
+    The homesite will only query if you elected to provide statistics.
     And if this file no longer exists or reports the software is not installed, the homesite will stop querying
     for this file after a year.
 
@@ -73,7 +73,12 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
     We just need to check for two files. If they both exist, there's a 98% chance the software is indeed installed. Good enough to say yes for us.
 */
 if (is_file($FILE_BASE . '/_config.php') && is_file($FILE_BASE . '/sources/bootstrap.php')) {
-    echo 'Yes';
+    if (is_file($FILE_BASE . '/data_custom/telemetry_challenge.txt')) { // Challenge to verify site ownership with telemetry
+        echo file_get_contents($FILE_BASE . '/data_custom/telemetry_challenge.txt');
+        @unlink($FILE_BASE . '/data_custom/telemetry_challenge.txt');
+    } else {
+        echo 'Yes';
+    }
 } else {
     echo 'No';
 }
