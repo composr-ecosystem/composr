@@ -432,7 +432,7 @@ class Module_admin_privacy
             'TELEMETRY_LAST_CHECKED' => (($data['last_checked'] === null) ? do_lang('NA') : get_timezoned_date_time($data['last_checked'])),
             'TELEMETRY_WEBSITE_INSTALLED' => $data['website_installed'],
             'TELEMETRY_ADDONS_INSTALLED' => implode(', ', unserialize($data['addons_installed'])),
-            'TELEMETRY_RELAYED_ERRORS' => integer_format($data['relayed_errors']),
+            'TELEMETRY_RELAYED_ERRORS' => (($data['relayed_errors'] === null) ? do_lang('NA') : integer_format($data['relayed_errors'])),
         ];
 
         $stats = $data['latest_stats'];
