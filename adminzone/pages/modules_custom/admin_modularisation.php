@@ -173,6 +173,9 @@ class Module_admin_modularisation
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'fix'], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'a5f5f42573b836c30dcdf2c0747f513c',
             'GET' => false,
@@ -185,6 +188,8 @@ class Module_admin_modularisation
             'FIELDS' => $fields,
             'URL' => $post_url,
             'MODSECURITY_WORKAROUND' => true,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

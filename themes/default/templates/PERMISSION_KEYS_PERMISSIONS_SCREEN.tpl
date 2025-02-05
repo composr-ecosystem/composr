@@ -3,6 +3,11 @@
 <div data-tpl="permissionKeysPermissionsScreen">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<form title="{!PRIMARY_PAGE_FORM}" method="post" action="{URL*}">
 		{$INSERT_FORM_POST_SECURITY}
 

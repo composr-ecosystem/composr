@@ -384,12 +384,18 @@ class Module_admin_lookup
             $risk_score = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]));
         }
 
+        // We have actionable items (ban toggles) so we need conflict resolution
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($param);
+
         // Display it all...
 
         $tpl = do_template('LOOKUP_SCREEN', [
             '_GUID' => 'dc6effaa043949940b809f6aa5a1f944',
 
             'TITLE' => $this->title,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
 
             'ALERTS' => $alerts,
 

@@ -140,6 +140,9 @@ $description = do_lang_tempcode('DESCRIPTION_EDIT_ACHIEVEMENTS');
 set_helper_panel_tutorial('sup_achievements');
 set_helper_panel_text(comcode_lang_string('achievements:DOC_ACHIEVEMENTS'));
 
+require_code('form_templates');
+list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
 // Render the XML editing screen (and revisions)
 return do_template('XML_CONFIG_SCREEN', [
     '_GUID' => '235512de6acf592baa330118521602a3',
@@ -148,4 +151,6 @@ return do_template('XML_CONFIG_SCREEN', [
     'XML' => $xml,
     'DESCRIPTION' => $description,
     'REVISIONS' => $revisions,
+    'WARNING_DETAILS' => $warning_details,
+    'PING_URL' => $ping_url,
 ]);

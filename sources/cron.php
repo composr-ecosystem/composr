@@ -186,32 +186,18 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
     // We randomise the order because we have a global safety time-out. This ensures every hook has a chance to run at some point over Cron executions.
     cms_shuffle_assoc($cron_hooks);
 
-    // FUDGE: Background tasks should always run second to first
+    // FUDGE: Background tasks should always run second to first as tasks are considered high priority (may involve users waiting on a response)
     if (array_key_exists('tasks', $cron_hooks)) {
         $cron_hook = $cron_hooks['tasks'];
         unset($cron_hooks['tasks']);
         $cron_hooks = ['tasks' => $cron_hook] + $cron_hooks;
     }
 
-    // FUDGE: Health checks should always run first
+    // FUDGE: Health checks should always run first as server monitoring is critical
     if (array_key_exists('health_check', $cron_hooks)) {
         $cron_hook = $cron_hooks['health_check'];
         unset($cron_hooks['health_check']);
         $cron_hooks = ['health_check' => $cron_hook] + $cron_hooks;
-    }
-
-    // FUDGE: Mail queue should always run second to last
-    if (array_key_exists('mail_queue', $cron_hooks)) {
-        $x = $cron_hooks['mail_queue'];
-        unset($cron_hooks['mail_queue']);
-        $cron_hooks = $cron_hooks + ['mail_queue' => $x];
-    }
-
-    // FUDGE: Newsletter drip send should always run last
-    if (array_key_exists('newsletter_drip_send', $cron_hooks)) {
-        $x = $cron_hooks['newsletter_drip_send'];
-        unset($cron_hooks['newsletter_drip_send']);
-        $cron_hooks = $cron_hooks + ['newsletter_drip_send' => $x];
     }
 
     $cron_hooks_info = [];

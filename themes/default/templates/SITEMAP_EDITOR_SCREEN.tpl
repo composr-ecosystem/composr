@@ -12,6 +12,11 @@
 <div data-tpl="sitemapEditorScreen" data-tpl-params="{+START,PARAMS_JSON,edit_zone_url,add_zone_url,zone_editor_url,permission_tree_editor_url,edit_page_url,add_page_url,delete_url,stats_url}{_*}{+END}">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<div class="clearfix">
 		<div class="sitemap-right">
 			<div class="box box---sitemap-editor-screen"><div class="box-inner">

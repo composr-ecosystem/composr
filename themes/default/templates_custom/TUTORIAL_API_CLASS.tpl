@@ -34,6 +34,12 @@
 							</ul>
 						</li>
 					{+END}
+					{+START,IF_NON_EMPTY,{PREVIEW}}
+						<li>
+							<strong>{!PREVIEW}</strong>:
+							{PREVIEW}
+						</li>
+					{+END}
 				</ul>
 			</li>
 		{+END}
@@ -41,5 +47,9 @@
 {+END}
 
 <h2>{!tutorials:API_DOC_CLASS_FUNCTIONS}</h2>
+
+{+START,IF_PASSED,FILTERCODE_BOX}
+	{+START,INCLUDE,FILTER_BOX}{+END}
+{+END}
 
 {CLASS_FUNCTIONS}

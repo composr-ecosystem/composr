@@ -441,6 +441,7 @@ class Module_buildr
         if ($member_row['health'] < 1) {
             take_items($member_id);
             $GLOBALS['SITE_DB']->query_update('w_members', ['location_realm' => 0, 'location_x' => 0, 'location_y' => 0, 'banned' => 0, 'health' => 10], ['id' => $member_id], '', 1);
+
             buildr_refresh_with_message(do_lang_tempcode('W_YOU_DIED'), 'warn');
         }
 

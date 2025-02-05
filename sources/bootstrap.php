@@ -82,7 +82,7 @@ function require_code__bootstrap(string $codename)
     $errormsg = '';
     $errormsg_before = error_get_last();
 
-    global $FILE_ARRAY, $REQUIRED_BEFORE, $FILE_BASE;
+    global $FILE_ARRAY, $REQUIRED_BEFORE, $FILE_BASE, $SITE_INFO;
 
     if (array_key_exists($codename, $REQUIRED_BEFORE)) { // We already required it
         return;
@@ -144,8 +144,14 @@ function require_code__bootstrap(string $codename)
             $code = 'declare(strict_types=1); ' . "\n" . $code;
         }
 
+        // Do we have compiled files disabled?
+        $no_compiled = false;
+        if (isset($SITE_INFO['no_compiled_files']) && ($SITE_INFO['no_compiled_files'] == '1')) {
+            $no_compiled = true;
+        }
+
         // Save to compiled if we need to do so
-        if ($code !== null) {
+        if (($code !== null) && ($no_compiled === false)) {
             $compiled_relative_path = '_compiled/' . $relative_path;
             $compiled_path = $FILE_BASE . '/_compiled/' . $relative_path;
 
@@ -185,25 +191,29 @@ function require_code__bootstrap(string $codename)
             $relative_path = $compiled_relative_path;
         }
 
-        // We need to wait (but not too long) for locks to be released before we can include the file
-        $time = microtime(true);
-        $file = fopen($path, 'r');
-        while (flock($file, LOCK_SH | LOCK_NB) === false) {
-            if ((microtime(true) - $time) > 5.0) {
-                throw new \Exception('Cannot read file ' . $relative_path . '; a lock was not released on the file in a timely manner.');
+        if (($no_compiled === false) || ($code === null)) {
+            // We need to wait (but not too long) for locks to be released before we can include the file
+            $time = microtime(true);
+            $file = fopen($path, 'r');
+            while (flock($file, LOCK_SH | LOCK_NB) === false) {
+                if ((microtime(true) - $time) > 5.0) {
+                    throw new \Exception('Cannot read file ' . $relative_path . '; a lock was not released on the file in a timely manner.');
+                }
+
+                if (php_function_allowed__bootstrap('usleep')) {
+                    @usleep(100000);
+                }
             }
 
-            if (php_function_allowed__bootstrap('usleep')) {
-                @usleep(100000);
+            $result = require_once $path;
+
+            // Release the lock / close the file
+            if ($file !== false) {
+                fclose($file);
+                $file = false;
             }
-        }
-
-        $result = require_once $path;
-
-        // Release the lock / close the file
-        if ($file !== false) {
-            fclose($file);
-            $file = false;
+        } else {
+            $result = eval($code);
         }
 
         if ($result === false) {

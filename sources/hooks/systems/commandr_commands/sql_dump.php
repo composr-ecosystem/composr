@@ -62,7 +62,7 @@ class Hook_commandr_command_sql_dump
         require_code('database_relations');
         require_code('files');
         $out_file = cms_fopen_text_write($out_file_path);
-        get_sql_dump($out_file, true, false, [], $only, null, $intended_db_type);
+        get_sql_dump($out_file, true, true, false, [], $only, null, $intended_db_type);
         fclose($out_file);
         sync_file($out_file_path);
         fix_permissions($out_file_path);

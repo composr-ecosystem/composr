@@ -292,7 +292,7 @@ Usergroups (and clubs) are covered in the [page="_SEARCH:tut_subcom"]Tools for s
 The forum shows the viewing user's last visit and the number of topics/posts since that last visit. Logging in/out triggers a new visit to count (also reopening the browser would).
 
 It works as follows:
-Essentially member profiles contain a last request date (in the database), which is maintained as you browse through the site. If you login, or open the browser, it copies that into a cookie that's value persists until you login again or reopen the browser. The cookie is the reference point which is used as the last visit date.
+Essentially member profiles contain a last request date (in the database), which is maintained as you browse through the site. If you login, or open the browser, your session cookie is transmitted (which is mapped to your member ID in the server database, thus containing the last visit date).
 
 [concepts
  1_key="Profile"           1_value="Member profiles define details, including options, relating to members"

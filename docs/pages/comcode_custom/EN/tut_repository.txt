@@ -5,13 +5,13 @@ The Composr repository is a shadow representation of Composr's data.
 
 In most cases, Composr data is stored in the database, which is not a particular user-friendly form, given databases are generally designed with a special set of rules that lead to data being split up across multiple tables. Sometimes data is also stored on the filesystem (i.e. the disk); for example, file uploads.
 
-The Composr repository represents the data into a form that feels far more naturally and integrates with many kinds of tools you may want to use on it. Most of the data is encoded using the JSON standard.
+The Composr repository represents the data into a form that feels far more natural and integrates with many kinds of tools you may want to use on it. Most of the data is encoded using the JSON standard.
 
 Through WebDAV (needed for most of the use cases below) you can access the repository as a folder on your own computer.
 
 Specifically, the following use-cases are served by the repository:
  - Making Composr [b]opaque[/b] -- dive right into Composr's content/resource data and get an immediate sense of what is there and how it is structured
- - Making Composr [b]tactile[/b] -- easily manipulate data via normal drag & drop operations without a clunky and slow web interface; for example, mass move entries from one category to another
+ - Making Composr [b]tactile[/b] -- easily manipulate data via normal drag & drop operations without a clunky and slow web interface; for example, mass move entries from one category to another, or mass-delete all entries under select categories (which may or may not include removing the categories as well)
  - Making [b]transferring data[/b] between sites (e.g. from a staging site to a live site) easier -- copy & paste from one site to another and Composr will magically import everything, reassign ID numbers as required, auto-match named categories where possible, and create empty-shells for missing dependencies as required
  - Integration with normal [b]desktop applications[/b] -- use your favourite text editors or file-search tools to achieve things such as mass search & replace
  - [b]Configuration management[/b] -- track what options have been changed, and transfer them between sites
@@ -43,7 +43,7 @@ The default meta-filesystems are as follows, and are all mounted as subdirectori
  - [tt]members[/tt]: A listing of every member registered on the system, with their account/profile settings and usergroups
  - [tt]raw[/tt]: A raw listing of the actual Composr installation directory
  - [tt]root[/tt]: A listing of the Composr installation directory, taking source code overrides into account with higher precedence than original files (featuring automatically overriding when files are edited)
-	- Caveat: This does not take into account [tt]contentious_overrides[/tt] hooks because these overrides often implement logic to determine when the override applies. This makes it impractical to compile.
+  - Caveat: This does not take into account [tt]contentious_overrides[/tt] hooks because these overrides often implement logic to determine when the override applies. This makes it impractical to compile.
  - [tt]var[/tt]: Structured website resources/content, separated by resource type on level 1, with category structure as further folders (generally-speaking), and entries as JSON files
 
 The [tt]var[/tt] meta-filesystem is perhaps the most interesting because if Webdav is installed, you can use this to import/export/copy resources/content into and between websites using your normal desktop file manager (with some caveats as mentioned further down). This is extremely useful. In actuality, [tt]var[/tt] is not a meta-filesystem in its own right, each directory underneath it is implemented as a separate meta-filesystem.
@@ -52,10 +52,6 @@ The [tt]var[/tt] meta-filesystem is perhaps the most interesting because if Webd
 
 [media width="150" description="WebDAV software" float="right"]data_custom/images/docs/tut_repository/os_webdav.jpg[/media]
 WebDAV is a web-based-filesystem protocol that most operating systems support (theoretically). This lets you access the repository as a normal folder on your computer. Composr uses a PHP WebDAV-library called SabreDAV to bind Commandr-fs to WebDAV. To get this, you'll need to install the WebDAV non-bundled addon.
-
-[box="Deprecation notice"]
-Unfortunately, SabreDAV is not maintained any longer and does not work on PHP 8 or above. It is currently beyond the Core Development Team's resources to maintain or fork SabreDAV ourselves or to implement an alternative library. As such, WebDAV functionality is all but broken in Composr v11. If you would like to help us change that, please consider [page="_SEARCH:tut_software_feedback"]sponsoring a developer[/page] to do so, or do it yourself and make a merge request on our [url="GitLab"]{$CMS_REPOS_URL}[/url].
-[/box]
 
 Be aware that some operating systems do not support WebDAV very well in practice. The SabreDAV team have excellent documentation illustrating issues that are outside our control, and in most cases third-party software can be used for a better experience:
  - On Mac [url="Finder has some slowness issues"]http://sabre.io/dav/clients/finder/[/url]. Cyberduck works well, but doesn't currently provide a way to mount to a folder. Yummy FTP Pro works on HTTP but not HTTPS.
@@ -68,6 +64,7 @@ Be aware that some operating systems do not support WebDAV very well in practice
 Access WebDAV by connecting to: [tt]http://yourbaseurl/webdav[/tt], or [tt]http://webdav.yourbaseurl[/tt] if you've configured a [tt]webdav[/tt] subdomain to point to your base directory.
 You will need to enable this by the association rewrite rule in our recommended configuration.
 You will need to authorise against a Composr administrative user.
+ - Note: Some WebDAV clients like Cyberduck do not like usernames with spaces in them. Make sure your administration accounts are alpha-numeric usernames only.
 
 [title="3"]Nginx reverse proxy[/title]
 
@@ -169,7 +166,7 @@ Don't do things like run [tt]rsync[/tt] or Git over the repository as a whole --
 
 [title="2"]Incorrect reporting[/title]
 
-You may see some files quoted with a file size of zero. This happens in situations where calculating the virtual file size for everything in a directory listing would be inefficient.
+You may see some files or folders quoted with a file size of zero or unknown. This happens in situations where calculating the virtual file size for everything in a directory listing would be inefficient. Usually, if you perform an operation on the file or folder (e.g. downloading, moving, copying) then WebDAV will report a correct file size for those files / folders specifically so the operation can be carried out.
 
 You may also see a file modification time of 1970. This happens when no file modification time is known.
 
@@ -178,10 +175,10 @@ If you manually specify the name of a folder or a file, you may find it changes 
 [title="2"]Known omissions / limitations[/title]
 
 These are the current known omissions for the repository:
- - Listings are limited to 10,000 folders and 10,000 files at once, or however many can be processed before the server starts running out of memory or execution time.
+ - Listings in virtual folders such as the [tt]var[/tt] directory are limited to 10,000 folders and 10,000 files at once, or however many can be processed before the server starts running out of memory or execution time.
  - If you add content via the repository, no syndication will be performed for it. E.g. if you add a news article, it won't be syndicated to Facebook if you've configured such syndication. This is normal within Composr, as syndication is an automated assistant built into the CMS modules, not the underlying framework. You can always syndicate things manually if required.
  - Multi-language-content translations are not retained (https://composr.app/tracker/view.php?id=2111)
- - In [tt]/var/[/tt] and [tt]/filedump/[/tt], for resources containing files (e.g. downloads), if the file is over 8 MB in size, Resource-fs will return a string path instead of a double ([path, base64 data]) for that property. This is to help prevent PHP memory errors. You can always manually download the file under [tt]/raw/[/tt] or [tt]/home/[/tt] (if it is particularly large, even this may trigger a memory error; use FTP instead). Also, you should not try uploading files to the Resource-fs repository that are over 8 MB in size or you may get a PHP memory error.
+ - In [tt]/var/[/tt] and [tt]/filedump/[/tt], for resources containing files (e.g. downloads), if the file is over 8 MB in size, Resource-fs will return a string path instead of a double ([path, base64 data]) for that property. This is to help prevent PHP memory errors. You can always manually download the file under [tt]/raw/[/tt] or [tt]/home/[/tt] (if it is particularly large, even this may trigger a memory error; use FTP instead). Also, you should not try uploading files to the Resource-fs repository that are over 8 MB in size or you may get a PHP memory error; upload it via FTP, usually to the [tt]uploads[/tt] directory, and then provide a relative path string instead in the relevant Resource-fs resource.
  - Staging site limitations
   - If importing eCommerce product configuration, the IDs for custom permission products can't be automatically remapped (https://composr.app/tracker/view.php?id=2113)
   - For custom fields representing IDs, the IDs can't be automatically remapped (https://composr.app/tracker/view.php?id=2125)
@@ -192,7 +189,7 @@ These are the current known omissions for the repository:
 
 These limitations only affect particularly advanced/fringe usage, mainly those wanting perfect automatic staging site transference on complex data schemas. If you are an enterprise pushing things to the very edge, you'll likely want to sponsor some continued development. This cost would be tiny compared to normal enterprise CMS licensing costs.
 
-Generally Resource-fs is not designed for merging separate websites into one. There is a separate merge importer in Composr to handle this use case.
+Generally Resource-fs is not designed for merging separate websites into one. There is a separate merge importer in Composr to handle this use case; it has been more thoroughly tested for site merging and better handles nuances (e.g. ID re-mapping, language translations, the transferring of attachments and uploads, fixing Comcode).
 
 [concepts
  1_key="Repository"           1_value="The user-friendly feature name for the way of accessing Composr data as folders/files"

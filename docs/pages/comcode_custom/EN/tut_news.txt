@@ -34,7 +34,9 @@ After being validated by the staff, your news post will be visible on the front 
 
 [title="3"]Headers[/title]
 
-Don't create a primary header in the article content because the title of the news record will carry through for that automatically. If you do you'll find you have two headers.
+Don't create a primary ([tt]h1[/tt]) header in the article content because the title of the news record will carry through for that automatically. If you do you'll find you have two headers, which is bad for Search Engine Optimisation.
+
+Actually, you really should not be using primary headers on any content types except Comcode pages as the templates will already have them.
 
 [title="2"]Editing and deleting news[/title]
 
@@ -61,12 +63,15 @@ If you wish to edit the category you can go to:
 Admin Zone > Content > News > Add news category
 and choose the category to edit.
 You can delete a news category from the bottom of its edit form.
-[/surround][title="2"]Viewing news[/title]
+[/surround]
+[title="2"]Viewing news[/title]
 
 [surround]
-[media width="150" description="Viewing a [tt]main_news[/tt] block" float="right"]data_custom/images/docs/tut_news/block_view.png[/media]
-[media width="150" description="Adding a [tt]main_news[/tt] block" float="right"]data_custom/images/docs/tut_news/block_add.png[/media]
+[media_set]
 [media width="150" description="Viewing news" float="right"]data_custom/images/docs/tut_news/news_view.png[/media]
+[media width="150" description="Adding a [tt]main_news[/tt] block" float="right"]data_custom/images/docs/tut_news/block_add.png[/media]
+[media width="150" description="Viewing a [tt]main_news[/tt] block" float="right"]data_custom/images/docs/tut_news/block_view.png[/media]
+[/media_set]
 News can be accessed via the [tt]news[/tt] module
 ([tt]site:news[/tt] page-link, Content > News on the default menus).
 
@@ -86,7 +91,8 @@ If you set the "Show In Full" parameter then news will be showed fully inline (r
 
 There are many more advanced block options, but we won't explain them here. Each is documented within the block construction assistant.
 
-[/surround][title="2"]Permissions[/title]
+[/surround]
+[title="2"]Permissions[/title]
 
 News entries may be in multiple news categories, but a user needs access to the primary news category to be able to read the news.
 

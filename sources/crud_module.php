@@ -1621,7 +1621,7 @@ abstract class Standard_crud_module
             ] + $extra_tpl_params);
         }
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false); // False for type in case there is a separate delete screen and someone is wanting to delete it
 
         $submit_icon = ($this->type_code == 'category') ? 'admin/edit_one_category' : 'admin/edit';
 

@@ -508,7 +508,18 @@ class Module_cms_galleries extends Standard_crud_module
             $form2 = new Tempcode();
         }
 
-        return do_template('GALLERY_IMPORT_SCREEN', ['_GUID' => '607c819ff751268294e5e590a0d41533', 'TITLE' => $this->title, 'FORM2' => $form2, 'FORM' => $form]);
+        // Imports via orphaned files trigger filesystem modifications which can conflict with other people also doing orphaned file importing
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
+        return do_template('GALLERY_IMPORT_SCREEN', [
+            '_GUID' => '607c819ff751268294e5e590a0d41533',
+            'TITLE' => $this->title,
+            'FORM2' => $form2,
+            'FORM' => $form,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
     }
 
     /**

@@ -32,17 +32,21 @@ Login restrictions:
  - Configurable session expiry time (shorter = reduced potential for a hacker using a stolen session ID, longer = more convenience)
  - Ability to prevent privileged actions being performed or zones being accessed by users who were automatically logged in via cookies (it forces them to confirm their login); ability to reverse ("concede") a confirmed login to help improve security around insecure workstations that are kept logged in
  - Manual approval / validation of new members (optional)
+ - Invite-only registration (optional)
+ - No public registration at all through denying access to the join module for guests (optional)
 
 Auditing systems:
  - Audit logging of almost all administrative actions
  - Logging of all user actions and IP address history
  - Sophisticated tools to analyse the above
+  - E.g. Action Log
+  - E.g. Statistics
  - Logging of failed login attempts
  - Hack-attack detection / logging / notifying / banning (described in further detail in this tutorial)
  - Obfuscated e-mails to members when their username, e-mail address (e-mail is sent to the old address), password, or phone number is changed
 
 Framework security:
- - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and form security tokens
+ - CSRF-attack prevention (Cross-Site-Request-Forgery) via referrer checking and cryptographic form security tokens
  - Click-jacking prevention via CSP implementation
  - Parent reloading prevention via [tt]rel="noopener"[/tt]
  - Documented policies for meeting secure programming standards (in our Code Book and our standards checklist spreadsheet)
@@ -55,7 +59,10 @@ Framework security:
  - Our Code Quality Checker tool has the ability to scan for security hotspots in the code (areas that need careful quality reviews)
  - "Kid-gloves modes" that automatically impose restrictions and filters on third-party code unless the programmers of them explicitly declare that they understand key security issues
  - Prevention of attacks carried out by the upload of malicious files, via various forms of automatic filtering. Per-directory disabling of PHP code as an extra level of security (Apache-only)
- - Prevention of access-control-bypass via manually downloading privileged files via URL via automatic filename obfuscation
+ - Prevention of access-control-bypass on downloads
+  - via manual downloading with privileged access (e.g. a staff account)
+  - via URL (require a [tt]keep_session[/tt] to tie a download attempt to a member for privilege checking)
+  - via obfuscated filenames (so they cannot easily be found directly)
  - Prevention of directory listing attacks in deep directories, via empty [tt]index.html[/tt] files
  - Disabling of common insecure PHP features such as "allow URL fopen"
  - Automatic enabling of a number of Suhosin features designed to improve security, and coding standards that allow our code to work with them. Suhosin is an unofficial extension to PHP that adds extra security constraints
@@ -65,7 +72,7 @@ Framework security:
 
 Other features:
  - Privileges and access permissions to restrict privileged functionality
- - Validation process for content submission
+ - Validation process for content submission (via the [tt]validation[/tt] addon)
  - {$IS_MAINTAINED,rootkit_detector,Rootkit detector system} (manually generate security signatures representing the state of the website, to compare to previous ones)
  - Many spam-prevention systems (outside the scope of this tutorial)
  - Automatic download of new web application firewall rules (for emergency patching)
@@ -88,7 +95,7 @@ You should consider:
 You should be wary about:
  - PHP "disable_functions" (this increases security by disabling arbitrary parts of PHP -- this should only be done by consent with a programmer, to confirm those parts that were decided to be disabled are not actually necessary for functionality)
  - ModSecurity (Composr does have inbuilt features, as described above -- and ModSecurity rules have a tendency to block legitimate administrative requests, such as use of Commandr or theme editing)
-  - Using ModSecurity in a "log only" mode may, however, be useful
+  - Using ModSecurity in a "log only" mode may, however, be useful, especially in combination with [tt]fail2ban[/tt] with reasonably high limits
  - Suhosin/SuPHP (actually Suhosin/SuPHP is okay if you have control over its settings or know for sure that nobody is going to set anything that is too restrictive)
 
 The best way to ensure your hosting is secure is to choose a webhost that you're confident in and/or a server management team who will carry out their system administration tasks diligently. There are a thousand ways a bad host or a bad team could make things insecure, but if they stick to default/careful software configurations and industry-standard practices then usually things will be in decent shape.
@@ -173,14 +180,19 @@ It's scary stuff: you probably never imagined security for a website could be so
 
 I am not exposing any security holes in LAMP software here, but what I am exposing is how inept many webhosts are. Hosting is cheap, they often cannot afford to hire people who have a good understanding of security for a website, so be wary.
 
+[box="Health Check"]
+The new Health Check tool for Composr version 11 will check to see if Composr can access other (home) directories it should not be able to access. In particular, this check happens in the installer on step 1, and you can run it through the health check itself (section Installation environment (PHP) > open_basedir).
+[/box]
+
 [title="2"]Advice for website maintenance[/title]
 
 Advice for website maintenance:
- - Never connect using FTP (passwords are sent in plain text, so anyone with administrative infrastructure access between you and the server can read them)
+ - Never connect using FTP; use SFTP/FTPS (passwords are sent in plain text, so anyone with administrative infrastructure access between you and the server can read them)
  - Never use IMAP or POP3 e-mail unless you have SSL turned on for it (again, passwords are sent in plain text)
  - Use secure passwords, according to best practices
  - Don't re-use passwords across different services (if one is found you don't want everything to tumble like a house of cards)
  - Keep your own computers secure and patched (if your own machine becomes infected and you are being targeted actively by a hacker then anything you do becomes exploitable)
+ - If you have [tt]WebDAV[/tt] active, disable it when you do not need it (un-install the addon, or simply redirect the WebDAV URL (and sub-directories) back to the home page).
  - Remove the maintenance password from the [tt]_config.php[/tt], only put it back when you need access to Composr's low-level configuration/upgrade system
   - This is particularly important because pages using the maintenance password do not load up Composr's full system, therefore brute-force detection and handling is not active (although Composr tries to write an entry to the system log on every failed attempt to access something with the wrong maintenance password).
 
@@ -204,7 +216,14 @@ The point I am trying to convey is that you should decide on an appropriate leve
 
 [title="2"]Security logs[/title]
 
-Composr defines a large number of 'hack-attack' situations, and in case of any of these situations occurring it will: stop the execution; send out an e-mail detailing the attack; and log the attack in the security log. These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
+Composr defines a large number of 'hack-attack' situations, and in case of any of these situations occurring it will (depending on configuration):
+ - stop the execution;
+ - display a message to the user;
+ - send out an e-mail to the staff detailing the attack;
+ - log the attack in the security log;
+ - ban the IP address.
+ 
+These situations are varied, but the most common is when input is found that does not match input constraints (for example, a script parameter which should be a number is not).
 
 Security logs can be reached from:
 Admin Zone > Audit > Security logging
@@ -212,11 +231,15 @@ Admin Zone > Audit > Security logging
 [media width="150" description="A security alert for a real hack-attempt" float="right"]data_custom/images/docs/tut_security/security_attack.png[/media]
 If you get alerts that suggest someone is actively trying to hack into your website, it is advisable to ban their IP address (or range) at the web server level as soon as humanely possible (unless they have already been automatically banned). This is just a precaution, but it is possible (although unlikely) that a skilled hacker who is referring to Composr source code has only accidentally triggered an alert, and may have found an alternative vulnerability in your site already, or may find one soon. Of course we know of no such vulnerabilities, and we do in fact consider it unlikely that a direct vulnerability will be found in Composr, but it is always best to be cautious with regards security. You should also be aware that a hacker may change their IP address, simply by changing their Internet connection, or working through proxies: you may decide in this case of a serious attack, to consult authorities, passing them the IP address of the offender and the hack-attack e-mail.
 
-Most security logs are accidental (caused by mistyped URLs, or buggy software) or are caused by bots. The screen-shot shows a typical hack-attack by a bot that crawls the web looking for vulnerable scripts: in this case, the bot is trying to use a parameter of the Composr poll voting form to send an e-mail, on the basis that by trying to abuse every form it finds, it will eventually find one that does work as a spam relay: it would then latch on to this and use the victim website as a mass spam relay, for as long as it can. In this case it hit a Composr site, so was logged.
+Most security logs are accidental (caused by mistyped URLs, or buggy software) or are caused by bots (but bot attacks can prelude to actual attacks and thus should still be taken seriously). The screen-shot shows a typical hack-attack by a bot that crawls the web looking for vulnerable scripts: in this case, the bot tried to use an XSS injection attack by passing in JavaScript (the [tt]script[/tt] tags) as URL parameters in hopes the website would render (and then execute) it. If the JavaScript evaluated, the bot would have noticed and latched on to that as an active vulnerability to be exploited on the site. Fortunately, the bot targeted a Composr site, and the attack attempt was halted. As this was an obvious attack attempt (no sane human would put script tags in the URL, and the [tt]Fuzz Faster U Fool[/tt] browser is typically used by automated scripts opposed to the average person), the staff banned this IP address.
+
+Note that even if the hack-attack system failed in its job, this attack would have still failed because:
+ - Composr (usually) checks the id parameter against an existing resource and errors if it does not exist
+ - User inputs are escaped in templates, so the JavaScript code would have been escaped (shown as text) and never evaluated (executed as actual code)
 
 [title="3"]Alert types[/title]
 
-The following types of alert (hack-attack codenames) are defined:
+The following types of alert (hack-attack codenames) are defined in the system:
  - [tt]DODGY_GET_HACK[/tt], A suspicious URL was given that includes characters looking like they may be there to do dodgy things. As URLs are generally clean of symbols, it is safe for Composr to detect dangerous looking ones, such as file system paths, new line characters, and HTML symbols
  - [tt]EVIL_POSTED_FORM_HACK[/tt], This may be due to a social engineering attack, where a logged in administrator has been tricked into filling in a form targeted to delete something from the website (CSRF)
  - [tt]EVIL_POSTED_FORM_NO_TOKEN_HACK[/tt], The user tried to submit a form without including a CSRF token (probably a bot, but this can also happen when the user uses the back button in their browser)
@@ -243,7 +266,7 @@ The following types of alert (hack-attack codenames) are defined:
  - [tt]CAPTCHAFAIL_HACK[/tt], The user failed filling in the CAPTCHA correctly while simultaneously posting code that looks like it is from other software (the very clearest spam signal)
  - [tt]HACK_ATTACK_PASSWORD_CHANGE[/tt], The user gave an invalid confirmation code while finalising a password reset
  - [tt]SQL_INJECTION_HACK[/tt], The user seemed to be trying to extract database data using an SQL [tt]UNION[/tt] operator (a very clear hacker signal when Composr is not expecting it to be used)
- - [tt]SENSITIVE_RESOURCE_HACK[/tt], The user tried to access a (usually public) sensitive resource using an ID or GUID that does not exist -- It could be a user trying to access something that was deleted, but it could also be someone trying to scrape the site for existing entries (especially if it happens more than once with different IDs / GUIDs)
+ - [tt]SENSITIVE_RESOURCE_HACK[/tt], The user tried to access a sensitive, but technically public, resource using an ID or GUID that does not exist -- It could be a user trying to access something that was deleted, but it could also be someone trying to scrape the site for existing entries (especially if it happens more than once with different IDs / GUIDs)
  - [tt]HACK_ATTACK[/tt], A generic hack-attack has been raised with no further explanation given
 
 After an IP address accumulates a certain amount from risk scores ("Hack-attack risk score ban threshold" configuration option) it will be banned, if the "Enable auto-banning" configuration option (Admin Zone > Setup > Configuration > Security options > General) is enabled.
@@ -300,13 +323,23 @@ When a user tries to login Composr, but fails, it is logged. A proportion (appro
 
 The log can be reached from:
 Admin Zone > Audit > Security logging
+
+Generally, a failed login is legitimate if any of these conditions are met:
+ - The attempted username is generic, e.g. "admin", "user", "username", "administrator", "root", "su", "sudo", "webmaster", "postmaster", your domain name, your site name
+ - The attempted username looks randomly generated
+ - The attempted username is one that exists or matches someone's e-mail address, and there have been multiple consecutive failed attempts, and the IP address does not match any of the ones said member used
+ - You notice any sequential patterns to the attempted usernames (e.g. "admin1", then "admin2", then "admin123") that clearly indicate a brute-force attempt
+ - Multiple attempts within a very short period of time (e.g. 5 or more within a minute)
+ - They are putting weird stuff in the username like trying to use IP addresses, SQL/XSS injection, etc
+ - They are using links as usernames (e.g. trying to log in as "myspamsite.com" or "myspamsitedotcom")
 [/surround]
 
 [title="2"]Filtering[/title]
 
 [title="3"]Input filtering[/title]
 
-The "Avoid broad input filtering security layer" privilege turns off filtering that may result in some data loss. Without the privilege it adds an additional level of security in case we have an actual security hole at another layer.
+The "Bypass broad input filtering security layer" privilege turns off filtering that may result in some data loss. Without the privilege it adds an additional level of security in case we have an actual security hole at another layer.
+
 This generally protects against:
  - Request parameters that look like the file paths of particularly sensitive files
  - Request parameters that look like particularly dangerous HTML, or miscellaneous vectors for injecting CSS or JavaScript code
@@ -663,6 +696,8 @@ If the "Auto-maintained maintenance script IP-barrier" configuration option (Adm
 [title="3"]Denial Of Service prevention[/title]
 
 Composr is a sophisticated system and comes with an unavoidable overhead. This increases the opportunity for a malicious individual/group to try and take down a server by flooding it with requests. Composr is designed to prevent against this -- it will ban flooders and hackattack repeaters after a point. However, the normal IP banning that Composr uses works via the database, and hence a significant overhead is taken before the ban can be detected. To workaround this, Composr can write IP bans directly into the Apache [tt].htaccess[/tt] file (obviously, Apache only) -- to do this, the [tt].htaccess[/tt] file must be writable by the web server (typically, 666 permissions, although as explained, a well configured environment won't need that).
+
+Ideally, you would ban IP addresses at the server level to reduce overhead, but even then there is still an overhead especially for sophisticated attacks. The best possible solution would be to deploy an anti-DDoS service between your visitors and the server to stop such traffic before it ever reaches your server. One example is Cloudflare. You could also invest in a piece of hardware that "absorbs" DDoS attacks (a "DDoS mitigation appliance"), but they can only handle up to so much traffic.
 
 [title="3"]Rooted-website prevention[/title]
 

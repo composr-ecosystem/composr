@@ -423,6 +423,9 @@ class Module_admin_import
         $hidden = new Tempcode();
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($session, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '15f2c855acf0d365a2e6329bec692dc8',
             'MODSECURITY_WORKAROUND' => true,
@@ -433,6 +436,8 @@ class Module_admin_import
             'HIDDEN' => $hidden,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -623,6 +628,9 @@ class Module_admin_import
         $hidden->attach(form_input_hidden('db_password', $db_password));
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($session, false);
+
         return do_template('IMPORT_ACTION_SCREEN', [
             '_GUID' => 'a3a69637e541923ad76e9e7e6ec7e1af',
             'EXTRA' => $extra,
@@ -633,6 +641,8 @@ class Module_admin_import
             'IMPORTER' => $importer,
             'IMPORT_LIST' => $import_list,
             'URL' => $url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

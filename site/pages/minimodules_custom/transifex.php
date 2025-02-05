@@ -79,8 +79,13 @@ foreach ($languages as $language_code => $language_details_basic) {
 ksort($_languages);
 $_languages = array_reverse($_languages);
 
+require_code('form_templates');
+list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
 return do_template('TRANSIFEX_SCREEN', [
     '_GUID' => '56c6b6d32f1794be3114a1b95f0a7ec5',
     'TITLE' => $title,
     'LANGUAGES' => $_languages,
+    'WARNING_DETAILS' => $warning_details,
+    'PING_URL' => $ping_url,
 ]);

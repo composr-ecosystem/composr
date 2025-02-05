@@ -697,13 +697,14 @@ function find_all_tables(object $db) : array
  *
  * @param  resource $out_file File to stream into
  * @param  boolean $include_drops Whether to include 'DROP' statements
+ * @param  boolean $include_data Whether to include table data, otherwise we just want the structure
  * @param  boolean $output_statuses Whether to output status as we go
  * @param  array $skip Array of table names to skip
  * @param  ?array $only Array of only table names to do (null: all)
  * @param  ?object $db Database connector to use (null: site database)
  * @param  ?string $intended_db_type Database driver to use (null: site database driver)
  */
-function get_sql_dump($out_file, bool $include_drops = false, bool $output_statuses = false, array $skip = [], ?array $only = null, ?object $db = null, ?string $intended_db_type = null)
+function get_sql_dump($out_file, bool $include_drops = false, bool $include_data = true, bool $output_statuses = false, array $skip = [], ?array $only = null, ?object $db = null, ?string $intended_db_type = null)
 {
     disable_php_memory_limit();
     $old_limit = cms_disable_time_limit();
@@ -737,7 +738,7 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         }
 
         if ($output_statuses) {
-            print('Working out SQL for table: ' . $table_name . "\n");
+            print('Dumping table ' . $table_name . "\n");
             cms_flush_safe();
         }
 
@@ -811,67 +812,67 @@ function get_sql_dump($out_file, bool $include_drops = false, bool $output_statu
         }
 
         // Data
-        $start = 0;
-        do {
-            $data = $db->query_select($table_name, ['*'], [], '', 100, $start, false, []);
-            $values_buildup = '';
-            foreach ($data as $row_counter => $map) {
-                $keys = '';
-                $all_values = [];
+        if ($include_data) {
+            $start = 0;
+            do {
+                $data = $db->query_select($table_name, ['*'], [], '', 100, $start, false, []);
+                $values_buildup = '';
+                foreach ($data as $row_counter => $map) {
+                    $keys = '';
+                    $all_values = [];
 
-                foreach ($map as $key => $value) {
-                    if ($keys != '') {
-                        $keys .= ', ';
-                    }
-                    $keys .= $key;
-
-                    $_value = (!is_array($value)) ? [$value] : $value;
-
-                    $v = null;
-                    foreach ($_value as $i => $v) {
-                        if (!array_key_exists($i, $all_values)) {
-                            $all_values[$i] = '';
+                    foreach ($map as $key => $value) {
+                        if ($keys != '') {
+                            $keys .= ', ';
                         }
-                        $values = $all_values[$i];
+                        $keys .= $key;
 
-                        if ($values != '') {
-                            $values .= ', ';
-                        }
+                        $_value = (!is_array($value)) ? [$value] : $value;
 
-                        if ($value === null) {
-                            $values .= 'NULL';
-                        } else {
-                            if (is_float($v)) {
-                                $values .= float_to_raw_string($v);
-                            } elseif (is_integer($v)) {
-                                $values .= strval($v);
-                            } else {
-                                $values .= '\'' . db_escape_string($v) . '\'';
+                        $v = null;
+                        foreach ($_value as $i => $v) {
+                            if (!array_key_exists($i, $all_values)) {
+                                $all_values[$i] = '';
                             }
-                        }
+                            $values = $all_values[$i];
 
-                        $all_values[$i] = $values; // essentially appends, as $values was loaded from former $all_values[$i] value
+                            if ($values != '') {
+                                $values .= ', ';
+                            }
+
+                            if ($value === null) {
+                                $values .= 'NULL';
+                            } else {
+                                if (is_float($v)) {
+                                    $values .= float_to_raw_string($v);
+                                } elseif (is_integer($v)) {
+                                    $values .= strval($v);
+                                } else {
+                                    $values .= '\'' . db_escape_string($v) . '\'';
+                                }
+                            }
+
+                            $all_values[$i] = $values; // essentially appends, as $values was loaded from former $all_values[$i] value
+                        }
+                    }
+
+                    if ((!$db->driver->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
+                        $sql = 'INSERT INTO ' . $db->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
+                        fwrite($out_file, $sql . ";\n");
+
+                        $values_buildup = '';
+                    } else {
+                        $values_buildup .= '(' . $all_values[0] . '),' . "\n";
                     }
                 }
 
-                if ((!$db->driver->has_batch_inserts()) || (!isset($data[$row_counter + 1])) || (($row_counter != 0) && ($row_counter % 40) == 0)) {
-                    $sql = 'INSERT INTO ' . $db->get_table_prefix() . $table_name . ' (' . $keys . ') VALUES ' . $values_buildup . '(' . $all_values[0] . ')';
-                    fwrite($out_file, $sql . ";\n");
-
-                    $values_buildup = '';
-                } else {
-                    $values_buildup .= '(' . $all_values[0] . '),' . "\n";
-                }
-            }
-
-            if (!empty($data)) {
                 $start += 100;
-            }
-        } while (!empty($data));
+            } while (!empty($data));
 
-        // Divider, if we put out some data
-        if ($start > 0) {
-            fwrite($out_file, "\n");
+            // Divider, if we put out some data
+            if ($start > 0) {
+                fwrite($out_file, "\n");
+            }
         }
     }
 

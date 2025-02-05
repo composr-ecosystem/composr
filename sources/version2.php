@@ -54,6 +54,11 @@ function get_future_version_information() : object
         require_code('http');
         $_http_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]], ($version_dotted == get_version_dotted()) ? 5/*5 minute cache*/ : 0);
     }
+
+    if ($_http_result[0] === null) { // Error, and we do not have a cache available
+        return paragraph(do_lang_tempcode('CANNOT_CONNECT_HOME'), 'getfutureversioninformationnulldata');
+    }
+
     $http_result = @json_decode($_http_result[0], true);
 
     if (($http_result !== null) && ($http_result['success'] === true)) {
@@ -68,7 +73,7 @@ function get_future_version_information() : object
 
         $table = make_string_tempcode($data);
     } else {
-        $table = paragraph(do_lang_tempcode('CANNOT_CONNECT_HOME'), 'dfsdff32ffd');
+        $table = paragraph(do_lang_tempcode('CANNOT_CONNECT_HOME'), 'getfutureversioninformationnotsuccessful');
     }
 
     require_code('xhtml');

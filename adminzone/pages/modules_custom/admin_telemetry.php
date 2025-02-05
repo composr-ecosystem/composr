@@ -583,6 +583,9 @@ class Module_admin_telemetry
 
         $resolve_url = build_url(['page' => '_SELF', 'type' => '_resolve_error', 'id' => $id], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '904b2916eea66a19f6906842c81da308',
             'HIDDEN' => new Tempcode(),
@@ -592,6 +595,8 @@ class Module_admin_telemetry
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $resolve_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -745,6 +750,9 @@ class Module_admin_telemetry
 
         $resolve_url = build_url(['page' => '_SELF', 'type' => '_ignore_error', 'id' => $id], '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false); // Very sensitive because it triggers auto-resolve on save
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '31899d61b3ddf63ea0efd35829519146',
             'HIDDEN' => new Tempcode(),
@@ -754,6 +762,8 @@ class Module_admin_telemetry
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $resolve_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -829,12 +839,18 @@ class Module_admin_telemetry
         // Prompt for confirmation
         if (get_param_integer('confirm', 0) == 0) {
             $preview = do_lang_tempcode('ARE_YOU_SURE_DELETE_IGNORE_ERROR', escape_html($row['ignore_string']));
+
+            require_code('form_templates');
+            list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => '40c66abcd60ac85ac70d58d2d5da307e',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
                 'FIELDS' => build_keep_post_fields(),
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
             ]);
         }
 

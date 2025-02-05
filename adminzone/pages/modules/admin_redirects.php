@@ -286,7 +286,7 @@ class Module_admin_redirects
             'IS_TRANSPARENT' => false,
         ]);
 
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
 
         $notes = get_value('notes', null, true);
         if ($notes === null) {
@@ -498,7 +498,7 @@ class Module_admin_redirects
         ]);
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution();
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
 
         return do_template('URL_REDIRECT_SCREEN', [
             '_GUID' => '6529031253fcc3aceb66e38d79905cd4',

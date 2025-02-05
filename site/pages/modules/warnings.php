@@ -230,10 +230,23 @@ class Module_warnings extends Standard_crud_module
 
         $this->add_text = new Tempcode();
 
+        // Make sure if multiple staff are trying to warn the same member at the same time, they know about it
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id));
+        if ($ping_url !== null) {
+            $this->add_text->attach(do_template('HANDLE_CONFLICT_RESOLUTION', [
+                '_GUID' => 'TODO',
+                'PING_URL' => $ping_url,
+            ]));
+        }
+        if ($warning_details !== null) {
+            $this->add_text->attach(paragraph($warning_details));
+        }
+
         // Information about their history, and the rules - to educate the warner/punisher
         if ($new) {
             $hidden->attach(form_input_hidden('member_id', strval($member_id)));
-            $this->add_text = do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]);
+            $this->add_text->attach(do_lang_tempcode('WARNINGS_FORM', escape_html($username), escape_html(integer_format($num_warnings, 0)), [escape_html(get_site_name()), escape_html($rules_url), escape_html($history_url), escape_html($lookup_url)]));
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', [
@@ -748,6 +761,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         $fields['ACTIONS'] = new Tempcode();
+
         // Edit action
         $fields['ACTIONS']->attach(hyperlink(build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $row['id'], 'redirect' => protect_url_parameter(SELF_REDIRECT)], '_SELF'), do_lang('EDIT'), false, true, ''));
 
@@ -795,12 +809,19 @@ class Module_warnings extends Standard_crud_module
             $member = $GLOBALS['FORUM_DRIVER']->get_username($warning['w_member_id']);
 
             $preview = do_lang_tempcode('ARE_YOU_SURE_UNDO_PUNITIVE_ACTION', escape_html($undo_action), escape_html($member));
+
+            // Conflict resolution should be based on editing the warning as a whole, not the specific action
+            require_code('form_templates');
+            list($warning_details, $ping_url) = handle_conflict_resolution(strval($punitive_action['p_warning_id']), false);
+
             return do_template('CONFIRM_SCREEN', [
                 '_GUID' => 'a8c48f5437f4258833577b2f785af755',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),
                 'FIELDS' => build_keep_post_fields(),
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
             ]);
         }
 

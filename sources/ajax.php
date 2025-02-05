@@ -437,27 +437,26 @@ function edit_ping_script()
 {
     prepare_backend_response('text/plain');
 
-    $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE the_time<' . strval(time() - 200));
+    $GLOBALS['SITE_DB']->query('DELETE FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'edit_pings WHERE the_time<' . strval(time() - 300));
 
-    $GLOBALS['SITE_DB']->query_delete(
-        'edit_pings',
-        [
-            'the_page' => cms_mb_substr(get_page_name(), 0, 80),
-            'the_type' => cms_mb_substr(get_param_string('type'), 0, 80),
-            'the_id' => cms_mb_substr(get_param_string('id', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
-            'the_member' => get_member(),
-        ]
-    );
-    $GLOBALS['SITE_DB']->query_insert(
-        'edit_pings',
-        [
-            'the_time' => time(),
-            'the_page' => cms_mb_substr(get_page_name(), 0, 80),
-            'the_type' => cms_mb_substr(get_param_string('type'), 0, 80),
-            'the_id' => cms_mb_substr(get_param_string('id', '', INPUT_FILTER_GET_COMPLEX), 0, 80),
-            'the_member' => get_member(),
-        ]
-    );
+    $type = get_param_string('type', null);
+    $id = get_param_string('id', null, INPUT_FILTER_GET_COMPLEX);
+
+    $map = [
+        'the_page' => cms_mb_substr(get_page_name(), 0, 80),
+        'the_member' => get_member(),
+        'the_type' => '',
+        'the_id' => '',
+    ];
+    if ($type !== null) {
+        $map['the_type'] = cms_mb_substr($type, 0, 80);
+    }
+    if ($id !== null) {
+        $map['the_id'] = cms_mb_substr($id, 0, 80);
+    }
+
+    $GLOBALS['SITE_DB']->query_delete('edit_pings', $map);
+    $GLOBALS['SITE_DB']->query_insert('edit_pings', $map + ['the_time' => time()]);
 
     echo '1';
 

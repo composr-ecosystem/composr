@@ -209,7 +209,6 @@ class Module_admin_karma
 
     /**
      * Karma records interface.
-     * TODO: Convert into Filtercode-friendly
      *
      * @return Tempcode The result of execution
      */
@@ -520,6 +519,9 @@ class Module_admin_karma
         $map = ['page' => '_SELF', 'type' => '_edit', 'redirect' => protect_url_parameter($redirect)];
         $url = build_url($map, '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'd9fd21ef566129468ea4297716966258',
             'HIDDEN' => new Tempcode(),
@@ -530,6 +532,8 @@ class Module_admin_karma
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'URL' => $url,
             'JS_FUNCTION_CALLS' => [],
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -593,12 +597,17 @@ class Module_admin_karma
         $map = ['page' => '_SELF', 'type' => '_delete', 'redirect' => protect_url_parameter($redirect)];
         $url = build_url($map, '_SELF');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false);
+
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => 'c2b52b64793eb7a12015d7915024e6ff',
             'TITLE' => $this->title,
             'PREVIEW' => $preview,
             'URL' => $url,
             'FIELDS' => build_keep_post_fields(),
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

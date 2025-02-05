@@ -736,7 +736,13 @@ class Module_groups
         // Prospective members
         $_prospective_members = new Tempcode();
         $prospective_members = new Tempcode();
+        $warning_details = null;
+        $ping_url = null;
         if ($may_control_group) {
+            // Conflict resolution; even though there can only be one leader, super-administrators can also control
+            require_code('form_templates');
+            list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
+
             $start = get_param_integer('pp_start', 0);
             $max = get_param_integer('pp_max', 50);
             $max_rows = $GLOBALS['FORUM_DB']->query_select_value('f_group_approvals', 'COUNT(*)', ['ga_new_group_id' => $id, 'ga_status' => 0]);
@@ -830,6 +836,8 @@ class Module_groups
             'PRIMARY_MEMBERS' => $primary_members,
             'SECONDARY_MEMBERS' => $secondary_members,
             'PROSPECTIVE_MEMBERS' => $prospective_members,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');

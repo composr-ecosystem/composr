@@ -127,6 +127,9 @@ foreach ($_prices as $_price) {
     }
 }
 
+require_code('form_templates');
+list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
 $ret = do_template('CLASSIFIEDS_PRICING_SCREEN', [
     '_GUID' => '8fd97a8bc88dfdd5c8455d41d290ae56',
     'TITLE' => $title,
@@ -135,5 +138,7 @@ $ret = do_template('CLASSIFIEDS_PRICING_SCREEN', [
     'CATALOGUES' => $catalogues,
     'PRICES' => $prices,
     'POST_URL' => get_self_url(),
+    'WARNING_DETAILS' => $warning_details,
+    'PING_URL' => $ping_url,
 ]);
 $ret->evaluate_echo();

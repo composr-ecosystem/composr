@@ -10,18 +10,18 @@ PHP is a:
  - imperative language -- this basically means that programs consists of sequences of instructions for the computer, rather than being like a mathematical equation
  - non-strict object orientated language -- this means you can make and manipulate 'objects' (explained later in the tutorial) but that you do not need to use them
  - weakly typed language -- this means that you can do things like interchange numbers and textual representations of numbers and PHP will automatically perform conversions
- - scripting (interpreted) language -- this means that
- - web language -- this means that functionality for running on a web server and outputting web pages to connecting computers, as well as other Internet-related tasks, is provided as standard and easy to do; PHP does not need to be used as a web language though
+ - scripting (interpreted) language -- this means that code is executed and interpreted line by line at runtime rather than being compiled into another language beforehand (like the Go language does, for example). This allows for easier debugging and faster development, but it can make processing slower compared to compiled languages in some scenarios.
+ - web language -- this means that functionality for running on a web server and outputting web pages to connecting computers, as well as other Internet-related tasks, is provided as standard and easy to do; PHP does not need to be used as a web language though (the PHP CLI can be used to execute arbitrary PHP scripts on a computer)
  - Open Source language -- it is free to download and use, and if you wish you can get the source code (which is written in C) and make your own versions, although by doing so you are likely breaking compatibility with the other PHP installs out there
 PHP also has a very large library of built-in functionality to do things such as, for example, connect to databases.
 
-PHP is designed to be quick and easy to programming. This makes it great for learning to program on, although for large systems like Composr it is biased toward 'easiness' has required us to make special measures to increase cross-install compatibility, security, and the ability to automatically find problems. To achieve these things we have very carefully crafted our framework to abstract away from common PHP problems, and created a 'Code quality checker' to automatically scan code for problems. The checker requires that high standards of code are done in order to be able to find the problems -- which to some extent shows why the 'easiness' of PHP is a reason it is also difficult to detect problems before running into them.
+PHP is designed to be quick and easy for programming. This makes it great for learning to program on, although for large systems like Composr its bias toward 'easiness' has required us to make special measures to increase cross-install compatibility, security, and the ability to automatically find problems. To achieve these things we have very carefully crafted our framework to abstract away from common PHP problems, and created a 'Code quality checker' to automatically scan code for problems. The checker requires that high standards of code are done in order to be able to find the problems -- which to some extent shows why the 'easiness' of PHP is a reason it is also difficult to detect problems before running into them.
 
 [title="2"]Requests[/title]
 
 The world-wide-web ('web') works via a very simple mechanism whereby web browsers and web servers communicate with a 'request' and 'reply' mechanism. Quite simply, the web browser asks the web server at a certain domain name for a certain page (identified by a certain URL) and the web server sends it. With PHP, if the page is actually a PHP script, then PHP loads up that script like a program, runs it until completion, and passes the output of it back to the web server, which sends it to the web browser.
 
-In other words: PHP scripts are run on demand, triggered by a URL request. PHP does not like a desktop application where it stays in memory between mouse clicks.
+In other words: PHP scripts are run on demand, triggered by a URL request. PHP does not work like a desktop application where it stays in memory between mouse clicks (compared to, e.g., Node.js).
 
 [title="2"]PHP[/title]
 
@@ -35,7 +35,7 @@ echo 'hello world';
 [/code]
 This script outputs 'hello world' to the web browser it is being called up by (well, the web browser tells the web server to tell PHP to call it up). The ';' symbol marks them end of a command, which are placed in sequences.
 
-PHP actually allows you to mix commands in with plain HTML, by placing them between '<?php' and '?>' in the file. This is not used by Composr however, as it creates extremely ugly code, and makes it difficult to change the visual appearance, especially when programmers need to make new code releases, but the actual files have been changed just to make the visual output look a bit different. Composr uses a system of 'templating' where templates are defined outside the code, and called up by the code to be mixed with data and mixed with other templates: this fusion is then output to the user's web browser. In Composr, you can't just 'echo' out data like in this example, unless you are coding what we call a 'mini-module' or 'mini-block' (these listen for echoed data and insert it properly into the output stream). In Composr, if you are writing a new page, you write a type of module that fits inside Composr, and has access to all of the Composr functionality (such as accessing the database). There is nothing stopping you have your own scripts on your web server as well as Composr, and even sharing the same data, but actually coding inside a 'plug-in' (unofficial terminology) for Composr is likely to be the best solution. Plug-ins may be:
+PHP actually allows you to mix commands in with plain HTML, by placing them between '<?php' and '?>' in the file. This is not used by Composr however (except in low-level maintenance scripts), as it creates extremely ugly code, and makes it difficult to change the visual appearance, especially when programmers need to make new code releases, but the actual files have been changed just to make the visual output look a bit different. Composr uses a system of 'templating' where templates are defined outside the code, and called up by the code to be mixed with data and mixed with other templates: this fusion is then output to the user's web browser. In Composr, you can't just 'echo' out data like in this example, unless you are coding what we call a 'mini-module' or 'mini-block' (these listen for echoed data and insert it properly into the output stream). In Composr, if you are writing a new page, you write a type of module that fits inside Composr, and has access to all of the Composr functionality (such as accessing the database). There is nothing stopping you have your own scripts on your web server as well as Composr, and even sharing the same data, but actually coding inside a 'plug-in' (unofficial terminology) for Composr is likely to be the best solution. Plug-ins may be:
  - mini-modules
  - mini-blocks
  - standalone scripts, that start with a special block of code as used in many Composr standalone scripts, such as [tt]dload.php[/tt] and [tt]index.php[/tt].
@@ -64,9 +64,14 @@ Variables are a means of storing data within your program. To refer to that data
  - [b]boolean[/b] -- a simple 'true' or 'false', for holding truths
  - [b]array[/b] -- something that holds other variables in an indexing system
  - [b]null[/b] -- any variable may be made the NULL type, which is like a marker that doesn't actually give a specific value. It is often used to mean 'none' or 'unknown' or 'undefined' or 'erroneous result'.
-PHP variables may jump between types according to the values that you assign them.
+ - [b]mixed[/b] -- this is just another way of saying it is 'not typed' or could be multiple types
+ - [b]resource[/b] -- usually an associative array relating to some component of PHP (such as the file stream). PHP has been deprecating these slowly over time in favor of using classes, namespaces, or objects.
+ - [b]object[/b] -- an instance of a class or function
+
+PHP variables may jump between types according to the values that you assign them (but this usually violates our coding standards and should not be done; it often causes bugs).
+
 Variable names have to follow these rules:
- - The first character must be a letter, not a number or _.
+ - The first character must be a letter or an underscore (although underscores should be reserved for temporary variables with a similar name as the 'final' variable, e.g. if you need to do type conversions).
  - After that you may use numbers, letters and _.
 Variable names are not actually case sensitive, but we recommend that you consider them to be.
 
@@ -74,9 +79,12 @@ An example of how to create a integer called 'fred' would be:
 [code="PHP"]
 $fred = 1;  // initialise fred as an integer.
 [/code]
-The '// ...' bit is called a comment, and is only there to help label the code for humans reading it.
-'$' is placed before the name of any variable when it is referenced.
-Variables may be either local or global. Local variables can only be used by the function it belongs to and they lose their values once that function ends, unless they are made 'static' (an advanced and arguably confusing thing, that Composr does not currently even use itself).
+
+The '// ...' bit is called a comment, and is only there to help label the code for humans reading it. In this case, the comment is placed to the right of a line of code; this makes it an inline comment.
+
+'$' is placed before the name of any variable when it is referenced to indicate to PHP it is a variable (and not something else like a constant, function, or directive).
+
+Variables may be either local or global. Local variables can only be used by the function it belongs to and they lose their values once that function ends, unless they are made 'static'.
 
 A global variable would be created as follows:
 [code="PHP"]
@@ -84,6 +92,27 @@ global $FRED;
 $FRED = 1;  // initialise fred as a global integer.
 [/code]
 Whenever the variable is used, the global line must be used to identify what the variable 'FRED' is. Note that by convention (as used in Composr), I have put the name in upper case.
+
+A 'static' variable is attached to the definition of a function rather than its instance / execution; this means its value persists across executions of that function until the PHP execution as a whole is done. Static variables are great for holding simple caches so repeat calls to a function with the same parameters do not have to re-calculate everything again.
+
+Here is an example where we might utilise a static variable to hold a cache in a particularly resource-intensive or frequently-called function:
+[code="PHP"]
+function some_function(string $param_a, int $param_b, ?bool $param_c = false) {
+	static $ret_cache = []; // Initialise the static variable to an empty array (unless it already exists)
+	$hash = md5(serialize([$param_a, $param_b, $param_c])); // Get a hash of our parameters
+
+	// If we already calculated data for these parameters, return them immediately.
+	if (isset($ret_cache[$hash])) {
+		return $ret_cache[$hash];
+	}
+
+	/* Perform your calculations here */
+
+	// Everywhere you are about to return something, put its return value into the static variable like this.
+	$ret_cache[$hash] = $ret;
+	return $ret;
+}
+[/code]
 
 [title="2"]IF statements[/title]
 
@@ -95,7 +124,7 @@ This true/false stuff is called boolean logic. Operators used in boolean express
  - [tt]!==[/tt] (not equal in either of value or type)
  - [tt]>[/tt] (is greater than)
  - [tt]<[/tt] (is less than)
- - [tt]!=[/tt] (is not equal to)
+ - [tt]!=[/tt] or [tt]<>[/tt] (is not equal to)
  - [tt]>=[/tt] (is greater than or equal to)
  - [tt]<=[/tt] (is less than or equal to)
 
@@ -111,7 +140,7 @@ The IF statement can also have multiple commands contained within 'braces' (brac
 
 EXAMPLE:
 [code="PHP"]
-if ($a == 2)                // If a is equal to 2 then ...
+if ($a == 2)                // If a is equal to 2 (or the string '2', since we are not doing a type check) then ...
 {
    echo 'Hello';   // Write hello to the screen and then
    $a = 3;                    // give a the value of 3.
@@ -139,13 +168,31 @@ if (!($a == 3))
 
 [title="2"]Indentation and comments[/title]
 
-Text should always be indented for clarity. Indentation simply means pushing the text forward a few spaces within braces (or whatever). We always choose to indent three spaces. Most languages allow and encourage this because they don't care if you add extra spaces or new lines to the code.
+Text should always be indented for clarity. Indentation simply means pushing the text forward a few spaces within braces (or whatever). We always choose to indent four spaces in PHP code, otherwise generally we indent one tab. Most languages allow and encourage this because they don't care if you add extra spaces or new lines to the code.
+
 Comments are simple notes in the code, which the compiler ignores. Single line notes start with '//' and don't require ends. Multi line notes start with /* and end with */.
 
 EXAMPLE:
 [code="PHP"]
 echo 'Hi';     // This is a single-line comment
 echo 'Hello!'; /* This is a possibly-line-spanning comment */
+[/code]
+
+There are also special 'phpDoc' comments which start with [tt]/**[/tt] and end with [tt]**/[/tt]. These are also multi-line, but they occur above a class or function definition to explain the class, function, or property below it.
+
+EXAMPLE:
+[code="PHP"]
+/**
+ * Does stuff.
+ *
+ * @param  string $param_a The first parameter
+ * @param  ?integer $param_b The second parameter (null: none)
+ * @return boolean Whether we did anything
+ **/
+function some_function(string $param_a, ?int $param_b = null) : bool
+{
+	// ...
+}
 [/code]
 
 [title="2"]Arithmetic[/title]
@@ -158,19 +205,20 @@ $a = $a + 1; // this would increment (add one on to $a).
 [/code]
 
 The four simplest operators are:
-(multiply), / (divide), + (add), - (subtract).
+[tt]*[/tt] (multiply), [tt]/[/tt] (divide), [tt]+[/tt] (add), [tt]-[/tt] (subtract).
 Parentheses may also be used. There are a couple of techniques to simplify this specific example, as adding to a variable is very common:
  - To increment [tt]a[/tt] you could just type [tt]$a++[/tt]. To decrement [tt]a[/tt] you could just type [tt]$a--[/tt].
- - To add 5 to [tt]a[/tt], you could type: [tt]$a+=5; // $a=$a+5[/tt].
+ - To add 5 to [tt]a[/tt], you could type: [tt]$a += 5;[/tt] (this is the same as [tt]$a = $a + 5;[/tt]).
 
-Equations are worked out in order of 'BODMAS':
+Equations are worked out in order of 'PEMDAS' (please excuse my dear Aunt Sally):
  - Parentheses
- - Raising to the power
- - Division
+ - Exponents (powers)
  - Multiplication
+ - Division
  - Addition
  - Subtraction
-Note that these examples are based around variables being [b]reassigned a value[/b] equal to an expression. $a=$a+1 is impossible in standard maths, as it demonstrates a contradiction: but as the '=' sign is for assignment, not making a statement, and as [tt]a[/tt] is a variable, not a constant, it is valid and normal.
+
+Note that these examples are based around variables being [b]reassigned a value[/b] equal to an expression. In standard maths, [tt]a = a + 1[/tt] is an equation which evaluates to 'no solution' since it's impossible for a to also equal one more than itself. But in PHP, this is an assignment; we are assigning the value a + 1 onto a.
 
 [title="2"]Iteration[/title]
 
@@ -179,32 +227,36 @@ If you want to repeat a set of instructions until a condition is met (a loop) th
 for ($counter = <start value>; <condition>; <control-command>)
 [/code]
 [code="PHP"]
-while(<condition>)
+while (<condition>)
 [/code]
 [code="PHP"]
-do ... while(<condition>);
+do ... while (<condition>);
 [/code]
 The for loop is used to repeat a set of instructions a set amount of times. First it sets the counter variable to the initialisation number. It then repeats the loop until the test condition is met, adding the set number to the counter variable (this is done in the control command, which could be $counter++ for example).
-The while loop repeats a set of commands while an expression is true. This loop may never run at all if the statement is always true, but may run forever if it is never true.
+
+The while loop repeats a set of commands while an expression is true. This loop may never run at all if the statement is false from the very start, but it may run forever (and potentially cause an infinite loop until PHP's max execution time is reached) if it is always true.
+
 The do .. while loop repeats a set of commands at least once and will stop when the expression isn't true any-more. This loop can run forever.
 To break out of a loop you can use the break statement. ie. break;
+
 To ignore the next commands of the loop and go straight back to the start use the continue statement. ie. continue;
 
 There is another type of loop in PHP:
 [code="PHP"]
-foreach($array as $key=>$val)
+foreach ($array as $key => $val)
 [/code]
 [code="PHP"]
-foreach($array as $val)
+foreach ($array as $val)
 [/code]
-This will go through all elements in an array, assigning them to variables that may be used from inside the loop. Note that the $key and $val variables are temporary and changing them will not change the array.
+This will go through all elements in an array, assigning them to variables that may be used from inside the loop. Note that the $key and $val variables are temporary and changing them will not change the array (unless you pass them by reference, e.g. [tt]foreach ($array as $key => &$val)[/tt]).
+
 If the second usage is used (i.e. a foreach loop without a key in the foreach command) then only the values will be made available. This is typically used for an array which is a simple list, rather than a complex map between keys and values.
 
 [title="2"]include[/title]
 
 You may link PHP scripts together using the [tt]include[/tt], [tt]include_once[/tt], [tt]require[/tt] or [tt]require_once[/tt] commands. The 'once' varieties will only do the inclusion if it hasn't been done before, and the 'require' variety will kill script execution with an error if the inclusion did not work.
 
-It is wise to split large scripts up and use 'include' to link them together, for reasons of modularity. Composr actually has a [tt]require_code[/tt] command which does a similar thing, but is more 'clever'.
+It is wise to split large scripts up and use 'include' to link them together, for reasons of modularity. Composr actually has a [tt]require_code[/tt] command which does a similar thing, but is more 'clever' as it factors in code overrides.
 
 [title="2"]Debugging[/title]
 
@@ -237,11 +289,16 @@ The actual PHP command is formed like this:
 For example,
 [code="PHP"]
 $a = 1;
-if ($a == 1) echo 'a equals 1'; else echo 'a does not equal 1';
+
+if ($a == 1) {
+	echo 'a equals 1'; 
+} else {
+	echo 'a does not equal 1';
+}
 [/code]
 
 [box="Little point" width="25em" float="right"]
-[tt]else if[/tt] can be abbreviated [tt]elseif[/tt] in PHP.
+[tt]else if[/tt] can (and should, per PSR-12 standards) be abbreviated [tt]elseif[/tt] in PHP.
 [/box]
 $a is set to one, so the IF statement will confirm that. If we'd set $a to 2, the 'else' part would execute instead.
 
@@ -293,12 +350,14 @@ To create a constant you use the [tt]define[/tt] command:
 define('<CONSTANT_NAME>', <value>);
 [/code]
 
+Be careful! If you try to define a constant that is already defined, you will get an error. Use PHP's [tt]defined[/tt] function to check if something has been defined yet.
+
 [title="2"]Functions[/title]
 
 Functions are used to split up your code and make it more manageable, easier to understand, and to make portions of it reusable. Functions may return a value and accept parameters.
 For example, here I will define a function that outputs text.
 [code="PHP"]
-function write($text)
+function write(string $text) : int
 {
    echo $text;
    return 1;
@@ -307,11 +366,15 @@ function write($text)
 The write function is designed to accept strings and will always return the value 1. It is a very useless example, but it should illustrate the syntax.
 
 To call up that function, and put the value into a variable, you would use:
-$val=write('some text here');
+[code="PHP"]
+$val = write('some text here');
+[/code]
+
+Note that because of the echo statement, 'some text here' gets output to the browser or to the console. However, the actual value of $val is 1 because that is what the function returned.
 
 If I were to change the last example to:
 [code="PHP"]
-function write($text = 'no parameters were given')
+function write(string $text = 'no parameters were given')
 {
    echo $text;
    return 1;
@@ -320,7 +383,7 @@ function write($text = 'no parameters were given')
 This new program will send default text to the write function if no parameters are sent.
 
 We have built our own layer on top of PHP for type-checking and use the code quality checker to achieve the same error checking a compiler does for languages such as C++.
-In Composr, all functions should contain a header that identifies them and defines their typing:
+In Composr, all functions should contain a header (phpDoc) that identifies them and defines their typing:
 [code="PHP"]
 /**
  * Output a string.
@@ -328,7 +391,7 @@ In Composr, all functions should contain a header that identifies them and defin
  * @param  string $text The string to output
  * @return integer The integer to return (always 1)
  */
-function write($text = 'no parameters were given')
+function write(string $text = 'no parameters were given') : int
 {
    echo $text;
    return 1;
@@ -347,7 +410,7 @@ When a function is given parameters that come from variables, these variables ar
  * @param  string $text The string to output
  * @return integer The integer to return (always 1)
  */
-function write(&$text)
+function write(string &$text) : int
 {
    echo $text;
    $text = 'Destroying the input parameter - ha ha, they might not expect this!';
@@ -355,9 +418,9 @@ function write(&$text)
 }
 [/code]
 
-Unfortunately/inevitably with references you cannot give default values, and you cannot pass expressions (you must pass variables directly).
+Unfortunately/inevitably with references you cannot give default values (except null), and you cannot pass expressions (you must pass variables directly).
 
-Reference parameters are also useful if you want a function to return more than one value. Note however that you could use arrays for this instead (returning an array).
+Reference parameters are also useful if you want a function to return more than one value (the function returns the most important value, and then the lower priority values are parameters passed by reference). Note however that you could use arrays for this instead (returning an array).
 
 [title="2"]Escape sequences[/title]
 
@@ -376,8 +439,10 @@ A cast is used to force one data type to be converted to another one. It is very
 [code="PHP"]
 $a = 1;
 $b = 2.0;
-$a = (int)$b; // Now $a = 2, not 2.0 (and hence it has not had to be converted to a float).
+$a = (int) $b; // Now $a = 2, not 2.0 (and hence it has not had to be converted to a float).
 [/code]
+
+Note that in Composr, we prefer to use functions instead of casting, such as [tt]intval($b)[/tt] in this case.
 
 [title="2"]Arrays[/title]
 
@@ -386,21 +451,57 @@ An array is a collection of values that all stored underneath a single name: sep
 [code="PHP"]
 $hello = array(1, 2, 3, 4);
 [/code]
-To access the 3rd element of that array you would refer to it as: $hello[2] (0 is the first element).
-This is only one type of array in PHP, called a list. A list is an array where the keys are all automatically assigned, as integers.
+
+As of Composr version 11, however, we prefer to use the short-hand array syntax, which is just square braces:
+[code="PHP"]
+$hello = [1, 2, 3, 4];
+[/code]
+This will be used for the remainder of this tutorial.
+
+To access the 3rd element of that array you would refer to it as: [tt]$hello[2][/tt] (0 is the first element as arrays are zero-index).
+This is only one type of array in PHP, called a list. A list is an array where the keys are all automatically assigned, as incremental integers.
 
 Another way to create an array would be:
 [code="PHP"]
-$hello = array('a' => 1, 'b' => 2, 'c' => 3, 'd' => 4);
+$hello = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4];
 [/code]
 This is a 'map' or 'associative array'. You extract in exactly the same way as a list by using the key: for example, [tt]$hello['c'][/tt].
 
 Arrays come very useful when using foreach loops.
 
 Arrays can have 'elements' (values located by the value key) added, edited, and deleted.
-To add a value to a map, you may just assign it in the same way you refer to an element. To add a value to a list you may do as illustrated in this example:  $hello[]=5;
+To add a value to a map, you may just assign it in the same way you refer to an element:
+[code="PHP"]
+$hello['e'] = 5;
+[/code]
 
-PHP has many commands and functions to work with arrays, such as array_key_exists.
+To add a value to a list you may do as illustrated in this example:
+[code="PHP"]
+$hello[] = 5; // This will be appended at the end of the array, which means in our example, this gets assigned to index 4.
+[/code]
+
+Be careful not to assign arrays to arrays by accident:
+[code="PHP"]
+$hello[] = [5, 6, 7, 8];
+[/code]
+This example might not do what you think it will; the value of $hello is now [tt][1, 2, 3, 4, [5, 6, 7, 8]][/tt] which means you just put an array inside an array. If you want a quick way to append multiple values to the end of an array, use PHP's [tt]array_merge[/tt]:
+[code="PHP"]
+$hello = array_merge($hello, [5, 6, 7, 8]); // Now $hello will be [1, 2, 3, 4, 5, 6, 7, 8]
+[/code]
+
+To remove an item from an array, use unset:
+[code="PHP"]
+unset($hello[2]); // In list arrays, the keys are reassigned so they are sequential and do not skip numbers
+unset($hello['c']);
+[/code]
+
+You can also use handy tools to get elements out of an array (which is great for use as a queue of sorts):
+[code="PHP"]
+$value = array_shift($hello); // Unsets, and returns, the first item in the array
+$value = array_pop($hello); // Unsets, and returns, the last item in the array
+[/code]
+
+PHP has many other commands and functions to work with arrays, such as array_key_exists or in_array.
 
 [title="2"]Object orientated programming (OOP)[/title]
 
@@ -412,7 +513,7 @@ This can all be achieved in procedural programming, and especially in PHP: you j
 
 In procedural programming, one creates variables and functions that can use them (often using the variables as parameters for the functions, but also by creating 'global variables'). With OOP, you create a class, and this class has functions ('methods') that are created to directly control the variables in it. Each instance (a class can be 'instantiated' to create working copies of it) of the class (an 'object') uses the same functions to control a different set of variables: the programmer doesn't need to pass variables or referenced variables to the function at all. One should use a good mix of functions and classes to make a well structured program -- picking what is most suitable for the job at hand.
 
-Composr puts all modules and blocks into their own classes: this allows them to operate in their own little environments, modifying their own copies of their own data. In theory, we could make 1000 download modules that exist independently from each other, without having to create a complex data structure to store 1000 copies of a set of download module variables. In actual fact, there was not much reason to place modules and blocks in their own classes other than to allow them to re-use function names (all classes have their own 'name-spaces', preventing conflict if different classes have the same named functions) without having to be manually checked against all other modules (which would not be possible for user modifications) or to give them all complex prefixes.
+Composr puts all modules, hooks, and blocks into their own classes: this allows them to operate in their own little environments, modifying their own copies of their own data. In theory, we could make 1000 download modules that exist independently from each other, without having to create a complex data structure to store 1000 copies of a set of download module variables. In actual fact, there was not much reason to place modules and blocks in their own classes other than to allow them to re-use function names (all classes have their own 'name-spaces', preventing conflict if different classes have the same named functions) without having to be manually checked against all other modules (which would not be possible for user modifications) or to give them all complex prefixes.
 
 Composr also uses a class for database modification. This is a good example of the more traditional benefit of object orientation: Composr can hold multiple database connections, each with their own data, and it can consider each database connection an object, and just call up methods of the object to run upon itself.
 
@@ -434,7 +535,7 @@ In fact, object orientated programming is strongly based on abstraction and migh
 
 [title="2"]Computer arithmetic[/title]
 
-Computers store everything in binary (0s and 1s). Our number is system is called decimal because it has 10 different possible number symbols. In binary, binary digits, or bits, are grouped into lumps. The number of combinations stored within a lump of 'x' bits is 2x. With 8 bits there are 256 combinations (28=256).  in other words, an 8-bit number can store a number which can be distinguished as any number in the range 0-255, or -127-128 if negatives are also allowed.
+Computers store everything in binary (0s and 1s). Our number system is called decimal because it has 10 different possible number symbols. In binary, binary digits, or bits, are grouped into lumps. The number of combinations stored within a lump of 'x' bits is 2^x. With 8 bits there are 256 combinations (2^8=256).  in other words, an 8-bit number can store a number which can be distinguished as any number in the range 0-255, or -127-128 if negatives are also allowed.
 
 This concept of storing a group of bits is not unlike a mileage indicator on a car: it supports a certain range of numbers before having to 'clock round'.
 

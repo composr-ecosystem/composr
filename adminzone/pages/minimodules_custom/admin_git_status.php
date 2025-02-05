@@ -170,6 +170,9 @@ function git_status__browse($include_ignored = null)
         ];
     }
 
+    require_code('form_templates');
+    list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
     $tpl = do_template('GIT_STATUS_SCREEN', [
         '_GUID' => 'e9908ded88ba2fc0c75945449fc49b99',
         'TITLE' => $title,
@@ -185,6 +188,8 @@ function git_status__browse($include_ignored = null)
         'HAS_MAX_REMOTE_FILES' => (count($remote_files) == 50),
         'INCLUDE_IGNORED' => $include_ignored,
         'SORT' => $sort,
+        'WARNING_DETAILS' => $warning_details,
+        'PING_URL' => $ping_url,
     ]);
     $tpl->evaluate_echo();
 }

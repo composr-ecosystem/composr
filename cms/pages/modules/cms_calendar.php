@@ -1336,6 +1336,10 @@ class Module_cms_calendar extends Standard_crud_module
         $hidden->attach(form_input_hidden('lang', $lang));
         handle_max_file_size($hidden);
 
+        // Import does not actually alter any existing events but it's good to have conflict notices in case maybe multiple people are importing the same feed
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '5a970cd3766a6d32b64015b4dfd4b25e',
             'TITLE' => $this->title,
@@ -1345,6 +1349,8 @@ class Module_cms_calendar extends Standard_crud_module
             'SUBMIT_ICON' => 'admin/import',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

@@ -313,6 +313,24 @@ class Module_admin_revisions
 
         $revision_type = get_param_string('revision_type', 'database', INPUT_FILTER_GET_COMPLEX);
         $id = get_param_integer('id');
+        $confirm = get_param_integer('confirm', 0);
+
+        if ($confirm == 0) { // Solely necessary for conflict resolution
+            require_code('form_templates');
+            list($warning_details, $ping_url) = handle_conflict_resolution(md5($revision_type . '_' . $id));
+
+            $preview = do_lang_tempcode('CONFIRM_DELETE_REVISION');
+
+            return do_template('CONFIRM_SCREEN', [
+                '_GUID' => '74f1a21b64dc67a9953a5823462bab38',
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
+            ]);
+        }
 
         if ($revision_type == 'database') {
             require_code('revisions_engine_database');

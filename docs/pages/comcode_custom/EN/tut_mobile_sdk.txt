@@ -4,6 +4,8 @@ Composr Mobile SDK ("CMS SDK") is a toolkit to help you build mobile apps that w
 
 As well as containing Composr integrations, there are also a large collection of standalone utilities for building apps. These create a common base between iOS and Android that is reminiscent of the PHP and Composr APIs, allowing easier code porting while also remaining 100% native.
 
+[box="Potentially outdated"]The Composr Mobile SDK is not officially supported by the core developers; this tutorial is likely outdated for version 11 and will need reviewed by the community for accuracy.[/box]
+
 [contents]decimal,lower-alpha[/contents]
 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tut_mobile_sdk/logo.jpg[/media]
@@ -2201,48 +2203,21 @@ php data_custom/composr_mobile_sdk_build.php images example
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tut_mobile_sdk/phone.png[/media]
 You may access the server-side API by making HTTP calls to [tt]http://yourbaseurl/data/endpoint.php[/tt]. Results are returned as JSON.
 
-The API is split into a number of endpoints, which are given a 'hook' name, and categorised by 'hook type'.
+[page="_SEARCH:tut_endpoints"]Click here[/page] for more information on how to use the server-side public API.
 
-Both REST-style and GET-parameter style requests can be made. As most calls are not really content-based (they are functional-based), REST isn't necessarily relevant as a metaphor, so we recommend keeping it simple and just using the GET-parameter method in most cases.
-
-Here are 2 equivalent example API calls...
- - [tt]PUT http://yourbaseurl/data/endpoint.php/somehooktype/somehook/someid[/tt] (REST style)
- - [tt]POST http://yourbaseurl/data/endpoint.php?hook_type=somehooktype&hook=somehook&type=edit&id=someid[/tt] (GET-parameter style)
-Notice these differences:
-[list="1"]
-[*] Request method vs simple GET/POST with use of Composr-style [tt]type[/tt] parameter.
-They are mapped as follows: [tt]GET[/tt]=[tt]view[/tt], [tt]PUT[/tt]=[tt]edit[/tt], [tt]POST[/tt]=[tt]add[/tt], [tt]DELETE[/tt]=[tt]delete[/tt].
-[*] The path components after the PHP file, vs use of [tt]hook_type[/tt], [tt]hook[/tt], and [tt]id[/tt] GET parameters.
-[/list]
-
-Apart from the standardised [tt]type[/tt] and [tt]id[/tt] request parameters described above, input parameters are just put through as GET/POST parameters (i.e. not submitted via POSTed/PUT JSON data). Different endpoints may use different parameters. It is up to the endpoint how to use the parameters, even the meaning of [tt]type[/tt] and [tt]id[/tt] is not defined and those parameters are not required by all endpoints.
-
-JSON is returned in the response as a structure like:
-[code="JavaScript"]
-{
-	success: true|false,
-	error_details: string|null,
-	response_data: ...
-}
-[/code]
-
-Any endpoint may return an error as a false [tt]success[/tt], so the iOS/Android code must handle this. If there is an error, [tt]error_details[/tt] will always be set. Error messages are guaranteed to be human-readable and to be translatable, so you can show them directly to mobile users.
-
-The particular data returned within [tt]response_data[/tt] varies by endpoint.
-
-Authentication is done automatically using cookies, just like it would for normal website requests. If you can't use cookies, re-send the [tt]device_auth_member_id_cn[/tt]/[tt]device_auth_pass_hashed_cn[/tt]/[tt]device_auth_member_id_vl[/tt]/[tt]device_auth_pass_hashed_vl[/tt] response parameters from the [tt]login[/tt] endpoint as POST parameters to subsequent requests.
-
-[title="3"]Default available endpoints[/title]
+[title="3"]Default available endpoints for the Mobile SDK[/title]
 
 {|
 ! Hook type
 ! Hook
+! Authorization
 ! GET parameters
 ! POST parameters
 ! Dictionary entries within [tt]response_data[/tt]
 |-
 | [tt]account[/tt]
 | [tt]join[/tt]
+| [i]None[/i]
 | [i]None[/i]
 | Whatever the normal Composr join form POSTS through. This is usually at least:
 [tt]username[/tt]
@@ -2265,6 +2240,7 @@ Authentication is done automatically using cookies, just like it would for norma
 | [tt]account[/tt]
 | [tt]login[/tt]
 | [i]None[/i]
+| [i]None[/i]
 | [tt]username[/tt]
 
 [tt]password[/tt]
@@ -2280,14 +2256,16 @@ Lots of data from Composr's [tt]cns_read_in_member_profile[/tt] function
 |-
 | [tt]account[/tt]
 | [tt]lost_password[/tt]
+| [i]None[/i]
 | [tt]username[/tt] (optional)
 
-[tt]email_address[/tt] (optional) -- one of these must be passed
+[tt]email[/tt] (optional) -- one of these must be passed
 | [i]None[/i]
 | [tt]message[/tt]
 |-
 | [tt]account[/tt]
 | [tt]setup_push_notifications[/tt]
+| [tt]member[/tt]
 | [tt]device[/tt] ("ios" or "android")
 
 [tt]member[/tt] (optional, the member ID being set up for -- defaults to current member)
@@ -2308,6 +2286,7 @@ Lots of data from Composr's [tt]cns_read_in_member_profile[/tt] function
 |-
 | [tt]content[/tt]
 | [tt]commandr_fs[/tt]
+| [tt]member[/tt]
 | [i]None[/i]
 
 The standardised [tt]type[/tt] specifies the REST operation
@@ -2320,8 +2299,6 @@ The standardised [tt]id[/tt] specifies the Commandr-fs path
 [i]A single parameter named [tt]data[/tt] containing said data[/i]
 | [i]Whatever the Commandr-fs hook has[/i]
 |}
-
-You may want to install a browser extension such as [url="JSONView"]https://chromewebstore.google.com/detail/jsonvue/chklaanhfefbnpoihckbnefhakgolnmc?hl=en[/url] when developing with the API. Mozilla Firefox has great JSON viewing built-in.
 
 [title="2"]Other approaches to mobile integration[/title]
 
@@ -2343,5 +2320,6 @@ There is an official Composr addon (non-bundled) for implementing Tapatalk suppo
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_mobile"]Mobile design[/page]
+ - [page="_SEARCH:tut_endpoints"]Server-side public API[/page]
 
 {$,Quick Cache}{$SET,tutorial_tags,Mobile,Development,composr_mobile_sdk,expert}{$SET,tutorial_add_date,Jan 2016}{$SET,tutorial_summary,Composr Mobile SDK is the toolkit for building mobile apps that connect to a Composr-powered website.}[block]main_tutorial_rating[/block]

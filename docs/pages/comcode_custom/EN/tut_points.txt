@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Creating an economy/reward-system for members via points[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Creating an economy/reward-system for members via points[/title]
 
 [media width="150" description="A logged-in member may see their points from the header" float="right"]data_custom/images/docs/tut_points/points_block.png[/media]
 {!points:DOC_POINTS}
@@ -69,6 +69,7 @@ If birthday points is set to greater than 0, then members and staff cannot edit 
 [media width="150" description="The points ledger should be monitored so as to pick up on cheating and abuse" float="right"]data_custom/images/docs/tut_points/points_admin_monitor.png[/media]
 [media width="150" description="Those who send points may get randomly rewarded by the system if gift points is enabled (this encourages an active community)" float="right"]data_custom/images/docs/tut_points/points_lucky.png[/media]
 [concept]Point-sending[/concept] allows members to reward each other.
+
 [concept]Points escrow[/concept] allows members to exchange points for some form of written agreement (which can relate to an outside purchase or service as an example). Like money can be used to pay someone, so can points, based on whatever they value. This economical situation is very important, and essentially capitalism is embodied, such that people go hunting for work that is valued most highly in order to get high returns of points. Furthermore, since points are held escrow in the system until both parties confirm the written agreement has been met, this ensures trust in the points exchange. Should an issue arise, one of the members can dispute the escrow, and someone with the &ldquo;Moderate points escrowed&rdquo; privilege can review it.
 
 Some reasons someone might send points include:
@@ -135,7 +136,9 @@ The full points ledger is accessible in the Admin Zone > Audit > Points ledger. 
 
 Those with the &ldquo;Moderate members' points&rdquo; privilege will see a &ldquo;Modify points&rdquo; box on member points profiles instead of &ldquo;Send points&rdquo;. This allows them to indirectly modify the points of others. A drop-down will be provided which allows, in addition to the sending of points, these actions:
  - [b]Credit[/b]: Credit (add) points to a member from the system. An example is to refund them for an outside purchase, or to reward them for something on behalf of the website.
+  - There are two different ways points can be credited: one where it also affects rank points and one where it does not affect rank points. This is helpful if, for example, you are giving a member points which they 'purchased' perhaps from a donation to the site, and you do not want it to count towards their rank.
  - [b]Debit[/b]: Debit (remove) points from a member to the system. An example is when a member makes a purchase outside of eCommerce and points escrow, or when they are being punished outside of a warning.
+  - Debited points do not subtract from rank points; for this behaviour, you need to charge points by issuing a warning.
 
 Crediting or debiting points, just like sending points, will create a new transaction visible in the ledger. It will also send a notification to the member (if they have the &ldquo;Your points transactions&rdquo; notification enabled).
 
@@ -191,9 +194,11 @@ The eCommerce addon allows setting up custom products that may be purchased in e
 [title="2"]Rank in Conversr[/title]
 
 [surround]
+[media_set]
+[media width="150" description="Rank configured when editing a usergroup" float="right"]data_custom/images/docs/tut_points/rank_options.png[/media]
 [media width="150" description="Rank ladder shown in the usergroup directory" float="right"]data_custom/images/docs/tut_points/rank.png[/media]
 [media width="150" description="A member's rank and benefits shown in their profile rank tab" float="right"]data_custom/images/docs/tut_points/rank_profile.png[/media]
-[media width="150" description="Rank configured when editing a usergroup" float="right"]data_custom/images/docs/tut_points/rank_options.png[/media]
+[/media_set]
 [concept]Conversr[/concept] has a usergroup system that allows automated or manual (with approval) progression from one usergroup to another, according to rank points. This is configured by default such that the usergroup rank images for the usergroups involved imply a rising rank.
 
 The 'status symbol' of rank is an incentive for members to earn points (hence contributing to the site and community), but permissions may also be configured such as to give permission according to rank, simply by assigning the permissions differently for different usergroups.
@@ -261,6 +266,8 @@ Of course, a webmaster could always edit the database by hand, but we would disc
 [title="3"]Transactions cannot involve negative points[/title]
 
 The system does not allow negative points in transactions of any kind. Instead clear positive transactions must be added to the ledger.
+
+For example, if we want to 'credit' negative points to a member, we cannot set them as a recipient of negative points. Instead, we must set them as a sender (to the system) of positive points (effectively a 'debit').
 
 [title="3"]Negative balances[/title]
 

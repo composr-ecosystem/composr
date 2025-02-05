@@ -6326,7 +6326,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         MODULE_TRANS_NAME_admin_cns_history
         MODULE_TRANS_NAME_admin_cns_ldap
         MODULE_TRANS_NAME_admin_cns_members
-        MODULE_TRANS_NAME_admin_cns_merge_members
         MODULE_TRANS_NAME_admin_cns_multi_moderations
         MODULE_TRANS_NAME_admin_cns_post_templates
         MODULE_TRANS_NAME_admin_cns_welcome_emails

@@ -6,7 +6,7 @@
 
 [title="2"]The default menu[/title]
 
-When you install Composr there is a menu already there in the header. This menu is automatically generated from the Sitemap (i.e. on-the-fly using an algorithm) and not directly editable in any way. It is quite nice in that any content categories you add will automatically show in the navigation.
+When you install Composr there is a menu already there in the header (or in the side, depending on theme preferences). This menu is automatically generated from the Sitemap (i.e. on-the-fly using an algorithm) and not directly editable in any way. It is quite nice in that any content categories you add will automatically show in the navigation.
 
 If you try and edit the default menu then Composr will offer to copy everything through to an editable menu, which you may then fully customise. Composr will never add anything to your editable menu for you as it can't deduce your intention for your site's navigation. There are, however, features to help you locate page-links to add, and also to auto-include subtrees of the Sitemap into your menu (see "Menu auto-generation / chaining").
 
@@ -34,8 +34,10 @@ Template sets contain the following templates:
 The menu structure is conceptually separate from the template set. If you wanted you could have a single menu structure displayed using every possible template set. However, for usability reasons Composr will adapt the menu editing interface a bit depending on the context you're editing for (i.e. the edit menu button will open up the menu editor in with an interface optimised for how the menu was displayed for that instance).
 
 [box="Tip"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
 If you are trying to style the area around the default header-menu, you want to edit the [tt]GLOBAL_HTML_WRAP.tpl[/tt] template.
+[/surround]
 [/box]
 
 [title="2"]Adding and editing menus[/title]
@@ -205,19 +207,19 @@ This is used:
 
 The syntax looks like this:
 [code="Text"]
-adminzone:,include=contents,max_recurse_depth=3,use_page_groupings=1 + cms:,include=wrapper,max_recurse_depth=2,use_page_groupings=1
+adminzone:,include=children,max_recurse_depth=3,use_page_groupings=1 + cms:,include=node,max_recurse_depth=2,use_page_groupings=1
 [/code]
 This is the code used to insert the admin menu.
 It consists of:
  - a number of sections separated by " + "
  - each section starts with a page-link, then has optional options, separated by commas
  - options are:
-  - [tt]include[/tt] -- either [tt]children[/tt] or [tt]wrapper[/tt] ([i]this only applies to calls directly made to the menu block[/i]). [tt]children[/tt] says to include the children of the page-link, while [tt]wrapper[/tt] says to include the whole branch including the wrapper node.
+  - [tt]include[/tt] -- either [tt]children[/tt] or [tt]node[/tt] ([i]this only applies to calls directly made to the menu block[/i]). [tt]children[/tt] says to include the children of the page-link, while [tt]node[/tt] says to include the whole branch including the wrapper node.
   - [tt]max_recurse_depth[/tt] -- if set, this is a number specifying how deep the menu should go
-  - [tt]use_page_groupings[/tt] -- if set to 1, page-groupings (i.e. the hard-coded page organisation, separate to zone structure) will be used
+  - [tt]use_page_groupings[/tt] -- if set to 1, page-groupings (i.e. the hook-based page organisation, separate to zone structure) will be used
   - [tt]valid_node_types[/tt] -- a "|" separated list of Sitemap node-types to include (advanced); you can put a minus in front for it to be inverted into a list of invalid node-types
   - [tt]child_cutoff[/tt] -- the maximum number of children a node may have (if this limit is exceeded [i]no[/i] children will be shown for that node)
-  - [tt]consider_secondary_categories[/tt] -- if set to 1, secondary categorisations will be considered, meaning nodes may be duplicated
+  - [tt]consider_secondary_categories[/tt] -- if set to 1, secondary categorisations will be considered (e.g. news), meaning nodes may be duplicated
   - [tt]consider_validation[/tt] -- if set to 1, resources which are not validated will not be shown
   - [tt]title[/tt] -- forced override for node title
   - [tt]icon[/tt] -- forced override for node icon (a theme image under [tt]icons[/tt])
@@ -270,9 +272,10 @@ Editable menus:
 [tt]+[/tt]	User friendly
 [tt]+[/tt]	Provides menus with greater power (context dependant menus)
 [tt]+[/tt]	Provides an interface to find all 'entry points' and easily add them to the menu
+[tt]-[/tt]	Not as quick to edit, and does not support merging across source control (e.g. Git)
 [/surround]
 
-Almost all users would best choose editable menus.
+Most users would choose editable menus and use Comcode menus just for a default / testing.
 
 [concepts
  1_key="Match-key"      1_value="Page-link style identifiers used to do pattern matching against URLs"

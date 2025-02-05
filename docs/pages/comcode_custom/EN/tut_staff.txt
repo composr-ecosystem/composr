@@ -1,6 +1,6 @@
 [title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Coordination between staff and staff/members[/title]
 
-When you run a Composr site, you do not merely create a website for people to visit. As an interactive, dynamic, system, Composr can provide different features for different users, and in particular, different features for staff than are available to ordinary members or visitors. Some of these features are specifically written to be for staff, some of these are a result of the [concept]privileges[/concept] system, and some are the combination between the ability to create new categories/forums and control access to these using permissions. The term 'staff' is used loosely in this tutorial, to mean anyone with the necessary permission: by default, it is staff who have the mentioned permissions, but this may be altered.
+When you run a Composr site, you do not merely create a website for people to visit. As an interactive, dynamic system, Composr can provide different features for different users, and in particular, different features for staff than are available to ordinary members or visitors. Some of these features are specifically written to be for staff, some of these are a result of the [concept]privileges[/concept] system, and some are the combination between the ability to create new categories/forums and control access to these using permissions. The term 'staff' is used loosely in this tutorial, to mean anyone with the necessary permission: by default, it is staff who have the mentioned permissions, but this may be altered.
 
 Staff can use these features to distinguish themselves from ordinary users, and to collaborate together towards the operation of the website. This tutorial will cover a number of these features and how you might use them; some of these referenced features will be presented according to the [concept]Conversr[/concept] system but are also likely to be included in third-party forum solutions in some form.
 
@@ -19,9 +19,11 @@ We try and limit the first case and rely on privileges, for maximum flexibility.
 [title="3"]Private forums[/title]
 
 [surround]
-[media width="150" description="Staff topics block on the Admin Zone dashboard" float="right"]data_custom/images/docs/tut_staff/staff_forums_dashboard.png[/media]
-[media width="150" description="Now you don't (because I SU'd into a regular member account and thus lost my staff permissions)" float="right"]data_custom/images/docs/tut_staff/staff_forums_2.png[/media]
+[media_set]
 [media width="150" description="Now you see it..." float="right"]data_custom/images/docs/tut_staff/staff_forums_1.png[/media]
+[media width="150" description="Now you don't (because I SU'd into a regular member account and thus lost my staff permissions)" float="right"]data_custom/images/docs/tut_staff/staff_forums_2.png[/media]
+[media width="150" description="Staff topics block on the Admin Zone dashboard" float="right"]data_custom/images/docs/tut_staff/staff_forums_dashboard.png[/media]
+[/media_set]
 A very effective feature in running a website, where there are multiple staff involved, are forum permissions. By using a forum where only members in staff usergroups may gain access, staff can collaborate on matters relating to the operation of the site. Many members may not realise it, but often staff forums of large sites are almost as busy as the publicly accessible forums.
 
 Conversr creates a default staff forum for you on installation.
@@ -30,7 +32,18 @@ Conversr creates a default staff forum for you on installation.
 [title="3"]Conflict detection[/title]
 [surround]
 [media width="150" description="Example of conflict detection on a support ticket" float="right"]data_custom/images/docs/tut_staff/conflict_detection.png[/media]
-If more than one user is editing the same thing at the same time, Composr will put out a notice informing you. You can then coordinate with the other user so that you don't overwrite each other's changes.
+Conflict detection is implemented in a wide range of locations in Composr. If multiple people are working on the same (or similar) thing at the same time, a notice will be given at the top to avoid overwriting each other. You can then coordinate with those members (or wait until they are done).
+
+Conflict detection is implemented in the following areas:
+ - on almost every edit screen
+ - on almost every screen where you are merging something
+ - in the revisions system
+ - on some delete screens (though usually deleting something is done through editing it)
+ - on some import screens where imports may overwrite existing content
+ - most screens where conflicting actions can be taken (e.g. low-level logging where you can clear / delete logs)
+ - when adding a warning (so staff do not warn the same member for the same reason)
+
+Sometimes, conflict detection will be aggressive where it needs to be, e.g. if someone is editing the XML for aggregate types, anyone trying to add or edit an aggregate type instance will also get a notice. This is because in these cases, editing of something on a high level will impact those adding or editing a 'child' of that.
 [/surround]
 
 [title="3"]Staff checklist[/title]
@@ -63,6 +76,8 @@ Larger enterprises may require a more sophisticated workflow system. Composr has
 
 You can set the "Comcode page review frequency" configuration option (Admin Zone > Setup > Configuration > Administrative options > Periodic content reviews) so that Comcode pages are automatically flagged for regular review, to make sure they stay updated.
 
+This will only apply to new Comcode pages; existing pages will maintain their current settings and should be edited through the UI under CMS Zone > Content > Pages (Comcode pages).
+
 Notifications will be sent out automatically, or you can browse content needing reviewing from:
 Admin Zone > Audit > Periodic content reviews
 
@@ -82,7 +97,7 @@ There's no magic-bullet when it comes to staging site changes in any software be
 
 There are a few angles to version control on a Composr site:
 1) Composr automatically does version control for Comcode pages and theme CSS/templates (i.e. the main parts of Composr websites)
-2) You should always have a good backup automated backup plan in place
+2) You should always have a good and automated backup plan in place (store backups on site and off site)
 3) You can make use of the popular [tt]git[/tt] tool (useful for enterprise users)
 
 On point '3':

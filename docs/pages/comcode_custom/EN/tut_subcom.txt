@@ -31,7 +31,7 @@ Members are only promoted up the usergroup ladder one step at a time each time t
 
 A member's visible rank and privileges change in accordance to their new rank usergroups.
 
-Rank ladders are not formally codified. A member can be considered on a rank ladder if they are on a usergroup with any particular promotion path. Members may be on multiple ladders by being in multiple promotable usergroups. Usually a site will only have on rank ladder though.
+Rank ladders are not formally codified. A member can be considered on a rank ladder if they are on a usergroup with any particular promotion path. Members may be on multiple ladders by being in multiple promotable usergroups. Usually a site will only have on rank ladder though (and the rank tab on member profiles only supports one ladder).
 
 There is a default rank ladder that goes:
 Newbie --> Regular --> Local --> Old timer --> Local hero
@@ -140,9 +140,11 @@ Disadvantages to using a multi-site network:
 [title="2"]Virtual roots[/title]
 
 [surround]
-[media width="150" description="The virtualed download category" float="right"]data_custom/images/docs/tut_subcom/subcom_virtualised.png[/media]
+[media_set]
+[media width="150" description="Adding a download category for the a subcommunity" float="right"]data_custom/images/docs/tut_subcom/subcom_cat_add.png[/media]
 [media width="150" description="Viewing the download category we added, we can find the virtualisation URL" float="right"]data_custom/images/docs/tut_subcom/subcom_cat_view.png[/media]
-[media width="150" description="Adding a download category for the NewTown Parish subcommunity" float="right"]data_custom/images/docs/tut_subcom/subcom_cat_add.png[/media]
+[media width="150" description="The virtualed download category" float="right"]data_custom/images/docs/tut_subcom/subcom_virtualised.png[/media]
+[/media_set]
 A number of Composr modules contain categories organised into a tree structure, including:
  - galleries
  - download categories
@@ -190,11 +192,11 @@ Composr will sense your intent, so when you do something that searches for that 
 [media width="150" description="Adding our redirect" float="right"]data_custom/images/docs/tut_subcom/redirect_forum_simple_example.png[/media]
 Let's say you want to redirect website visitors who go to your site straight to the "Forums" zone.
 
-A normal redirect can be written from the "Welcome" zone [tt]start[/tt] page, to the "Forums" zone [tt]forumview[/tt] page as follows...
+A normal redirect can be written from the "Welcome" zone [tt]home[/tt] page, to the "Forums" zone [tt]forumview[/tt] page as follows...
 
 1) Go to Admin Zone > Structure > Redirects
 2) Scroll towards the bottom of the page to find the "New Redirect" section
-3) Create our new redirect as "Welcome:[tt]start[/tt] --> Forums:[tt]forumview[/tt]" (leave transparent unticked/unchecked)
+3) Create our new redirect as "Welcome:[tt]home[/tt] --> Forums:[tt]forumview[/tt]" (leave transparent unticked/unchecked)
 4) Press the "Save" button
 
 Now let's test if our new redirect works...

@@ -1123,6 +1123,10 @@ function get_webservice_result($error_message) : ?string
     $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/errorservice/' . urlencode(get_version_dotted()) . '/?product=' . urlencode($brand);
     $post = ['error_message' => $error_message];
     list($_http_result) = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'post_params' => $post]], 60 * 24);
+    if ($_http_result === null) {
+        return null;
+    }
+
     $http_result = @json_decode($_http_result, true);
     if (($http_result === null) || ($http_result['success'] === false)) {
         return null;

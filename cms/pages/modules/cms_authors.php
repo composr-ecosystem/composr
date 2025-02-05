@@ -299,7 +299,16 @@ class Module_cms_authors
 
         $posting_form = get_posting_form($submit_name, 'buttons/save', $description, $post_url, $hidden, $fields, do_lang_tempcode('DESCRIPTION'), '', $specialisation2, null, [], null, false, true, true, true, false, do_lang_tempcode('DESCRIPTION_MEMBER_DESCRIPTION'));
 
-        return do_template('POSTING_SCREEN', ['_GUID' => '1d71c934e3e23fe394f5611191089630', 'TITLE' => $this->title, 'POSTING_FORM' => $posting_form]);
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($author, false);
+
+        return do_template('POSTING_SCREEN', [
+            '_GUID' => '1d71c934e3e23fe394f5611191089630',
+            'TITLE' => $this->title,
+            'POSTING_FORM' => $posting_form,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
     }
 
     /**
@@ -462,7 +471,12 @@ class Module_cms_authors
             $merge_form = new Tempcode();
         }
 
-        return do_template('AUTHOR_MANAGE_SCREEN', ['_GUID' => '84f8de5d53090d138cb653bb861f2f70', 'TITLE' => $this->title, 'MERGE_FORM' => $merge_form, 'DEFINE_FORM' => $define_form]);
+        return do_template('AUTHOR_MANAGE_SCREEN', [
+            '_GUID' => '84f8de5d53090d138cb653bb861f2f70',
+            'TITLE' => $this->title,
+            'MERGE_FORM' => $merge_form,
+            'DEFINE_FORM' => $define_form
+        ]);
     }
 
     /**
@@ -476,6 +490,26 @@ class Module_cms_authors
 
         $from = post_param_string('mauthor');
         $to = post_param_string('mauthor2');
+        $confirm = get_param_integer('confirm', 0);
+
+        if ($confirm == 0) { // Necessary for conflict resolution
+            require_code('form_templates');
+            list($warning_details, $ping_url) = handle_conflict_resolution($from, false); // from because that is the author which will be deleted
+
+            require_lang('authors');
+
+            $preview = do_lang_tempcode('CONFIRM_MERGE_AUTHORS', escape_html($from), escape_html($to));
+
+            return do_template('CONFIRM_SCREEN', [
+                '_GUID' => 'TODO',
+                'TITLE' => $this->title,
+                'PREVIEW' => $preview,
+                'URL' => get_self_url(false, false, ['confirm' => 1]),
+                'FIELDS' => build_keep_post_fields(),
+                'WARNING_DETAILS' => $warning_details,
+                'PING_URL' => $ping_url,
+            ]);
+        }
 
         merge_authors($from, $to);
 

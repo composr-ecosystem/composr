@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Statistics for your site (analytics)[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Statistics for your site (analytics)[/title]
 
 [media width="150" description="Lots of statistics types are available" float="right"]data_custom/images/docs/tut_statistics/statistics_icons.png[/media]
 {!stats:DOC_STATISTICS}
@@ -32,7 +32,7 @@ Google Analytics is easy to set up in Composr as we have support built-in: you j
 [media width="150" description="An example statistics page: Content growth" float="right"]data_custom/images/docs/tut_statistics/statistics_page.png[/media]
 The Composr stats administration module resides in Admin Zone > Audit > Site statistics.
 
-Be aware that hits coming from the web server itself will be filtered from the stats, so if you are running a web server on your own computer you may not see any results if nobody else has used your website yet.
+Be aware that hits coming from the web server itself will be filtered from the stats (this is intentional because often Composr needs to call itself on the web), so if you are running a web server on your own computer you may not see any results if nobody else has used your website yet.
 [/surround]
 
 [title="3"]Installing {$IS_MAINTAINED,ip_geocoding,geo-location data}[/title]
@@ -113,7 +113,7 @@ These graphs are better thought as a sub-category of Feedback and engagement. Th
 
 [title="3"]Punitive actions[/title]
 
-These graphs give you an overview of the number of warnings issued over time and the frequency of punitive actions taken.
+These graphs give you an overview of the number of warnings issued over time, a break-down of warnings by reason, and the punitive actions which were used.
 
 [title="3"]Referrers and referrals[/title]
 
@@ -162,7 +162,8 @@ There is a graph that lets you see how many of each events happen, and also grap
 
 Other software may use terms such as 'goals' or 'conversions': these are roughly equivalent to Composr 'events'.
 
-There are a number of ways to record events happening:[list]
+There are a number of ways to record events happening:
+[list="1"]
 [*] The inbuilt events are recorded automatically.
 [*] You can use the [tt]{$LOG_STATS_EVENT,event}[/tt] symbol to track an event from within your templates (i.e. when the template is shown, the event is recorded).
 [*] You can use the JavaScript [tt]$cms.statsEventTrack[/tt] function to track an event from within JavaScript code.
@@ -439,7 +440,7 @@ This happens because statistics graphs do not directly use data from the site to
 [title="3"]Pre-computed statistics[/title]
 
 All statistics are generated from pre-computed data, which is itself based on raw data.
-The pre-computation happens in the system scheduler, daily. The system scheduler is therefore required for Composr statistics.
+The pre-computation happens in the system scheduler, hourly. The system scheduler is therefore required for Composr statistics.
 
 Why do we do this? There are a number of reasons:
 1) We can not hold onto raw data forever, due to GDPR (EU privacy legislation), yet we want to be able to see statistics going as far back as possible.
@@ -466,7 +467,7 @@ All times are calculated/shown in the configured website time zone, regardless o
 
 Some graphs allow showing hour-by-hour stats and also filtering by country, in which case you may get an idea for the local times by manually considering any local time zone differences.
 
-The statistics system does not respect the [tt]ssw[/tt] (Week starts on a Sunday) configuration option; week graphs always start on a Monday due to limitations in PHP's date functions.
+The statistics system does not respect the [tt]ssw[/tt] (Week starts on a Sunday) configuration option; week graphs always start on a Monday due to limitations in PHP's date functions and the fact the data is already pre-processed.
 
 Quarterly graphs are based on month; Q1 runs January 1 - March 31, Q2 runs April 1 - June 30, Q3 runs July 1 - September 30, and Q4 runs October 1 - December 31.
 

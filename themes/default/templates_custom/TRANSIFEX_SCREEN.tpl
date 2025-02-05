@@ -1,5 +1,10 @@
 {TITLE}
 
+{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+{+START,IF_PASSED,WARNING_DETAILS}
+	{WARNING_DETAILS}
+{+END}
+
 <p>
 	Use this page to download translations direct from the translation platform (Transifex).<br />
 	Periodically we package translations into formal language addons.<br />

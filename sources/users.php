@@ -450,26 +450,71 @@ function get_session_id(bool $ignore_static_cache = false) : string
 {
     require_code('static_cache');
 
+    global $SESSION_CACHE, $IN_MINIKERNEL_VERSION;
+
     $cookie_var = get_session_cookie();
 
     if (!empty($GLOBALS['INVALIDATED_FAST_SPIDER_CACHE'])) {
         $ignore_static_cache = true;
     }
 
-    if (!isset($_COOKIE[$cookie_var])) {
-        if (array_key_exists('keep_session', $_GET)) {
-            return get_param_string('keep_session');
-        }
-        return '';
-    }
-
+    // Cookie sessions take priority
     if (isset($_COOKIE[$cookie_var])) {
         $ret = $_COOKIE[$cookie_var];
         if ((!$ignore_static_cache) && (substr($ret, 0, 1) == '[') && (substr($ret, -1) == ']') && (can_static_cache_request())) {
             return ''; // Shy session, so we do not retrieve it
         }
+
+        // No validation in kinikernel
+        if ($IN_MINIKERNEL_VERSION) {
+            return $ret;
+        }
+
+        // Do not allow using invalid or expired session IDs passed in
+        if (!isset($SESSION_CACHE[$ret])) {
+            return '';
+        }
+
+        // No expired sessions
+        if ($SESSION_CACHE[$ret]['last_activity_time'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) {
+            return '';
+        }
+
+        // IP validation
+        if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
+            return '';
+        }
+
         return $ret;
     }
+
+    // Try keep_session if it exists
+    if (array_key_exists('keep_session', $_GET)) {
+        $ret = get_param_string('keep_session');
+
+        // No validation in kinikernel
+        if ($IN_MINIKERNEL_VERSION) {
+            return $ret;
+        }
+
+        // Do not allow using invalid or expired session IDs passed in
+        if (!isset($SESSION_CACHE[$ret])) {
+            return '';
+        }
+
+        // No expired sessions
+        if ($SESSION_CACHE[$ret]['last_activity_time'] < time() - intval(60.0 * 60.0 * max(0.017, floatval(get_option('session_expiry_time'))))) {
+            return '';
+        }
+
+        // IP validation
+        if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
+            return '';
+        }
+
+        return $ret;
+    }
+
     return '';
 }
 

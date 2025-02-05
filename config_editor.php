@@ -207,6 +207,7 @@ function do_access(string $given_password)
         'no_extra_logs' => '<em>Tuning/Disk performance:</em> Whether to not populate extra logs even if writable files have been put in place for this. This saves disk accesses to look for these files.',
         'no_extra_mobiles' => '<em>Tuning/Disk performance:</em> Whether to only use the hard-coded mobile-device detection list. This saves a disk access.',
         'no_installer_checks' => '<em>Tuning/Disk performance:</em> Whether to skip complaining if the install.php file has been left around. This is intended only for developers working on development machines.',
+        'no_compiled_files' => '<em>Tuning/Disk performance:</em> Whether to disable using the <kbd>_compiled</kbd> directory for code overrides; will save on disk use but will increase memory use and result in weird stack traces on errors.',
 
         'prefer_direct_code_call' => '<em>Tuning:</em> Whether to assume a good opcode cache is present, so load up full code files via this rather than trying to save RAM by loading up small parts of files on occasion.',
         'php_path' => '<em>Tuning:</em> The absolute path to the PHP cli binary if the software is not able to auto-detect it (blank: try auto-detecting or use the standard php command).',

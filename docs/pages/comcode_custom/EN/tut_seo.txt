@@ -1,26 +1,29 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Improving your search engine ranking[/title]
+[title sub="Written by Chris Graham and Patrick Schmalstig"]Composr Tutorial: Improving your search engine ranking[/title]
 
 For most websites, it is important to draw in visitors. There are many ways to do this, and one of these ways is by improving your site's 'findability' in search engines; this includes presence in the results for keywords appropriate to the visitors you wish to attract, and your actual position in the displayed search results.
 
 It is worth noting at this point, that it is my view that search engine ranking is only one small part in the 'visitor equation'. There are many ways to attract visitors, including:
  - having a good domain name for the subject matter (e.g. buyspoons.com for a company selling spoons)
- - having a domain name that people can easily say and remember (e.g. amazon.com, ebay.com, yahoo.com, microsoft.com -- note they are all two syllable, and 'flow' and/or relate and/or bring up imagery)
+ - having a domain name that is relatively short and that people can easily say and remember (e.g. amazon.com, ebay.com, yahoo.com, microsoft.com, google.com... not sumRandumbReplaycemints.org, bd983KJS4baxkd.net, ihavealotofwordsinmydomainsoastomakeithardtoremember.com)
  - having a URL that is given out directly or close-to directly, such as a business card, or a sign
  - Internet banner (or similar) advertising
  - 'placement' of your URL in a prime location, such as in a directory, or made available by someone who has it in their interest to 'pipe' users to you
  - online or offline word-of-mouth, either by you, or by your visitors
- - quality of content, such that your site becomes the place to go
+ - quality, freshness, and natural flow of content and its structure
+  - this also improves your chances that your site will be suggested by Artificial Intelligence searches (assuming you do not block AI use in your [tt]robots.txt[/tt] file)
  - associate your site with an official cause. A site which is somehow the natural place for people following this cause, will naturally get more hits.
+
+This tutorial also briefly covers 'findability' within Artificially-Intelligent (AI) searches which use similar but different methods.
 
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]How web crawlers work[/title]
 
 Search engines work via one of four techniques (or a combination):
-1) manually maintained directories (this is now mostly a thing of the past, e.g. OpenDmoz was shut down)
-2) accessing databases (e.g. Bing uses Wikipedia)
-3) web crawling (e.g. Google has one of the best web crawlers)
-4) aggregation/taking of data from other search engines (e.g. DuckDuckGo uses Bing)
+1) manually maintained directories (this is now mostly a thing of the past)
+2) accessing databases
+3) web crawling
+4) aggregation/taking of data from other search engines or databases
 
 A web crawler is a tool that will automatically find websites on the Internet, via hyperlinks to them. The basis of the process is very simple:
  - the web crawler starts with a set of pages it already knows
@@ -30,29 +33,102 @@ A web crawler is a tool that will automatically find websites on the Internet, v
  - stores the pages it has found in its list of pages it knows, and hence these pages will themselves be crawled, and so on
 Generally, web crawlers will build an index over a period of time, and 'jump' into the new index routinely. These indexes are unimaginably large, and an enormous computational infrastructure is needed to make the system work.
 
-It is because of this web crawling process that it is important to be linked to. If there are no links to your website on pages that themselves are crawled, it might never be found unless you tell the search engine about it by hand. Google uses a 'PageRank' system which actually factors in the number of links to a page as a part of the result ranking of that page (on the basis that a page with more links to it is more popular and therefore more relevant).
+It is because of this web crawling process that it is important to be linked to. If there are no links to your website on pages that themselves are crawled, it might never be found unless you tell the search engine about it by hand. 
+
+Some search engines use a 'PageRank' system which actually factors in the number of links to a page as a part of the result ranking of that page (on the basis that a page with more links to it is more popular and therefore more relevant). However, the bigger search engines (e.g. Google) factor multiple things such as page speed, quality of content, keywords and descriptions, and accessibility. It is not merely good enough to have as many organic links to your site as possible; your site must also be well-constructed and have useful content.
+
+[title="2"]How Artificial Intelligence works[/title]
+
+AI has some similarities and differences to how search engines work. Consider AI an extension of search engines; it uses some of the same techniques but improves on the experience by supporting natural language searches. For example, instead of searching for certain keywords, AI takes a more natural approach where you can ask it questions (and even present it preliminary information) as if you were asking a real person. It's very fascinating; for example, an AI trained on a software's documentation can give a specific example on how to do something based on a user's inquiry. 
+
+With how powerful AI has become in understanding natural human language, it is quickly becoming more preferred over traditional web searches especially for more complex searches. As such, it is important that sites are easy to understand both for web crawlers (search engines) and for AI.
+
+AI uses similar techniques as web crawlers to crawl the web for content on which to be 'trained', except the AI pays more focus on the content of a site than on the links and structure. Some AI models can also crawl web pages which they have not been trained on in real time (when a user makes a query for a specific page). This makes it very important that your site can load its content very fast; generally, if your site cannot respond within about 0.5 seconds, the AI will ignore it and move on to another site.
 
 [title="2"]Techniques[/title]
+[media_set]
+[media width="150" description="Composr SEO options"]data_custom/images/docs/tut_seo/seo_options.png[/media]
+[media width="150" description="SEO options for Composr content"]data_custom/images/docs/tut_seo/seo_content.png[/media]
+[/media_set]
+There are a number of techniques that will improve your site's search engine and AI status, some of which are supported with special Composr features:
 
-[media width="150" description="Composr SEO options" float="right"]data_custom/images/docs/tut_seo/seo_options.png[/media]
-There are a number of techniques that will improve your site's search engine status, some of which are supported with special Composr features. Some of these techniques are:
- - Use good, accessible and 'semantic' HTML, and lay-out your site in an accessible fashion. By default, Composr has support for the highest level of accessibility, and has perfectly conformant HTML (except in certain areas where conformance is not possible, due to web browser limitations). By providing a well constructed site, search engines will be able to index your site more appropriately and thoroughly, and they may regard it more highly. It is a convenient parallel that accessibility features to help the disabled, also help search engines (especially site-maps and alt-text)
- - Set well considered meta keywords and descriptions for your site as a whole, and for individual items of content that you consider particularly important. Try to make it so that your content and keywords correlate: if your keywords also appear in your text, search engines are likely to strengthen their ranking of your site against them. Composr will try and automatically pick a list of keywords for any added entry of content if you do not specify them, but you should hand edit this list if you have time
- - Use good page titles for your Comcode pages. Composr will use page titles as a part of the actual title-bar title of your site, thus allowing you to get keywords into a prime position of consideration for search engine crawlers
- - Likewise, use good hyperlink titles[media width="150" description="SEO options for Composr content" float="right"]data_custom/images/docs/tut_seo/seo_content.png[/media]
- - Get keywords into your own URLs (the choice of domain name, the URL path, and the URL filename). Composr's "URL Monikers" feature will help here
- - Get your site linked to by as many quality sites as possible: the more popular the sites, the better (don't get linked to on "link farms" though). This is not just good for the obvious reason of getting hits from those sites, but will also make search engines think your site is popular (in particular, the google PageRank algorithm basically bases website popularity on the number of links it gets)
- - Add your site to directories or ranker sites, including large directories of any kind of website, and small specialist directories relevant to your website
- - Make sure your XML Sitemap is being generated (you will need the system scheduler working for this), and submit the sitemap to Bing and Google. This is described in more detail in the next section
- - Submit your site to additional search engines (Google, Yahoo, Microsoft and Ask are automatic via the XML Sitemap); note that when you submit a site to a search engine, you are only giving it optional information, as they are designed to find websites regardless of whether they are submitted or not. You might want to pay for a service that submits to multiple search engines for you, but be wary of this: search engines may mark these submissions as spam if your submission does not match that search engines submission policy (many of which in fact exclude submission from such bulk services). Note that some search engines require payment for listing
- - Don't waste your time submitting to obscure search engines
- - Do not 'cheat' search engines by making pages with a lot of hidden words: search engines will penalise you for it
- - Make a lot of good written content, so search engines have more to index against. Of course, this will also add to the quality of your site
- - Use the URL Schemes feature, as search engines will then see pages opened up with different parameters (to access different content) as separate. This means they are more likely to consider them separately
- - Use dedicated "landing pages" that you can link to from other websites. A landing page is just a normal page that you intend to point people to. For example, you might make an article landing page that is linked to from a directory of articles. The purpose is to give search engines something extra and real to index without distracting your primary visitor flow
- - Set aside time for regular testing; test the right pages show up when doing searches, and the wrong ones don't
- - Make sure your site has a presence on social media (e.g. Facebook and Twitter)
- - If targeting an international audience, consider having high-quality translations done of your content so that non-English search engines have some food to pick up on (Composr has excellent multi-language support)
+{|
+! Tip
+! Applicability: Search Engines
+! Applicability: AI
+|-
+| Use good, accessible and 'semantic' HTML, and lay-out your site in an accessible fashion. By default, Composr has support for the highest level of accessibility, and has conformant HTML (except in certain areas where conformance is not possible, due to web browser limitations). By providing a well constructed site, search engines and AI will be able to index your site more appropriately and thoroughly, and they may regard it more highly. It is a convenient parallel that accessibility features to help those who need it also helps search engines (especially site-maps and alt-text).
+| High
+| High
+|-
+| Organise your website logically to make it easier for users, search engines, and AI to navigate and understand your content. A well-structured site enhances crawlability and content discoverability. Such tags you should highly consider include h (header), section, article, nav, header, and footer tags. Make sure your header tags are sequential (e.g. do not have an [tt]h3[/tt] without first having an [tt]h2[/tt]) and make sense (e.g. [tt]h3[/tt] should be sub-content of [tt]h2[/tt] which is sub-content of [tt]h1[/tt]). All pages should have at least one [tt]h1[/tt] tag; you can have more if necessary, but never have none. You can use the page title as your [tt]h1[/tt] tag if desired.
+| High
+| High
+|-
+| Set well considered meta keywords and descriptions for your site as a whole, and for individual items of content that you consider particularly important. Try to make it so that your content and keywords correlate: if your keywords also appear in your text, search engines are likely to strengthen their ranking of your site against them. Composr will try and automatically pick a list of keywords for any added entry of content if you do not specify them, but you should hand edit this list if you have time.
+| Medium (especially the description)
+| Medium
+|-
+| Use good page titles for your Comcode pages. Composr will use page titles as a part of the actual title-bar title of your site, thus allowing you to get keywords into a prime position of consideration for search engine crawlers.
+| High
+| Medium
+|-
+| Optimise your content for voice search. This involves focusing on long-tail keywords and phrases that mimic natural speech patterns, as voice queries often differ from typed searches.
+| Medium
+| High
+|-
+| Use good hyperlink titles; where possible, raw URLs submitted in text form will be converted automatically to titled hyperlinks by Composr.
+| Low (but important for accessibility)
+| Low
+|-
+| Get keywords into your own URLs (the choice of domain name, the URL path, and the URL filename). Composr's "URL Monikers" feature will help here.
+| Medium
+| Low
+|-
+| Get your site organically linked to by as many quality sites as possible: the more popular the sites, the better (don't get linked to on "link farms" though). This is not just good for the obvious reason of getting hits from those sites, but will also make search engines think your site is popular.
+| Medium
+| Medium
+|-
+| Make sure your XML Sitemap is being generated (you will need the system scheduler working for this), and submit the sitemap to Bing and Google. This is described in more detail in the next section.
+| Medium
+| Medium
+|-
+| Submit your site to additional search engines which might not automatically find your site; note that when you submit a site to a search engine, you are only giving it optional information, as they are designed to find websites regardless of whether they are submitted or not. You might want to pay for a service that submits to multiple search engines for you, but be wary of this: search engines may mark these submissions as spam if your submission does not match that search engines submission policy (many of which in fact exclude submission from such bulk services). Note that some search engines require payment for listing. Also don't waste your time submitting to obscure search engines.
+| Medium
+| Low
+|-
+| Do not 'cheat' search engines by making pages with a lot of hidden words (e.g. to try boosting your keyword density): search engines will penalise you for it.
+| Medium
+| Low
+|-
+| Make a lot of good written content, so search engines (and especially AI) have more to index against. Of course, this will also add to the quality of your site. Ensure your content directly addresses the questions and inquiries of your visitors.
+| Medium
+| High
+|-
+| Write content in a natural, conversational tone that reflects how your users might phrase their search queries. This approach aligns with AI's natural language processing capabilities, increasing the chances of your content being selected for AI-generated responses. It may also help with traditional search engines as it is more likely your results will come up if a user types in a question as their query.
+| Medium
+| High
+|-
+| Use the URL Schemes feature, as search engines will then see pages opened up with different parameters (to access different content) as separate. This means they are more likely to consider them separately.
+| High
+| Medium
+|-
+| Use dedicated "landing pages" that you can link to from other websites. A landing page is just an introductory page that you intend to point people to. For example, you might make an article landing page that is linked to from a directory of articles. The purpose is to give search engines something extra and real to index without distracting your primary visitor flow.
+| High
+| Low
+|-
+| Set aside time for regular testing; test the right pages show up when doing searches, and the wrong ones don't. And make sure you properly redirect any pages which do not exist anymore to another existing page or to a helpful '404 not found' page with a user-friendly sitemap.
+| High
+| High
+|-
+| Make sure your site has a presence on social media (e.g. Facebook and Twitter).
+| Medium
+| Medium
+|-
+| If targeting an international audience, consider having high-quality translations done of your content so that non-English search engines have some content to pick up on (Composr has excellent multi-language support).
+| High
+| High
+|}
 
 There are many rogues and companies out there that will promise unachievable things when it comes to getting high search engine rankings: a site that a user would not want to visit and respect, is not going to be able to abuse search engine ranking schemes easily. Our best advice for this is that you should focus on quality, not cheating the system: quality is easier, and cheating will usually end up working against you.
 
@@ -60,42 +136,39 @@ There are many rogues and companies out there that will promise unachievable thi
 
 If you do want to put in a lot of tuning effort to content, here are some additional techniques:
 
-The key is to understand the goals of the page, yes, you want to get Internet users to come and look at your page, otherwise its just an exercise in personal writing. What do you want them to do when they get there, is it just an information page or are you trying to get the visitor to buy/do something.
-Here are a few things to bare in mind
- - Research keywords and select the most appropriate for the topic. This should be used within the Page title, your main title and within the first 25 words of text. Composr automatically makes title you put in for news the article title (Heading1) and the metadata title.
- - Establish useful synonyms. Rather than repeat the same word or phrase over and over again establish a list of useful synonyms so that you don't keep repeating yourself.
- - Use Heading 1 (H1) and Heading 2 (H2) tags, these should both relate to the topic of the document and should work together. Composr will automatically add the H1 tag for you when you fill in the page title. There should only ever be one H1 tag on a page.
- - Use contextual links. When you link to one of your pages make the text which is linking the same as the page title or related to the topic of the page. For example if you page is about orange juice make the link be orange juice. This helps build an authority within your site, search engines understand that you are saying that page is about orange juice.
+The key is to understand the goals of the page. You want to get Internet users to come and look at your page, otherwise its just an exercise in personal writing. What do you want them to do when they get there, is it just an information page or are you trying to get the visitor to buy/do something?
+
+Here are a few things to bear in mind:
+ - Research keywords and select the most appropriate for the topic. This should be used within the page title, your main title and within the first 155 characters of text. Composr automatically makes the title you put in for most content the page title (Heading1) and the metadata title.
+ - Establish useful synonyms. Rather than repeat the same word or phrase over and over again, establish a list of useful synonyms so that you don't keep repeating yourself. Bear in mind, however, that your keywords should be used multiple times in your content (keyword density).
+ - Use Heading (H#) tags, these should both relate to the topic of the document and should work together. Composr will often automatically add the H1 tag for you when you fill in the content title (the one exception is Comcode pages). There should generally only ever be one H1 tag on a page.
+ - Use contextual links. When you link to one of your pages, make the text which is linking the same as the page title or related to the topic of the page. For example, if your page is about orange juice, make the link title say "orange juice". This helps build an authority within your site; search engines understand that you are saying that page is about orange juice.
  - Link to the new page from a first level page. A first level page is anything that is linked directly from home page and the homepage itself. A second level page is everything that is linked form a first level page. Usually a good drop-down menu will achieve this for you.
- - Use the key word/phrase within the alt attributes of Images. For example "a picture of a glass of orange juice" might become "A picture of a glass of orange juice on a table on a Composr site".
- - Try and write at least 250 words, as far as google is concerned the more keyword rich text the better for relevance.
- - [b]Don't[/b] just add lots of meta keywords because you think they might be good to have, if they are not relevant to the page you are working on leave them out. 15 to 20 keywords is more than adequate.
- - The meta description should be no more than 155 Characters as search engines may cut off after this point. It should include your main keyword/phrase. For example if the page was about Composr and our love for orange juice, "This is a page written about the Composr staff's love for orange juice and their ongoing search for the best tasting orange juice in Sheffield"
- - Ideally the keyword density should be around 5-7% of the page. (and never above 10%). This means 7% of the words should be related to the keywords and phrases.
- - Copy should seem natural and not forced. If your website copy is unreadable to site visitors no-one will stick around or link to you.
+ - Use the key word/phrase within the alt attributes of images. For example "a picture of a glass of orange juice" might become "A picture of a glass of orange juice on a table on a Composr site". Your alt text should fully and concisely describe the image so those with visual impairments (or when the image cannot load) can understand the image.
+ - Try and write at least 250 words, as far as many search engines are concerned the more keyword-rich text the better for relevance.
+ - [b]Don't[/b] just add lots of meta keywords because you think they might be good to have. If they are not relevant to the page you are working on then leave them out. Having 10 to 20 keywords is more than adequate.
+ - The meta description should be no more than 155 Characters as search engines may cut off after this point. It should include your main keyword/phrase. For example if the page was about Composr and our love for orange juice, "This is a page written about the Composr staff's love for orange juice and their ongoing search for the best tasting orange juice in Sheffield".
+ - Ideally the keyword density should be around 5-7% of the page (and never above 10%). This means 7% of the words should be related to the keywords and phrases.
+ - Content should seem natural and not forced. If your website content is unreadable to site visitors then no-one will stick around or link to you.
  - Search engines read top to bottom on the page so make sure you use the keywords & phrases near the top of the page.
- - Be first: if you can be the first to write about something then that counts in your favour. This is difficult to do in a lot of cases; don't decide against writing something because its already been done.
- - Searches look for key phrases more often than singular words, so try and include full phrases too. For example the page may be about "Orange Juice" but a user may search for:
+ - Be first: if you can be the first to write about something then that counts in your favour. This is difficult to do in a lot of cases; don't decide against writing something because its already been done. If it already exists, write about it anyway, but do so with your own unique spin and information.
+ - Search engines look for key phrases more often than singular words, so try and include full phrases too. For example the page may be about "Orange Juice" but a user may search for:
   - Smooth Orange juice
   - Natural Orange juice
   - Orange juice with bits
   - Orange juice cartons
   - Fresh Orange juice
   - [i]And many other possibilities[/i]
- - Use cross links on your site. If you have a page about Apples on your site where you mention apples make it link to the apples page. You don't need to do it more than once on a page so if you refer to apples three times only one needs to be made a link.
+ - Use cross links on your site. If you have a page about apples on your site where you mention apples make it link to the apples page. Ideally do this for all significant / relevant areas of the page (to cover when your visitors 'skim' the page), but it's okay to only do it for the first occurrence.
 
 [title="2"]XML Sitemap[/title]
 
 [media width="150" description="Composr uses a sophisticated indexing system for the sitemap to grow efficiently over time. This screenshot shows the index file, which is what is fed to the search engines." float="right"]data_custom/images/docs/tut_seo/xml_sitemap.png[/media]
-Composr supports the XML Sitemap format, which is recognised by:
- - Google
- - Yahoo
- - Microsoft
- - Ask
+Composr supports the XML Sitemap format, which is recognised by several search engines.
 
 Composr will generate a very thorough Sitemap for your website, providing links to all content, even forum topics ([concept]Conversr[/concept] only).
 
-Composr will also {$IS_MAINTAINED,sitemap_submit,automatically submit the Sitemap} to the above search engines every 24 hours, so long as the system scheduler is enabled and the 'Auto-submit sitemap' option is on. Configuration of the system scheduler is described in the [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page] tutorial. You will know if it is not working because your Admin Zone dashboard will say so.
+Composr will also {$IS_MAINTAINED,sitemap_submit,automatically submit the Sitemap} to any search engines you code via a hook under [tt]sources_custom/hooks/systems/sitemap_ping[/tt] every 24 hours, so long as the system scheduler is enabled and the 'Auto-submit sitemap' option is on. Configuration of the system scheduler is described in the [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page] tutorial. You will know if it is not working because your Admin Zone dashboard will say so.
 
 If you cannot configure the system scheduler for some reason, you can force generation of the sitemap from Commandr:
 [code="Commandr"]
@@ -108,7 +181,7 @@ You then need to manually submit the URL of the Sitemap (which will show in the 
 To test your Sitemap is generating correctly, open up [tt]http://yourbaseurl/data_custom/sitemaps/index.xml[/tt]. You should see an [abbr="eXtensible Markup Language"]XML[/abbr] document with reference to individual sitemap(s).
 
 [box="Important note about Google"]
-For Google to accept the automated Sitemap submissions you need to first submit it via [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]. After you have done this, future automated submissions will go straight through. Google webmaster tools is a great tool in its own right to see how your website is performing on Google.
+For Google to accept the automated Sitemap submissions you need to first submit it via [url="Google Search Console"]https://search.google.com/search-console[/url]. After you have done this, future automated submissions will go straight through. Google Search Console is a great tool in its own right to see how your website is performing on Google.
 
 Alternatively you can reference it in your [tt]robots.txt[/tt] file (see next section).
 [/box]
@@ -128,37 +201,35 @@ The URL monikers option can be enabled/disabled via the "URL monikers enabled" c
 
 Note that URL monikers will be given a leading hyphen if the source text is fully numeric. This is because URL monikers cannot be numbers as they would look like raw content IDs.
 
-One small disadvantage of URL Monikers, is it makes it a bit harder to find out ID numbers, as you can't just look in URLs. However, you can still find them on edit links, or if you look in the HTML source you will often see:
-[code="HTML"]
-<meta name="DC.Identifier" content="http://yourbaseurl/data/page_link_redirect.php?id=_SEARCH%3Asomemodule%3Aview%3A13" />
-[/code]
-This is very cryptic, but the ID number is on the end after [tt]%3A[/tt] (in this example, it's 13).
+One small disadvantage of URL Monikers, is it makes it a bit harder to find out ID numbers, as you can't just look in URLs. However, you can still find them on edit links, or if you are logged in as someone with access to the Admin Zone, you will be able to see the page-link of the current page in the footer (which will contain the content ID). Typically, page-links are structured as [tt]zone:page:type:id[/tt]. For Comcode pages, the ID is the page.
 
 [title="2"]Underscores and Dashes[/title]
 
 Any underscores ([tt]_[/tt]) in page names will automatically be replaced by dashes ([tt]-[/tt]) in URLs, as this is the convention for URLs.
 This happens regardless of configuration.
 
-[title="2"]Google Webmaster Tools[/title]
+Note that you should not mix underscores and dashes together in page names; use one or the other but not both. Otherwise this will confuse Composr and result in 404 not found errors.
 
-Google Webmaster Tools lets you monitor search engine crawling activity on your website. Other search engines often have similar systems.
+[title="2"]Google Search Console[/title]
+
+Google Search Console lets you monitor search engine crawling activity on your website. Other search engines often have similar systems.
 You first need to prove ownership of a particular site via an automated process, then the range of tools become available to you.
 
 [title="3"]Stay calm[/title]
 
-People often have questions regarding Google Webmaster Tools because it displays various errors and warnings and people fear these impact SEO.
+People often have questions regarding Google Search Console because it displays various errors and warnings and people fear these impact SEO.
 
 Most errors displayed have nothing to do with hurting your general search ranking, they are only warnings about specific URLs, rather the site as a whole. Any non-trivial site will have many of these errors, if only because sites change over time and Google has old URLs in its database. Google obviously is not going to penalise all these websites, and won't penalise you for some untidiness either.
 
-It's important to understand that Google doesn't do a lot of negotiation about what exactly it should do with your site. There are a few standards that kind of give it hints, like [tt]robots.txt[/tt], canonical URLs, nofollow headers, robot meta tags, the XML Sitemap, and it doesn't put URLs containing HTTP errors into its search index, but generally what it does is it trawls through your site repeatedly, noting down all the URLs it finds. It then remembers the URLs and will continue to try them in the future, regardless of whether they are valid anymore.
+It's important to understand that Google doesn't do a lot of negotiation about what exactly it should do with your site. There are a few standards that kind of give it hints, like [tt]robots.txt[/tt], canonical URLs, nofollow headers, robot meta tags, the XML Sitemap, and it doesn't put URLs containing HTTP errors into its search index, but generally what it does is it crawls through your site repeatedly, noting down all the URLs it finds. It then remembers the URLs and will continue to try them in the future, regardless of whether they are valid anymore.
 
-Often access-denied errors show up. You should not think of Google being given a error as something necessarily wrong with your site. It simply means Google made a request, and received an error response. That is a normal and legitimate thing to happen, especially if it is a 401 "access denied" response. It's a normal part of the web, not a system failure. This is a subtle but important point: Google getting a 401 response is not like a police caution, it is normal and instructional. It is an error with respect to that URL not being accessible, but not an error with respect to a system failure or even implication of a bad link (it is valid to give users a link that returns a 401 response in some cases, for example, telling them to log in).
+Often access-denied errors show up. You should not think of Google being given an error as something necessarily wrong with your site. It simply means Google made a request, and received an error response. That is a normal and legitimate thing to happen, especially if it is a 401 "access denied" response. It's a normal part of the web, not a system failure (e.g. a crawler is only a guest when crawling your site and may try to access things which are not allowed for guests).
 
-An anally-retentive attitude isn't wholly bad for SEO, especially if you are tuning pages or crafting how things are linked together -- but it doesn't work well if you take Webmaster Tool warnings out of context, as something that needs to be eliminated 100%. Google Webmaster Tools provide these warnings to help you review things in general.
+An anally-retentive attitude isn't wholly bad for SEO, especially if you are tuning pages or crafting how things are linked together -- but it doesn't work well if you take Webmaster Tool warnings out of context, as something that needs to be eliminated 100%. Google Search Console provide these warnings to help you review things in general.
 
-Of course, if you are seeing an error on a particular URL and you want that URL to be crawled, you should look into it.
+Of course, if you are seeing an error on a particular URL and you want that URL to be crawled, you should look into it and perhaps grant access to it for guests (or make a guest version of the page using Tempcode symbols to hide sensitive content).
 
-[title="2"]A note of caution regarding agencies / Can you really get a google top result?[/title]
+[title="2"]A note of caution regarding agencies / Can you really get a top result?[/title]
 
 A lot of web design companies make a very bold claim: that they can get you a top search engine result.
 
@@ -172,30 +243,44 @@ There's just one catch: it won't be for the term you want.
 
 For example, we are (at the time of writing) on top of Google for the following terms:
 [list]
-[*] web design sheffield "world class" functionality[/*]
-[*] composr web development[/*]
-[*] tired of partial solutions[/*]
-[*] cms web development "projects partnerships"[/*]
+[*][tt]Composr[/tt]
+[*][tt]composr web development[/tt]
+[*][tt]Tired of systems that revolve around plugins and third-party dependencies?[/tt]
+(Note that changing this to [tt]I'm tired of systems that revolve around plugins and third-party dependencies[/tt] drops us off of the results!)
+[*][tt]"Create smarter web properties; accelerate time to market"[/tt]
 [/list]
+
+Here are some search terms which you might think put us on the top of the results but actually do not:
+[list]
+[*][tt]Tempcode[/tt] (the unique template language we use for Composr)
+We come in roughly third unless you explicitly put the word "Composr" in the query
+[*][tt]Comcode[/tt] (our unique text formatting language)
+There is a company, "ComCode", which has more relevance, and they have their own domain name using Comcode in it as well
+[*][tt]Selectcode[/tt] (a syntax for selecting certain content records)
+We come in about fifth; there is a website called "the select code" which is higher up
+[*][tt]Conversr[/tt] (Composr's built-in forum software)
+Google treats this as a misspelling of the shoe company "Converse", and even if you specify you really meant Conversr, we are out-ranked by a software company by the same name
+[/list]
+
 Unfortunately nobody will actually search these terms. The kinds of terms we want are far more competitive, like:
 [list]
-[*] best CMS[/*]
-[*] web design sheffield[/*]
-[*] reliable web developer[/*]
+[*]best CMS
+[*]web design sheffield
+[*]reliable web developer
 [/list]
 It takes huge popular appeal, and often forms of incentivisation campaign, to get high on these results.
 
-So, if you are shopping for web design and someone is telling you that you'll get a top search engine result, don't expect it for "London carpenter" or "best chauffeur", expect it will be something far more obscure. It may well still be a term that does get a modest stream of searches though (Google's [url="https://adwords.google.com/select/KeywordToolExternal" target="_blank"]keyword suggestion tool[/url] is great for finding 'long tail' searches that people actually do but aren't particularly competitive).
+So, if you are shopping for web design and someone is telling you that you'll get a top search engine result, don't expect it for "London carpenter" or "best chauffeur", expect it will be something far more obscure. It may well still be a term that does get a modest stream of searches though (Google's [url="https://ads.google.com/aw/keywordplanner/home?pli=1" target="_blank"]keyword suggestion tool[/url] is great for finding 'long tail' searches that people actually do but aren't particularly competitive).
 
 Some companies do actually say they can get you a top search engine result for any search term of your choice. Thinking logically, the only ways they could do this are:
 [list]
 [*] Doing it only if you have an infinite budget (with infinite resources, you could incentivise infinite quality back-links and invest in whatever is required to make the website the most compelling one ever built)[/*]
-[*] Bribing or Hacking Google (seems very unlikely)[/*]
-[*] Calling a paid Google ad a top Google result (likely very common)[/*]
+[*] Bribing or Hacking a search engine (seems very unlikely)[/*]
+[*] Calling a paid ad a top result even though it is not technically one and is very short-lived (likely very common)[/*]
 [/list]
 One final wheeze I imagine is that the companies are just hiding behind the law. They probably guide you in your choice of keywords before you sign up, and for the small percentage of customers who still insist on something, they won't agree to sign them up, so nobody can sue them for false advertising (only a customer can really sue someone for that).
 
-So to summarise, do not take the stupid claims many web companies make on face value. This is particularly a problem with lower quoting companies, who have a business model that requires treating their customers like sheep and subjecting them to a flashy sales process that makes a lot of shallow but impressive claims. These companies are legitimate in the sense that the model allows them to do stuff cheaper than anyone else and to a basic reasonable quality, within the budget of very small businesses, but it's important to also have an understanding of what you get for the money and why they are so cheap.
+So to summarise, do not take the claims many web companies make on face value. This is particularly a problem with lower quoting companies, who have a business model that requires treating their customers like sheep and subjecting them to a flashy sales process that makes a lot of shallow but impressive claims. These companies are legitimate in the sense that the model allows them to do stuff cheaper than anyone else and to a basic reasonable quality, within the budget of very small businesses, but it's important to also have an understanding of what you get for the money and why they are so cheap.
 
 [title="2"]A little closing advice[/title]
 
@@ -204,12 +289,13 @@ SEO is certainly a strong possible marketing route for many websites. Two scenar
 [*] for small businesses that serve a local community. These businesses can actually work off their local-nature to great advantage (imagine a query involving the name of their trade, with the town they operate in appended on the end).[/*]
 [*] for websites with a lot of community-generated or database-generated content. These sites will naturally end up targeting a large volume (a 'long tail') of less common terms that people do search for but aren't so competitive. A bit of work exposing the appropriate terms automatically and you can have a very effective strategy.[/*]
 [/list]
-If you are going to go down the SEO route, make sure that you have someone who will do 'white-hat' techniques rather than 'black-hat' ones. If you hire the wrong company you might find that they are trying to make your website rank highly by exchanging or buying a lot of links, and search engines will likely find out very soon and get you banned.
+If you are going to go down the SEO route, make sure that you have someone who will do 'white-hat' techniques rather than 'black-hat' ones. If you hire the wrong company you might find that they are trying to make your website rank highly by exchanging or buying a lot of links, and search engines will likely find out very soon and get you de-listed.
 
 [concepts
- 1_key="SEO"           1_value="Search engine optimisation: the process of improving a website's ranking in search engine results"
- 2_key="Crawler"       2_value="The 'work horse' of search engines that moves between links on the world-wide-web, finding and analysing web-pages"
- 3_key="XML Sitemap"   3_value="A standard format for listing the pages of your website, recognised by all the major search engines"
+ 1_key="SEO"                       1_value="Search engine optimisation: the process of improving a website's ranking in search engine results"
+ 2_key="Crawler"                   2_value="The 'work horse' of search engines that moves between links on the world-wide-web, finding and analysing web-pages"
+ 3_key="XML Sitemap"               3_value="A standard format for listing the pages of your website, recognised by all the major search engines"
+ 4_key="Artificial Intelligence"   4_value="AI; a machine-learning software which trains itself on inputs (in this case, sites and their content) to output results based on a given query (in this case, for large language models, a natural human question or inquiry)"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
@@ -220,21 +306,24 @@ If you are going to go down the SEO route, make sure that you have someone who w
  - [page="_SEARCH:tut_metadata"]Metadata[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - Submitting to search engines:
-  - [url="Submit to Bing"]http://www.bing.com/toolbox/submit-site-url[/url]
-  - [url="Submit to Google"]https://www.google.com/webmasters/tools/submit-url[/url]
+  - [url="Submit to Bing via Bing Webmaster Tools"]https://www.bing.com/webmasters/about[/url]
+  - [url="Submit to Google via Google Search Console"]https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap[/url]
  - [url="Sitemaps specification"]http://www.sitemaps.org/[/url]
  - Webmaster tools:
-  - [url="Google webmaster tools"]https://www.google.com/webmasters/tools/home[/url]
+  - [url="Google Search Console"]https://search.google.com/search-console[/url]
   - [url="Bing webmaster tools"]https://www.bing.com/webmasters/about/[/url]
   - [url="Yandex webmaster tools"]https://webmaster.yandex.com/welcome/[/url]
- - [url="Comparison of SEO tools"]https://www.werockyourweb.com/spyfu-vs-semrush-vs-moz-vs-raven-vs-majestic/[/url]
+ - [url="Comparison of SEO tools"]https://www.werockyourweb.com/best-seo-tools/[/url]
  - SEO tools:
+  - [url="Semrush"]https://www.semrush.com/[/url]
+  - [url="AuthorityLabs"]https://www.authoritylabs.com/[/url]
+  - [url="Ahrefs"]https://ahrefs.com/[/url]
+  - [url="SE Ranking"]https://www.werockyourweb.com/go/seranking/[/url]
+  - [url="Birdeye"]https://birdeye.com/[/url]
+  - [url="BuzzSumo"]https://buzzsumo.com/[/url]
   - [url="moz.com"]https://moz.com/[/url]
-  - [url="SEMrush"]https://www.semrush.com/[/url]
-  - [url="Ahref"]https://ahrefs.com/[/url]
   - [url="The Hoth"]https://www.thehoth.com/[/url]
-  - [url="SERPs"]https://www.authoritylabs.com/ranking-tool/[/url]
-  - [url="Social sharing stats"]http://www.sharedcount.com/[/url]
+  - [url="SharedCount"]http://www.sharedcount.com/[/url]
   - [url="Facebook Insights"]https://www.facebook.com/business/news/audience-insights[/url]
   - [url="SEO Site Checkup"]https://seositecheckup.com/[/url]
   - [url="WooRank"]https://www.woorank.com/[/url]

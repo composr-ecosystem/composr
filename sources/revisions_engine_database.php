@@ -412,12 +412,27 @@ class RevisionEngineDatabase
             }
         }
 
+        // Conflict resolution
+        require_code('form_templates');
+        $conflict_id = [];
+        if ($resource_types !== null) {
+            $conflict_id[] = $resource_types;
+        }
+        if ($resource_id !== null) {
+            $conflict_id[] = $resource_id;
+        } if ($category_id !== null) {
+            $conflict_id[] = 'cat__' . $category_id;
+        }
+        list($warning_details, $ping_url) = handle_conflict_resolution(md5(serialize($conflict_id)), 'revisions');
+
         $tpl = do_template('REVISIONS_SCREEN', [
             '_GUID' => '0dea1ed9d31a818cba60f56fc1c8f68f',
             'TITLE' => $title,
             'RESULTS' => $results,
             'INCLUDE_FILTER_FORM' => $include_filter_form,
             'RESOURCE_TYPES' => $resource_types,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         require_code('templates_internalise_screen');
@@ -574,9 +589,14 @@ class RevisionEngineDatabase
             'revisions'
         );
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(md5($resource_type . '::' . $resource_id), 'revisions');
+
         $revisions_tpl = do_template('REVISIONS_WRAP', [
             '_GUID' => '1fc38d9d7ec57af110759352446e533d',
             'RESULTS' => $results,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
 
         $_text = $GLOBALS['SITE_DB']->query_select_value_if_there('revisions', 'r_original_text', ['id' => $undo_revision]);

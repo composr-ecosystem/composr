@@ -485,3 +485,315 @@ function remove_code_block_contents($code)
     $code = preg_replace('#(\[codebox=[^\[\]]*\]).*(\[/codebox\])#Us', '$1$2', $code);
     return $code;
 }
+
+/**
+ * Create an abbr tag explaining the given type.
+ *
+ * @param  ?ID_TEXT $type The type (null: none)
+ * @param  ?boolean $nullable Whether this can be null (null: find out from the type)
+ * @return string The HTML
+ */
+function get_api_type_tooltip(?string $type, ?bool $nullable = null) : string
+{
+    if ($type === null) {
+        return '<em>N/A</em>';
+    }
+
+    $abbr_title = do_lang('API_DOC_TYPE__' . str_replace(['?', '~', '*'], ['', '', ''], $type), null, null, null, null, false);
+    if ($abbr_title === null) {
+        return $type;
+    }
+
+    $ret = '<abbr title="' . $abbr_title;
+    if (($nullable === true) || (($nullable === null) && strpos($type, '?') !== false)) {
+        $ret .= do_lang('API_DOC_TYPE_NULLABLE');
+    }
+    if (strpos($type, '~') !== false) {
+        $ret .= do_lang('API_DOC_TYPE_FALSEABLE');
+    }
+    $ret .= '">' . $type . '</abbr>';
+    return $ret;
+}
+
+/**
+ * Give an API class row from the database and get a template-ready map of details about the class.
+ *
+ * @param  array $row The api_classes database row
+ * @return array Template-ready map of details
+ */
+function prepare_api_class_for_render(array $row) : array
+{
+    $class_implements = [];
+    foreach (explode(',', $row['c_implements']) as $implements) {
+        if ($implements == '') {
+            continue;
+        }
+        $class_implements[] = hyperlink(build_url(['page' => 'api', 'type' => $implements], get_module_zone('api')), $implements, false, true);
+    }
+
+    $class_traits = [];
+    foreach (explode(',', $row['c_traits']) as $trait) {
+        if ($trait == '') {
+            continue;
+        }
+        $class_traits[] = $trait;
+    }
+
+    $class_extends = null;
+    if ($row['c_extends'] != '') {
+        $class_extends = hyperlink(build_url(['page' => 'api', 'type' => $row['c_extends']], get_module_zone('api')), $row['c_extends'], false, true);
+    }
+
+    // PhpDoc
+
+    $preview = '[code="PHP"]';
+
+    // class declaration
+    if ($row['c_is_abstract'] == 1) {
+        $preview .= 'abstract ';
+    }
+    $preview .= 'class ' . $row['c_name'];
+
+    // extends
+    if ($row['c_extends'] != '') {
+        $preview .= ' extends ' . $row['c_extends'];
+    }
+
+    // implements
+    if (trim($row['c_implements']) != '') {
+        $preview .= ' implements ' . str_replace(',', ', ', $row['c_implements']);
+    }
+
+    $preview .= "\n" . '[/code]';
+
+    return [
+        'PATH' => $row['c_source_url'],
+        'IS_ABSTRACT' => ($row['c_is_abstract'] == 1) ? do_lang('YES') : do_lang('NO'),
+        'IMPLEMENTS' => $class_implements,
+        'TRAITS' => $class_traits,
+        'EXTENDS' => $class_extends,
+        'TYPE' => $row['c_type'],
+        'PACKAGE' => $row['c_package'],
+        'PREVIEW' => comcode_to_tempcode($preview),
+    ];
+}
+
+/**
+ * Give an API function row from the database and get a template-ready map of details about the function.
+ *
+ * @param  array $db_function The api_functions database row
+ * @param  integer $i Parameter iteration, passed by reference
+ * @return array Template-ready map of details
+ */
+function prepare_api_function_for_render(array $db_function, int &$i) : array
+{
+    require_code('templates');
+    require_code('templates_results_table');
+    require_lang('tutorials');
+
+    $parameters = null;
+
+    $preview_params_phpdoc = '';
+    $preview_params = '';
+
+    $start = get_param_integer('param_' . strval($i) . '_start', 0);
+    $max = get_param_integer('param_' . strval($i) . '_start', 25);
+
+    $count_db_parameters = $GLOBALS['SITE_DB']->query_select_value('api_function_params', 'COUNT(*)', ['function_id' => $db_function['id']]);
+    $db_parameters = $GLOBALS['SITE_DB']->query_select('api_function_params', ['*'], ['function_id' => $db_function['id']], ' ORDER BY id', $max, $start);
+    if ($count_db_parameters > 0) {
+        $header = [
+            do_lang_tempcode('NAME'),
+            do_lang_tempcode('TYPE'),
+            do_lang_tempcode('API_DOC_REF'),
+            do_lang_tempcode('API_DOC_VARIADIC'),
+            do_lang_tempcode('DEFAULT'),
+            do_lang_tempcode('SET'),
+            do_lang_tempcode('API_DOC_RANGE'),
+            do_lang_tempcode('DESCRIPTION'),
+        ];
+        $header_row = results_header_row($header);
+
+        $rows = new Tempcode();
+        foreach ($db_parameters as $parameter) {
+            $preview_params_phpdoc .= "\n" . ' * @param  ' . $parameter['p_type'] . ' $' . $parameter['p_name'] . ' ' . $parameter['p_description'];
+
+            // We need to convey the default value in such a way we can differentiate between a literal value and something else
+            $preview_param_default = '';
+            if ($parameter['p_default'] != '') {
+                $_param_default = unserialize($parameter['p_default']);
+                if ($_param_default === false) {
+                    $param_default = do_lang_tempcode('API_DOC_FALSE');
+                    $preview_param_default = 'false';
+                } elseif ($_param_default === true) {
+                    $param_default = do_lang_tempcode('API_DOC_TRUE');
+                    $preview_param_default = 'true';
+                } elseif ($_param_default === null) {
+                    $param_default = do_lang_tempcode('API_DOC_NULL');
+                    $preview_param_default = 'null';
+                } elseif (is_array($_param_default)) {
+                    $param_default = protect_from_escaping(json_encode($_param_default, JSON_PRETTY_PRINT));
+                    $preview_param_default = json_encode($_param_default);
+                } elseif (is_object($_param_default)) {
+                    $param_default = protect_from_escaping('<em>Object</em>');
+                    $preview_param_default = 'object';
+                } elseif (is_string($_param_default)) {
+                    $param_default = protect_from_escaping(escape_html(strval($_param_default)));
+                    $preview_param_default = "'" . str_replace("'", "\'", strval($_param_default)) . "'";
+                } elseif (is_numeric($_param_default)) {
+                    $param_default = protect_from_escaping(escape_html(strval($_param_default)));
+                    $preview_param_default = strval($_param_default);
+                }
+                if ($param_default->is_empty()) {
+                    $param_default = do_lang_tempcode('API_DOC_BLANK');
+                }
+            } else {
+                $param_default = do_lang_tempcode('API_DOC_REQUIRED_PARAMETER');
+            }
+
+            if ($parameter['p_set'] != '') {
+                $preview_params_phpdoc .= "\n" . ' * @set ' . $parameter['p_set'];
+                $param_set = escape_html($parameter['p_set']);
+            } else {
+                $param_set = '<em>N/A</em>';
+            }
+
+            if ($parameter['p_range'] != '') {
+                $preview_params_phpdoc .= "\n" . ' * @range ' . $parameter['p_range'];
+                $param_range = escape_html($parameter['p_range']);
+            } else {
+                $param_range = '<em>N/A</em>';
+            }
+
+            $display_actual = '';
+            if ($parameter['p_ref'] == 1) {
+                $display_actual .= '&';
+            }
+            if ($parameter['p_is_variadic'] == 1) {
+                $display_actual .= '...';
+            }
+            $display_actual .= '$' . $parameter['p_name'];
+
+            $map = [
+                escape_html($display_actual),
+                get_api_type_tooltip($parameter['p_type']),
+                ($parameter['p_ref'] == 1) ? do_lang('YES') : do_lang('NO'),
+                ($parameter['p_is_variadic'] == 1) ? do_lang('YES') : do_lang('NO'),
+                $param_default,
+                $param_set,
+                $param_range,
+                escape_html($parameter['p_description']),
+            ];
+            $rows->attach(results_entry($map, false));
+
+            if ($preview_params != '') {
+                $preview_params .= ', ';
+            }
+            if ($parameter['p_php_type'] != '') {
+                if ($parameter['p_php_type_nullable'] == 1) {
+                    $preview_params .= '?';
+                }
+                $preview_params .= $parameter['p_php_type'] . ' ';
+            }
+            $preview_params .= $display_actual;
+            if ($preview_param_default != '') {
+                $preview_params .= ' = ' . $preview_param_default;
+            }
+        }
+
+        $parameters = results_table(do_lang_tempcode('API_DOC_PARAMETERS'), $start, 'param_' . strval($i) . '_start', $max, 'param_' . strval($i) . '_max', $count_db_parameters, $header_row, $rows);
+    }
+
+    $function_flags = [];
+    foreach (explode(',', $db_function['f_flags']) as $flag) {
+        if ($flag == '') {
+            continue;
+        }
+
+        $function_flags[] = $flag;
+    }
+
+    $map = [
+        'PATH' => $GLOBALS['SITE_DB']->query_select_value('api_classes', 'c_source_url', ['id' => $db_function['class_id']]),
+        'DESCRIPTION' => $db_function['f_description'],
+        'RETURN_TYPE' => get_api_type_tooltip($db_function['f_php_return_type'], ($db_function['f_php_return_type_nullable'] == 1)),
+        'FLAGS' => $function_flags,
+        'IS_STATIC' => ($db_function['f_is_static'] == 1) ? do_lang('YES') : do_lang('NO'),
+        'IS_ABSTRACT' => ($db_function['f_is_abstract'] == 1) ? do_lang('YES') : do_lang('NO'),
+        'IS_FINAL' => ($db_function['f_is_final'] == 1) ? do_lang('YES') : do_lang('NO'),
+        'VISIBILITY' => $db_function['f_visibility'],
+        'PARAMETERS' => $parameters,
+    ];
+
+    if ($db_function['f_return_type'] != '') {
+        $preview_params_phpdoc .= "\n" . ' * @return ' . $db_function['f_return_type'] . ' ' . $db_function['f_return_description'];
+
+        if ($db_function['f_return_set'] != '') {
+            $preview_params_phpdoc .= "\n" . ' * @set ' . $db_function['f_return_set'];
+            $param_set = escape_html($db_function['f_return_set']);
+        } else {
+            $param_set = '<em>N/A</em>';
+        }
+
+        if ($db_function['f_return_range'] != '') {
+            $preview_params_phpdoc .= "\n" . ' * @range ' . $db_function['f_return_range'];
+            $param_range = escape_html($db_function['f_return_range']);
+        } else {
+            $param_range = '<em>N/A</em>';
+        }
+
+        $map['RETURN_TYPE_CMS'] = get_api_type_tooltip($db_function['f_return_type']);
+        $map['RETURN_SET'] = $param_set;
+        $map['RETURN_RANGE'] = $param_range;
+        $map['RETURN_DESCRIPTION'] = $db_function['f_return_description'];
+    } else {
+        $map['RETURN_TYPE_CMS'] = null;
+        $map['RETURN_SET'] = null;
+        $map['RETURN_RANGE'] = null;
+        $map['RETURN_DESCRIPTION'] = null;
+    }
+
+    $preview = '[code="PHP"]';
+
+    // PhpDoc
+    $preview .= "\n" . '/**';
+    foreach (explode("\n", $db_function['f_description']) as $desc_line) {
+        $preview .= "\n" . ' * ' . $desc_line;
+    }
+    $preview .= "\n" . ' *';
+    $preview .= $preview_params_phpdoc;
+    $preview .= "\n" . ' */' . "\n";
+
+    // Function declaration
+    if ($db_function['f_is_abstract'] == 1) {
+        $preview .= 'abstract ';
+    } elseif ($db_function['f_is_final'] == 1) {
+        $preview .= 'final ';
+    }
+    if ($db_function['class_name'] != '__global') {
+        $preview .= $db_function['f_visibility'] . ' ';
+    }
+    if ($db_function['f_is_static'] == 1) {
+        $preview .= 'static ';
+    }
+    $preview .= 'function ' . $db_function['f_name'];
+
+    // Parameters
+    $preview .= '(' . $preview_params . ')';
+
+    // Return
+    if ($db_function['f_php_return_type'] != '') {
+        $preview .= ' : ';
+        if ($db_function['f_php_return_type_nullable'] == 1) {
+            $preview .= '?';
+        }
+        $preview .= $db_function['f_php_return_type'];
+    }
+
+    $preview .= "\n" . '[/code]';
+    $map['PREVIEW'] = comcode_to_tempcode($preview);
+
+    $i++;
+
+    return $map;
+}

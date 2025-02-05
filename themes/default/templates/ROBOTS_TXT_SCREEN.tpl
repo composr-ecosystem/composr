@@ -1,6 +1,11 @@
 <div data-require-javascript="robots_txt" data-view="RobotsTxtScreen">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<form title="{!PRIMARY_PAGE_FORM}" action="{POST_URL*}" method="post" autocomplete="off">
 		{$INSERT_FORM_POST_SECURITY}
 

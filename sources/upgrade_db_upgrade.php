@@ -621,7 +621,8 @@ function version_specific() : bool
                 'bookmarks',
                 'pointstore',
                 'staff',
-                'supermembers'
+                'supermembers',
+                'admin_cns_merge_members', // Merged into admin_cns_members but has no install code
             ];
             $_out = '';
             foreach ($deleted_modules as $module_name) {

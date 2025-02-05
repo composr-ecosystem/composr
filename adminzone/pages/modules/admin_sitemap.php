@@ -161,7 +161,15 @@ class Module_admin_sitemap
 
         require_javascript('tree_list');
 
-        return do_template('SITEMAP_EDITOR_SCREEN', ['_GUID' => '2d42cb71e03d31c855a6b6467d2082d2', 'TITLE' => $this->title]);
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
+        return do_template('SITEMAP_EDITOR_SCREEN', [
+            '_GUID' => '2d42cb71e03d31c855a6b6467d2082d2',
+            'TITLE' => $this->title,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
     }
 
     /**
@@ -210,6 +218,9 @@ class Module_admin_sitemap
 
         $hidden->attach(form_input_hidden('zone', $zone));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => 'f732bb10942759c6ca5771d2d446c333',
             'TITLE' => $this->title,
@@ -218,6 +229,8 @@ class Module_admin_sitemap
             'URL' => $url,
             'FIELDS' => '',
             'PREVIEW' => '',
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

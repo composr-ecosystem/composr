@@ -539,7 +539,7 @@ class Module_tickets
         require_code('form_templates');
         require_code('feedback');
 
-        list($warning_details, $ping_url) = handle_conflict_resolution(null, true);
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false, true);
 
         // Help text
         $ticket_page_text = comcode_to_tempcode(get_option('ticket_text'), null, true);
@@ -1235,6 +1235,8 @@ class Module_tickets
         }
         $fields->attach(form_input_list(do_lang_tempcode('TICKET_TYPE'), '', 'ticket_type', $_ticket_types));
 
+        list($warning_details, $ping_url) = handle_conflict_resolution(null, false, true);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '1fd8f7eaf5346776ae2362450d81f4c2',
             'TITLE' => $this->title,
@@ -1244,6 +1246,8 @@ class Module_tickets
             'SUBMIT_ICON' => 'buttons/save',
             'SUBMIT_NAME' => $submit_name,
             'URL' => $post_url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

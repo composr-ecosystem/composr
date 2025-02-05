@@ -35,7 +35,7 @@ class Module_admin_cns_members
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 2;
+        $info['version'] = 3;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
         $info['addon'] = 'core_cns';
@@ -77,7 +77,7 @@ class Module_admin_cns_members
             if (has_privilege($member_id, 'member_maintenance')) {
                 $ret['_SEARCH:members:browse:include_non_confirmed=include'] = ['MEMBER_DIRECTORY', 'menu/adminzone/tools/users/member_edit'];
             }
-            $ret['_SEARCH:admin_cns_merge_members:browse'] = ['MERGE_MEMBERS', 'menu/adminzone/tools/users/merge_members'];
+            $ret['_SEARCH:admin_cns_members:merge'] = ['MERGE_MEMBERS', 'menu/adminzone/tools/users/merge_members'];
             if (addon_installed('cns_cpfs')) {
                 $ret['_SEARCH:admin_cns_customprofilefields:browse'] = ['CUSTOM_PROFILE_FIELDS', 'menu/adminzone/tools/users/custom_profile_fields'];
             }
@@ -186,6 +186,22 @@ class Module_admin_cns_members
             set_helper_panel_text(comcode_lang_string('DOC_EXPORT_MEMBERS'));
         }
 
+        if ($type == 'merge') {
+            $this->title = get_screen_title('MERGE_MEMBERS');
+
+            inform_non_canonical_parameter('from');
+            inform_non_canonical_parameter('to');
+
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')]]);
+        }
+
+        if ($type == '_merge') {
+            $this->title = get_screen_title('MERGE_MEMBERS');
+
+            breadcrumb_set_parents([['_SEARCH:admin_cns_members:browse', do_lang_tempcode('MEMBERS')], ['_SELF:_SELF:browse', do_lang_tempcode('MERGE_MEMBERS')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
         return null;
     }
 
@@ -233,6 +249,12 @@ class Module_admin_cns_members
         if ($type == '_import_spreadsheet') {
             return $this->_import_spreadsheet();
         }
+        if ($type == 'merge') {
+            return $this->merge();
+        }
+        if ($type == '_merge') {
+            return $this->_merge();
+        }
 
         return new Tempcode();
     }
@@ -262,7 +284,7 @@ class Module_admin_cns_members
             [
                 ['menu/adminzone/tools/users/member_add', ['admin_cns_members', ['type' => 'step1'], get_module_zone('admin_cns_members')], do_lang_tempcode('ADD_MEMBER'), 'DOC_ADD_MEMBER'],
                 (!has_privilege(get_member(), 'member_maintenance')) ? null : ['menu/adminzone/tools/users/member_edit', ['members', ['type' => 'browse', 'include_non_confirmed' => 'include'], get_module_zone('members'), do_lang_tempcode('SWITCH_ZONE_WARNING')], do_lang_tempcode('MEMBER_DIRECTORY'), 'DOC_EDIT_MEMBER'],
-                ['menu/adminzone/tools/users/merge_members', ['admin_cns_merge_members', ['type' => 'browse'], get_module_zone('admin_cns_merge_members')], do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'],
+                ['menu/adminzone/tools/users/merge_members', ['admin_cns_members', ['type' => 'merge'], get_module_zone('admin_cns_members')], do_lang_tempcode('MERGE_MEMBERS'), 'DOC_MERGE_MEMBERS'],
                 (!has_privilege(get_member(), 'mass_import')) ? null : ['menu/adminzone/tools/users/delete_lurkers', ['admin_cns_members', ['type' => 'delurk'], get_module_zone('admin_cns_members')], do_lang_tempcode('DELETE_LURKERS'), 'DOC_DELETE_LURKERS'],
                 (!has_privilege(get_member(), 'mass_import')) ? null : ['admin/import_spreadsheet', ['admin_cns_members', ['type' => 'import_spreadsheet'], get_module_zone('admin_cns_members')], do_lang_tempcode('IMPORT_MEMBERS'), 'DOC_IMPORT_MEMBERS'],
                 ['admin/export_spreadsheet', ['admin_cns_members', ['type' => 'export_spreadsheet'], get_module_zone('admin_cns_members')], do_lang_tempcode('EXPORT_MEMBERS'), 'DOC_EXPORT_MEMBERS'],
@@ -333,6 +355,8 @@ class Module_admin_cns_members
      */
     public function step2() : object
     {
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         // Read in data...
 
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
@@ -611,6 +635,9 @@ class Module_admin_cns_members
 
         $hidden->attach(form_input_hidden('csrf_token_preserve', '1'));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, 'delurk');
+
         return do_template('FORM_SCREEN', [
             '_GUID' => 'f911fc5be2865bdd065abf7c636530d4',
             'TITLE' => $this->title,
@@ -620,6 +647,8 @@ class Module_admin_cns_members
             'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -745,7 +774,17 @@ class Module_admin_cns_members
 
         $url = build_url(['page' => '_SELF', 'type' => '__delurk'], '_SELF');
 
-        return do_template('CNS_DELURK_CONFIRM_SCREEN', ['_GUID' => '52870b8546653782e354533602531970', 'TITLE' => $this->title, 'LURKERS' => $_lurkers, 'URL' => $url]);
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, 'delurk');
+
+        return do_template('CNS_DELURK_CONFIRM_SCREEN', [
+            '_GUID' => '52870b8546653782e354533602531970',
+            'TITLE' => $this->title,
+            'LURKERS' => $_lurkers,
+            'URL' => $url,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
     }
 
     /**
@@ -885,6 +924,9 @@ class Module_admin_cns_members
         $post_url = build_url(['page' => '_SELF', 'type' => '_import_spreadsheet'], '_SELF');
         $text = '';
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '9196652a093d7f3a0e5dd0922f74cc51',
             'TITLE' => $this->title,
@@ -894,6 +936,8 @@ class Module_admin_cns_members
             'TEXT' => $text,
             'SUBMIT_ICON' => 'admin/import_spreadsheet',
             'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -925,5 +969,159 @@ class Module_admin_cns_members
 
         require_code('tasks');
         return call_user_func_array__long_task(do_lang('IMPORT_MEMBERS'), $this->title, 'import_members', [$default_password, $use_temporary_passwords, $target_path, basename($target_path)]);
+    }
+
+    /**
+     * The UI for choosing members to merge.
+     *
+     * @return Tempcode The UI
+     */
+    public function merge() : object
+    {
+        $fields = new Tempcode();
+
+        $from = get_param_string('from', '', INPUT_FILTER_GET_COMPLEX);
+        $to = get_param_string('to', '', INPUT_FILTER_GET_COMPLEX);
+
+        $fields->attach(form_input_username(do_lang_tempcode('FROM'), do_lang_tempcode('DESCRIPTION_MEMBER_FROM'), 'from', $from, true));
+        $fields->attach(form_input_username(do_lang_tempcode('TO'), do_lang_tempcode('DESCRIPTION_MEMBER_TO'), 'to', $to, true));
+
+        if (is_on_multi_site_network()) {
+            $fields->attach(form_input_tick(do_lang_tempcode('MERGING_ON_MSN'), do_lang_tempcode('DESCRIPTION_MERGING_ON_MSN'), 'keep', true));
+        }
+
+        $submit_name = do_lang_tempcode('MERGE_MEMBERS');
+        $post_url = build_url(['page' => '_SELF', 'type' => '_merge'], '_SELF');
+        $text = do_lang_tempcode('MERGE_MEMBERS_TEXT');
+
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
+        return do_template('FORM_SCREEN', [
+            '_GUID' => '6f6b18d90bbe9550303ab41be0a26dcb',
+            'SKIP_WEBSTANDARDS' => true,
+            'TITLE' => $this->title,
+            'URL' => $post_url,
+            'FIELDS' => $fields,
+            'HIDDEN' => '',
+            'TEXT' => $text,
+            'SUBMIT_ICON' => 'admin/merge',
+            'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
+    }
+
+    /**
+     * The actualiser for merging members.
+     *
+     * @return Tempcode The UI
+     */
+    public function _merge() : object
+    {
+        $to_username = post_param_string('to');
+        $to_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($to_username);
+        if (($to_id === null) || (is_guest($to_id))) {
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($to_username)), false, false, 404);
+        }
+        $from_username = post_param_string('from');
+        $from_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($from_username);
+
+        if (($from_id === null) || (is_guest($from_id))) {
+            warn_exit(do_lang_tempcode('_MEMBER_NO_EXIST', escape_html($from_username)), false, false, 404);
+        }
+
+        if ($to_id == $from_id) {
+            warn_exit(do_lang_tempcode('MERGE_SAME'));
+        }
+
+        // Reassign submitter field values
+        $meta = $GLOBALS['SITE_DB']->query('SELECT m_table,m_name FROM ' . get_table_prefix() . 'db_meta WHERE ' . db_string_equal_to('m_type', 'MEMBER') . ' OR ' . db_string_equal_to('m_type', '?MEMBER') . ' OR ' . db_string_equal_to('m_type', '*MEMBER'));
+        foreach ($meta as $m) {
+            $db = get_db_for($m['m_table']);
+            $db->query_update($m['m_table'], [$m['m_name'] => $to_id], [$m['m_name'] => $from_id], '', null, 0, false, true); // Errors suppressed in case rows conflict with existing
+        }
+
+        // Reassign poster usernames
+        $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_poster_name_if_guest' => $to_username], ['p_posting_member' => $from_id]);
+
+        // Merge in post count caching
+        $new_post_count = $GLOBALS['FORUM_DRIVER']->get_member_row_field($from_id, 'm_cache_num_posts') + $GLOBALS['FORUM_DRIVER']->get_member_row_field($to_id, 'm_cache_num_posts');
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_num_posts' => $new_post_count], ['id' => $to_id], '', 1);
+
+        // Reassign personal galleries
+        if (addon_installed('galleries')) {
+            $personal_galleries = $GLOBALS['SITE_DB']->query('SELECT name FROM ' . get_table_prefix() . 'galleries WHERE name LIKE \'member_' . strval($from_id) . '\_%\'');
+            foreach ($personal_galleries as $gallery) {
+                $old_gallery_name = $gallery['name'];
+                $new_gallery_name = preg_replace('#^member_\d+_#', 'member_' . strval($to_id) . '_', $old_gallery_name);
+
+                $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $new_gallery_name], ['parent_id' => $old_gallery_name]);
+                $GLOBALS['SITE_DB']->query_update('images', ['cat' => $new_gallery_name], ['cat' => $old_gallery_name]);
+                $GLOBALS['SITE_DB']->query_update('videos', ['cat' => $new_gallery_name], ['cat' => $old_gallery_name]);
+
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $new_gallery_name]);
+                if ($test === null) { // Rename
+                    $GLOBALS['SITE_DB']->query_update('galleries', ['name' => $new_gallery_name], ['name' => $old_gallery_name], '', 1);
+                } else { // Delete
+                    require_code('galleries2');
+                    delete_gallery($old_gallery_name);
+                }
+            }
+        }
+
+        require_code('cns_members_action');
+        require_code('cns_members_action2');
+
+        // Merge in CPFs
+        $custom_fields = cns_get_all_custom_fields_match_member($from_id);
+        foreach ($custom_fields as $details) {
+            if ($details['RAW'] != '') {
+                cns_set_custom_field($to_id, intval($details['FIELD_ID']), $details['RAW']);
+            }
+        }
+
+        // Delete old member
+        if (post_param_integer('keep', 0) != 1) {
+            cns_delete_member($from_id);
+        }
+
+        // Cache emptying ...
+        cns_require_all_forum_stuff();
+
+        require_code('cns_posts_action');
+        require_code('cns_posts_action2');
+        require_code('cns_topics_action2');
+        require_code('cns_forums_action2');
+
+        // Members
+        cns_force_update_member_post_count($to_id);
+        $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_member_id' => $to_id]);
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => $num_warnings], ['id' => $to_id], '', 1);
+
+        // Topics and posts
+        require_code('cns_topics_action');
+        $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_cache_first_member_id' => $from_id]);
+        foreach ($topics as $topic) {
+            cns_force_update_topic_caching($topic['id'], null, true, true);
+        }
+        $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_cache_last_member_id' => $from_id]);
+        foreach ($topics as $topic) {
+            cns_force_update_topic_caching($topic['id'], null, true, true);
+        }
+
+        // Forums
+        require_code('cns_posts_action2');
+        $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], ['f_cache_last_member_id' => $from_id]);
+        foreach ($forums as $forum) {
+            cns_force_update_forum_caching($forum['id']);
+        }
+
+        // ---
+
+        log_it('MERGE_MEMBERS', $from_username, $to_username);
+
+        $user_link = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($to_id, '', false);
+        return inform_screen($this->title, do_lang_tempcode('MERGED_MEMBERS', $user_link));
     }
 }

@@ -283,7 +283,7 @@ function ping_sitemap_xml(string $url, bool $trigger_error = false) : string
             // Submit to search engines
             $hook_obs = find_all_hook_obs('systems', 'sitemap_ping', 'Hook_sitemap_ping_');
             foreach ($hook_obs as $hook => $ob) {
-                $result = $ob->run($url);
+                $result = $ob->run($url, $trigger_error);
                 if (is_string($result)) {
                     $out .= $result;
                 }

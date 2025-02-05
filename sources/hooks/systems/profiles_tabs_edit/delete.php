@@ -92,7 +92,7 @@ class Hook_profiles_tabs_edit_delete
         if ($member_id_of != $member_id_viewing) {
             $alternate_actions = new Tempcode();
 
-            $merge_url = build_url(['page' => 'admin_cns_merge_members', 'from' => $username, 'to' => $GLOBALS['FORUM_DRIVER']->get_username(get_member())], get_module_zone('admin_cns_merge_members'));
+            $merge_url = build_url(['page' => 'admin_cns_members', 'type' => 'merge', 'from' => $username, 'to' => $GLOBALS['FORUM_DRIVER']->get_username(get_member())], get_module_zone('admin_cns_members'));
 
             if (has_privilege($member_id_of, 'comcode_dangerous')) {
                 $text->attach(paragraph(do_lang_tempcode('_DELETE_MEMBER_ADMIN', escape_html($merge_url->evaluate()))));

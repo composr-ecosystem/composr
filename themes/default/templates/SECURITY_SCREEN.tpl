@@ -4,6 +4,11 @@
 <div data-tpl="securityScreen">
 	{TITLE}
 
+	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+	{+START,IF_PASSED,WARNING_DETAILS}
+		{WARNING_DETAILS}
+	{+END}
+
 	<h2>{!SECURITY_ALERTS}</h2>
 
 	<p>

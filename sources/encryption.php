@@ -690,6 +690,13 @@ function register_site_telemetry(bool $skip_creation = false) : bool
         list($public_key, $private_key, $sign_public_key, $sign_private_key) = generate_site_telemetry_key_pair();
     }
 
+    // Create a telemetry challenge to verify site ownership with the homesite on registration
+    require_code('crypt');
+    require_code('files2');
+
+    $challenge = get_secure_random_string(32, CRYPT_BASE64);
+    cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/telemetry_challenge.txt', $challenge);
+
     require_code('version');
 
     // We must send the data encrypted using the software keys, not the site keys, because the homesite does not yet know this site's public key
@@ -700,6 +707,7 @@ function register_site_telemetry(bool $skip_creation = false) : bool
         'version' => cms_version_pretty(),
         'public_key' => $public_key,
         'sign_public_key' => $sign_public_key,
+        'challenge' => $challenge,
     ];
     $_payload = encrypt_data_telemetry(serialize($__payload));
     $payload = json_encode($_payload);

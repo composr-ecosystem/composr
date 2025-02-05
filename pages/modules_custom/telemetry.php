@@ -105,7 +105,7 @@ class Module_telemetry
         $_error = $GLOBALS['SITE_DB']->query_select('telemetry_errors', ['*'], ['e_guid' => $id]);
         if (($_error === null) || !array_key_exists(0, $_error)) {
             log_hack_attack_and_exit('SENSITIVE_RESOURCE_HACK', $id, 'telemetry_errors');
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE__TELEMETRY'));
         }
         $error = $_error[0];
 

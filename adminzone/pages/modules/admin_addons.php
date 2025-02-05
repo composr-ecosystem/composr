@@ -751,6 +751,9 @@ class Module_admin_addons
 
         require_javascript('core_form_interfaces');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('ADDON_MULTI_CONFIRM_SCREEN', [
             '_GUID' => 'bd6b7e012825bb0c873a76a9f4b19cf1',
             'TITLE' => $this->title,
@@ -759,6 +762,8 @@ class Module_admin_addons
             'INSTALL_FILES' => $install_files,
             'UNINSTALL_FILES' => $uninstall_files,
             'WARNINGS' => $warnings,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -887,6 +892,9 @@ class Module_admin_addons
 
         require_javascript('core_form_interfaces');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($file, false);
+
         return do_template('ADDON_INSTALL_CONFIRM_SCREEN', [
             '_GUID' => '79b8c0e900a498cfb166392163295a07',
             'TITLE' => $this->title,
@@ -902,6 +910,8 @@ class Module_admin_addons
             'COPYRIGHT_ATTRIBUTION' => implode("\n", $info['copyright_attribution']),
             'LICENCE' => $info['licence'],
             'DESCRIPTION' => $_description,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -979,6 +989,9 @@ class Module_admin_addons
         list($warnings, $files, $info) = inform_about_addon_install($file);
         $_description = comcode_to_tempcode($info['description'], $GLOBALS['FORUM_DRIVER']->get_guest_id());
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($file, false);
+
         return do_template('CONFIRM_SCREEN', [
             '_GUID' => 'f081efb0c257d8f3e3c9cd93da06e7f4',
             'TITLE' => $this->title,
@@ -987,6 +1000,8 @@ class Module_admin_addons
             'URL' => $url,
             'TEXT' => do_lang_tempcode('DESCRIPTION_DELETE_ADDON_TAR', $text),
             'PREVIEW' => '',
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 
@@ -1023,7 +1038,19 @@ class Module_admin_addons
 
         $url = build_url(['page' => '_SELF', 'type' => '_addon_uninstall'], '_SELF');
 
-        return do_template('ADDON_UNINSTALL_CONFIRM_SCREEN', ['_GUID' => 'fe96098c1f09d091fc10785134803135', 'TITLE' => $this->title, 'URL' => $url, 'NAME' => $addon_name, 'WARNINGS' => $warnings, 'FILES' => $files]);
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution($addon_name);
+
+        return do_template('ADDON_UNINSTALL_CONFIRM_SCREEN', [
+            '_GUID' => 'fe96098c1f09d091fc10785134803135',
+            'TITLE' => $this->title,
+            'URL' => $url,
+            'NAME' => $addon_name,
+            'WARNINGS' => $warnings,
+            'FILES' => $files,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
+        ]);
     }
 
     /**

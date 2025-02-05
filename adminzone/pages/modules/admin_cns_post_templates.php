@@ -192,6 +192,9 @@ class Module_admin_cns_post_templates extends Standard_crud_module
 
         $text = paragraph(do_lang_tempcode('DESCRIPTION_IMPORT_STOCK_RESPONSES_PT'));
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution(false, false);
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '7089deefe20d3917020610768e0f7f24',
             'TITLE' => $this->title,
@@ -201,6 +204,8 @@ class Module_admin_cns_post_templates extends Standard_crud_module
             'URL' => $post_url,
             'TEXT' => $text,
             'HIDDEN' => '',
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

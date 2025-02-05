@@ -1042,7 +1042,7 @@ function make_install_sql()
     require_code('files');
     $out_path = get_file_base() . '/install.sql';
     $out_file = cms_fopen_text_write($out_path);
-    get_sql_dump($out_file, true, false, [], null, $db);
+    get_sql_dump($out_file, true, true, false, [], null, $db);
     fclose($out_file);
     fix_permissions($out_path);
     sync_file($out_path);

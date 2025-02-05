@@ -302,6 +302,9 @@ class Module_admin_quiz
         $submit_name = do_lang_tempcode('PROCEED');
         $text = do_lang_tempcode('CHOOSE_WINNERS');
 
+        require_code('form_templates');
+        list($warning_details, $ping_url) = handle_conflict_resolution('');
+
         return do_template('FORM_SCREEN', [
             '_GUID' => '830097b15c232b10a8204cfed86082de',
             'HIDDEN' => '',
@@ -312,6 +315,8 @@ class Module_admin_quiz
             'FIELDS' => $fields,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => $submit_name,
+            'WARNING_DETAILS' => $warning_details,
+            'PING_URL' => $ping_url,
         ]);
     }
 

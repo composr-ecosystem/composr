@@ -73,6 +73,9 @@ foreach ($groups as $group_id => $group_name) {
     $fields->attach(form_input_integer('Points per month', '', 'points_per_month_' . strval($group_id), $points['p_points_per_month'], true));
 }
 
+require_code('form_templates');
+list($warning_details, $ping_url) = handle_conflict_resolution('', false);
+
 $form = do_template('FORM_SCREEN', [
     '_GUID' => '8677d9f9c1c4ad969188ddff850a1b2c',
     'TITLE' => $title,
@@ -82,6 +85,8 @@ $form = do_template('FORM_SCREEN', [
     'SUBMIT_ICON' => 'buttons/save',
     'SUBMIT_NAME' => 'Set points',
     'URL' => get_self_url(),
+    'WARNING_DETAILS' => $warning_details,
+    'PING_URL' => $ping_url,
 ]);
 
 $form->evaluate_echo();

@@ -136,7 +136,6 @@ class Hook_addon_registry_core_cns
             'adminzone/pages/modules/admin_cns_emoticons.php',
             'adminzone/pages/modules/admin_cns_groups.php',
             'adminzone/pages/modules/admin_cns_members.php',
-            'adminzone/pages/modules/admin_cns_merge_members.php',
             'data/approve_ip.php',
             'data/username_check.php',
             'lang/EN/cns.ini',

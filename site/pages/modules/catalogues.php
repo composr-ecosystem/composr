@@ -389,6 +389,7 @@ class Module_catalogues
                 'i_catalogue_entry_id',
             ]);
 
+            /* TODO: too long
             $GLOBALS['SITE_DB']->create_index('ce_fulltext_index', 'main', [
                 'i_lang',
                 'i_ngram',
@@ -399,6 +400,7 @@ class Module_catalogues
                 'i_submitter',
                 'i_occurrence_rate', // For sorting
             ]);
+            */
 
             $GLOBALS['SITE_DB']->create_index('ce_fulltext_index', 'main_2', [
                 'i_lang',
