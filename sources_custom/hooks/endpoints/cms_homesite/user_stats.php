@@ -96,7 +96,7 @@ class Hook_endpoint_cms_homesite_user_stats
         $GLOBALS['SITE_DB']->query_update('telemetry_sites', [
             'software_version' => $decrypted_data['version'],
             'website_installed' => 'Yes',
-        ], ['s_site' => $site_id]);
+        ], ['id' => $site_id]);
 
         if ($id === '_LEGACY_') { // LEGACY
             echo serialize([]);
