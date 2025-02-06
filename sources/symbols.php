@@ -5425,9 +5425,15 @@ function ecv_HONEYPOT_LINK(string $lang, array $escaped, array $param) : string
         ocp_mark_as_escaped($value);
     }
 
+    // Make it less likely spammers can predict what we will do even if they have access to this source code by also using the site salt
+    require_code('crypt');
+
+    // Make it even more difficult by varying it by week so if they attach to a pattern, the pattern gets busted the following week
+    require_code('temporal');
+
     $honeypot_url = get_option('honeypot_url');
     if (($honeypot_url != '') && ($honeypot_url !== null)) {
-        $first_char = substr(md5(get_page_name()), 0, 1);
+        $first_char = substr(md5(get_page_name() . get_site_salt() . strval(to_epoch_interval_index(time(), 'weeks'))), 0, 1);
         $bot_phrase = get_option('honeypot_phrase');
         switch ($first_char) {
             case '0':
