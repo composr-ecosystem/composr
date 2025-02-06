@@ -21,7 +21,7 @@
 					{!RANK}: {RANK*}
 				</td>
 				<td style="font-size: 0.8em;">
-					{SIGNATURE}
+					{$SMART_LINK_STRIP,{SIGNATURE},{MEMBER_ID}}
 				</td>
 			</tr>
 		{+END}
