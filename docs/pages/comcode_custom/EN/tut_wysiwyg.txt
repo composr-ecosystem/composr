@@ -13,7 +13,7 @@ A WYSIWYG (What You See Is What You Get) editor is a document editor where the e
 
 [title="2"]Integrated editor[/title]
 
-The Composr WYSIWYG editor is CKEditor. It is enabled by default via the "Enable WYSIWYG editing" configuration option.
+We use CKEditor 4 in Composr for the WYSIWYG. It is enabled by default via the "Enable WYSIWYG editing" configuration option. While CKEditor has a version 5 out, we cannot use it in Composr due to its conflicting license agreement with Composr's. We are considering an alternative editor for Composr in the future but have not found one yet that meets our needs.
 
 [i]For programmers[/i]: Composr can, in principle, support almost any WYSIWYG editor component. Composr binds itself to the editor via JavaScript code stored in Composr's [tt]WYSIWYG_LOAD.tpl[/tt], [tt]_wysiwyg_settings.js[/tt], and [tt]posting.js[/tt] templates. The editor itself is stored in [tt]data/ckeditor[/tt].
 
@@ -22,7 +22,7 @@ The Composr WYSIWYG editor is CKEditor. It is enabled by default via the "Enable
 Automatic link parsing, and some other minor Comcode features, are not guaranteed to work when using the WYSIWYG editor. This is due to a complex set of conditions for what depth/type of Comcode parsing Composr goes into. These conditions are designed to minimalise corruption through incorrect or unnecessary assumptions made by Composr.
 You should use the features of the editor to explicitly mark up your content as you want it and think of it as mainly an alternative to writing Comcode, rather than a supplement to it.
 
-One scenario where automatic link detection runs is when an explicit anchor tag has already been added. Composr will assume you want any written URLs to display literally and that you'll use anchor tags explicitly when you want them.
+One scenario where automatic link detection does not run is when an explicit anchor tag has already been added. Composr will assume you want any written URLs to display literally and that you'll use anchor tags explicitly when you want them.
 
 [title="2"]Highlighting of Comcode tags[/title]
 
@@ -68,7 +68,7 @@ You can solve this a number of ways...
 1) Manually type rather than using copy & paste
 2) Copy & paste into Windows notepad (or equivalent, e.g. TextEdit on a Mac), then copy out of Windows notepad, then paste into the editor
 3) Turn off WYSIWYG
-4) Use the "Paste as plain text" button in the WYSIWYG editor
+4) Use the "Paste as plain text" button in the WYSIWYG editor, or use a keyboard shortcut such as Ctrl+Shift+V
 The final option is usually the most sensible one, but for the sake of thoroughness, I wanted to expound on different approaches users take.
 
 [title="2"]Tables[/title]
@@ -132,7 +132,7 @@ Toward the top-left of the editor is a button to toggle HTML source view in the 
 
 Composr does not accept the HTML from the WYSIWYG editor directly as input for Composr content. This is for three reasons:
 1) This poses a severe security risk
-2) The HTML generates via WYSIWYG is often a mess
+2) The HTML generated via WYSIWYG is often a mess
 3) Composr rich content is defined in Comcode, not HTML
 
 [title="3"]Security filtering[/title]

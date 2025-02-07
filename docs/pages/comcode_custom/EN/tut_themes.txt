@@ -40,7 +40,7 @@ An example of this is the front page in the Welcome zone. If, for example you wa
 Be aware of the following small deficiencies:
  - {$IS_MAINTAINED,dark_mode,Dark mode themes} are usually not tested as thoroughly since the default theme is a light theme.
  - Some default software emoticons are animated, and attractive animated images have to be saved to a particular background colour -- so you may wish to uninstall these animated emoticons or rework them in an image editor.
- - If you use {$IS_MAINTAINED,theme_wizard_extreme_seeds,extreme light/dark seeds} (bright seeds on a light theme or dark seeds on a dark theme), some elements may turn out hard to see. There is no easy way to fix this using automated methods, therefore you may have to do some manual adjustments.
+ - If you use {$IS_MAINTAINED,theme_wizard_extreme_seeds,extreme light/dark seeds} (bright seeds on a light theme or dark seeds on a dark theme), some elements may turn out hard to see. There is no easy way to fix this using automated methods, therefore you may have to do some manual adjustments. It's always good to preview on the Theme Wizard before you proceed.
 
 The Theme Wizard is available at Admin Zone > Style > Themes > Theme Wizard.
 
@@ -55,10 +55,10 @@ When making your own theme, you need to be aware of several things. Firstly, it 
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/dont.png[/media]
 When making a new theme, it is wise to put good design tactics to use before beginning your work. These include:
  - Maintaining a consistent look across your pages
- - Avoid "busy", cramped looking pages -- allow room for your viewer to 'breath'. Padding is an excellent way to accomplish this
+ - Avoid "busy", cramped looking pages -- allow room for your viewer to 'breathe'. Padding is an excellent way to accomplish this
  - Visual flow: make certain your use of headings and other large/small sections are appropriate to help direct the viewer's eye to the most important information
  - Colour schemes: Pick a colour scheme, and try to stick with it. Don't use different colours for every class in the CSS file -- your colours will only end up conflicting and looking ugly
- - On the other hand, colours that contrast in a good way are encouraged. If you are able to pick multiple colours (usually not more than two) that compliment each other, it is wise to use these. This will allow you to separate important content through use of a colour variation
+ - On the other hand, colours that contrast in a good way are encouraged. If you are able to pick multiple colours (usually not more than two: a primary and a secondary / accent) that compliment each other, it is wise to use these. This will allow you to separate important content through use of a colour variation
 There are more design tips like this in books and across the Internet, if you are further interested.
 
 [title="3"]Technical aspect[/title]
@@ -82,7 +82,7 @@ The template editor is an all-encompassing editor for:
  - JavaScript templates ([tt].js[/tt], [tt]themes/mytheme/javascript[_custom][/tt] directories)
  - XML templates ([tt].xml[/tt], [tt]themes/mytheme/xml[_custom][/tt] directories)
  - Text templates ([tt].txt[/tt], [tt]themes/mytheme/text[_custom][/tt] directories)
- - Comcode pages ([tt].txt[/tt], zone directories)
+ - Comcode pages ([tt].txt[/tt], zone's [tt]pages/comcode[_custom][/tt] directories)
 
 Comcode pages aren't theme files but we allow them to be edited within the template editor for convenience. They will be edited as raw code rather than via a WYSIWYG editor. It is very handy to be able to hand-code HTML for Comcode pages directly alongside your templates.
 
@@ -128,7 +128,7 @@ The template editor is very powerful. Features include:
 [media width="150" description="Editing a CSS file in the template editor" float="right"]data_custom/images/docs/tut_themes/themes_edit_css.png[/media]
 The main CSS templates that come with Composr are:
  - [tt]_base.css[/tt]: This file contains the responsive design break points and some settings
- - [tt]_colours.css[/tt]: This file contains the colours
+ - [tt]_colours.css[/tt]: This file contains the colours for the theme
  - [tt]global.css[/tt]: This file contains most of the classes used throughout Composr. This is the file you'll be editing most of the time
  - [tt]no_cache.css[/tt]: These are classes that make use of Tempcode (for example, checking what browser is being used) to vary the style of the class
  - [tt]cns.css[/tt]: These are a set of classes that are used within [concept]Conversr[/concept]
@@ -163,7 +163,7 @@ For example, you could override [tt]calendar.css[/tt]:
 
 This would:
 1) Include the original [tt]calendar.css[/tt]
-2) ... with the whole [tt].calendar-month-day[/tt] CSS selector removed (the Tempcode [tt]INCLUDE[/tt] symbol has some special syntax for making changes to included files)
+2) ... with the whole [tt].calendar-month-day[/tt] CSS selector removed (the [page="_SEARCH:tut_tempcode"]Tempcode[/page] [tt]INCLUDE[/tt] symbol has some special syntax for making changes to included files)
 3) ... with the [tt].event-listing-col-2[/tt] [tt]width[/tt] property removed (")
 4) ... with 1px borders replaced with 2px borders (")
 5) Change the [i]font-size[/i] property from [tt]0.9em[/tt] in the original file to [tt]1.0em[/tt]. This works on the basis of CSS coming later in the CSS file having higher precedence.
@@ -248,7 +248,7 @@ The following are examples of Theme Wizard equations that may be used:
 
 		<tr>
 			<td>%</td>
-			<td>Define how much influence of a colour to use in the equation</td>
+			<td>Define how much influence of a colour to use in the equation (note that equations must all contain an influence percent, or you will get an error)</td>
 			<td>
 				[code="CSS"]
 					{$THEMEWIZARD_COLOR,#426aa9,seed,100% 426aa9} /* Uses 100% of #426aa9, which is #426aa9 */
@@ -282,7 +282,7 @@ The following are examples of Theme Wizard equations that may be used:
 			<td>Sets the saturation % of a colour</td>
 			<td>
 				[code="CSS"]
-					{$THEMEWIZARD_COLOR,#FF8080,pastel_red,100% (seed sat_to 50)} /* Sets the saturation of seed to 50% */
+					{$THEMEWIZARD_COLOR,#FF8080,pastel_red,100% (seed sat_to 50)} /* Sets the saturation of seed to 50%, and use 100% of that colour */
 					{$THEMEWIZARD_COLOR,#e3f0fd,fixed_width_background,11% (seed sat_to 100) + 89% WB} /* Uses 11% of the seed colour with 100% saturation, and adds 89% WB colour */
 				[/code]
 			</td>
@@ -389,7 +389,7 @@ The following are examples of Theme Wizard equations that may be used:
 
 		<tr>
 			<td>contrast</td>
-			<td>Finds a suitable colour with the provided contrast ratio (if it does not succeed, will use either white or black instead)</td>
+			<td>Finds a suitable colour with the provided contrast ratio (if it does not succeed, will use either white or black instead); this is a handy tool for accessibility compliance</td>
 			<td>
 				[code="CSS"]
 					{$THEMEWIZARD_COLOR,#595959,contrast_seed,100% (seed contrast 7)} /* Use a colour with a contrast ratio of 7 compared to seed */
@@ -405,7 +405,7 @@ The following are examples of Theme Wizard equations that may be used:
 
 Some browsers experiment with new CSS properties using prefixes. More details are explained here: https://www.thoughtco.com/css-vendor-prefixes-3466867.
 
-In Composr we use [tt]{$BETA_CSS_PROPERTY,property: value;}[/tt] to automatically adding prefixing to a property, or make other changes to make a property work across different web browsers.
+In Composr we use [tt]{$BETA_CSS_PROPERTY,property: value;}[/tt] to automatically add prefixing to a property, or make other changes to make a property work across different web browsers.
 
 Of course doing this risks relying on browser CSS behaviour that may be buggy or subject to change. By passing it through [tt]BETA_CSS_PROPERTY[/tt] in a consistent way we can actually change the output across Composr patch releases, if browsers change their syntax -- so it's a nice little solution we have here.
 
@@ -472,24 +472,28 @@ An image used by a Composr theme (including the default theme) is called a "them
 
 Theme image codenames are mapped to URLs via a database table, but initially they are auto-detected from a very simple naming convention...
 
-[tt]themes/mytheme/images_custom/foo/bar.png[/tt] would be the [tt]foo/bar[/tt] theme image and could be referenced by this Tempcode in templates or CSS files: [tt]{$IMG,foo/bar}[/tt].
+[tt]themes/mytheme/images_custom/foo/bar.png[/tt] would be the [tt]foo/bar[/tt] theme image and could be referenced by this Tempcode in templates or CSS files: [tt]{$IMG,<foo/bar>}[/tt] (without the angle brackets).
 
 Composr searches under your theme's [tt]images_custom[/tt] and [tt]images[/tt] folders for matches, and if it can't find one it will fallback to searching the default theme's [tt]images_custom[/tt] and [tt]images[/tt] folders.
 
 All the following file extensions are recognised, in precedence order:
  - [tt]png[/tt]
  - [tt]jpg[/tt]
+ - [tt]jpe[/tt]
  - [tt]jpeg[/tt]
  - [tt]gif[/tt]
  - [tt]ico[/tt]
  - [tt]cur[/tt]
  - [tt]svg[/tt]
+ - [tt]webp[/tt]
+ - [tt]bmp[/tt] (this is not recommended)
+
 Don't have multiple files with the same base name but different file extensions as only the highest-precedence one will ever be used.
 
 Once the correct URL has been detected, the database table is updated. This is basically a cache and can be cleared out from Admin Zone > Tools > Cleanup Tools.
 
 [title="3"]Editing theme images[/title]
-
+[surround]
 [media width="150" description="The \"edit theme image\" form" float="right"]data_custom/images/docs/tut_themes/edit_theme_image.png[/media]
 [media width="150" description="The \"edit theme image\" button appears after hovering some images for a few seconds" float="right"]data_custom/images/docs/tut_themes/button.png[/media]
 To edit a theme image from within Composr, go to the Admin Zone > Style > Themes, then choose the "Edit theme images" link for the theme of your choice. You will be taken to a screen with a list of every image currently in use. Choose an image to edit.
@@ -497,6 +501,7 @@ To edit a theme image from within Composr, go to the Admin Zone > Style > Themes
 Alternatively, for many images (larger ones using [tt]<img>[/tt] tags) you can get straight to their editing screen by hovering the mouse over the image and clicking the "Edit theme image" button that appears (see screenshot).
 
 On the edit theme image screen, you are shown the current version of this image in the top. You also have the opportunity to edit this image's name, location, or to upload a new image in its place.
+[/surround]
 
 [box="Manually"]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
@@ -551,8 +556,10 @@ Go to Admin Zone > Style > Themes > Edit templates (against your own theme).
 
 [html]<div style="clear: right"></div>[/html]
 [box="Manually"]
+[surround]
 [media thumb="0" framed="0" float="right"]data_custom/images/docs/tip.png[/media]
 You can add new theme images using something like FTP by saving them directly into [tt]themes/mytheme/images[/tt] or [tt]themes/default/images_custom[/tt], using subdirectories where appropriate (the path forms part of the theme image codename, see "Naming convention"). You should never save into [tt]themes/default/images[/tt] though, or make changes to those files directly, because this directory 'belongs' to Composr itself.
+[/surround]
 [/box]
 [html]<div style="clear: right"></div>[/html]
 [title="2"]Deleting themes[/title]

@@ -45,8 +45,9 @@ Along with the types of site below, sites can also be categorised as 'websites',
 
 [title="3"]Site of pages[/title]
 
-This is the simplest kind of website, and was predominant a few years ago. A site would simply be a collection of files stored on a web server. People would type in the appropriate URL, and the files would be viewed.
-Pages did very little -- "dynamic" or "interactive" features were usually limited to things like "hit counters".
+This is the simplest kind of website, and was predominant in the 1990s. A site would simply be a collection of files stored on a web server. People would type in the appropriate URL, and the files would be viewed.
+
+Pages did very little -- "dynamic" or "interactive" features were usually limited to things like "hit counters" and fun graphical things.
 
 A site of pages may still be appropriate for a limited few, but web users generally expect more nowadays.
 
@@ -54,7 +55,7 @@ A site of pages may still be appropriate for a limited few, but web users genera
 
 One step up from a "site of pages" is a "site of dynamic pages". The distinction here is that instead of our website consisting of "a bunch of files on a web-server", our website now consists of files that [i]generate pages dynamically[/i]. The website is now a computer program rather than a document. When a page is accessed by URL, the web-server now asks the computer program to generate a page for it to send out.
 
-By making a website-dynamic we can include things such as regularly updated news, without having to edit whole front pages to manually include links to latest articles as they are written. We can make pages interactive, randomise their content, and tailor them to the visitor who is viewing them.
+By making a website dynamic we can include things such as regularly updated news, without having to edit whole front pages to manually include links to latest articles as they are written. We can make pages interactive, randomise their content, and tailor them to the visitor who is viewing them.
 
 All further types of website type described in this section consist of dynamic pages, but are extended to further levels.
 
@@ -66,13 +67,31 @@ The next step from a "site of dynamic pages" is a site powered by a "Content Man
 
 "Content" of a traditional CMS consists of well-organised pages or articles.
 
+Composr CMS falls within this category of sites.
+
+[title="3"]Web applications[/title]
+
+The concept of a "web application" has been narrowed a bit over the years. They are generally considered full-blown interactive applications loaded up in a visitor's browser. They often consist of many separate components compiled and loaded up together into a single interface. Sometimes, you can also 'install' a web application to your phone or computer and run the website as if it were a native application on your computer (but it is only pretending to be) (we call this a 'progressive web application').
+
+Web applications are often proprietary (closed source) and run as Software as a Service (can only be run off of the website hosting it and not actually downloaded to your system).
+
+[title="3"]Web application suites[/title]
+
+This is a super-set of web applications. A suite is a series of web applications offered by a company (often you use one account with the company to access all of the applications for which you have access). Examples might include Google (e.g. Docs, Sheets, Drive, Gmail, YouTube), Meta (e.g. Facebook, Instagram, Threads), Microsoft 365 (e.g. Word, Excel, OneNote, Outlook), and so on.
+
+[title="3"]Headless sites[/title]
+
+Headless sites have a separate front-end (for the graphics and layout) and back-end API (for getting the data, often including facilities such as web sockets to receive updated content in real time). This is very advanced functionality, but it allows great control over how the website looks and behaves. Developers can pair their favourite front-end frameworks or templates together with their favorite back-end headless Content Management Systems.
+
+Often, web applications will run using some headless tools and functionality.
+
 [title="3"]Content-type sites[/title]
 
 Blogs are a good example of a content-type site. Blogs are like cut-down CMS, where the content consists only of very simple, and generally unorganised, news postings.
 
-Gallery sites are also popular, where the content consists of images.
+Gallery sites are also popular, where the content consists of images and/or videos.
 
-[title="3"]Shopping-cart sites[/title]
+[title="3"]Shopping-cart (eCommerce) sites[/title]
 
 I'm sure you know what a virtual shopping-cart is due to websites such as Amazon. Shopping-cart sites tend to focus on products listings, and methods for choosing and purchasing products in-bulk. In many ways, a shopping-cart site is a CMS site that is focused on products.
 
@@ -91,19 +110,21 @@ Through these features, a virtual community is created: members register themsel
 
 A portal site is a site generally centred around a vibrant front-page, where fresh and varied content is presented. Some forms of portal site are very corporate, and focused on providing facilities to a user (Yahoo!, for example), while others are more community-orientated.
 
-[title="3"]Web applications[/title]
+[title="3"]Website builders[/title]
 
-A CMS is an example of a web application, but the category of "web application" is much broader. A "web application" is a piece of non-trivial computer software that operates over the world-wide-web, but could equally run as standalone (although an Internet connection might still be required for that). Examples of web-applications include search-engines, web-mail, and online mapping software.
+These are typically proprietary [abbr="Software as a Service"]SaaS[/abbr] web applications which allow people to easily build websites through a drag-and-drop 'What You See Is What You Get' editor. While these services arguably make building a simple website very easy (as the person building the site often does not have to touch any code), they often lack the flexibility of using your own pages or Content Management System.
 
 [title="2"]Trends[/title]
 
-Over time small personalised websites have largely disappeared in favour of social media websites (such as Facebook) and blogs. Blogs have become a vehicle for corporate PR.
+Over time small personalised websites have largely disappeared in favour of using larger corporate-run websites such as Facebook, or website builders such as Weebly.
 
-Web applications have grown in complexity, as web developers have become increasingly aware of methods for interaction that are as quick and easy to use as normal desktop applications (due to the influence of Google). These techniques are popularly named "Ajax techniques". Now instead of filling in forms, applications are being made that incorporate techniques such as "drag & drop".
+Web applications have grown in complexity, as web developers have become increasingly aware of methods for interaction that are as quick and easy to use as normal desktop applications (due to the influence of Google / Chrome). These techniques are popularly named "Ajax techniques". Now instead of filling in forms, applications are being made that incorporate techniques such as "drag & drop".
 
-There has been a lot of hype about "Web applications" over past years using different technologies, that you may not have heard of, such as "Java" or "SOAP" -- but "Ajax" is used on a scale that these never actually reached
+There has been a lot of hype about "Web applications" over past years using different technologies, that you may not have heard of, such as "Java" or "SOAP" -- but "Ajax" is used on a scale that these never actually reached.
 
 CMSs are becoming more sophisticated and all-encompassing, with support for wider varieties of content. Forums (from "community sites") and galleries (from "content-type sites"), for example, are now available in CMSs alongside the more traditional articles and pages. One example of this is our own system, Composr.
+
+And unfortunately the influence of larger corporate companies have pushed many people and companies to use locked-down and proprietary website systems. These usually come with questionable EULAs and Privacy Policies where the webmaster does not even own (or have full control of) their own data or site.
 
 [title="2"]Overview of the advantages/disadvantages of different types of website[/title]
 
@@ -119,7 +140,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Likely technologies</em></p>
 		</td>
 		<td>
-			<p>Simple collection of files</p>
+			<p>Simple collection of files (usually HTML and assets)</p>
 		</td>
 	</tr>
 	<tr>
@@ -303,7 +324,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 	</tr>
 	<tr>
 		<th colspan="2">
-			Shopping-cart sites
+			Shopping-cart (eCommerce) sites
 		</th>
 	</tr>
 	<tr>
@@ -327,7 +348,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Cost</em></p>
 		</td>
 		<td>
-			<p>Usually high, although some lower-cost products.</p>
+			<p>High</p>
 		</td>
 	</tr>
 	<tr>
@@ -335,7 +356,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Negative factors</em></p>
 		</td>
 		<td>
-			<p>An online-store must face complex sales tax and shipping issues.</p>
+			<p>An online-store must face complex sales tax, legal, and shipping issues.</p>
 		</td>
 	</tr>
 	<tr>
@@ -345,7 +366,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 		<td>
 			<p>Find an appropriate product.</p>
 			<p><em>OR</em></p>
-			<p>Pay for a CMS (such as Composr) to be customised. This would be appropriate when general-CMS features are needed as well as shopping-cart features.</p>
+			<p>Pay for a CMS to be customised. This would be appropriate when general-CMS features are needed as well as shopping-cart features.</p>
 		</td>
 	</tr>
 	<tr>
@@ -358,7 +379,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Likely technologies</em></p>
 		</td>
 		<td>
-			<p>[Product(s)]</p>
+			<p>[Product(s)] / Forums</p>
 		</td>
 	</tr>
 	<tr>
@@ -375,6 +396,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 		</td>
 		<td>
 			<p>Low</p>
+			<p>Medium if you go with a proprietary product</p>
 		</td>
 	</tr>
 	<tr>
@@ -390,7 +412,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Options for you</em></p>
 		</td>
 		<td>
-			<p>Find an appropriate product, such as Composr.</p>
+			<p>Find an appropriate product.</p>
 		</td>
 	</tr>
 	<tr>
@@ -436,7 +458,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Options for you</em></p>
 		</td>
 		<td>
-			<p>Find an appropriate product, such as Composr.</p>
+			<p>Find an appropriate product.</p>
 			<p><em>OR</em></p>
 			<p>Hire programmers to create a bespoke solution.</p>
 		</td>
@@ -451,7 +473,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Likely technologies</em></p>
 		</td>
 		<td>
-			<p>Bespoke solution, although often based on some kind of framework</p>
+			<p>Bespoke solution, often based on frameworks</p>
 		</td>
 	</tr>
 	<tr>
@@ -459,7 +481,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Likely deciding factor</em></p>
 		</td>
 		<td>
-			<p>If something very unique is needed.</p>
+			<p>If something very unique is needed or if it needs to run like a desktop application would run.</p>
 		</td>
 	</tr>
 	<tr>
@@ -467,7 +489,7 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 			<p><em>Cost</em></p>
 		</td>
 		<td>
-			<p>Very high</p>
+			<p>Very high whether in finances or time</p>
 		</td>
 	</tr>
 	<tr>
@@ -487,6 +509,55 @@ CMSs are becoming more sophisticated and all-encompassing, with support for wide
 		</td>
 		<td>
 			<p>Hire programmers to create a bespoke solution.</p>
+			<p>Do it yourself</p>
+		</td>
+	</tr>
+		<tr>
+		<th colspan="2">
+			Headless systems
+		</th>
+	</tr>
+	<tr>
+		<td>
+			<p><em>Likely technologies</em></p>
+		</td>
+		<td>
+			<p>A Bespoke solution combining several products or frameworks</p>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p><em>Likely deciding factor</em></p>
+		</td>
+		<td>
+			<p>If you have a really large intranet you want to run with different technologies</p>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p><em>Cost</em></p>
+		</td>
+		<td>
+			<p>Very high whether in finances or time</p>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p><em>Negative factors</em></p>
+		</td>
+		<td>
+			<p>This is very high cost &ndash; it requires a high skill set to understand how to put together the different frameworks necessary to build the site.</p>
+			<p>The maintenance level is very high because you must maintain / update every component in the system and ensure it does not break other things.</p>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p><em>Options for you</em></p>
+		</td>
+		<td>
+			<p>Use Headless CMS or frameworks</p>
+			<p>Do it yourself</p>
+			<p>Hire developers and designers to put together a solution for you</p>
 		</td>
 	</tr>
 </tbody></table>
@@ -505,6 +576,8 @@ Composr is a CMS that drives powerful interactive and dynamic websites, by provi
  - a community blogging system with thousands of different bloggers
  - a collaboration community
  - a community gallery
+ - a simple shopping-cart site
+ - a headless solution (via [tt]WebDav[/tt] or [tt]Commandr-fs[/tt]; see [page="_SEARCH:tut_repository"]The Composr enterprise repository[/page])
  - [i]and much more, and any combination thereof[/i]
 
 This section is just a very basic overview. Much more information about Composr's features is available on the main Composr website.
@@ -519,29 +592,15 @@ At the time of writing, we do not know any other products that have such a large
 
 In addition, we understand that often users will have very specific, personal needs. For this reason, we make sure that the Composr framework is fully extensible, and provide numerous features to allow such extension to be achieved, suitable for different levels of expertise and requirements. It is important to understand that adding unique features can be difficult, as it is a programming exercise: but it is considerably less difficult than creating a new web application from scratch (even with a totally custom new [concept]module[/concept], most of the needs, such as user authentication, WYSIWYG editing, or secure database access, are already available). Professional developers are available for such work.
 
-There are some situations where Composr is not the most appropriate product. You'll find these are documented on the main Composr website ("What Composr is not"). You should always choose the most appropriate product for any particular situation.
+There are some situations where Composr is not the most appropriate product. You'll find these are documented on the main Composr website ([page=":antifeatures"]"Antifeatures"[/page]). You should always choose the most appropriate product for any particular situation.
 [/surround]
 
 [title="2"]Why not product-X?[/title]
 
-Most of the competitors to Composr are, like Composr, Open Source. However there is one critical difference that sets us apart from most of them -- Composr is commercially-backed. There are many reasons to avoid (most) Open Source software that is not commercially-backed, especially:
- - the developers expect you to "fix it yourself", or quite possibly, the developers have disappeared leaving the project stagnant
- - the developers think that "you have to install it manually, because having an installer would just leave users ignorant to the projects internal workings"
- - the developers greet suggestions with fury: they don't get paid, and don't tolerate negative feedback for their efforts. Features are added on developer whim, rather than according to a plan that benefits the end users
- - the product does not reflect any kind of streamlined vision
- - while the developers are happy to code for free, they will not do the dull stuff like write documentation, or design user-friendly interfaces
- - there is great infighting and rivalry between developers
- - many features are only available within non-bundled addons. You'd spend half your time trying to smooth over the cracks between the various addons, or you'd need to tolerate the lack of full integration. Being able to search the various kinds of content on a website at once is a pretty basic thing, right? We don't know of any of our competitors that provide this kind of thing.
-
-With a fully commercial product you may often find:
- - a quick dispatch to your suggestions: "we don't support this". The developers are personally unreachable
- - the community suffers from the fact that a reduced number of people are willing to pay -- there is no community
- - the developers have little passion for the work, they just want to get paid
-
-Composr provides the best of all the main competing kinds of system, seamlessly integrated, and centrally designed. Our quality standards are extremely high, and you will find:
+Most of the competitors to Composr are, like Composr, Open Source. However Composr provides the best of all the main competing kinds of system, seamlessly integrated, and centrally designed. Our quality standards are extremely high, and you will find:
  - wizards make performing important tasks very easy
  - interfaces are clean, usable and beautiful
- - there are very few bugs (we fix all bugs as they are reported, there is no database of "known issues" for Composr)
+ - we are quick to fix bugs (and we release hotfixes of them)
  - the documentation is very thorough
  - the terminology is consistent
  - Composr is modular, meaning you can uninstall large parts of it if you feel them unnecessary for your website
@@ -573,7 +632,7 @@ Thirdly, there are frequently service limitations that aim to encourage subscrip
 
 For example, many sites utilise the popular service "SurveyMonkey" to incorporate survey forms into their sites. Although this is a useful feature, it is extremely limited unless you are willing to pay to use the premium service. Utilising this service also means that a third party organisation has access to the data that you are gathering and you have become dependent upon a third party for a potentially sensitive business operation.
 
-As an alternative, Composr provides a fully featured Survey system that can be integrated into any page you see fit, including forum posts and comment threads. As this system is a core part of your website, it can be used without any restriction or additional charge, the styling & fonts will always match that of your site, there is no requirement for you to display another company's branding on your site and there is no need to log in to a separate web-service to view and analyse your data.
+As an alternative, Composr provides a simple Survey system (via quizzes, polls, or catalogues) that can be integrated into any page you see fit, including forum posts and comment threads. As this system is a core part of your website, it can be used without any restriction or additional charge, the styling & fonts will always match that of your site, there is no requirement for you to display another company's branding on your site and there is no need to log in to a separate web-service to view and analyse your data.
 
 When building an interactive site, it is vitally important to ensure a consistent interface that is free of third-party branding. This provides a more professional appearance, which improves the user experience and increases the user's perception of value and quality. Rather than building your site and picking from a range of service providers à la carte, combining multiple brands and user interfaces (which can appear cheap), Composr provides all of the tools required to provide a professional quality web presence.
 
@@ -608,9 +667,12 @@ Open Source: Systems tend to be more light-weight, focused on the core behaviour
 
 [title="2"]See also[/title]
 
- - [page="site:features"]Features page[/page]
- - [page="site:compare"]Why we're different[/page]
+ - [page=":features"]Features page[/page]
+ - [page=":antifeatures"]Antifeatures page[/page]
+ - [page=":compare"]Why we're different[/page]
  - [page="_SEARCH:tut_drinking"]Drinking from the feature pool[/page]
  - [page="_SEARCH:sup_glossary"]Web design glossary[/page]
+ - [page="_SEARCH:tut_repository"]The Composr enterprise repository[/page]
+ - [page="_SEARCH:tut_foss"]The Pillars of Free and Open Source Software (FOSS)[/page]
 
 {$SET,tutorial_tags,Introduction,Internet Technology,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Background into the different kinds of solutions that are out there for creating websites - and where Composr fits in.}[block]main_tutorial_rating[/block]

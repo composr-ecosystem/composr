@@ -555,6 +555,7 @@ This security policy may be amended based on particular unique contexts the deve
 
 [title="2"]See also[/title]
 
+ - [page="_SEARCH:tut_telemetry"]Relaying Errors and Statistics to Composr[/page]
  - [page="_SEARCH:sup_choosing_a_developer"]Choosing a software company for your project[/page]
  - [page="_SEARCH:sup_minimum_viable_products"]Minimum Viable Products[/page]
  - [page="_SEARCH:sup_developer_relationships"]Maintaining a good agency relationship[/page]

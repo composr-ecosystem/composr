@@ -7,7 +7,7 @@ This tutorial focuses on IP addresses. A member-focused view is taken in the [pa
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]Tracing users (how IP addressing work)[/title]
-
+[surround]
 [surround="right float-separation"]
 [box="Find your IP address" width="25em"]
 Computers often have more than one [concept]IP address[/concept] (one for each 'network interface', such as a network card or modem).
@@ -20,30 +20,35 @@ To find out about your network settings on Windows, type [tt]ipconfig /all[/tt] 
 On Linux or Mac, type [tt]ifconfig[/tt].
 [/box]
 [/surround]
-[media width="150" description="[url=\"DNSstuff\"]http://www.dnsstuff.com[/url] is a very useful website for looking into technical Internet related issues" float="right"]data_custom/images/docs/tut_trace/trace_dnsstuff.png[/media]
 To trace users, you need to identify the computer performing the malicious action: unfortunately (from this perspective), the Internet is largely anonymous and decentralised, and without any clear legal authority to turn to. To some extent, a computer on the Internet can be identified by virtue of its 'IP address' (Internet Protocol address).
 
 An IP address is a 4 byte piece of data (typically, although the newer 6 byte standard has been forthcoming thing for many years now), represented usually in a human readable form of 4 numbers (0-255) separated by dots.
 
 There are a number of different sources of IP addresses, however the decentralisation of the system can lead to abuse; these sources are:
- - [concept]ISP[/concept] (Internet service provider) assigned IP addresses, via [acronym="Dynamic host configuration protocol"]DHCP[/acronym]. There is no specific pattern to these addresses. These are provided to computers when they, or their Internet router, sign on to the Internet via an ISP). This is the most usual source of IP addresses, and as these change, it can not be relied upon that a user will retain the same address for long; however, addresses usually are similar, and can be 'wildcarded' by the Composr IP ban feature. It is possible other users might at some point get that address, even though it is not very likely: if you place a ban on a wide range of addresses, such as [tt]14.*.*.*[/tt], you are increasing the likelihood of a conflict to a dangerously high percentage, especially if an IP address belongs to a popular ISP.
+ - [concept]ISP[/concept] (Internet service provider) assigned IP addresses, via [acronym="Dynamic host configuration protocol"]DHCP[/acronym]. There is no specific pattern to these addresses. These are provided to computers when they, or their Internet router, sign on to the Internet via an ISP. This is the most usual source of IP addresses, and as these change, it can not be relied upon that a user will retain the same address for long; however, addresses usually are similar, and can be 'wildcarded' by the Composr IP ban feature. It is possible other users might at some point get that address, even though it is not very likely: if you place a ban on a wide range of addresses, such as [tt]14.*.*.*[/tt], you are increasing the likelihood of a conflict to a dangerously high percentage, especially if an IP address belongs to a popular ISP.
  - ISP (Internet service provider) assigned fixed IP addresses. Some ISPs provide these, often at additional cost. There is no specific pattern to these addresses.
  - Local network IP address [tt]10.0.*.*[/tt] or [tt]192.168.*.*[/tt] type (non-routable [can't travel across the Internet] and open for anyone's local usage as it does not need to assigned by any authority, which means that something odd is happening if you find one of these).
  - Localhost IP address, [tt]127.0.0.1[/tt]. If you see this, then the request came from the server, or the IP address was added to the Composr database arbitrarily by some code because the true one was not known (often importers do this).
+[/surround]
 
-[box="Finding a domain's IP address" width="25em" float="right"]
+[surround="right float-separation"]
+[box="Finding a domain's IP address" width="25em"]
 To find out what your computer thinks the IP address of an Internet server is, type:
 [tt]nslookup <server-domain-name>[/tt]
 at a command prompt.
 [/box]
+[/surround]
+
 There is a scheme for the allocation and organisation of IP addresses -- they are leased in large blocks. The number of addresses in the blocks depend on what 'class' of block is being leased. This is outside the scope of this tutorial, except to make the point that IP addresses belonging to the same computer network (often, an ISP, and hence, the network being all users of that ISP from a certain roughly geographic region) share a common address prefix.
 
 There is a major problem with identifying users by IP address, and that is one of [concept]proxy[/concept]s and [concept]gateway[/concept]s (also known as, [concept]NAT[/concept] [network address translation]). If a network is 'behind' a server that makes Internet requests on their behalf, and relays information back using its own internal algorithms, then all users of this server may be seen under a single IP address. Composr will try and detect the 'true' IP address, based on the information available, but we cannot guarantee this will be the case. AOL is renowned for using proxy servers, and will particularly jump rapidly between IP addresses when the AOL browser is used. For the gateway case, it is more than likely that a large school, for example, would use a gateway, rather than exposing all school computers to the Internet via their own IP addresses (in this sense, a NAT/gateway is a form of firewall).
 
+VPNs are also becoming more common-place which allow users to browse the web from a different IP address located in a different part of the world. This is often to preserve privacy or to get around local or country bans. But the caveat is that these users usually cannot be accurately traced by IP address; the server only sees the IP address of the VPN, and so banning it will only ban that exit node (but the user can always switch to a different node / IP address). It is possible (though not recommended if you prioritise traffic to your site) to integrate an API for the blocking of any IP addresses which try to access your site, forcing users to use their real IP address. But this would not serve much benefit and will ultimately reduce the traffic and visitors you get. Composr does not support this out of the box due to the many caveats involved.
+
 [title="2"]Composr tracking[/title]
 
 Composr tracks IP addresses in a number of ways:
- - When a guest makes a post on [concept]Conversr[/concept], the IP address is viewable by putting the mouse over the listed name of the guest poster (where the username of a real member usually resides). If you click it, it'll do an investigate-user operation on the IP address
+ - When a guest makes a post on [concept]Conversr[/concept], the IP address is viewable (by staff) by putting the mouse over the listed name of the guest poster (where the username of a real member usually resides). If you click it, it'll do an investigate-user operation on the IP address
  - For every page view, the IP address of the page viewer is stored. This allows detection of what areas of the site a viewer has visited, and in what order
  - Whenever a submission is made, the IP address is stored. The submitter banning management screen shows these IP addresses in its drop-down list
 
@@ -54,13 +59,13 @@ Composr provides modules (screenshots below) for working with the collected data
  - The 'Action Logs' module (access it from the Admin Zone > Audit > Actions logs) can be used to quickly find out information from a submit that wasn't immediately available (for example, if a user submitted something without being logged-in and hence was not identified, but if by an IP address scan, they were in fact identifiable). The module can also be used to ban or unban a submitter, based on both member (prevents the member submitting again) and IP address (prevents the IP address being used to access the site)
  - The 'Banned IP addresses' (access it from Admin Zone > Security > Banned IP addresses) module can be used to enter IP addresses for banning, along with free-form notes
 
-[surround]
+[media_set]
 [media width="150" description="Tools available in the Admin Zone Audit Section" float="left"]data_custom/images/docs/tut_trace/trace_menu2.png[/media]
 [media width="150" description="Tools available in the Admin Zone security section" float="left"]data_custom/images/docs/tut_trace/trace_menu.png[/media]
 [media width="150" description="Investigating a user" float="left"]data_custom/images/docs/tut_trace/trace_dig_2.png[/media]
 [media width="150" description="Choosing a member to view the action logs of" float="left"]data_custom/images/docs/tut_trace/trace_dig_1.png[/media]
 [media width="150" description="Managing banned IP addresses" float="left"]data_custom/images/docs/tut_trace/trace_ip_bans.png[/media]
-[/surround]
+[/media_set]
 
 Note that banned IP addresses are restricted from accessing Composr from a very earlier point. If the [tt].htaccess[/tt] file is available and writable (Apache-only) then the bans are written in here so that PHP doesn't even need to initialise for a ban to be detected.
 

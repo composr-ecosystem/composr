@@ -11,14 +11,16 @@ Removing Composr from a hosting account (of your own) is very easy. We provide a
 
 [surround]
 [media width="150" description="The uninstalling interface is very straight-forward" float="right"]data_custom/images/docs/tut_uninstall/uninstall_1.png[/media]
-If you decide to uninstall Composr for any reason, you may remove the database data by accessing [tt]http://yourbaseurl/uninstall.php[/tt], and entering the administration password that you defined during installation.
+If you decide to uninstall Composr for any reason, you may remove the database data by accessing [tt]http://yourbaseurl/uninstall.php[/tt], and entering the maintenance password that you defined during installation.
 
 You may then delete the Composr installation directory assuming there is nothing in it that you want to keep yourself.
+
+Alternatively, you can simply drop the Composr database entirely.
 [/surround]
 
 [title="2"]Leaving feedback[/title]
 
-If you are stopping using Composr permanently please [page=":support"]contact the developers[/page] and leave us your feedback so that we may improve Composr and our supporting services for future users. If you are not logged in to {$BRAND_BASE_URL} then your feedback will be anonymous and we will not try to trace it.
+If you are stopping using Composr permanently please [page=":contact-us"]contact the developers[/page] and leave us your feedback so that we may improve Composr for future users. If you are not logged in to {$BRAND_BASE_URL} then your feedback will be anonymous and we will not try to trace it.
 
 It is very important to us that we work to improve our offerings, and we need your help to tell us where to do it. This might be anything from adding totally new features, to improving documentation, or anything else that you feel that you would have liked.
 
