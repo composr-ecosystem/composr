@@ -3561,7 +3561,7 @@ function confirm_db_credentials(bool $return_connection = false)
 
     // Check max allowed packet if mySQLi
     if (strpos($post_db_type, 'mysql') !== false) {
-        $min = 1024 * 1024 * 4; // 4MB; if you change this value, also change it in the health_check install_env hook.
+        $min = 1024 * 1024 * 16; // 16MB; if you change this value, also change it in the health_check install_env hook.
         $vars = $tmp->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
         foreach ($vars as $var) {
             $current = intval($var['Value']);
