@@ -91,4 +91,20 @@ Let's run through the process:
 [*]Number 2 also happens when you go to Admin Zone > Audit > Telemetry status (but just for some arbitrary data) to prove to the homesite you are who you say you are when you request to see your status.
 [/list]
 
+[concepts
+ 1_key="telemetry"     1_value="The optional service by which Composr sites send data (e.g. errors) to the homesite for improving the software"
+ 2_key="keys"          2_value="Files used to encrypt/decrypt or sign/verify data; in the case of telemetry, they are located in data[_custom]/keys"
+ 3_key="private key"   3_value="The key which is kept secret and used to generate public keys; usually used to decrypt or sign data"
+ 4_key="public key"    4_value="A key generated from the private key which is publicly shared; usually used to encrypt or verify data"
+ 5_key="payload"       5_value="A JSON-encoded string of data sent to the homesite (usually encrypted)"
+]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_software_feedback"]Problem and feedback reports, and development policies[/page]
+ - [page="_SEARCH:tut_disaster"]Disaster recovery[/page]
+ - [page="_SEARCH:tut_website_health"]Website Health[/page]
+ - [page="_SEARCH:tut_endpoints"]Server-side public API[/page]
+ - [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page]
+
 {$SET,tutorial_tags,Contributing,Development,Maintenance,core_privacy,novice}{$SET,tutorial_add_date,Feb 2025}{$SET,tutorial_summary,Composr has an optional and secure way to automatically relay some errors and statistics to the core development team.}[block]main_tutorial_rating[/block]

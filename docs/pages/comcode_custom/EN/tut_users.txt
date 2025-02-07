@@ -84,7 +84,7 @@ This short tutorial aims simply to clarify what all these terms to relate to, an
 
 Members who have lost access to their account can generally reset their password, using the standard kind of e-mail-based reset process everyone expects.
 
-The exception is for members in a usergroup with the "Member's passwords may not be reset using 'Forgot your password' feature" privilege. Any super-administrator will automatically have their privilege, and webmasters may choose to give it in high-security situations where manual verification is expected in order to allow anyone to regain access to an account. For example, in corporations where access is given to employees and management wants manual in-house verification. For example, if an account is so important that the small chance of a member's e-mail having been hijacked is too high a risk to take.
+The exception is for members in a usergroup with the "Member's passwords may not be reset using 'Forgot your password' feature" privilege. Any super-administrator will automatically have the privilege for security, and webmasters may choose to give it in high-security situations where manual verification is expected in order to allow anyone to regain access to an account. For example, in corporations where access is given to employees and management wants manual in-house verification. For example, if an account is so important that the small chance of a member's e-mail having been hijacked is too high a risk to take.
 
 [title="2"]How to rename the guest user (advanced, Conversr-only)[/title]
 
@@ -102,7 +102,7 @@ Next go to Admin Zone > Security > Usergroups and edit the Guests usergroup. Cha
 
 Next you'll need to change any posts by guests on the forum, as the name Guest is saved in when the post is made. Go to Admin Zone > Tools > Commandr, and enter this command...
 [code="Commandr"]
-:$GLOBALS['FORUM_DB']->query_update('f_posts',array('p_poster_name_if_guest'=>'Anonymous user'),array('p_poster_name_if_guest'=>'Guest'));
+:$GLOBALS['FORUM_DB']->query_update('f_posts', ['p_poster_name_if_guest' => 'Anonymous user'], ['p_poster_name_if_guest' => 'Guest']);
 [/code]
 This will batch-update the database.
 

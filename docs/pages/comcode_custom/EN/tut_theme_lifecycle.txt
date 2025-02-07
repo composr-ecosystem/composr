@@ -8,17 +8,18 @@ This tutorial will explain how theme overrides get made, the consequences of ove
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]The start of an override[/title]
-
+[surround]
 [media width="150" description="Comparing a theme's overridden [tt]global.css[/tt] using DiffMerge" float="right"]data_custom/images/docs/tut_theme_lifecycle/diffmerge.png[/media]
 Imagine you have a new empty theme. Nothing is overridden in it, it is just an empty shell built on top of the default theme.
-
-[box="A note about override chains"]
-All themes inherit any non-overridden files direct from the default theme (there is no system for chaining themes together into a complex inheritance system). It is possible for files to be overridden [i]within[/i] the default theme, if you need an override to apply to many themes but don't want to individually override it into each theme. It is also possible to do some really fancy tricks with Tempcode, to simulate chained themes, if you've got a programmer-mindset. For the purpose of simplicity in this tutorial we'll assume nothing is overridden within the default theme.
-[/box]
 
 Now, you go and edit the [tt]global.css[/tt] within your theme. At this point [tt]global.css[/tt] has been overridden within your theme, and you have diverged from the [tt]global.css[/tt] shipped with Composr and upgraded between releases. The override was necessary to make your customisations, but simultaneously you have become responsible for maintaining your own version of it.
 
 It is useful to understand what is happening when you make an override, in terms of the files.
+[/surround]
+
+[box="A note about override chains"]
+All themes inherit any non-overridden files direct from the default theme (there is no system for chaining themes together into a complex inheritance system). It is possible for files to be overridden [i]within[/i] the default theme, if you need an override to apply to many themes but don't want to individually override it into each theme. It is also possible to do some really fancy tricks with Tempcode, to simulate chained themes, if you've got a programmer-mindset. For the purpose of simplicity in this tutorial we'll assume nothing is overridden within the default theme.
+[/box]
 
 The default theme's [tt]global.css[/tt] is at [tt]themes/default/css/global.css[/tt].
 Let's imagine your theme is called [tt]example[/tt]. The CSS would be overridden to [tt]themes/example/css_custom/global.css[/tt] when you make your initial changes.
@@ -44,7 +45,7 @@ It is important that you never try and directly edit files under the template ca
 Each subsequent change you make to an overridden file will save a backup.
 
 Continuing our [tt]global.css[/tt] example, editing it would create [tt]themes/example/css_custom/global.css.(current-unix-timestamp)[/tt] as a backup.
-The current-unix-timestamp is just a number (the number of seconds since 1980). Higher numbers represent more recent backups.
+The current-unix-timestamp is just a number (the number of seconds since 1970). Higher numbers represent more recent backups.
 
 [title="2"]After an upgrade[/title]
 

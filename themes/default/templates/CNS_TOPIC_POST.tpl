@@ -116,7 +116,7 @@
 					<hr class="cns-sig-barrier" />
 
 					<div class="cns-member-signature">
-						{SIGNATURE}
+						{$SMART_LINK_STRIP,{SIGNATURE},{MEMBER_ID}}
 					</div>
 				</div>
 			{+END}

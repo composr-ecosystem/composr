@@ -18,10 +18,13 @@ Tempcode provides four constructs other than the plain text of the template itse
 
 [title="3"]Escaping[/title]
 
-Any of the above 4 Tempcode constructs may be escaped. By "escaped", I mean made to fit in an encoding scheme, such as HTML or URLs, such that special text characters do not interact with that encoding scheme in an insecure/corrupting way). This is done with ease using escaping filters, just by placing the character associated with the mode of escaping before the closing '}'.
+Any of the above 4 Tempcode constructs may be escaped. By "escaped", I mean made to fit in an encoding scheme, such as HTML or URLs, such that special text characters do not interact with that encoding scheme in an insecure/corrupting way. This is done with ease using escaping filters, just by placing the character associated with the mode of escaping before the closing '}'.
+
 For example, [tt]{BLAH*}[/tt] will add the parameter BLAH, escaped for HTML output.
 
-The following escaping filters are provided ([color="green"]green[/color] indicates common usage, [color="red"]red[/color] indicates advanced usage)...
+Note that escape characters must go on the construct (e.g. before the parameters are defined). For example, [tt]{!STRING*,param1,param2}[/tt]. And generally, it is not necessary to escape parameters when the construct is already escaped (e.g. [tt]{!STRING*,{BLAH}}[/tt] will escape the entire language string after the parameters have been injected, so it is not necessary to also escape [tt]{BLAH}[/tt]).
+
+The following escaping filters are provided ([color="green"]green[/color] indicates common usage, [color="red"]red[/color] indicates advanced usage and should be used with discretion)...
 
 [semihtml]
 <table class="wide-table columned-table results-table">
@@ -54,7 +57,7 @@ The following escaping filters are provided ([color="green"]green[/color] indica
 	<tbody>
 		<tr style="background-color: #DDFFDD">
 			<td>[tt]*[/tt]</td>
-			<td>Text embedded within HTML.</td>
+			<td>Make text embedded within HTML safe (and prevent XSS injection attacks).</td>
 			<td>[tt]Hello &amp; Goodbye[/tt]</td>
 			<td>[tt]Hello &amp;amp; Goodbye[/tt]</td>
 		</tr>
@@ -92,7 +95,7 @@ The following escaping filters are provided ([color="green"]green[/color] indica
 		<tr style="background-color: #DDFFDD">
 			<td colspan="2"></td>
 			<td>[tt]This is[/tt]</td>
-			<td><em>Hack-attack triggered</em></td>
+			<td><em>Hack-attack triggered (spaces not allowed)</em></td>
 		</tr>
 	</tbody>
 
@@ -150,7 +153,7 @@ The following escaping filters are provided ([color="green"]green[/color] indica
 	<tbody>
 		<tr style="background-color: #DDFFDD">
 			<td>[tt]@[/tt]</td>
-			<td>Make sure something doesn't look like a Comcode tag.</td>
+			<td>Escape anything that looks like Comcode.</td>
 			<td>[tt]Use the [url] tag[/tt]</td>
 			<td>[tt]Use the \[url] tag[/tt]</td>
 		</tr>
@@ -188,7 +191,7 @@ The following escaping filters are provided ([color="green"]green[/color] indica
 		</tr>
 		<tr style="background-color: #FFDDDD">
 			<td>[tt]&gt;[/tt]</td>
-			<td colspan="3">Indicates the Tempcode should be evaluated but not output. Useful only occasionally for very special situations.</td>
+			<td colspan="3">Indicates the Tempcode should be evaluated but not output.</td>
 		</tr>
 		<tr style="background-color: #FFDDDD">
 			<td>[tt]+[/tt]</td>
@@ -262,7 +265,7 @@ be really hurting by now)[/center]
 [/box]
 This is your first practical example of Tempcode, and perhaps the most common use of Tempcode symbols.
 
-To insert an image into your template, use Composr's image symbol: [tt]{$IMG,codename}[/tt]. Replace [tt]codename[/tt] with the image code for the image you want to use. This will turn into the image's URL. Be aware that this does not insert any HTML for you, so to use it fully:
+To insert an image into your template, use Composr's image symbol: [tt]{$IMG,<codename>}[/tt]. Replace [tt]<codename>[/tt] with the image code for the image you want to use. This will turn into the image's URL. Be aware that this does not insert any HTML for you, so to use it fully:
 [code="HTML"]<img src="{$IMG*,under_construction_animated}" alt="Under Construction" title="Under Construction" />[/code]
 This would insert the image [tt]http://yourbaseurl/themes/default/images/under_construction_animated.png[/tt] into your page, as shown on the right.
 
@@ -297,8 +300,8 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 
 	<tbody>
 		<tr style="background: #DDFFDD">
-			<td>(blank)</td>
-			<td>Place a comment. E.g... [/html][tt]{$,this is a comment}[/tt][html]</td>
+			<td>{$,comment}</td>
+			<td>Place a comment. E.g... [/html][tt]{$,this is a comment}[/tt][html]. Careful as commas in your comment need to be escaped with a backslash.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$RAND,min,max}</td>
@@ -330,7 +333,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$REQUIRE_JAVASCRIPT,example}</td>
-			<td>Include a JavaScript file in the output stream. If you set the second parameter to '1', then loading will be deferred until the end of the page. If you include a template into itself, then it will actually include the original version at the point of your include. This is useful for extending the default templates without duplicating them.</td>
+			<td>Include a JavaScript file in the output stream. If you set the second parameter to '1', then loading will be deferred until the end of the page.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$REQUIRE_CSS,css_example}</td>
@@ -338,7 +341,7 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$SET_TITLE,xxx}</td>
-			<td>Set the current page title (affects things like the <kbd>&lt;title&rt;</kbd>)</td>
+			<td>Set the current page title (affects things like the <kbd>&lt;title&gt;</kbd>)</td>
 		</tr>
 	</tbody>
 </table>
@@ -490,11 +493,11 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$RANK_POINTS,3}</td>
-			<td>Get the number of rank points the member has</td>
+			<td>Get the number of rank points the member has (optionally specify a member ID).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$POINTS_SPENT,3}</td>
-			<td>Get the total points the specified member has used (spent).</td>
+			<td>Get the total points the specified member has used (spent) (optionally specify a member ID).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$POINTS_BALANCE,3}</td>
@@ -511,10 +514,6 @@ You are very unlikely to ever want to use rows in red, as they are intended for 
 		<tr style="background: #DDFFDD">
 			<td>{$IS_FRIEND,2,3}</td>
 			<td>Detect if the second parameter/member ID (or current member if no second parameter) has befriended the first parameter/member ID.</td>
-		</tr>
-		<tr style="background: #DDFFDD">
-			<td>{$IS_ICON_IN_SVG_SPRITE,admin/add}</td>
-			<td>Detect if the provided icon name/path is compiled in an SVG sprite (internal use only).</td>
 		</tr>
 	</tbody>
 </table>
@@ -617,7 +616,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$GEOLOCATE,12.45.67.89}</td>
-			<td>Find the/a user's ISO country-code (optionally takes an IP address, otherwise defaults to current user's IP). Requires the stats addon to be installed, and for the geolocation data to have been installed into the database (usually this is automatic)</td>
+			<td>Find the/a user's ISO country-code (optionally takes an IP address, otherwise defaults to current user's IP). Requires the stats addon to be installed, and for the geolocation data to have been installed into the database</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$CHARSET}</td>
@@ -919,7 +918,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$PAGE_TITLE}</td>
-			<td>Get the currently set page title/td>
+			<td>Get the currently set page title</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$CSS_TEMPCODE}</td>
@@ -961,7 +960,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 </table>
 [/html]
 
-[title="3"]Placement[/title]
+[title="3"]Dynamic content inclusion[/title]
 
 [html]
 <table class="columned-table results-table wide-table autosized-table">
@@ -1086,7 +1085,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Place a named HTML anchor (intended for use from in Comcode)</td>
 		</tr>
 		<tr style="background: #FFDDDD">
-			<td>{$TUTORIAL_URL}</td>
+			<td>{$TUTORIAL_URL,page_name}</td>
 			<td>A tutorial URL, linking under the brand URL's docs zone</td>
 		</tr>
 		<tr style="background: #FFDDDD">
@@ -1135,7 +1134,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$THUMBNAIL,http://example.com/pic.png,40x60,galleries}</td>
-			<td>Generate a thumbnail URL from another image URL</td>
+			<td>Generate a thumbnail URL from another image URL. See below for advanced use.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$CDN_FILTER,URL}</td>
@@ -1144,6 +1143,10 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		<tr style="background: #DDFFDD">
 			<td>{$METADATA_IMAGE_EXTRACT,CONTENT}</td>
 			<td>Scan some content and make the first suitable Open Graph image the active metadata image. If a metadata image has already been detected by Composr, this symbol will have no affect, unless a second parameter is passed and set to <kbd>1</kbd>.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$IS_ICON_IN_SVG_SPRITE,admin/add}</td>
+			<td>Detect if the provided icon name/path is compiled in an SVG sprite (internal use only).</td>
 		</tr>
 	</tbody>
 </table>
@@ -1157,8 +1160,8 @@ Usage: [tt]{$THUMBNAIL,source_image,widthxheight,output_dir,filename,fallback_im
 where:
  - [tt]source_image[/tt] is the URL to the full image
  - [tt]widthxheight[/tt] is the desired width/height for the thumbnail. For types (see below) of width, height, or crop, you can omit either the width or height to scale according to the aspect ratio of the source image (e.g. [tt]x20[/tt] for just a height, or [tt]160x[/tt] for just a width). If you specify both dimensions for crop or pad, the thumbnail will be cropped or padded to the exact dimensions regardless of aspect ratio. If no dimensions are specified, the default is the value of the thumb_width option, with height omitted.
- - [tt]output_dir[/tt] is the directory path to save the thumbnail (relative to the Composr base directory). The default is Composr's [tt]uploads[/tt] directory.
- - [tt]filename[/tt] is the name of the thumbnail filename. If not provided, it will be automatically chosen based on the source_image. An articulation of the thumbnail settings will be prefixed to the filename in any case
+ - [tt]output_dir[/tt] is the directory path to save the thumbnail (relative to the Composr base directory). The default is Composr's [tt]uploads/auto_thumbs[/tt] directory, and generally you should leave it this so the system scheduler can clean out old thumbnails automatically.
+ - [tt]filename[/tt] is the name of the thumbnail filename. If not provided, it will automatically be generated based on a base-64 salted SHA-256 hash representation of the full image path and the thumbnail settings (this ensures it conforms to filename length limits, is unique to the original image, and is hard to guess by scraping for content).
  - [tt]fallback_image[/tt] is the URL to the image to use if no thumbnail could be generated. If not provided, the source_image will be used.
  - [tt]algorithm[/tt] is either:
   - [tt]box[/tt] for an image which should be scaled proportionally to fit into the given box dimensions, with no cropping or padding, meaning it may be an irregular size (the default)
@@ -1212,7 +1215,7 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$STAFF_ADDRESS_PURE}</td>
-			<td>The staff address, without obfuscation</td>
+			<td>The staff address, without obfuscation (vulnerable to spam bots)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$STAFF_ADDRESS}</td>
@@ -1264,7 +1267,7 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$THEME_OPTION,optionname}</td>
-			<td>Get the value of a config option that can be overridden in a theme</td>
+			<td>Get the value of a config option that can be overridden by the theme</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$VALUE_OPTION,optionname}</td>
@@ -1276,11 +1279,11 @@ where:
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$BRAND_NAME}</td>
-			<td>The brand name, defaults to Composr</td>
+			<td>The brand name, defaults to Composr (can be changed in the debrand addon)</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$BRAND_BASE_URL}</td>
-			<td>The brand URL, defaults to https://composr.app</td>
+			<td>The brand URL, defaults to https://composr.app (can be changed in the debrand addon)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$PARENTAL_CONSENT_REQUIRED}</td>
@@ -1380,15 +1383,15 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$NUM_RATINGS,downloads,3}</td>
-			<td>Find the number of users who have rated something.</td>
+			<td>Find the number of users who have rated something (content type, content ID).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$SHOW_RATINGS,downloads,3,100}</td>
-			<td>Show the last 100 ratings on something.</td>
+			<td>Show the last n ratings on something (content type, content ID, n).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$ALREADY_RATED,downloads,3}</td>
-			<td>Find if the current user has already rated something.</td>
+			<td>Find if the current user has already rated something (content type, content ID).</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$FORM_TO_EMAIL_URL,pagename}</td>
@@ -1399,6 +1402,8 @@ where:
 [/html]
 
 [title="3"]ID conversion[/title]
+
+Note that all of these except URL monikers require the [tt]commandr[/tt] addon for Commandr-fs / Resource-fs.
 
 [html]
 <table class="columned-table results-table wide-table autosized-table">
@@ -1460,7 +1465,7 @@ where:
 	<tbody>
 		<tr style="background: #FFDDDD">
 			<td>{$HAS_FORUM,General Chat}</td>
-			<td>Whether a forum is available (returns Tempcode boolean)</td>
+			<td>Whether the specified forum name is available (returns Tempcode boolean)</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$ATTACHMENT_DOWNLOADS,3}</td>
@@ -1500,7 +1505,7 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$AWARD_ID,2}</td>
-			<td>Find the content ID assigned to the given award</td>
+			<td>Find the content ID currently assigned to the given award type ID</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$NOTIFICATIONS_ENABLED,download,3}</td>
@@ -1516,7 +1521,7 @@ where:
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>{$INSERT_FORM_POST_SECURITY}</td>
-			<td>If spammer blackholes are enabled, this inserts a field into a form to create the blackhole. Blackholes allow automatic detection and banning of would-be spammers. Additionally, the CSRF-prevention security token is injected via this symbol.</td>
+			<td>The CSRF-prevention security token is injected via this symbol. Additionally, if spammer blackholes are enabled, this will inject a hidden form field which, if the spammer submits with a value, will trigger a blackhole hack-attack. For security, you should add this to all POST forms you make in your templates.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>{$GALLERY_VIDEO_FOR_URL,uploads/galleries/foo.mov}</td>
@@ -1868,7 +1873,7 @@ Understanding of these symbols requires an understanding of basic boolean operat
 			<td>Remove URL encoding</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$SMART_LINK_STRIP,<a href="http://example.com/">hello</a>,3}</td>
+			<td>{$SMART_LINK_STRIP,Some HTML here,3}</td>
 			<td>Remove links from the given HTML, if the member ID does not have a positive post count (a temporary measure to disincentivise spammers)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
@@ -2055,11 +2060,11 @@ Note that you cannot use directives for symbol parameters because directives con
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>IF_PASSED/IF_NON_PASSED</td>
-			<td>Find if a named parameter was passed (Do <strong>not</strong> encase the parameter with {})</td>
+			<td>Find if a named parameter was passed (Do <strong>not</strong> encase the parameter with {}; we want to pass the parameter name and not its value)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>IF_PASSED_AND_TRUE/IF_NON_PASSED_OR_FALSE</td>
-			<td>Find if a named parameter was passed and its truth state (useful for robust optional boolean parameters that default to false)</td>
+			<td>Find if a named parameter was passed and its truth state (useful for robust optional boolean parameters that default to false) (Do <strong>not</strong> encase the parameter with {}; we want to pass the parameter name and not its value)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>IF_EMPTY/IF_NON_EMPTY</td>
@@ -2109,7 +2114,7 @@ where [tt]check[/tt] is some name you are giving to the particular check you are
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>FRACTIONAL_EDITABLE,The [i]Title[/i],title,cms:cms_example,1,1,1</td>
-			<td>Used to make a string of some content editable inline. Described in the [page="_SEARCH:sup_inline_editing"]Inline editing in Composr[/page] tutorial.</td>
+			<td>Used to make a string of some content editable inline. Described in the [/html][page="_SEARCH:sup_inline_editing"]Inline editing in Composr[/page][html] tutorial.</td>
 		</tr>
 		<tr style="background: #FFDDDD">
 			<td>IN_ARRAY</td>
@@ -2117,7 +2122,7 @@ where [tt]check[/tt] is some name you are giving to the particular check you are
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>IF_IN_ARRAY,PASSED_IN_ARRAY,example</td>
-			<td>Output something if something is in an array. This only works with arrays passed into templates (not something like a delimited-list). First parameter is the name of an array, second parameter is a string to check for.</td>
+			<td>Output something if something is in an array. This only works with arrays passed into templates (not something like a delimited-list). First parameter is the name of an array (no {} encasing), second parameter is a string to check for.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>IF_NOT_IN_ARRAY,PASSED_IN_ARRAY,example</td>
@@ -2129,7 +2134,7 @@ where [tt]check[/tt] is some name you are giving to the particular check you are
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>CASES</td>
-			<td>Show different output based on the value of something</td>
+			<td>Show different output based on the value of something. Pass in each case into the contents of the directive as <kbd>value=output</kbd>. If the second parameter of the directive is '1', then a substring match is performed on value. If the second parameter of the directive is '2', then the provided <kbd>value</kbd> is a regular expression. A blank value, when placed last, is the default case.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>COMMENT</td>
@@ -2137,7 +2142,7 @@ where [tt]check[/tt] is some name you are giving to the particular check you are
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>CSS_MODE</td>
-			<td>Takes a parameter which will usually be either <kbd>mobile</kbd> or <kbd>desktop</kbd>. Basically on mobile mode it only outputs the directive content for [tt]mobile[/tt], while on desktop mode it will output using media rules (i.e. responsive design). That said, the codes are actually configurable/extendable in <kbd<global.css</kbd>.</td>
+			<td>Takes a parameter which will usually be either <kbd>mobile</kbd> or <kbd>desktop</kbd>. Basically on mobile mode it only outputs the directive content for <kbd>mobile</kbd>, while on desktop mode it will output using media rules (i.e. responsive design). That said, the codes are actually configurable/extendable in <kbd<global.css</kbd>.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>NO_PREPROCESSING</td>
@@ -2145,15 +2150,15 @@ where [tt]check[/tt] is some name you are giving to the particular check you are
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>MAKE_MOBILE</td>
-			<td>On mobile mode perform some basic conversions on the enclosed HTML to make it mobile-friendly. Covered in the [page="_SEARCH:tut_mobile"]Mobile design[/page] tutorial.</td>
+			<td>On mobile mode perform some basic conversions on the enclosed HTML to make it mobile-friendly. Covered in the [/html][page="_SEARCH:tut_mobile"]Mobile design[/page][html] tutorial.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>HTML_COMPRESS</td>
-			<td>Apply HTML compression techniques to an area of the output. Covered in the [page="_SEARCH:tut_performance"]Optimising Performance[/page] tutorial.</td>
+			<td>Apply HTML compression techniques to an area of the output. Covered in the [/html][page="_SEARCH:tut_performance"]Optimising Performance[/page][html] tutorial.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>CDN_FILTER</td>
-			<td>Mass-apply the <kbd>CDN_FILTER</kbd> symbol to appropriate URLs found inside the directive. Covered in the [page="_SEARCH:tut_performance"]Optimising Performance[/page] tutorial.</td>
+			<td>Mass-apply the <kbd>CDN_FILTER</kbd> symbol to appropriate URLs found inside the directive. Covered in the [/html][page="_SEARCH:tut_performance"]Optimising Performance[/page][html] tutorial.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
 			<td>TRIM</td>
@@ -2341,7 +2346,7 @@ class Block_main_first_block
 {
 	function run()
 	{
-		return do_template('BLOCK_MAIN_FIRST_BLOCK',array());
+		return do_template('BLOCK_MAIN_FIRST_BLOCK', []);
 	}
 }
 [/code]
@@ -2353,15 +2358,15 @@ In this code we are simply creating a new class for our block and then defining 
 Go to the [tt]themes/default[/tt] folder. There you should find two main templates folder [tt]templates[/tt] and [tt]templates_custom[/tt]. The main [tt]templates[/tt] folder has all the predefined templates which the system is using already (&dagger;) so we don't have to make any changes there. The [tt]templates_custom[/tt] folder will have all the user defined templates or the customised templates, so our template file will go there.
 Create a new blank file [tt]BLOCK_MAIN_FIRST_BLOCK.tpl[/tt] and save it in to [tt]templates_custom[/tt]. [tt].tpl[/tt] is the default extension we give to template files.
 
-&dagger; Actually this isn't quite true. The [tt]css[_custom][/tt], [tt]javascript[_custom][/tt] and [tt]text[_custom][/tt] folders also hold templates. Even CSS files are handled as templates in Composr.
+&dagger; Actually this isn't quite true. The [tt]css[_custom][/tt], [tt]javascript[_custom][/tt] and [tt]text[_custom][/tt] folders also hold templates. Even CSS files are handled as templates in Composr. This means you can put Tempcode in them, and Composr compiles them into [tt]templates_cached[/tt].
 
 [title="3"]Adding the block to front page[/title]
 
-Now that we have the block and template file ready, lets add the block to our front page so that we can test the examples. To add a block to the front page we will have to make the changes in the Comcode file [tt]start.txt[/tt] which contains all the blocks which show up on the front page.
-[tt]start.txt[/tt] file is located in [tt]pages/comcode_custom/EN[/tt] (the same rule as templates applies here as well, i.e. the customised Comcode files should go in to [tt]_custom[/tt] folder).
+Now that we have the block and template file ready, lets add the block to our front page so that we can test the examples. To add a block to the front page we will have to make the changes in the Comcode file [tt]home.txt[/tt] which contains all the blocks which show up on the front page.
+[tt]home.txt[/tt] file is located in [tt]pages/comcode_custom/EN[/tt] (the same rule as templates applies here as well, i.e. the customised Comcode files should go in to [tt]_custom[/tt] folder).
 
 [media width="150" description="Our empty box" float="right"]data_custom/images/docs/tut_tempcode/poweroftemp1.png[/media]
-Edit [tt]start.txt[/tt] file using your text editor, and add this on the end:
+Edit [tt]home.txt[/tt] file using your text editor, and add this on the end:
 [code="Comcode"]
 [box="first block"][block]main_first_block[/block][/box]
 [/code]
@@ -2405,12 +2410,12 @@ This would resolve to some HTML such as:
 [title="3"]Number randomisation example[/title]
 
 [media width="150" description="Number randomisation example. We had to refresh a few times to see this, because as expected it was empty 3/4 of the time." float="right"]data_custom/images/docs/tut_tempcode/poweroftemp6.png[/media]
-In this example we use the symbol [tt]RAND[/tt] to pick a random number between 0 and 3 and the number. This number will then be passed to an [tt]IF[/tt] directive that checks if the number is less than 1 using the [tt]LT[/tt] symbol. Go ahead and try this in the template file to see the results.
+In this example we use the symbol [tt]RAND[/tt] to pick a random number between 0 and 32000 and the number. This number will then be passed to an [tt]IF[/tt] directive that checks if the number is less than 8000 using the [tt]LT[/tt] symbol. Go ahead and try this in the template file to see the results.
 
 [code="HTML"]
-{+START,IF,{$LT,{$RAND,3},1}}
+{+START,IF,{$LT,{$RAND,32000},8000}}
 	<p>
-		This shows 1/4 of the time. How does it work? RAND picks a random number between 0 and 3, so the number will be less than 1 1/4 of the time.
+		This shows 1/4 of the time. How does it work? RAND picks a random number between 0 and 32000, so the number will be less than 8000 1/4 of the time.
 	</p>
 {+END}
 [/code]
@@ -2448,10 +2453,10 @@ We can use that to show a specific message only if a match-key is satisfied.
 A match-key is basically the same thing as a page-link. The only difference is that a match-key is used for matching and will also match any page-links with additional parameters not mentioned in the match-key -- i.e. the match is performed against the parameters in the match-key, all other parameters are ignored. As you are probably already comfortable with the term "page-link", we'll use that henceforth.
 
 [code="HTML"]
-{+START,IF,{$MATCH_KEY_MATCH,site:example}}
+{+START,IF,{$MATCH_KEY_MATCH,site:start}}
 	<p>
-		I want this displayed only for the example page<br />
-		(the page-link means "'site' zone, 'example' page)
+		I want this displayed only for the start page<br />
+		(the page-link means "'site' zone, 'start' page)
 	</p>
 {+END}
 [/code]
@@ -2565,13 +2570,20 @@ In this example, it loops from A to I and in the loop it uses the [tt]CYCLE[/tt]
 [title="2"]GUIDs[/title]
 
 There is a design issue that comes to us when we design template structure... do we re-use templates so that editing is easier, load is decreased, and consistency is raised; or do we allow maximum customisation of different aspects of the system by not re-using templates?
+
 We have tended to stick to a middle ground between these extremes, and re-used templates when the usage pattern was almost identical. For example, almost all of Composr uses the same form field templates, but Wiki+ posts use different templates to forum posts. However, there are still places where we re-use templates in situations that sites may wish to develop in separate directions.
 
 The solution to this is to make use of the GUID each template usage is given when it is used.
+
 Each [tt]do_template[/tt] call in Composr, which loads up a template, passes in a parameter, [tt]_GUID[/tt]. The GUIDs may then be used along with tempcode directives to control what the template outputs.
+
+[staff_note]
+TODO: THIS SECTION IS NOT PUBLICLY VISIBLE and needs confirmed if it is still true
+
 The template editor has special support for the GUIDs, showing what GUIDs a template is used with and providing links to view the code associated with each GUID. It also provides a feature to automatically insert an 'IF' directive that differentiates against one of the GUIDs to provide a place to put output that will only be shown for it.
 
 If you enter the template editor from the 'Template tree' screen then you will be told the GUID that was used by the node in the tree that you selected.
+[/staff_note]
 
 [concepts
  1_key="Symbol"           1_value="A special element that may be inserted into"

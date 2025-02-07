@@ -150,6 +150,7 @@ If failover-mode is configured you can activate it manually from within the [tt]
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]
  - [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page]
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
+ - [page="_SEARCH:tut_telemetry"]Relaying Errors and Statistics to Composr[/page]
  - [page="_SEARCH:codebook_3"]Code Book, part 3 (Miscellany)[/page]
 
 {$SET,tutorial_tags,Maintenance,core,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Some 'life saving' solutions to disastrous scenarios that can happen on an unstable web server configuration.}[block]main_tutorial_rating[/block]

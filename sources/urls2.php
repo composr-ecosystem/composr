@@ -226,6 +226,7 @@ function _build_keep_post_fields(array $exclude = [], bool $force_everything = f
 
 /**
  * Takes a URL, and converts it into a file system storable filename. This is used to cache URL contents to the servers filesystem.
+ * This returns a URL-safe base-64 salted SHA-256 hash of the URL, which makes it conform to OS length limits and will be hard to scrape.
  *
  * @param  URLPATH $url_full The URL to convert to an encoded filename
  * @return string A usable filename based on the URL
@@ -235,6 +236,7 @@ function _build_keep_post_fields(array $exclude = [], bool $force_everything = f
 function _url_to_filename(string $url_full) : string
 {
     require_code('crypt');
+
     $_new_name = hash_hmac('sha256', $url_full, get_site_salt(), true);
     $new_name = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($_new_name));
 

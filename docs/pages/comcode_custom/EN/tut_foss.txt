@@ -1,4 +1,4 @@
-[title sub="Written by Patrick Schmalstig"]The Pillars of Free and Open Source Software (FOSS)[/title]
+[title sub="Written by Patrick Schmalstig"]Composr Tutorial: The Pillars of Free and Open Source Software (FOSS)[/title]
 [surround]
 [media width="150" description="The three pillars of Free and Open Source Software" float="right"]data_custom/images/docs/tut_foss/pillars_of_foss.png[/media]
 Composr CMS is proudly a Free and Open Source Software, or FOSS for short. This means anyone...
@@ -92,5 +92,13 @@ This is probably the biggest myth of them all. FOSS help businesses, not hurt th
  5_key="Closed Source"	5_value="Indicates that the source code of a software is obfuscated (or not provided at all, e.g. Software as a Service) and cannot be viewed or modified"
  6_key="SaaS"				6_value="Software as a Service; proprietary and often Closed Source software which can only be used in the Cloud and cannot be downloaded (access is provided and controlled by the servicer)"
 ]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [url="Open Source Initiative"]https://opensource.org[/url]
+ - [url="Open Source Resources / FAQ"]https://opensource.com/resources[/url]
+ - [url="The Free Software Definition (Wikipedia)"]https://en.wikipedia.org/wiki/The_Free_Software_Definition[/url]
+ - [url="Free and open-source software (Wikipedia)"]https://en.wikipedia.org/wiki/Free_and_open-source_software[/url]
+ - [url="Code.gov - America's Home for Open Source Projects from the Federal Government"]https://code.gov[/url]
 
 {$SET,tutorial_tags,core,Internet Technology,Introduction,novice}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,Free and Open Source software\, like Composr CMS\, follow the principles of the freedom to use\, modify\, and distribute.}[block]main_tutorial_rating[/block]

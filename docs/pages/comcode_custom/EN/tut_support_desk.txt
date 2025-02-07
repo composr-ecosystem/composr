@@ -32,11 +32,11 @@ You can add/edit/delete support ticket types from:
 Admin Zone > Setup > Support tickets.
 You can delete a support ticket type from the bottom of its edit form.
 
-Support tickets are created simply by visiting the support ticket page, clicking to add a ticket, and filling in the appropriate details. Upon completion of this, an e-mail is sent to the staff, and the staff can then respond to the ticket as appropriate.
+Support tickets are created simply by visiting the support ticket page, clicking to add a ticket, and filling in the appropriate details. Upon completion of this, notifications are sent to staff who have them enabled for support tickets, and the staff can then respond to the ticket as appropriate.
 
 The support ticket system supports attachments, but only in [concept]Conversr[/concept].
 
-Guests may create support tickets, but they need to leave their e-mail address (there is a field for this) if they want a reply.
+Guests may create support tickets, but they need to leave their e-mail address (there is a field for this) if they want a reply. But staff can only reply directly through e-mail.
 
 Staff will see all open support tickets when they visit the support ticket page, but users may only seen their own. If the support ticket list is left open then it will automatically make your computer beep if a new ticket is made, and refresh to show that new ticket. Likewise, if a support ticket is left open, your computer will beep and the ticket will refresh, if a new post is made in the ticket.
 [/surround]
@@ -74,11 +74,11 @@ Staff will see all open support tickets when they visit the support ticket page,
 		</tr>
 		<tr>
 			<th>Assigning</th>
-			<td>If more than one member of staff are viewing the same support ticket then a notification will be shown; when you reply, you are automatically assigned to the ticket; multiple staff may be assigned, manually or automatically; you may unassign yourself or other staff</td>
+			<td>If more than one member of staff are viewing the same support ticket then a notification will be shown; when you reply, you are automatically assigned to the ticket (if the option is enabled in configuration); multiple staff may be assigned, manually or automatically; you may unassign yourself or other staff</td>
 		</tr>
 		<tr>
 			<th>Notifications</th>
-			<td>E-mail/etc notifications are sent</td>
+			<td>E-mail/etc notifications are sent to those who have them enabled</td>
 		</tr>
 		<tr>
 			<th>Coordination</th>
@@ -86,7 +86,7 @@ Staff will see all open support tickets when they visit the support ticket page,
 		</tr>
 		<tr>
 			<th>Resolution</th>
-			<td>Ticket may be closed</td>
+			<td>Ticket may be closed as a way to 'resolve' it</td>
 		</tr>
 		<tr>
 			<th>Archiving</th>
@@ -113,6 +113,8 @@ Advantages of using the [tt]tickets[/tt] module include:
  - creation of new tickets (manually creating a new topic is not automatically a valid ticket)
  - staff conflict detection
  - automatic display and alert when someone replies to an open ticket
+ - segregation (every ticket has its own random ID, and if users try to access other users' tickets it will trigger a hack-attack)
+ - integration with the FAQ catalogue (automatic searching for entries which look similar to the inquiry)
 
 The tickets are stored on the forum as they are built on top of our feedback subsystem, which is designed to integrate well with forums (so you can find new posts there etc). This includes all forums Composr supports, not just [concept]Conversr[/concept]. The feedback system is also what powers comments (e.g. comments on news). The main interface is not built on forums as we cannot extend the features of what is a potentially third-party forum. Each individual topic viewed from the forum will give you a link taking you back to view that topic as a ticket, to help you get over to there if you're coming from the forum.
 
@@ -148,10 +150,13 @@ E-mails are matched up via the ticket ID in the subject line. If there is no tic
 Composr makes some attempt to clean up the e-mail text, so that the tickets are not too much of a mess.
 
 E-mails can be forwarded to the integrated address. This is very useful when customers e-mail staff directly to try and subvert the support system: it prevents you having to lecture the customer on support processes, or break process to reply to them directly.
+
 Composr will try and match the original e-mailer for forwarded e-mails. You can explicitly set who the message should be detected from via putting it into the subject line between square brackets, for example:
 [tt]Fwd: How does this work? [SomeUsername][/tt]
 This is useful if Composr cannot match the originating e-mail address automatically. Often people have multiple e-mail addresses. Composr will learn, so you only need to do it once per person. If Composr can't find a match it will e-mail you back saying so, rather than logging the ticket against a Guest. You can override this behaviour via tagging against [tt][Guest][/tt].
 You can also use square brackets to specify the ticket type to log as. Composr "intelligently" matches things in square brackets against whatever it can.
+
+You can customise this behaviour with the "Non-match policy" option under Admin Zone > Setup > Configuration > Messages.
 
 Some further applicable advice is included in the [page="_SEARCH:tut_adv_forums"]Advanced forum settings[/page] tutorial.
 
@@ -185,7 +190,7 @@ The Discussion Forum (our own Conversr, at least) is designed to be an extremely
 		</tr>
 		<tr>
 			<th>Prioritisation</th>
-			<td>Sub-forums may be used for this</td>
+			<td>Sub-forums may be used for this (you can also use topic emoticons, or the pinning or cascading features)</td>
 		</tr>
 		<tr>
 			<th>Assigning</th>
@@ -224,6 +229,10 @@ Composr provides useful features such as limiting the use of a Post Template to 
 [title="4"]Using a Post Template[/title]
 
 To use a Post Template, simply submit a new topic or post using the verbose posting form (i.e. not the quick-reply box). On this form, if any Post Templates are defined for the current forum, a Post Template drop-down list will appear. Using this list, you can select a Post Template to use. If a Post Template has been marked as the default post for the current forum, the post field will already contain that Post Template.
+
+[title="4"]Using a Post Template (Support Tickets)[/title]
+
+Post templates can also be used in support tickets. If you choose the forum configured for support tickets, the post template will be available for use in the tickets interface when making a post (and not just in the forum).
 [/surround]
 
 [title="2"]The Feedback system[/title]
@@ -259,7 +268,7 @@ For more information on this, see the [page="_SEARCH:tut_feedback"]Feedback and 
 		</tr>
 		<tr>
 			<th>Prioritisation</th>
-			<td>Sub-forums may be used for this</td>
+			<td><em>Not supported</em></td>
 		</tr>
 		<tr>
 			<th>Assigning</th>
@@ -275,7 +284,7 @@ For more information on this, see the [page="_SEARCH:tut_feedback"]Feedback and 
 		</tr>
 		<tr>
 			<th>Resolution</th>
-			<td><em>Not supported</em></td>
+			<td>The comment topic can be closed, but this disables any further comments on the content</td>
 		</tr>
 		<tr>
 			<th>Archiving</th>
@@ -287,7 +296,8 @@ For more information on this, see the [page="_SEARCH:tut_feedback"]Feedback and 
 
 [title="2"]Support tracker[/title]
 
-Composr does not come with its own issue management database, but we have a non-bundled addon that includes an integrated modified version of Mantis.
+Composr does not come with its own issue management database, but we have a non-bundled addon that includes an integrated modified version of Mantis ([tt]cms_homesite_tracker[/tt]).
+
 Support tickets can work as a basic private issue management system, using Post Templates among other features.
 
 [concepts

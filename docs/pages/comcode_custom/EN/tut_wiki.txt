@@ -5,9 +5,10 @@ This tutorial will describe the Wiki+ system, which is Composr's equivalent to a
 [contents]decimal,lower-alpha[/contents]
 
 [title="2"]About Wiki+[/title]
-
+[surround]
 [media width="150" description="Viewing a Wiki+ page" float="right"]data_custom/images/docs/tut_wiki/wiki_page.png[/media]
 {!wiki:DOC_WIKI}
+[/surround]
 
 [title="2"]The structure (pages and posts)[/title]
 

@@ -6,7 +6,7 @@ This tutorial will give background information for this process of upgrading Com
 
 [title="2"]Types of upgrade[/title]
 
-When the developers make a release they will state whether they recommend users upgrade to it. If they have corrected a security issue, or a major bug (such as one that causes data loss), they are likely to strongly recommend upgrade. You can see the fixes included in a release by looking at the bugs database for the release before it.
+When the developers make a release they will state whether they recommend users upgrade to it. If they have corrected a security issue, or a major bug (such as one that causes data loss), they are likely to strongly recommend upgrade. You can see the fixes included in a release by looking at the issue tracker or by reading the news article about the release (change logs are included on every news article regarding releases).
 
 Upgrades may be roughly categorised under:
  - [b]patch releases[/b] -- these are likely to involve bug fixes, with very few, if any new features. Any new features would have been implemented solely to provide important functionality that was obviously missing. Patch releases are very easy to upgrade to
@@ -29,7 +29,7 @@ If you are using [concept]Conversr[/concept] on a M.S.N. and upgrading to a new 
 
 [title="3"]Special note: upgrading third-party forums[/title]
 
-If you are using a third-party forum and upgrading that software, be sure to check that the Composr forum driver you are using is compatible with the new version. This is usually only an issue with major new releases of third-party software. If you need a new/upgraded forum driver, professional developers are available for such work.
+If you are using a third-party forum and upgrading that software, be sure to check that the Composr forum driver you are using is compatible with the new version. This is usually only an issue with major new releases of third-party software. If you need a new/upgraded forum driver, you can [page=":partners"]hire a Composr partner[/page] for such work.
 
 [title="3"]Things to check in feature/major releases[/title]
 
@@ -88,7 +88,7 @@ Often browsers will cache CSS and JavaScript files, even when changed on the ser
 
 Upgrading is inherently complex, as it is close to programming in the sense that low-level changes are being made to the structure of the website. This is unfortunate but inevitable, and due to Composr's openly configurable and overridable (at the code level) nature, the developers would have an extremely hard time trying to automate the process beyond what the upgrade system (the stage launched by running [tt]http://yourbaseurl/upgrader.php[/tt]) already does.
 
-If you require assistance for an upgrade, professional developers may be able to help.
+If you require assistance for an upgrade, professional developers from the [page=":partners"]Composr partners page[/page] may be able to help.
 
 [title="2"]The integrity checker[/title]
 
@@ -98,9 +98,7 @@ This section contains standalone details on using the integrity checker.
 
 Composr comes with a built-in "integrity checker" which can be used to repair a corrupted copy of Composr. Integrity checker is a part of the upgrader tool. The integrity checker can be used to find outdated and corrupt files in the Composr system. You can use this tool at any point, regardless of whether you have recently upgraded or not.
 
-You must provide the maintenance password to access the Composr upgrade tool.
-
-The integrity checker is placed in the "Step 4" of the table under the "Upgrade steps" section in upgrader tools page.
+You must provide the maintenance password to access the Composr upgrade tool. The integrity checker is listed around the middle of the upgrade steps.
 
 The integrity checker will display the following kinds of file (if any):
  - Files that are actually missing and need uploading:
@@ -109,11 +107,12 @@ The integrity checker will display the following kinds of file (if any):
  - Overrides blocking original files ("The following files have been superseded by new versions")
  - Modified files:
   - Newer than the original ("These files do not match the ones bundled with your version, but claim to be newer")
-   - These can happen if you apply hotfixes from the tracker
+   - These can happen if you apply hotfixes from the tracker, or if you manually edit original code (not recommended!)
   - Older than the original ("These files are outdated")
   - Older than the original, [i]and[/i] with an override blocking the original ("The following non-overridden files are outdated")
  - Files that maybe shouldn't be there:
   - Alien files (unrecognised files)
+   - Careful because the integrity scanner might label some legitimate files (e.g. Project Honey Pot, ACME challenge files, etc) as alien
   - Files from non-installed addons
   - Files that have since been moved
 
@@ -149,8 +148,8 @@ There are some extra features in the upgrader that aren't a part of the normal f
 
 If the upgrader times out trying to download the upgrade package then try:
 1) manually downloading it to your machine
-2) uploading it to your server (such as in exports)
-3) substituting the auto-generated URL with the local relative path to the file (e.g. [tt]/exports/upgrade_file.cms[/tt])
+2) uploading it to your server (such as in uploads)
+3) substituting the auto-generated URL with the local relative path to the file (e.g. [tt]/uploads/upgrade_file.cms[/tt])
 
 [title="3"]Other transfer/extraction issues[/title]
 

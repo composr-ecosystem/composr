@@ -1,7 +1,7 @@
 [title sub="Written by Chris Graham"]Composr Tutorial: Webhosting for Composr[/title]
 
 [media width="350" float="right" framed="0"]data_custom/images/docs/tut_webhosting/kind.png[/media]
-To put a website on-to the Internet, you need to arrange for 'webhosting'. This is usually done by paying for the services of a [concept]webhost[/concept], who will provide you space-on and access-to, a computer (a web server) that is permanently connected to the Internet via a high-speed connection.
+To put a website on-to the Internet, you need to arrange for 'webhosting'. This is usually done by paying for the services of a [concept]webhost[/concept], who will provide you space-on and access-to, a computer (a web server) that is permanently connected to the Internet via a high-speed connection (at least we hope that is the case ;) ).
 
 This tutorial covers requirements for hosting Composr and some general information about webhosting and security.
 
@@ -21,8 +21,8 @@ We have various different installation tutorials that go into details on how to 
 [title="3"]Operating system[/title]
 
 Choices:
- - {$IS_MAINTAINED,os_linux,Linux} (the default)
- - {$IS_MAINTAINED,os_macos,Mac} (if you're developing on your own machine; equivalent to Linux)
+ - {$IS_MAINTAINED,os_linux,Linux} (most webservers run Linux)
+ - {$IS_MAINTAINED,os_macos,Mac} (if you're developing on your own machine; equivalent to Linux [Unix])
  - {$IS_MAINTAINED,os_windows,Windows} (if you're developing on your own machine or on a Windows server)
 
 [title="3"]Hosting control panel[/title]
@@ -30,8 +30,6 @@ Choices:
 When you are provided webhosting, you are usually allocated a webhosting control panel that runs software such as:
  - {$IS_MAINTAINED,platform_plesk,Plesk}
  - {$IS_MAINTAINED,platform_cpanel,cPanel}
- - Ensim
- - DirectAdmin
 This allows you to manage your account on the server, and create databases, FTP accounts (additional to your primary account that already would exist), and e-mail addresses.
 
 Most users will want a webhosting control panel as otherwise you'll require some expertise in server configuration.
@@ -41,44 +39,44 @@ Without a webhosting control panel you'll need to know how to use SSH (Linux) or
 [title="3"]Type of hosting[/title]
 
 Choices:
- - Shared hosting (the default)
+ - Shared hosting (most common)
  - VPS hosting / [concept]IaaS[/concept] (e.g. Amazon EC2, Azure, Rackspace)
  - Dedicated server
  - [concept]PaaS[/concept]:
   - PaaS cloud hosting (e.g. AppFog, Heroku, Rackspace Cloud, Engine Yard, OpenShift)
-  - Google App Engine, which is a special case of PaaS due to the high-level of organisation you need to work within. It is covered in 
+  - Google App Engine, which is a special case of PaaS due to the high-level of organisation you need to work within.
 
-Shared hosting is cheaper by a long way, but may have poor performance, depending on the nature of the webhost, your hosting neighbours, and the hosting plan.
+Shared hosting is cheaper by a long way, but may have poor performance and terrible configuration, depending on the nature of the webhost, your hosting neighbours, and the hosting plan.
 
 A VPS may have anything from terrible performance to great performance, depending on how much resource the VPS has been granted.
 
 IaaS is very common among professionals due to the ability to quickly provision a machine. However management is not really any different than a dedicated server or VPS without a control panel.
 
-Users with high requirements for CPU, memory, security, privacy, autonomy or disk space, may opt to get a [concept]dedicated server[/concept]. This is more expensive.
+Users with high requirements for CPU, memory, security, privacy, autonomy or disk space, may opt to get a [concept]dedicated server[/concept]. This is more expensive but offers superior performance and flexibility.
 
 PaaS is highly specialised and not recommended unless you are a developer. Programmers will often prefer IaaS and PaaS hosting in order to get scalability. However scalability is not automatic with any system, so programmers need to put serious consideration into infrastructure. This is discussed more in the [page="_SEARCH:tut_performance"]Optimising Performance[/page] tutorial and outside the scope of any direct instructions we can give.
 
-On shared hosting the webhost will take responsibility for the daily maintenance of the server. For example, keeping the server software up to date with security and stability [concept]patches[/concept]. However few webhosts will take serious responsibility for the maintenance (including backups) of your space on the server. If you are running a VPS or a dedicated server then you probably are responsible for absolutely everything, so make sure you are comfortable with that. It is important to understand the responsibilities for the various aspects of creating, maintaining and operating your website, before you launch your endeavour.
+With managed hosting the webhost will take responsibility for the daily maintenance of the server. For example, keeping the server software up to date with security and stability [concept]patches[/concept]. However few webhosts will take serious responsibility for the maintenance (including backups) of your space on the server. If you are running a VPS or a dedicated server then you probably have unmanaged hosting, which means you are responsible for absolutely everything, so make sure you are comfortable with that. It is important to understand the responsibilities for the various aspects of creating, maintaining and operating your website, before you launch your endeavour.
 
-[title="2"]Recommended shared webhost[/title]
+[title="2"]Recommended webhost[/title]
 
-We don't currently recommend any particular webhosts because it is a tricky thing. I'm afraid the answer will be rather cynical, but I want you to get a realistic outlook.
+We don't currently recommend any particular webhosts because it is a tricky thing. Every webhost has their own pros and cons. And it would be a disservice for us to recommend any of them as it may incentivise you to choose one without carefully considering the pros and cons.
 
-Webhosts have a tendency to take a turn for the worse at some point, as it's a race-to-the-bottom kind of industry -- any ones built on a good reputation tend to get taken over when the founders cash-out and then milked for it by a new team.
+Webhosts, especially shared webhosts, have a tendency to take a turn for the worse at some point, as it's a race-to-the-bottom kind of industry -- any ones built on a good reputation tend to get taken over when the founders cash-out and then milked for it by a new team.
 
 We advise picking your own webhost based on good reviews that are both recent and credible. Actively look for people complaining about the company to get a sense for whether these complaints are reveal a pattern of genuine concern (as opposed to general frustration with technology / unreasonable expectations from the webhost). Don't pick the cheapest, but also don't assume paying more guarantees good service.
 
 Webhosts generally fit into 3 categories:
 1) Good infrastructure, good support (pick a company like this, but it usually doesn't last long -- they're likely either losing money, or propped up by a passionate underpaid founding team who won't be there forever)
-2) Good infrastructure, poor support (stick with a company like this because it's probably not worth the hassle to move)
+2) Good infrastructure, poor support (stick with a company like this if you are comfortable doing most of the technical work yourself because it's probably not worth the hassle to move)
 3) Poor infrastructure, poor support (this is when you leave to a company in state '1')
 
-Keep making sure you have your own backups so that you are able to always make a swift move if it becomes necessary.
+Keep making sure you have your own backups and that they are stored elsewhere so that you are able to always make a swift move if it becomes necessary (or if a webhost loses your data, which is more common than you might think).
 
 [title="2"]Requirements[/title]
 
 [media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
-When choosing a webhost, you need to make sure that they meet all the requirements of Composr. Composr is intentionally designed to have very low requirements, so most [concept]PHP[/concept]/[concept]MySQL[/concept]-supporting webhosts should be compatible.
+When choosing a webhost, you need to make sure that they meet all the requirements of Composr. Composr is intentionally designed to have low requirements, so most [concept]PHP[/concept]/[concept]MySQL[/concept]-supporting webhosts should be compatible.
 
 The remainder of this section details Composr's requirements. If you have trouble ascertaining a webhosts compliance, you may wish to contact them with this information. These requirements only apply to bundled functionality; non-bundled addons may have their own requirements.[staff_note]Also update download.txt in the homesite Git branch[/staff_note]
 
@@ -162,7 +160,6 @@ We require:
  - Key functions may not be disabled with [tt]disable_functions[/tt] (PHP can be stripped down heavily by disreputable webhosts) -- the installer will warn if any critical functions have been.
  - No other explicit disabling of standard functionality that we require via third-party PHP modification. Commonly webhosts do this using ModSecurity, Suhosin, suPHP or their own modified PHP versions. We do our best to workaround such issues for common recoverable cases, but ultimately if arbitrary standard functionality has been disabled the software cannot function.
  - Memory limit of at least 128MB (as this is PHP's default memory limit since 2009).
- - If you are running on Windows, and a PHP version below 7.2, and are using non-latin characters in codenames, you need to install the [tt]transliteration[/tt] addon (basically due to a PHP bug reading and write non-latin filenames)
 
 [title="3"]Database[/title]
 
@@ -178,7 +175,7 @@ We require:
 
 (&dagger;) MySQL 5.5.3 introduces the utf8mb4 character set, which is required to store emojis. The installer assumes you will install with this support available, but upgrades from older versions may work in anything from MySQL 4.1+ if the database is kept in [tt]latin1[/tt] via having [tt]$SITE_INFO['database_charset'] = 'latin1';[/tt] in [tt]_config.php[/tt]. This compatibility will not be guaranteed, but as webhosts have been very slow to upgrade MySQL installations we will informally try and maintain it.
 
-Often webhosts will quote a number of databases that webhosting comes with: Composr only requires a single MySQL database to function.
+Often webhosts will quote a number of databases that webhosting comes with: Composr only requires a single MySQL database to function (if absolutely necessary, you can use a database you already have, but ensure Composr uses a table prefix different from everything else).
 
 [title="3"]Requirements for specific features[/title]
 
@@ -218,26 +215,24 @@ If transliteration of non-European languages is desired (for quality URL moniker
 
 If PDF download indexing is required, [tt]pdftohtml[/tt] ([tt]poppler-utils[/tt]) is required.
 
-If using the eCommerce system with the Authorize.net payment gateway, then it is recommended, though not required, to have PHP [tt]hash_hmac[/tt] support. This allows the Composr software to compare hashes with Authorize.net as added security to prevent fraudulent requests.
-
 [title="2"]Further recommendations[/title]
 
 [media float="right" thumb="0" framed="0"]data_custom/images/docs/tip.png[/media]
 Composr recommends:
  - PHP versions:
-  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure (at the time of writing, anything less than PHP 8.0 is unsupported by the PHP developers).
-  - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.[media width="480" thumb="1" framed="1" description="Easy-reference summary of the key hosting recommendations." float="right"]data_custom/images/docs/tut_webhosting/image.png[/media]
+  - Don't accept EOL ("end-of-life"). If a webhost or Linux distribution has a PHP version that is EOL, it is not just out-dated, but also insecure.
+  - Make sure your PHP version is updated with security fixes, even if you haven't updated to the latest major version.
  - A PHP opcode cache: Zend OpCache (bundled by default), APC (available for PHP 5.6 or lower only), APCu, XCache, Nusphere PhpExpress, or Wincache.
  - A PHP environment with [tt]open_basedir[/tt] enabled.
  - At least 250MB of disk space.
- - Generally, if you are using shared webhosting then we advise picking a host that does nightly backups that you have access to restore -- we've seen a lot of webhosts not take any responsibility for backup, and it does need doing at the server level to work effectively.
+ - Generally, if you are using shared webhosting then we advise picking a host that does nightly backups that you have access to restore -- we've seen a lot of webhosts not take any responsibility for backup, and it does need doing at the server level to work effectively. Make sure you also download these backups to your own drive regularly or store them elsewhere.
 
 [title="2"]Web server compatibility[/title]
 
 Composr is only tested on, and optimised for, Apache and IIS.
 It might work on other web server software, such as LiteSpeed or Nginx, but it may require special configuration. We do not provide explicit support for configurations outside of Apache and IIS.
 
-There are a few notes to give, although the only one of likely major significance is the URL Schemes one..
+There are a few notes to give, although the only one of likely major significance is the URL Schemes one.
 
 {|
 ! Note
@@ -278,12 +273,12 @@ There are a few notes to give, although the only one of likely major significanc
 | Disabling URL access in certain directories
 | [tt].htaccess[/tt] files strewn around
 | [tt]web.config[/tt] file
-| This is an extra layer of security but is not required because executable PHP files that are not meant to be executed don't have any code that would activate by URL, and private files are protected by filename randomisation
+| This is an extra layer of security but is not required because executable PHP files that are not meant to be executed don't have any code that would activate by URL, and private files are protected by filename obfuscation
 |-
 | Disabling unauthorised log file downloading
 | [tt]data_custom/.htaccess[/tt] file
 | [tt]web.config[/tt] file
-| The Composr error log is the only log that exists, and download is protected as it is a [tt].php[/tt] file; if additional logs are created manually then the web server should be hand configured to prohibit direct access
+| The Composr error log is the only log that exists by default, and download is protected as it is a [tt].php[/tt] file. Additional log files if initialised are also blocked from access
 |-
 | [tt]failover_apache_rewritemap_file[/tt] option
 | Supported
@@ -317,7 +312,7 @@ If you wish to integrate an existing forum into Composr, rather than use our own
  - {$IS_MAINTAINED,forum_vb,vBulletin .7}
  - {$IS_MAINTAINED,forum_wbb,Burning Board 2.2/Lite}
  - {$IS_MAINTAINED,forum_smf,Simple Machine Forum 2.1}
-If your forum is not on the list, professional developers are available to add support.
+If your forum is not on the list, or its version is newer than the above, [page=":partners"]professional developers[/page] are available to add support.
 
 Please note that many 'forum systems' are referred to as 'bulletin boards', and that a 'forum' within 'forums' is often referred to as a 'board'. We consistently use the terms 'discussion forums', 'forums' and 'forum' to describe these.
 
@@ -403,7 +398,7 @@ The rest of this section will deal with the specifics of the [tt]max_allowed_pac
 
 [tt]max_allowed_packet[/tt] exists as separate server-side and client-side settings; this is totally different from the concept of server and session variables (which are both server-side) and should not be confused.
 
-[tt]max_allowed_packet[/tt] defaults to 1MB server-side if not configured at all (i.e. this is the hard-coded default). Most webhosts will have a higher default value and Composr defines a minimum requirement of 16MB (we define a higher limit in case large Comcode pages are being cached).
+[tt]max_allowed_packet[/tt] defaults to 1MB server-side on MySQL 5.5.3 (and it goes up to 64MB on MySQL 8) if not configured at all (i.e. this is the hard-coded default). Most webhosts will have a higher default value. Composr defines a higher minimum requirement of 16MB (due to sometimes needing to save large items like mail and Comcode page caches).
 [tt]max_allowed_packet[/tt]'s session variable exists but is read-only. Attempts to change it will give an error message. You therefore must configure the server variable correctly.
 Only MySQL users with the [tt]SUPER[/tt] privilege may set the server variable. Typically only the [tt]root[/tt] user has this.
 
@@ -416,7 +411,7 @@ The absolute maximum [tt]max_allowed_packet[/tt] setting (both server-side and c
 
 [title="2"]Domain names[/title]
 
-Most websites prefer to have a short and memorable Internet address, direct to their front page. In order to achieve this, you will need to pay for control of a domain name. A very large number of companies will provide these domains, and the facility to bind these names to your web-server, for a very low fee.
+Most websites prefer to have a short and memorable Internet address, direct to their front page. In order to achieve this, you will need to pay for control of a domain name. A very large number of companies will provide these domains, and the facility to bind these names to your web-server, for a very low fee (unless the domain was previously and recently owned by someone with a lot of traffic or is part of a premium tld).
 
 It is important to note that domain names are licensed on a temporary basis, and therefore you will need to renew your domain names. The length of the licence varies, but is typically between 1 and 5 years.
 
@@ -457,7 +452,7 @@ There are two ways that webhosts may use to manage web application on the server
 
 With a shared user, all sites run code as a user such as [tt]apache[/tt] or [tt]nobody[/tt]. This is simpler for the host to configure, but it is not a good idea for security. It also is the reason so much 'chmodding' may be needed (so the shared user has write access to files specifically on your account). In this scenario they will typically then lock other things down, such as denying shell access and setting an [tt]open_basedir[/tt] to sandbox PHP -- but rarely are these restrictions enough and it's an inherently incorrect approach for a shared webhost to take. Different server users are likely to be able to access and interfere with (erase and edit) each others files. We strongly advise any webhosts to use a suEXEC-style environment.
 
-With a suEXEC-style hosting environment, sites run code under the same account that the site is held in. This is simpler, easier to configure, and more secure. "suEXEC" refers specifically to how the Apache server manages this, other server software will refer to it in different ways.
+With a suEXEC-style hosting environment, sites run code under the same account that the site is held in. This is more secure. "suEXEC" refers specifically to how the Apache server manages this, other server software will refer to it in different ways.
 
 [title="3"]Worked example of a shared user permission scheme[/title]
 
