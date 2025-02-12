@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    core_configuration
+ * @package    health_check
  */
 
 /**
  * Hook class.
  */
-class Hook_config_tasks_background
+class Hook_config_hc_task_queue_threshold
 {
     /**
      * Gets the details relating to the config option.
@@ -31,16 +31,16 @@ class Hook_config_tasks_background
     public function get_details() : array
     {
         return [
-            'human_name' => 'TASKS_BACKGROUND',
-            'type' => 'tick',
-            'category' => 'PERFORMANCE',
-            'group' => 'GENERAL',
-            'explanation' => 'CONFIG_OPTION_tasks_background',
+            'human_name' => 'HC_TASK_QUEUE_THRESHOLD',
+            'type' => 'integer',
+            'category' => 'HEALTH_CHECK',
+            'group' => 'PERFORMANCE',
+            'explanation' => 'CONFIG_OPTION_hc_task_queue_threshold',
             'shared_hosting_restricted' => '0',
             'list_options' => '',
             'required' => true,
             'public' => false,
-            'addon' => 'core_configuration',
+            'addon' => 'health_check',
         ];
     }
 
@@ -51,21 +51,10 @@ class Hook_config_tasks_background
      */
     public function get_default() : ?string
     {
-        // Actually the task queue itself handles cases where Cron is not available
-        /*
-        if (!cron_installed()) {
+        if (!addon_installed('health_check')) {
             return null;
         }
-        */
 
-        // Actually we should enable it by default as it has many benefits; it also handles when the scheduler is not working
-        /*
-        if (GOOGLE_APPENGINE) {
-            return '1';
-        }
-        return '0';
-        */
-
-        return '1';
+        return '1000';
     }
 }

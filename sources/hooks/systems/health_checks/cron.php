@@ -42,6 +42,7 @@ class Hook_health_check_cron extends Hook_Health_Check
     {
         $this->process_checks_section('testCronSetUp', 'System scheduler set up', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCronSlow', 'Slow system scheduler', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testCronLargeTaskQueue', 'Backed-up task queue', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
     }
@@ -117,5 +118,32 @@ class Hook_health_check_cron extends Hook_Health_Check
             // No cycle
             $this->stateCheckSkipped('The system scheduler never ran');
         }
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testCronLargeTaskQueue(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
+            return;
+        }
+
+        $threshold = get_option('hc_task_queue_threshold');
+
+        $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', ['t_locked' => 0]); // We check locked tasks in a separate stability check
+        $this->assertTrue($num_task_rows < intval($threshold), do_lang('HC_TASK_QUEUE_BACKED_UP', integer_format($num_task_rows)));
     }
 }

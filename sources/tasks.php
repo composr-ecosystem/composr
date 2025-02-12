@@ -93,27 +93,24 @@ function execute_task_background(array $task_row)
     disable_php_memory_limit();
     $old_limit = cms_disable_time_limit();
 
-    $hook = $task_row['t_hook'];
-    $args = @unserialize($task_row['t_args']);
-    if ($args === false) {
-        // NB: This prevents the task from being 'added back into the queue' further down
-        $GLOBALS['SITE_DB']->query_delete('task_queue', [
-            'id' => $task_row['id'],
-        ], '', 1);
+    $result = false;
+    $ob = null;
 
-        $result = false;
-    } else {
+    $hook = $task_row['t_hook'];
+    task_log_open();
+    task_log(null, 'Starting task ' . $hook . ' with args ' . $task_row['t_args']);
+
+    $args = @unserialize($task_row['t_args']);
+    if ($args !== false) {
         require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
-        task_log_open();
-        task_log(null, 'Starting task ' . $hook . ' with args ' . $task_row['t_args']);
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
         set_mass_import_mode($mim_before);
     }
 
     if ($result === false) {
-        task_log(null, 'Finished task ' . $hook . ' WITH ERRORS');
+        task_log(null, 'Finished task ' . $hook . ' with errors');
     } else {
         task_log(null, 'Finished task ' . $hook);
     }
@@ -121,7 +118,7 @@ function execute_task_background(array $task_row)
 
     // Send notification
     if ($task_row['t_send_notification'] == 1) {
-        dispatch_task_notification($task_row['t_title'], $requester, $result);
+        dispatch_task_notification($task_row['t_title'], $requester, $result, $task_row);
     }
 
     if (is_array($result)) {
@@ -132,20 +129,7 @@ function execute_task_background(array $task_row)
         }
     }
 
-    if ($result === false) {
-        $GLOBALS['SITE_DB']->query_update(
-            'task_queue',
-            [
-                't_locked' => 0,
-                't_add_time' => time(), // Act like we re-added this to the queue so it effectively goes to the bottom of processing order
-            ],
-            [
-                'id' => $task_row['id'],
-            ],
-            '',
-            1
-        );
-    } else {
+    if ($result !== false) { // Effectively leave errored tasks locked in the queue so we do not get a bunch of failed messages
         $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
         ], '', 1);
@@ -322,6 +306,16 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
     if ($title === null) {
         return $message;
     }
+
+    // Pseudo health check to warn if the task queue is backed up and thus expect a longer waiting period
+    if ((addon_installed('health_check')) && (current_fatalistic() == 0)) {
+        $threshold = get_option('hc_task_queue_threshold');
+        $num_task_rows = $GLOBALS['SITE_DB']->query_select_value('task_queue', 'COUNT(*)', ['t_locked' => 0]);
+        if ($num_task_rows > intval($threshold)) { // '>' because we do not want to count this task which was already added
+            attach_message(do_lang_tempcode('TASK_QUEUE_BACKED_UP'), 'notice');
+        }
+    }
+
     return inform_screen($title, $message);
 }
 
@@ -400,8 +394,9 @@ function task_log_close()
  * @param  SHORT_TEXT $task_title The title of the task that executed
  * @param  MEMBER $requester The member who executed the task
  * @param  ~?array $result The results of the task (null: task completed without output) (false: task failed)
+ * @param  ?array $task_row The task row (null: this task was not executed from the queue)
  */
-function dispatch_task_notification(string $task_title, int $requester, $result)
+function dispatch_task_notification(string $task_title, int $requester, $result, ?array $task_row = null)
 {
     $attachments = [];
 
@@ -417,6 +412,13 @@ function dispatch_task_notification(string $task_title, int $requester, $result)
         if ($result === false) {
             $mime_type = null;
             $content_result = do_lang('INTERNAL_ERROR', comcode_escape('a7b2cebb8d092f939346f2aed91a939d'));
+
+            if ($task_row !== null) {
+                require_code('failure');
+                $run_url = find_script('tasks') . '?id=' . strval($task_row['id']) . '&secure_ref=' . $task_row['t_secure_ref'] . '&respect_locking=0';
+                $notif_message = do_lang('TASK_FAILED_STAFF', comcode_escape($task_title), comcode_escape($run_url), comcode_escape(strval($task_row['id'])));
+                cms_error_log($notif_message, 'error_occurred_cron');
+            }
         } else {
             list($mime_type, $content_result) = $result;
         }

@@ -33,7 +33,8 @@ class Hook_notification_task_completed extends Hook_Notification
      */
     public function get_initial_setting(string $notification_code, ?string $category, int $member_id) : int
     {
-        return A__STATISTICAL;
+        // return A__STATISTICAL;
+        return A__ALL & ~A_INSTANT_PT; // Ideally should always e-mail by default in case the task has an attachment (TODO: Change to Private Topic when we support it)
     }
 
     /**
