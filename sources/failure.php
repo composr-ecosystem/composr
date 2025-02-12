@@ -1155,6 +1155,7 @@ function cms_error_log(string $errormsg, string $notification_category = 'error_
 
 /**
  * Relay an error message, if appropriate, to e-mail listeners (sometimes core developers, and site staff).
+ * Caution! You should always log the error being relayed to the error log first before calling this.
  *
  * @param  string $text A error message (in HTML)
  * @param  boolean $developers Also send to core developers
