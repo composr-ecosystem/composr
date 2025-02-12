@@ -96,20 +96,27 @@ function execute_task_background(array $task_row)
     $hook = $task_row['t_hook'];
     $args = @unserialize($task_row['t_args']);
     if ($args === false) {
+        // NB: This prevents the task from being 'added back into the queue' further down
         $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
         ], '', 1);
 
-        fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('2183d24f3ed25c1393a6f9d5e0177527')));
+        $result = false;
+    } else {
+        require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
+        $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
+        task_log_open();
+        task_log(null, 'Starting task ' . $hook . ' with args ' . $task_row['t_args']);
+        $mim_before = get_mass_import_mode();
+        $result = call_user_func_array([$ob, 'run'], $args);
+        set_mass_import_mode($mim_before);
     }
-    require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
-    $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
-    task_log_open();
-    task_log(null, 'Starting task ' . $hook . ' with args ' . $task_row['t_args']);
-    $mim_before = get_mass_import_mode();
-    $result = call_user_func_array([$ob, 'run'], $args);
-    set_mass_import_mode($mim_before);
-    task_log(null, 'Finished task ' . $hook);
+
+    if ($result === false) {
+        task_log(null, 'Finished task ' . $hook . ' WITH ERRORS');
+    } else {
+        task_log(null, 'Finished task ' . $hook);
+    }
     task_log_close();
 
     // Send notification
