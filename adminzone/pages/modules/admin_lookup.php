@@ -118,6 +118,8 @@ class Module_admin_lookup
         }
 
         if ($type == 'view') {
+            warn_exit('Temporarily disabled due to a bug; see tracker issue https://compo.sr/tracker/view.php?id=6149'); // TODO
+
             $param = get_param_string('param', null);
 
             $this->title = get_screen_title('VIEW_REQUEST');
@@ -286,7 +288,7 @@ class Module_admin_lookup
             $one_sub_is_banned = false;
             foreach ($group as $row) {
                 $date = get_timezoned_date_time($row['date_and_time']);
-                $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip']], '_SELF');
+                $lookup_url = build_url(['page' => '_SELF', 'param' => $row['ip'], 'type' => 'results'], '_SELF');
                 $inner_ip_list->attach(do_template('LOOKUP_IP_LIST_ENTRY', [
                     '_GUID' => '94a133f5f711bbf09100346661e3f7c9',
                     'LOOKUP_URL' => $lookup_url,
@@ -480,10 +482,10 @@ class Module_admin_lookup
                     break;
                 }
 
-                $actionlog_username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['member_id'], '', false);
+                $member_lookup = hyperlink(build_url(['page' => '_SELF', 'param' => $myrow['member_id'], 'type' => 'results'], '_SELF'), $GLOBALS['FORUM_DRIVER']->get_username($myrow['member_id']), false, true);
 
                 $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
-                $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], '_SELF');
+                $url = build_url(['page' => 'admin_actionlog', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], '_SELF');
                 $date = hyperlink($url, get_timezoned_date_time($myrow['date_and_time']), false, true, '#' . strval($myrow['id']), null, null, null, '_top');
 
                 if ($myrow['param_a'] !== null) {
@@ -513,7 +515,7 @@ class Module_admin_lookup
                     list($_a, $_b) = $test;
                 }
 
-                $result_entry = [$actionlog_username, $date, $type_str, $_a, $_b];
+                $result_entry = [$member_lookup, $date, $type_str, $_a, $_b];
 
                 if (addon_installed('securitylogging')) {
                     $banned_test_1 = array_key_exists('ip', $myrow) ? ip_banned($myrow['ip'], true) : false;
@@ -582,6 +584,8 @@ class Module_admin_lookup
      */
     public function request_view() : object
     {
+        require_lang('zones');
+
         $fields = [];
 
         $id = get_param_integer('id');
