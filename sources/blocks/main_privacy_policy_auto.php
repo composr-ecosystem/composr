@@ -73,6 +73,8 @@ PHP;
 
         $sections = [];
 
+        $hash_data = [];
+
         $sections[do_lang('COOKIES')] = [
             'HEADING' => do_lang_tempcode('COOKIES'),
             'POSITIVE' => [],
@@ -95,6 +97,8 @@ PHP;
                     'NAME' => $name,
                     'REASON' => $details['reason'],
                 ];
+                $hash_data[] = is_object($name) ? $name->evaluate() : $name;
+                $hash_data[] = is_object($details['reason']) ? $details['reason']->evaluate() : $details['reason'];
             }
 
             foreach ($info['positive'] as $details) {
@@ -110,11 +114,13 @@ PHP;
                         'POSITIVE' => [],
                         'GENERAL' => [],
                     ];
+                    $hash_data[] = is_object($heading) ? $heading->evaluate() : $heading;
                 }
 
                 $sections[$heading]['POSITIVE'][] = [
                     'EXPLANATION' => $details['explanation'],
                 ];
+                $hash_data[] = is_object($details['explanation']) ? $details['explanation']->evaluate() : $details['explanation'];
             }
 
             foreach ($info['general'] as $details) {
@@ -130,12 +136,15 @@ PHP;
                         'POSITIVE' => [],
                         'GENERAL' => [],
                     ];
+                    $hash_data[] = is_object($heading) ? $heading->evaluate() : $heading;
                 }
 
                 $sections[$heading]['GENERAL'][] = [
                     'ACTION' => $details['action'],
                     'REASON' => $details['reason'],
                 ];
+                $hash_data[] = is_object($details['action']) ? $details['action']->evaluate() : $details['action'];
+                $hash_data[] = is_object($details['reason']) ? $details['reason']->evaluate() : $details['reason'];
             }
         }
 
@@ -143,7 +152,7 @@ PHP;
 
         sort_maps_by($cookies, 'NAME');
 
-        $hash = md5(serialize($sections) . serialize($cookies));
+        $hash = md5(serialize($hash_data));
         $previous_hash = get_value('privacy_policy_auto__hash', null, true);
         if ($hash !== $previous_hash) {
             set_value('privacy_policy_auto__hash', $hash, true);
