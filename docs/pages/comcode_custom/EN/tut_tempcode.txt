@@ -720,6 +720,14 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>{$TIME_PERIOD,1234}</td>
 			<td>Converts a number of seconds into a textually described time period (e.g. "10 minutes").</td>
 		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$TO_EPOCH_INTERVAL_INDEX,weeks,123379200,0}</td>
+			<td>Calculates the number of full intervals (parameter 1, default weeks) which occurred between epoch (parameter 3, default 0) and the given timestamp (parameter 2, default now). In this example, the symbol will return the number of full weeks (interval) which occurred between Unix timestamps 0 (epoch) and 123379200 (timestamp).</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$FROM_EPOCH_INTERVAL_INDEX,weeks,204,0}</td>
+			<td>Inverse of <kbd>$TO_EPOCH_INTERVAL_INDEX</kbd>; returns a timestamp when given an interval (parameter 1, default weeks), an index (parameter 2, default is the index in which now occurs), and an epoch (parameter 3, default 0). In this example, the symbol will return the Unix timestamp at which week (interval) number 50 (index) started, offset (epoch) timestamp of 0.</td>
+		</tr>
 	</tbody>
 </table>
 [/html]
@@ -955,6 +963,14 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 		<tr style="background: #FFDDDD">
 			<td>{$CURRENT_FATALISTIC}</td>
 			<td>Find the current fatalistic mode (whether all terminal errors will throw stack traces): 0 if it is off, 1 if it is on, 2 if it is on with additional details.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$SYMBOL_DATA_AS_JSON}</td>
+			<td>Returns a JSON-encoded string of several common environmental variables, used primarily in <kbd>HTML_HEAD</kbd> to transmit data to the JavaScript framework.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$CURRENCY_USER}</td>
+			<td>Returns the currency of the current user.</td>
 		</tr>
 	</tbody>
 </table>
@@ -1546,6 +1562,26 @@ Note that all of these except URL monikers require the [tt]commandr[/tt] addon f
 		<tr style="background: #FFDDDD">
 			<td>{$GEOCODE_ENABLED}</td>
 			<td>Find whether at least one Geocoding service is set up and can be used.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$CART_LINK}</td>
+			<td>Generate a button to access the shopping cart.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$CHAT_IM}</td>
+			<td>When sitewide IM is enabled, this will inject the code to make it work.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$CKEDITOR_PATH}</td>
+			<td>Returns the relative path to CKEditor (allows specifying parameter <kbd>ckeditor_dev</kbd> to run the <kbd>data_custom</kbd> CKEditor).</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$COMCODE_TAGS,WYSIWYG_COMCODE__*}</td>
+			<td>Returns a comma-delimited list of valid Comcode tags appropriate for use in CKEditor. Optionally, a <kbd>WYSIWYG_COMCODE__*</kbd> constant can be provided as a parameter in numerical format.</td>
+		</tr>
+		<tr style="background: #FFDDDD">
+			<td>{$PRIVACY_POLICY_DATE}</td>
+			<td>Returns the timestamp on which the Privacy Policy page (or the automatic Privacy Policy) was last modified.</td>
 		</tr>
 	</tbody>
 </table>
