@@ -208,7 +208,12 @@ class Module_admin_lookup
         if ($member_id === null) {
             $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
         } else {
-            log_it('INVESTIGATE_USER', strval($member_id), $username);
+            // Pagination on views / security alerts / actions would normally trigger repeat logging; we do not want that, so limit to every 15 minutes
+            $map = ['the_type' => 'INVESTIGATE_USER', 'member_id' => get_member(), 'param_a' => $member_id];
+            $result = $GLOBALS['SITE_DB']->query_select_value_if_there('actionlogs', 'id', $map, ' AND date_and_time>=' . strval(time() - (60 * 15)));
+            if ($result === null) {
+                log_it('INVESTIGATE_USER', strval($member_id), $username);
+            }
         }
         if ($ip === null) {
             $ip = '';
