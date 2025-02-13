@@ -384,6 +384,147 @@ class Module_admin_lookup
             $risk_score = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]));
         }
 
+        // Action logs
+        $actionlog = new Tempcode();
+        if (addon_installed('actionlog')) {
+            require_all_lang();
+
+            $start = get_param_integer('actionlog_start', 0);
+            $max = get_param_integer('actionlog_max', 10);
+
+            require_code('templates_results_table');
+            require_code('actionlog');
+
+            $field_titles = [
+                do_lang_tempcode('BY'),
+                do_lang_tempcode('DATE_TIME'),
+                do_lang_tempcode('ACTION'),
+                do_lang_tempcode('DETAILS'),
+                null,
+            ];
+            if (addon_installed('securitylogging')) {
+                $field_titles[] = do_lang_tempcode('BANNED');
+            }
+            $header_row = results_header_row($field_titles);
+
+            // Build our query
+            $query = '';
+            $query_cns = '';
+            $query_params = [];
+
+            if (!is_guest($member_id)) {
+                $query .= ' OR member_id={member_id}';
+                $query_cns .= ' OR l_by_member={member_id}';
+                $query_params['member_id'] = $member_id;
+            }
+            if (count($known_ip_addresses) > 0) {
+                $query .= ' OR ip IN (';
+                foreach ($known_ip_addresses as $i => $known_ip_address) {
+                    if ($i > 0) {
+                        $query .= ',';
+                    }
+                    $query .= '{ip_' . strval($i) . '}';
+                    $query_params['ip_' . strval($i)] = $known_ip_address['ip'];
+                }
+                $query .= ')';
+            }
+            if ($ip != '') {
+                $query .= ' OR ' . db_string_equal_to('ip', '{ip}');
+                $query_params['ip'] = $ip;
+            }
+            if (($username != do_lang('UNKNOWN')) && ($username != do_lang('GUEST'))) {
+                $query .= ' OR ' . db_string_equal_to('param_a', '{username}') . ' OR ' . db_string_equal_to('param_b', '{username}');
+                $query_cns .= ' OR ' . db_string_equal_to('l_param_a', '{username}') . ' OR ' . db_string_equal_to('l_param_b', '{username}');
+                $query_params['username'] = $username;
+            }
+            if ($email_address != '') {
+                $query .= ' OR ' . db_string_equal_to('param_a', '{email_address}') . ' OR ' . db_string_equal_to('param_b', '{email_address}');
+                $query_cns .= ' OR ' . db_string_equal_to('l_param_a', '{email_address}') . ' OR ' . db_string_equal_to('l_param_b', '{email_address}');
+                $query_params['email_address'] = $email_address;
+            }
+
+            // Get our results
+            $rows = [];
+            $max_rows = 0;
+
+            if (get_forum_type() == 'cns') {
+                $query_select = 'SELECT l_reason,id,l_by_member AS member_id,l_date_and_time AS date_and_time,l_the_type AS the_type,l_param_a AS param_a,l_param_b AS param_b FROM {prefix}f_moderator_logs WHERE 0=1';
+                $rows = array_merge($rows, $GLOBALS['FORUM_DB']->query_parameterised($query_select . $query_cns . ' ORDER BY date_and_time DESC', $query_params, $max + $start));
+
+                $query_count = 'SELECT COUNT(*) AS max_rows FROM {prefix}f_moderator_logs WHERE 0=1';
+                $_max_rows = $GLOBALS['FORUM_DB']->query_parameterised($query_count . $query_cns, $query_params);
+                $max_rows += $_max_rows[0]['max_rows'];
+            }
+
+            $query_select = 'SELECT id,member_id,date_and_time,the_type,param_a,param_b,ip FROM {prefix}actionlogs WHERE 0=1';
+            $rows = array_merge($GLOBALS['SITE_DB']->query_parameterised($query_select . $query . ' ORDER BY date_and_time DESC', $query_params, $max + $start));
+
+            $query_count = 'SELECT COUNT(*) AS max_rows FROM {prefix}actionlogs WHERE 0=1';
+            $_max_rows = $GLOBALS['SITE_DB']->query_parameterised($query_count . $query, $query_params);
+            $max_rows += $_max_rows[0]['max_rows'];
+
+            sort_maps_by($rows, '!date_and_time');
+
+            $result_entries = new Tempcode();
+            foreach ($rows as $i => $myrow) {
+                if ($i < $start) {
+                    continue;
+                }
+
+                if ($i >= ($start + $max)) { // We do not want any more rows
+                    break;
+                }
+
+                $actionlog_username = $GLOBALS['FORUM_DRIVER']->member_profile_hyperlink($myrow['member_id'], '', false);
+
+                $mode = array_key_exists('l_reason', $myrow) ? 'cns' : 'cms';
+                $url = build_url(['page' => '_SELF', 'type' => 'view', 'id' => $myrow['id'], 'mode' => $mode], '_SELF');
+                $date = hyperlink($url, get_timezoned_date_time($myrow['date_and_time']), false, true, '#' . strval($myrow['id']), null, null, null, '_top');
+
+                if ($myrow['param_a'] !== null) {
+                    $a = $myrow['param_a'];
+                } else {
+                    $a = '';
+                }
+                if ($myrow['param_b'] !== null) {
+                    $b = $myrow['param_b'];
+                } else {
+                    $b = '';
+                }
+
+                require_code('templates_tooltip');
+                $crop_length_a = 12;
+                $crop_length_b = 15;
+                $_a = generate_tooltip_by_truncation($a, ($b == '') ? ($crop_length_a + $crop_length_b + 3/*A bit of extra tolerance*/) : $crop_length_a);
+                $_b = ($b == '') ? null : generate_tooltip_by_truncation($b, $crop_length_b);
+
+                $type_str = do_lang($myrow['the_type'], $_a, $_b, null, null, false);
+                if ($type_str === null) {
+                    $type_str = $myrow['the_type'];
+                }
+
+                $test = actionlog_linkage($myrow, $crop_length_a, $crop_length_b);
+                if ($test !== null) {
+                    list($_a, $_b) = $test;
+                }
+
+                $result_entry = [$actionlog_username, $date, $type_str, $_a, $_b];
+
+                if (addon_installed('securitylogging')) {
+                    $banned_test_1 = array_key_exists('ip', $myrow) ? ip_banned($myrow['ip'], true) : false;
+                    $banned_test_2 = ($GLOBALS['SITE_DB']->query_select_value_if_there('usersubmitban_member', 'the_member', ['the_member' => $myrow['member_id']]) !== null);
+                    $banned_test_3 = $GLOBALS['FORUM_DRIVER']->is_banned($myrow['member_id']);
+                    $banned = (((!$banned_test_1)) && ((!$banned_test_2)) && (!$banned_test_3)) ? do_lang_tempcode('NO') : do_lang_tempcode('YES');
+
+                    $result_entry[] = $banned;
+                }
+
+                $result_entries->attach(results_entry($result_entry, true));
+            }
+
+            $actionlog = results_table(do_lang_tempcode('ACTIONS'), $start, 'actionlog_start', $max, 'actionlog_max', $max_rows, $header_row, $result_entries);
+        }
+
         // We have actionable items (ban toggles) so we need conflict resolution
         require_code('form_templates');
         list($warning_details, $ping_url) = handle_conflict_resolution($param);
@@ -400,6 +541,8 @@ class Module_admin_lookup
             'ALERTS' => $alerts,
 
             'STATS' => $stats,
+
+            'ACTIONLOG' => $actionlog,
 
             'IP_LIST' => $ip_list,
 
