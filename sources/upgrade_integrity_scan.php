@@ -495,7 +495,7 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                     unset($manifest[$rela . $file]);
                 } elseif (array_key_exists(str_replace('_custom', '', preg_replace('#themes/[^/]*/#', 'themes/default/', $rela)) . $file, $manifest)) {
                     $known_in_addon = false;
-                    foreach ($hook_files as $hook_file) {
+                    foreach ($hook_files as $hook_file => $info) {
                         if (strpos($hook_file, str_replace('themes/default/css/', '', str_replace('themes/default/templates/', '', str_replace('_custom', '', preg_replace('#themes/[^/]*/#', 'themes/default/', $rela)))) . $file) !== false) {
                             $known_in_addon = true;
                             break;
