@@ -952,10 +952,20 @@ function _helper_promote_text_field_to_comcode(object $this_ref, string $table_n
     $this_ref->delete_table_field($table_name, $name);
     $this_ref->add_table_field($table_name, $name, $field_type);
     foreach ($rows as $row) {
+        if (multi_lang_content()) {
+            $text = get_translated_text($row[$name]);
+        } else {
+            $text = $row[$name];
+        }
+
         if ($in_assembly) {
             $map = insert_lang($name, '', $level, $this_ref, true, null, null, false, null, $row[$name]);
         } else {
-            $map = insert_lang($name, $row[$name], $level, $this_ref);
+            if (is_string($text)) {
+                $map = insert_lang($name, $text, $level, $this_ref);
+            } else {
+                $map = insert_lang($name, '', $level, $this_ref); // Corrupt translation
+            }
         }
         $this_ref->query_update($table_name, $map, [$key => $row[$key]]);
     }
