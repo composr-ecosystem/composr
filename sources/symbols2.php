@@ -2024,7 +2024,7 @@ function ecv2_MATURITY_FILTER_REQUESTED(string $lang, array $escaped, array $par
     } elseif (isset($_SERVER['HTTP_PREFER'])) {
         $safe = $_SERVER['HTTP_PREFER'];
     }
-    if (cms_strtolower_ascii($safe) == 'safe') {
+    if (strpos(cms_strtolower_ascii($safe), 'safe') !== false) {
         return '1';
     }
     return '0';
@@ -2747,7 +2747,7 @@ function ecv2_KEEP_POST(string $lang, array $escaped, array $param) : string
  */
 function ecv2_DO_NOT_TRACK_REQUESTED(string $lang, array $escaped, array $param) : string
 {
-    $safe = '';
+    $dnt = '';
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
         if (isset($headers['DNT'])) {
