@@ -825,6 +825,8 @@ function is_unhelpful_redirect(string $redirect) : bool
         static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step2'], '', [], false, false, true)),
         static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step3'], '', [], false, false, true)),
         static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'step4'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => 'review_rules'], '', [], false, false, true)),
+        static_evaluate_tempcode(build_url(['page' => 'join', 'type' => '_review_rules'], '', [], false, false, true)),
     ];
     foreach ($unhelpful_url_stubs as $unhelpful_url_stub) {
         if (substr($redirect, 0, strlen($unhelpful_url_stub)) == $unhelpful_url_stub) {
