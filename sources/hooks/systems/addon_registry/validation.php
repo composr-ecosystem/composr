@@ -82,7 +82,7 @@ class Hook_addon_registry_validation
      */
     public function get_description() : string
     {
-        return 'Subject member\'s to validation (approval) of their content submissions, and enable/disable content.';
+        return "This addon enables the ability to set content as validated (public) or not (staff / direct link only), and to subject content submissions by members to approval (validation) by staff. Additionally, if you have Commandr installed, you can schedule content to automatically validate at a given date and time.";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_validation
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['commandr'],
             'conflicts_with' => [],
             'previously_in_addon' => ['core_unvalidated', 'unvalidated'],
         ];

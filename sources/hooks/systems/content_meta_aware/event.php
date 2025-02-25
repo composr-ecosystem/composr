@@ -83,6 +83,7 @@ class Hook_content_meta_aware_event extends Hook_CMA
             'edit_time_field' => 'e_edit_date',
             'date_field' => 'e_next_recurrence_time',
             'validated_field' => 'validated',
+            'validation_time_field' => 'validation_time',
             'additional_sort_fields' => [
                 'start_time' => [
                     'ASC' => 'e_start_year ASC,e_start_month ASC,e_start_day ASC,e_start_hour ASC,e_start_minute ASC',

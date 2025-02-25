@@ -111,7 +111,11 @@ function _handle_permission_check_logging(int $member_id, string $op, array $par
                 $str .= ',';
             }
 
-            $str .= is_string($p) ? $p : (($p === null) ? '' : strval($p));
+            if (is_array($p)) {
+                $str .= serialize($p);
+            } else {
+                $str .= is_string($p) ? $p : (($p === null) ? '' : strval($p));
+            }
         }
     }
 

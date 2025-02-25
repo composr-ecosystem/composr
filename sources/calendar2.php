@@ -693,7 +693,7 @@ function schedule_code(string $hook, string $id, array $parameters, string $titl
 function _get_schedule_code_event_id(string $hook, string $id) : ?int
 {
     $schedule_code = _get_schedule_code_prefix($hook, $id);
-    $sql = 'SELECT e.id FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code) . ' %\'';
+    $sql = 'SELECT e.id FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like($schedule_code . '%') . '\'';
     return $GLOBALS['SITE_DB']->query_value_if_there($sql, false, true, ['e_content' => 'LONG_TRANS__COMCODE']);
 }
 

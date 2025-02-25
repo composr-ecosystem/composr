@@ -93,6 +93,7 @@ class Hook_content_meta_aware_forum extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => null,
 
             'seo_type_code' => null,

@@ -86,6 +86,7 @@ class Hook_resource_meta_aware_tracker_issue extends Hook_CMA
             'edit_time_field' => 'last_updated',
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => [
                 'popular' => null, // Abstract
                 'added' => null, // Abstract

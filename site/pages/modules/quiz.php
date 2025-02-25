@@ -35,7 +35,7 @@ class Module_quiz
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 8;
+        $info['version'] = 9;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -128,6 +128,7 @@ class Module_quiz
                 'q_type' => 'ID_TEXT', // COMPETITION, TEST, SURVEY
                 'q_add_date' => 'TIME',
                 'q_validated' => 'BINARY',
+                'q_validation_time' => '?TIME',
                 'q_submitter' => 'MEMBER',
                 'q_points_for_passing' => 'INTEGER',
                 'q_newsletter_id' => '?AUTO_LINK',
@@ -208,6 +209,10 @@ class Module_quiz
             $GLOBALS['SITE_DB']->alter_table_field('quiz_entries', 'q_quiz', 'AUTO_LINK', 'q_quiz_id');
             $GLOBALS['SITE_DB']->alter_table_field('quiz_entry_answer', 'q_entry', 'AUTO_LINK', 'q_entry_id');
             $GLOBALS['SITE_DB']->alter_table_field('quiz_entry_answer', 'q_question', 'AUTO_LINK', 'q_question_id');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 9)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('quizzes', 'q_validation_time', '?TIME');
         }
     }
 

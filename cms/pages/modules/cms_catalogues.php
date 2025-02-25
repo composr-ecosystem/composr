@@ -473,6 +473,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?ID_TEXT $catalogue_name The catalogue for the entry (null: detect)
      * @param  ?AUTO_LINK $category_id The category for the entry (null: first)
      * @param  BINARY $validated Whether the entry is validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  LONG_TEXT $notes Staff notes
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
@@ -480,7 +481,7 @@ class Module_cms_catalogues extends Standard_crud_module
      * @param  ?AUTO_LINK $id The ID of the entry (null: not yet added)
      * @return mixed Either Tempcode; or a tuple of: (fields, hidden-fields[, delete-fields][, edit-text][, whether all delete fields are specified][, posting form text, more fields][, parsed WYSIWYG editable text])
      */
-    public function get_form_fields(?string $catalogue_name = null, ?int $category_id = null, int $validated = 1, string $notes = '', ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, ?int $id = null)
+    public function get_form_fields(?string $catalogue_name = null, ?int $category_id = null, int $validated = 1, ?int $validation_time = null, string $notes = '', ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, ?int $id = null)
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -612,22 +613,24 @@ class Module_cms_catalogues extends Standard_crud_module
             $fields->attach($extra_fields);
         }
 
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
-            }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CATALOGUE_ENTRY', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
-        if ((has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require_b)) || (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require))) {
-            if (addon_installed('validation')) {
-                if (count($field_groups) != 1) {
-                    $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '17e83c2d6412bddc12ac1873f9ec6092', 'TITLE' => do_lang_tempcode('SETTINGS')]));
+        // Validation
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                 }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CATALOGUE_ENTRY', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
+            }
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_catalogues', $this->permissions_module_require)) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'catalogue_entry'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'catalogue_entry'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
@@ -732,7 +735,7 @@ class Module_cms_catalogues extends Standard_crud_module
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'catalogue_entry'));
         }
 
-        return $this->get_form_fields($catalogue_name, $myrow['cc_id'], $myrow['ce_validated'], $myrow['notes'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $id);
+        return $this->get_form_fields($catalogue_name, $myrow['cc_id'], $myrow['ce_validated'], $myrow['ce_validation_time'], $myrow['notes'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $id);
     }
 
     /**
@@ -789,9 +792,11 @@ class Module_cms_catalogues extends Standard_crud_module
     public function add_actualisation() : array
     {
         require_code('catalogues2');
+        require_code('temporal2');
 
         $category_id = post_param_integer('category_id');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $notes = post_param_string('notes', '');
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
@@ -859,6 +864,11 @@ class Module_cms_catalogues extends Standard_crud_module
             content_review_set('catalogue_entry', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('catalogue_entry', strval($id), $validation_time);
+        }
+
         $this->donext_category_id = $category_id;
         $this->donext_catalogue_name = $catalogue_name;
 
@@ -874,11 +884,13 @@ class Module_cms_catalogues extends Standard_crud_module
     public function edit_actualisation(string $_id) : ?object
     {
         require_code('catalogues2');
+        require_code('temporal2');
 
         $id = intval($_id);
 
         $category_id = post_param_integer('category_id', INTEGER_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $notes = post_param_string('notes', STRING_MAGIC_NULL);
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
@@ -946,6 +958,11 @@ class Module_cms_catalogues extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('catalogue_entry', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('catalogue_entry', strval($id), $validation_time);
         }
 
         // Purge support

@@ -86,6 +86,7 @@ class Hook_content_meta_aware_member extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => 'm_join_time',
             'validated_field' => 'm_validated',
+            'validation_time_field' => null,
             'additional_sort_fields' => [
                 'm_cache_num_posts' => null,
                 'm_last_visit_time' => null,

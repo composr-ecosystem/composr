@@ -4368,7 +4368,7 @@ function make_fractionable_editable(string $content_type, $id, $title) : object
 /**
  * Find whether a fractional edit is underway.
  *
- * @return boolean Whether a fractional edit is underway
+ * @return boolean Whether a fractional (inline) edit is underway
  */
 function fractional_edit() : bool
 {

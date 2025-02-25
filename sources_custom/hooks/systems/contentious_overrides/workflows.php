@@ -211,9 +211,8 @@ class Hook_contentious_overrides_workflows
 
                 // Replace the validation field for images and videos with a workflow field.
                 $code = override_str_replace_exactly(
-                    "\$validated_field = new Tempcode();",
+                    "// Validation",
                     "
-                    <ditto>
                     require_code('workflows');
                     if (!isset(\$adding)) {
                         \$adding = (\$url == '');
@@ -225,15 +224,36 @@ class Hook_contentious_overrides_workflows
                             \$hidden->attach(form_input_hidden('workflow', 'wf_-1'));
                         }
                     }
+
+                    <ditto>
                     ",
                     $code,
                     2
                 );
+
                 $code = override_str_replace_exactly(
-                    "\$fields->attach(\$validated_field);",
+                    "\$fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', \$validated == 1));",
                     "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
                     $code,
-                    3
+                    1
+                );
+                $code = override_str_replace_exactly(
+                    "\$fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'image'), 'validation_time', false, (\$validation_time === null), true, \$validation_time));",
+                    "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
+                    $code,
+                    1
+                );
+                $code = override_str_replace_exactly(
+                    "\$fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', \$validated == 1));",
+                    "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
+                    $code,
+                    1
+                );
+                $code = override_str_replace_exactly(
+                    "\$fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode(\$GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'video'), 'validation_time', false, (\$validation_time === null), true, \$validation_time));",
+                    "require_code('workflows'); if (empty(get_all_workflows())) { <ditto> }",
+                    $code,
+                    1
                 );
 
                 // Now we add a workflow selection to the gallery creation form. This is a

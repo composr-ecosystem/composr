@@ -201,6 +201,7 @@ class Hook_commandr_fs_quizzes extends Resource_fs_base
             'redo_time' => $row['q_reattempt_hours'],
             'type' => $row['q_type'],
             'validated' => $row['q_validated'],
+            'validation_time' => remap_time_as_portable($row['q_validation_time']),
             'text' => $text,
             'submitter' => remap_resource_id_as_portable('member', $row['q_submitter']),
             'points_for_passing' => $row['q_points_for_passing'],

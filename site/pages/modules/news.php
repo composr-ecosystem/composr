@@ -35,7 +35,7 @@ class Module_news
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 9;
+        $info['version'] = 10;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -93,6 +93,7 @@ class Module_news
                 'author' => 'ID_TEXT',
                 'submitter' => 'MEMBER',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'edit_date' => '?TIME',
                 'news_category' => 'AUTO_LINK',
                 'news_views' => 'INTEGER',
@@ -189,7 +190,7 @@ class Module_news
             $GLOBALS['SITE_DB']->alter_table_field('news_rss_cloud', 'watching_channel', 'URLPATH', 'watch_channel_url');
         }
 
-        // TODO: does not work yet: "data too long"
+        // TODO: does not work yet: "data too long" (make sure to update the $upgrade_from and move this block accordingly)
         /*
         if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta6
             $GLOBALS['SITE_DB']->add_table_field('news', 'news_guid', 'BGUID');
@@ -209,6 +210,41 @@ class Module_news
             } while (count($rows) > 0);
         }
         */
+
+        if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('news', 'validation_time', '?TIME');
+
+            // Migrate old publication time code to our new validation time
+            if (addon_installed('calendar')) {
+                require_code('calendar2');
+                require_code('temporal');
+
+                // Gather our calendar events
+                $sql = 'SELECT e.id,e.e_content FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like('run_scheduled_action publish_news%') . '\'';
+                $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true, ['e_content' => 'LONG_TRANS__COMCODE']);
+
+                foreach ($rows as $row) {
+                    $content = get_translated_text($row['e_content']);
+                    $matches = [];
+                    if (preg_match('/run_scheduled_action publish_news "(\d+)"/', $content, $matches) != 0) {
+                        $news_id = $matches[1];
+
+                        // Get the time of publication
+                        $_time = get_schedule_code_event_time('publish_news', $news_id);
+                        if ($_time !== null) {
+                            list($minute, $hour, $month, $day, $year) = $_time;
+                            $time = cms_mktime($hour, $minute, 0, $month, $day, $year);
+
+                            // Set publication time into our new validation time field
+                            $GLOBALS['SITE_DB']->query_update('news', ['validation_time' => $time], ['id' => intval($news_id)]);
+                        }
+
+                        // Un-schedule the event from the calendar
+                        unschedule_code('publish_news', $news_id);
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -303,6 +303,7 @@ class Module_admin_version
                 'the_page' => '*ID_TEXT',
                 'p_parent_page' => 'ID_TEXT',
                 'p_validated' => 'BINARY',
+                'p_validation_time' => '?TIME',
                 'p_edit_date' => '?TIME',
                 'p_add_date' => 'TIME',
                 'p_submitter' => 'MEMBER',
@@ -1305,6 +1306,8 @@ class Module_admin_version
             set_option('telemetry', strval($telemetry));
 
             delete_value('implicit_usergroup_sync'); // In favor of the native system scheduler enable / disable system
+
+            $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_validation_time', '?TIME');
         }
     }
 

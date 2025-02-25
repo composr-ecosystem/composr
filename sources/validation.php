@@ -62,6 +62,65 @@ function check_jump_to_not_validated(string $content_type, string $content_id, i
 }
 
 /**
+ * Schedule a piece of content for validation.
+ *
+ * @param ID_TEXT $content_type The content type to be validated
+ * @param ID_TEXT $content_id The content ID to be validated
+ * @param ?array $validation_time The UTC date components specifying when the content should be validated (null: remove the schedule)
+ */
+function schedule_validation(string $content_type, string $content_id, ?array $validation_time = null)
+{
+    if (!addon_installed('commandr')) {
+        return;
+    }
+
+    if (!has_privilege(get_member(), 'scheduled_publication_times')) {
+        return;
+    }
+
+    require_code('content');
+    require_code('temporal');
+
+    $cma_ob = get_content_object($content_type);
+    if ($cma_ob === null) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+    }
+
+    $cma_info = $cma_ob->info();
+
+    if ($cma_info === null) {
+        return;
+    }
+    if (!isset($cma_info['validation_time_field'])) {
+        return;
+    }
+
+    $db = $cma_info['db'];
+    $table = $cma_info['table'];
+    $id_field = is_array($cma_info['id_field']) ? $cma_info['id_field'] : [$cma_info['id_field']];
+    $id_field_numeric = $cma_info['id_field_numeric'];
+    $validation_time_field = $cma_info['validation_time_field'];
+
+    $where_map = [];
+    $id_field = array_reverse($id_field);
+    $id_parts = explode(':', $content_id);
+    foreach ($id_field as $i => $field) {
+        $where_map[$field] = ($id_field_numeric ? intval($id_parts[$i]) : $id_parts[$i]);
+    }
+
+    // Un-setting the schedule
+    if ($validation_time === null) {
+        $db->query_update($table, [$validation_time_field => null], $where_map);
+        return;
+    }
+
+    // Setting the schedule
+    list($year, $month, $day, $hour, $minute, $second) = $validation_time;
+    $timestamp = cms_gmmktime($hour, $minute, $second, $month, $day, $year);
+    $db->query_update($table, [$validation_time_field => $timestamp], $where_map);
+}
+
+/**
  * Get an array of content needing validation.
  * This is a crude method that uses the database directly for performance reasons.
  *

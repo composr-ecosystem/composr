@@ -35,7 +35,7 @@ class Module_catalogues
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 12;
+        $info['version'] = 13;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -158,6 +158,7 @@ class Module_catalogues
                 'ce_views' => 'INTEGER',
                 'ce_views_prior' => 'INTEGER',
                 'ce_validated' => 'BINARY',
+                'ce_validation_time' => '?TIME',
                 'notes' => 'LONG_TEXT',
                 'allow_rating' => 'BINARY',
                 'allow_comments' => 'SHORT_INTEGER',
@@ -671,6 +672,10 @@ class Module_catalogues
         if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('catalogue_categories', 'cc_move_target', '?AUTO_LINK', 'cc_move_target_id');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('catalogue_entries', 'ce_validation_time', '?TIME');
         }
     }
 

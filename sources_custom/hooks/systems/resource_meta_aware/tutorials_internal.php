@@ -77,6 +77,7 @@ class Hook_resource_meta_aware_tutorials_internal
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => null,
 
             'seo_type_code' => null,

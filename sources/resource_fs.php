@@ -154,6 +154,36 @@ function get_resource_fs_record(string $resource_type, string $resource_id) : ?a
 }
 
 /**
+ * Edit a Resource-fs record.
+ *
+ * @param  ID_TEXT $resource_type The resource type
+ * @param  ID_TEXT $resource_id The resource ID
+ * @param  LONG_TEXT $json The JSON resource data
+ * @return boolean Whether it was successful
+ */
+function edit_resource_fs_record(string $resource_type, string $resource_id, string $json) : bool
+{
+    $resource_fs_ob = get_resource_commandr_fs_object($resource_type);
+
+    $resource_fs_path = find_commandr_fs_filename_via_id($resource_type, $resource_id, true);
+    if ($resource_fs_path === null) {
+        return false;
+    }
+
+    $properties = @json_decode($json, true);
+    if ($properties === false) {
+        return false;
+    }
+
+    $id = $resource_fs_ob->resource_edit($resource_type, basename($resource_fs_path), dirname($resource_fs_path), $properties);
+    if ($id === false) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
  * Get the Commandr-fs object for a resource type.
  *
  * @param  ID_TEXT $resource_type The resource type

@@ -78,6 +78,7 @@ class Hook_resource_meta_aware_mail extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => [
                 'm_to_name' => null,
                 'm_from_name' => null,

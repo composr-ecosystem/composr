@@ -386,17 +386,17 @@ class Module_cms_news extends Standard_crud_module
      * @param  LONG_TEXT $news The news summary
      * @param  SHORT_TEXT $author The name of the author
      * @param  BINARY $validated Whether the news is validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
      * @param  BINARY $send_trackbacks Whether to show the "send trackback" field
      * @param  LONG_TEXT $notes Notes for the video
      * @param  URLPATH $image URL to the image for the news entry (blank: use cat image)
-     * @param  ?array $scheduled Scheduled go-live time (null: N/A)
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields(?int $id = null, ?int $main_news_category = null, ?array $news_category = null, string $title = '', string $news = '', string $author = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, int $send_trackbacks = 1, string $notes = '', string $image = '', ?array $scheduled = null, array $regions = []) : array
+    public function get_form_fields(?int $id = null, ?int $main_news_category = null, ?array $news_category = null, string $title = '', string $news = '', string $author = '', int $validated = 1, ?int $validation_time = null, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, int $send_trackbacks = 1, string $notes = '', string $image = '', array $regions = []) : array
     {
         if ($id === null) {
             // Cloning support
@@ -468,23 +468,27 @@ class Module_cms_news extends Standard_crud_module
 
         $posting_form_tabindex = get_form_field_tabindex(null);
 
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_NEWS', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('validation')) {
-                $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_news', $this->permissions_module_require)) {
+                $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'news'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'news'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
-        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '90e0f1f4557eb78d58b9a13c3e1e65dc', 'SECTION_HIDDEN' => $news == '' && $image == '' && ($scheduled === null) && ($title == ''/*=new entry and selected news cats was from URL*/ || (empty($news_category))), 'TITLE' => do_lang_tempcode('ADVANCED')]));
+        $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '90e0f1f4557eb78d58b9a13c3e1e65dc', 'SECTION_HIDDEN' => $news == '' && $image == '' && ($title == ''/*=new entry and selected news cats was from URL*/ || (empty($news_category))), 'TITLE' => do_lang_tempcode('ADVANCED')]));
 
         $news_summary_required = (get_option('news_summary_required') == '1');
         $_summary_field = form_input_text_comcode(do_lang_tempcode('NEWS_SUMMARY'), $news_summary_required ? new Tempcode() : do_lang_tempcode('DESCRIPTION_NEWS_SUMMARY'), 'news', $news, $news_summary_required);
@@ -506,10 +510,6 @@ class Module_cms_news extends Standard_crud_module
         if (get_value('disable_news_repimages') !== '1') {
             require_code('images');
             $fields2->attach(form_input_upload_multi_source(do_lang_tempcode('REPRESENTATIVE_IMAGE'), do_lang_tempcode('DESCRIPTION_NEWS_IMAGE_OVERRIDE'), $hidden, 'image', 'icons/news', true, $image, false, null, IMAGE_CRITERIA_WEBSAFE));
-        }
-
-        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
-            $fields2->attach(form_input_date__cron(do_lang_tempcode('PUBLICATION_TIME'), do_lang_tempcode('DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, ($scheduled === null), true, $scheduled, intval(date('Y')) - 1970 + 2, 1970));
         }
 
         require_code('syndication');
@@ -537,7 +537,7 @@ class Module_cms_news extends Standard_crud_module
             $fields2->attach(content_review_get_fields('news', ($id === null) ? null : strval($id)));
         }
 
-        return [$fields, $hidden, null, null, null, null, make_string_tempcode($fields2->evaluate()), $posting_form_tabindex];
+        return [$fields, $hidden, null, null, null, null, $fields2, $posting_form_tabindex];
     }
 
     /**
@@ -598,18 +598,9 @@ class Module_cms_news extends Standard_crud_module
             $categories[] = $value['news_entry_category'];
         }
 
-        $scheduled = null;
-
-        if (addon_installed('calendar')) {
-            require_code('calendar2');
-            $scheduled = get_schedule_code_event_time('publish_news', strval($id));
-        } else {
-            $scheduled = null;
-        }
-
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'news', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image_url'], $scheduled, $regions);
+        $ret = $this->get_form_fields($id, $cat, $categories, get_translated_text($myrow['title']), get_translated_text($myrow['news']), $myrow['author'], $myrow['validated'], $myrow['validation_time'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], 0, $myrow['notes'], $myrow['news_image_url'], $regions);
 
         $ret[2] = new Tempcode();
         $ret[3] = '';
@@ -626,10 +617,13 @@ class Module_cms_news extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         $author = post_param_string('author', $GLOBALS['FORUM_DRIVER']->get_username(get_member()));
         $news = post_param_string('news');
         $title = post_param_string('title');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $news_article = post_param_string('post');
         if (post_param_string('main_news_category') != 'personal') {
             $main_news_category = post_param_integer('main_news_category');
@@ -651,13 +645,6 @@ class Module_cms_news extends Standard_crud_module
 
         require_code('images2');
         $image = post_param_image('image', 'uploads/repimages', 'icons/news', false);
-
-        $schedule = post_param_date('schedule');
-        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (has_privilege(get_member(), 'scheduled_publication_times')) && ($schedule !== null) && ($schedule > time())) {
-            $validated = 0;
-        } else {
-            $schedule = null;
-        }
 
         if ($main_news_category !== null) {
             $owner = $GLOBALS['SITE_DB']->query_select_value('news_categories', 'nc_owner', ['id' => intval($main_news_category)]);
@@ -703,25 +690,13 @@ class Module_cms_news extends Standard_crud_module
             }
         }
 
-        if ($schedule !== null) {
-            if (!addon_installed('calendar')) {
-                warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d71b815fb8c550dcb21b2b79b29cbec2')));
-            }
-
-            require_code('calendar');
-
-            $parameters = [];
-            $start_year = intval(date('Y', $schedule));
-            $start_month = intval(date('m', $schedule));
-            $start_day = intval(date('d', $schedule));
-            $start_hour = intval(date('H', $schedule));
-            $start_minute = intval(date('i', $schedule));
-            require_code('calendar2');
-            schedule_code('publish_news', strval($id), $parameters, do_lang('PUBLISH_NEWS', $title), $start_year, $start_month, $start_day, $start_hour, $start_minute);
-        }
-
         if (addon_installed('content_reviews')) {
             content_review_set('news', strval($id));
+        }
+
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('news', strval($id), $validation_time);
         }
 
         return [strval($id), null];
@@ -735,9 +710,12 @@ class Module_cms_news extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : ?object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
 
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         $news_article = post_param_string('post', STRING_MAGIC_NULL);
         if (post_param_string('main_news_category', null) !== 'personal') {
@@ -773,25 +751,6 @@ class Module_cms_news extends Standard_crud_module
         $owner = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'nc_owner', ['id' => $main_news_category]); // if_there in case somehow category setting corrupted
         if (($owner !== null) && ($owner != get_member())) {
             check_privilege('can_submit_to_others_categories', ['news', $main_news_category]);
-        }
-
-        $schedule = post_param_date('schedule');
-
-        if ((addon_installed('calendar')) && (addon_installed('commandr')) && (!fractional_edit()) && (has_privilege(get_member(), 'scheduled_publication_times'))) {
-            require_code('calendar2');
-            unschedule_code('publish_news', strval($id));
-
-            if (($schedule !== null) && ($schedule > time())) {
-                $validated = 0;
-
-                $parameters = [];
-                $start_year = intval(date('Y', $schedule));
-                $start_month = intval(date('m', $schedule));
-                $start_day = intval(date('d', $schedule));
-                $start_hour = intval(date('H', $schedule));
-                $start_minute = intval(date('i', $schedule));
-                schedule_code('publish_news', strval($id), $parameters, do_lang('PUBLISH_NEWS', post_param_string('title')), $start_year, $start_month, $start_day, $start_hour, $start_minute);
-            }
         }
 
         $title = post_param_string('title', STRING_MAGIC_NULL);
@@ -837,6 +796,11 @@ class Module_cms_news extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('news', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('news', strval($id), $validation_time);
         }
 
         return null;

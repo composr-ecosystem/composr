@@ -306,6 +306,7 @@ class Hook_commandr_fs_wiki extends Resource_fs_base
         $properties = [
             'label' => get_translated_text($row['the_message']),
             'validated' => $row['validated'],
+            'validation_time' => remap_time_as_portable($row['validation_time']),
             'views' => $row['wiki_views'],
             'member_id' => remap_resource_id_as_portable('member', $row['member_id']),
             'add_date' => remap_time_as_portable($row['date_and_time']),

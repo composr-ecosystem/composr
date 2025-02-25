@@ -362,6 +362,7 @@ class Module_cms_downloads extends Standard_crud_module
      * @param  LONG_TEXT $additional_details Supplementary description for the download
      * @param  ?AUTO_LINK $out_mode_id The ID of the download this download is out-modeing (null: none)
      * @param  BINARY $validated Whether the download is validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
@@ -375,7 +376,7 @@ class Module_cms_downloads extends Standard_crud_module
      * @param  URLPATH $url_redirect The URL to redirect
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $name = '', ?int $category_id = null, string $url = '', string $author = '', string $description = '', string $additional_details = '', ?int $out_mode_id = null, int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', ?int $file_size = null, int $cost = 0, int $submitter_gets_points = 1, ?string $original_filename = null, ?int $licence = null, int $default_pic = 1, string $url_redirect = '') : array
+    public function get_form_fields(?int $id = null, string $name = '', ?int $category_id = null, string $url = '', string $author = '', string $description = '', string $additional_details = '', ?int $out_mode_id = null, int $validated = 1, ?int $validation_time = null, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', ?int $file_size = null, int $cost = 0, int $submitter_gets_points = 1, ?string $original_filename = null, ?int $licence = null, int $default_pic = 1, string $url_redirect = '') : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -439,19 +440,25 @@ class Module_cms_downloads extends Standard_crud_module
         if (($id === null) && (addon_installed('galleries'))) {
             $fields->attach($image_upload_field);
         }
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+
+        // Validation
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('validation')) {
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_downloads', $this->permissions_module_require)) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'download'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'download'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
@@ -574,7 +581,7 @@ class Module_cms_downloads extends Standard_crud_module
 
         $cat = $myrow['category_id'];
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['name']), $cat, $myrow['url'], $myrow['author'], get_translated_text($myrow['the_description']), get_translated_text($myrow['additional_details']), $myrow['out_mode_id'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['file_size'], $myrow['download_cost'], $myrow['download_submitter_gets_points'], $myrow['original_filename'], $myrow['download_licence_id'], $myrow['default_pic'], $myrow['url_redirect']);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['name']), $cat, $myrow['url'], $myrow['author'], get_translated_text($myrow['the_description']), get_translated_text($myrow['additional_details']), $myrow['out_mode_id'], $myrow['validated'], $myrow['validation_time'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['file_size'], $myrow['download_cost'], $myrow['download_submitter_gets_points'], $myrow['original_filename'], $myrow['download_licence_id'], $myrow['default_pic'], $myrow['url_redirect']);
 
         if (has_delete_permission('mid', get_member(), $myrow['submitter'], 'cms_downloads', ['downloads', $cat])) {
             $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('LEAVE'));
@@ -598,6 +605,8 @@ class Module_cms_downloads extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         $category_id = post_param_integer('category_id');
         $name = post_param_string('download_name');
         $description = post_param_string('description');
@@ -608,6 +617,7 @@ class Module_cms_downloads extends Standard_crud_module
         $_licence = post_param_string('licence', '');
         $licence = ($_licence == '') ? null : intval($_licence);
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $additional_details = post_param_string('additional_details');
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
         $allow_rating = post_param_integer('allow_rating', 0);
@@ -676,6 +686,11 @@ class Module_cms_downloads extends Standard_crud_module
             content_review_set('download', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('download', strval($id), $validation_time);
+        }
+
         return [strval($id), null];
     }
 
@@ -687,9 +702,12 @@ class Module_cms_downloads extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : ?object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
 
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         $category_id = post_param_integer('category_id', fractional_edit() ? INTEGER_MAGIC_NULL : false);
         $name = post_param_string('download_name');
@@ -779,6 +797,11 @@ class Module_cms_downloads extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('download', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('download', strval($id), $validation_time);
         }
 
         return null;

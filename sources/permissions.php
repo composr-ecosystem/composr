@@ -492,10 +492,9 @@ function has_category_access(int $member_id, string $permission_module, string $
         return $CATEGORY_ACCESS_CACHE[$member_id][$permission_module . '/' . $category];
     }
 
-    // Not loaded yet, load, then re-call ourself...
-
     $groups = get_permission_where_clause_groups($member_id);
     if ($groups === null) {
+        handle_permission_check_logging($member_id, 'has_category_access', [$permission_module, $category], true);
         return true;
     }
 
@@ -503,6 +502,11 @@ function has_category_access(int $member_id, string $permission_module, string $
         handle_permission_check_logging($member_id, 'has_category_access', [$permission_module, $category], false);
         return false; // As we know $CATEGORY_ACCESS_CACHE would have had a true entry if we did have access
     }
+
+    // Not loaded yet, load, then re-call ourself...
+
+    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
+    check_for_infinite_loop('has_category_access', func_get_args());
 
     $where = ' AND (1=0';
     if (($permission_module != 'forums') || (!is_on_multi_site_network())) {
@@ -793,11 +797,13 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
 
     global $SPAM_REMOVE_VALIDATION;
     if (($SPAM_REMOVE_VALIDATION) && ($member_id == get_member()) && (($privilege == 'bypass_validation_highrange_content') || ($privilege == 'bypass_validation_midrange_content') || ($privilege == 'bypass_validation_lowrange_content'))) {
+        handle_permission_check_logging($member_id, 'has_privilege', [$privilege, $page, $cats], false);
         return false;
     }
 
     $groups = get_permission_where_clause_groups($member_id);
     if ($groups === null) {
+        handle_permission_check_logging($member_id, 'has_privilege', [$privilege, $page, $cats], false);
         return true;
     }
 
@@ -857,6 +863,9 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
     }
 
     // Not loaded yet, load, then re-call ourself...
+
+    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
+    check_for_infinite_loop('has_privilege', func_get_args());
 
     global $SMART_CACHE;
     static $run_once = false;
@@ -957,6 +966,7 @@ function has_submit_permission(string $range, int $member_id, string $ip, ?strin
             $USERSUBMITBAN_MEMBER_CACHE = ($test !== null);
         }
         if ($USERSUBMITBAN_MEMBER_CACHE) {
+            handle_permission_check_logging($member_id, 'has_submit_permission', [$range, $page, $cats], false);
             $result = false;
         }
     }
@@ -1043,6 +1053,8 @@ function has_edit_permission(string $range, int $member_id, ?int $resource_owner
     if (has_privilege($member_id, 'edit_' . $range . 'range_content', $page, $cats)) {
         return true;
     }
+
+    handle_permission_check_logging($member_id, 'has_edit_permission', [$range, $page, $cats], false);
     return false;
 }
 
