@@ -32,9 +32,6 @@ class Hook_realtime_rain_calendar
      */
     public function run(int $from, int $to) : array
     {
-        // TODO: #6154 temporarily disabled because calendar_matches time zone conversions do not work.
-        return [];
-
         if (!addon_installed('calendar')) {
             return [];
         }
@@ -43,11 +40,12 @@ class Hook_realtime_rain_calendar
 
         if (has_actual_page_access(get_member(), 'calendar')) {
             require_code('calendar');
+            require_code('temporal');
 
-            $rows = calendar_matches(get_member(), get_member(), !has_privilege(get_member(), 'assume_any_member'), $from, $to); // NOTE: We also show (automatically) any RSS items the user has overlaid onto the calendar
+            $rows = calendar_matches(get_member(), get_member(), !has_privilege(get_member(), 'assume_any_member'), utctime_to_usertime($from), utctime_to_usertime($to)); // NOTE: We also show (automatically) any RSS items the user has overlaid onto the calendar
 
             foreach ($rows as $row) {
-                $timestamp = $row[2];
+                $timestamp = usertime_to_utctime($row[4]);
                 $member_id = $row[1]['e_submitter'];
 
                 if ($timestamp < $from) {
