@@ -39,6 +39,7 @@ class Hook_realtime_rain_polls
         $drops = [];
 
         if (has_actual_page_access(get_member(), 'polls')) {
+            // TODO: #6155 broken
             $rows = $GLOBALS['SITE_DB']->query('SELECT b.option1,b.option2,b.option3,b.option4,b.option5,b.option6,b.option7,b.option8,b.option9,b.option10,b.votes1,b.votes2,b.votes3,b.votes4,b.votes5,b.votes6,b.votes7,b.votes8,b.votes9,b.votes10,b.question,b.id,b.submitter AS member_id,a.date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll a LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll b ON a.date_and_time>b.date_and_time WHERE NOT EXISTS(SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'poll x WHERE x.id<>a.id AND x.id<>b.id AND x.date_and_time BETWEEN b.date_and_time AND a.date_and_time) AND b.date_and_time IS NOT NULL AND b.date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {

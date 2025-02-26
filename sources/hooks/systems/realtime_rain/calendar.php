@@ -32,6 +32,9 @@ class Hook_realtime_rain_calendar
      */
     public function run(int $from, int $to) : array
     {
+        // TODO: #6154 temporarily disabled because calendar_matches time zone conversions do not work.
+        return [];
+
         if (!addon_installed('calendar')) {
             return [];
         }
