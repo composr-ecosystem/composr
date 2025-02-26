@@ -63,3 +63,11 @@
 	font-weight: bold;
 	font-size: 1.25em;
 }
+
+/* Yellow Orange */
+.bubble-achievement {
+	background: url('{$IMG;,realtime_rain/bubbles/achievement-bubble}') no-repeat;
+}
+.bubble-achievement .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/achievement-avatar}') no-repeat;
+}
