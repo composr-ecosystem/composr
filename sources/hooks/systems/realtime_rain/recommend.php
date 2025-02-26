@@ -66,7 +66,7 @@ class Hook_realtime_rain_recommend
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
                     'URL' => $points_url,
-                    'IS_POSITIVE' => true,
+                    'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.

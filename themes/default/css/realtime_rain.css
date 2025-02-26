@@ -185,7 +185,7 @@
 	opacity: 0.7;
 }
 
-.attitude-ecommerce-positive {
+.attitude-points-positive {
 	background: url('{$IMG;,realtime_rain/effects/sun_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
 	width: 224px;
@@ -193,7 +193,7 @@
 	padding: 21px;
 	margin: -21px;
 }
-.attitude-join-positive, .attitude-Lorem-positive {
+.attitude-Lorem-positive, .attitude-points-sent-positive, .attitude-escrow-positive {
 	background: url('{$IMG;,realtime_rain/effects/halo_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
 	width: 224px;
@@ -201,7 +201,7 @@
 	padding: 21px;
 	margin: -21px;
 }
-.attitude-security-negative {
+.attitude-security-negative, .attitude-escrow-negative {
 	background: url('{$IMG;,realtime_rain/effects/horns_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
 	width: 224px;
@@ -209,7 +209,7 @@
 	padding: 21px;
 	margin: -21px;
 }
-.attitude-point-charges-negative {
+.attitude-points-negative {
 	background: url('{$IMG;,realtime_rain/effects/shadow_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
 	width: 224px;
@@ -276,6 +276,7 @@
 	text-decoration: none;
 }
 
+/* Forest Green (light green) */
 .bubble-post {
 	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat;
 }
@@ -283,6 +284,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
+/* Orange */
 .bubble-news {
 	background: url('{$IMG;,realtime_rain/bubbles/post-bubble}') no-repeat;
 }
@@ -290,6 +292,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/post-avatar}') no-repeat;
 }
 
+/* Purple */
 .bubble-recommend {
 	background: url('{$IMG;,realtime_rain/bubbles/recommend-bubble}') no-repeat;
 }
@@ -297,6 +300,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/recommend-avatar}') no-repeat;
 }
 
+/* Dark purple */
 .bubble-polls {
 	background: url('{$IMG;,realtime_rain/bubbles/polls-bubble}') no-repeat;
 }
@@ -304,6 +308,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/polls-avatar}') no-repeat;
 }
 
+/* Brown */
 .bubble-ecommerce {
 	background: url('{$IMG;,realtime_rain/bubbles/ecommerce-bubble}') no-repeat;
 }
@@ -311,6 +316,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/ecommerce-avatar}') no-repeat;
 }
 
+/* Blue gray */
 .bubble-actionlog {
 	background: url('{$IMG;,realtime_rain/bubbles/actionlog-bubble}') no-repeat;
 }
@@ -318,6 +324,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/actionlog-avatar}') no-repeat;
 }
 
+/* Red */
 .bubble-security {
 	background: url('{$IMG;,realtime_rain/bubbles/security-bubble}') no-repeat;
 }
@@ -325,6 +332,15 @@
 	background: url('{$IMG;,realtime_rain/avatars/security-avatar}') no-repeat;
 }
 
+/* Dark Red */
+.bubble-failedlogin {
+	background: url('{$IMG;,realtime_rain/bubbles/failedlogin-bubble}') no-repeat;
+}
+.bubble-failedlogin .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/failedlogin-avatar}') no-repeat;
+}
+
+/* Indigo */
 .bubble-chat {
 	background: url('{$IMG;,realtime_rain/bubbles/chat-bubble}') no-repeat;
 }
@@ -339,6 +355,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/stats-avatar}') no-repeat;
 }
 
+/* Green */
 .bubble-join, .bubble-lorem {
 	background: url('{$IMG;,realtime_rain/bubbles/join-bubble}') no-repeat;
 }
@@ -346,6 +363,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/join-avatar}') no-repeat;
 }
 
+/* Maroon (pink) */
 .bubble-calendar {
 	background: url('{$IMG;,realtime_rain/bubbles/calendar-bubble}') no-repeat;
 }
@@ -353,6 +371,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/calendar-avatar}') no-repeat;
 }
 
+/* Lime */
 .bubble-search {
 	background: url('{$IMG;,realtime_rain/bubbles/search-bubble}') no-repeat;
 }
@@ -360,27 +379,23 @@
 	background: url('{$IMG;,realtime_rain/avatars/search-avatar}') no-repeat;
 }
 
-.bubble-point-credits {
-	background: url('{$IMG;,realtime_rain/bubbles/point_credits-bubble}') no-repeat;
+/* Blue */
+.bubble-points, .bubble-points-sent {
+	background: url('{$IMG;,realtime_rain/bubbles/points-bubble}') no-repeat;
 }
-.bubble-point-credits .avatar-icon {
-	background: url('{$IMG;,realtime_rain/avatars/point_credits-avatar}') no-repeat;
-}
-
-.bubble-point-debits {
-	background: url('{$IMG;,realtime_rain/bubbles/point_debits-bubble}') no-repeat;
-}
-.bubble-point-debits .avatar-icon {
-	background: url('{$IMG;,realtime_rain/avatars/point_debits-avatar}') no-repeat;
+.bubble-points .avatar-icon, .bubble-points-sent .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/points-avatar}') no-repeat;
 }
 
-.bubble-point-transactions {
-	background: url('{$IMG;,realtime_rain/bubbles/point_transactions-bubble}') no-repeat;
+/* Teal */
+.bubble-escrow {
+	background: url('{$IMG;,realtime_rain/bubbles/escrow-bubble}') no-repeat;
 }
-.bubble-point-transactions .avatar-icon {
-	background: url('{$IMG;,realtime_rain/avatars/point_transactions-avatar}') no-repeat;
+.bubble-escrow .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/escrow-avatar}') no-repeat;
 }
 
+/* Light Brown (Brown) */
 .bubble-banners {
 	background: url('{$IMG;,realtime_rain/bubbles/banners-bubble}') no-repeat;
 }
