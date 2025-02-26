@@ -109,7 +109,7 @@ class Hook_addon_registry_purrrr
      */
     public function get_description() : string
     {
-        return 'Populate your galleries with 40 LOLCAT images.';
+        return 'Populate your galleries with 40 LOLCAT images. Meow.';
     }
 
     /**

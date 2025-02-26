@@ -107,7 +107,7 @@ class Hook_addon_registry_custom_ratings
      */
     public function get_description() : string
     {
-        return 'Example of more complex rating configuration.';
+        return "This addon contains an example of setting up more complex rating configuration (e.g. if you want ratings for different criteria).";
     }
 
     /**

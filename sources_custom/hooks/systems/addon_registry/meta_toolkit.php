@@ -107,7 +107,7 @@ class Hook_addon_registry_meta_toolkit
      */
     public function get_description() : string
     {
-        return 'Various developer tools for meta-management of a Composr site, including generating schemas, and low level management of the database, addons, and file changes.';
+        return 'Various developer tools for meta-management, including generating schemas, and low level management of the database, addons, and file changes.';
     }
 
     /**

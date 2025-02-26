@@ -82,7 +82,7 @@ class Hook_addon_registry_points
      */
     public function get_description() : string
     {
-        return 'Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.';
+        return "Implements a powerful virtual currency system to encourage member engagement and content submission. This allows members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points can act as a ranking system (rank points) as well as a virtual currency (points balance) to purchase various things depending on addons installed and configuration. Points can also be 'escrowed', with a written agreement, between members in exchange for a product or service (and disputes can be sent to staff for review and resolution).";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_points
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['leader_board'],
             'conflicts_with' => [],
         ];
     }

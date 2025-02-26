@@ -82,7 +82,7 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_description() : string
     {
-        return 'Welcome e-mails for new members.';
+        return "Set up e-mails which are automatically sent to new members after defined periods of time since registration. You could use these to welcome new members, guide them to next steps, or showcase the most important sections of your site.";
     }
 
     /**

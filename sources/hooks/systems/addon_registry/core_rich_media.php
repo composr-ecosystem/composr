@@ -82,7 +82,7 @@ class Hook_addon_registry_core_rich_media
      */
     public function get_description() : string
     {
-        return 'Comcode and attachments.';
+        return "Renderers for various Comcode tags and media / attachments.";
     }
 
     /**

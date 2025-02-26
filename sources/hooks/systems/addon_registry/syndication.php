@@ -82,7 +82,7 @@ class Hook_addon_registry_syndication
      */
     public function get_description() : string
     {
-        return 'Syndicate RSS/Atom feeds of your content.';
+        return "Implements RSS and Atom feeds of your site content.";
     }
 
     /**

@@ -112,7 +112,7 @@ class Hook_addon_registry_stealr
 There are four options:
  - "Members that are inactive, but have a lot of points"
  - "Members that are rich"
- - "Members that are random" (random member(-s) selection
+ - "Members that are random" (random member(-s) selection)
  - "Members that are in a certain usergroup"
 
 You can also decide how many users/victims Stealr will steal from and how much to steal.
@@ -144,7 +144,6 @@ To configure Stealr go to Admin Zone > Setup > Configuration > eCommerce options
                 'System scheduler',
                 'Conversr',
                 'points',
-                'ecommerce',
             ],
             'recommends' => [],
             'conflicts_with' => [],

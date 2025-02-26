@@ -107,7 +107,7 @@ class Hook_addon_registry_user_sync
      */
     public function get_description() : string
     {
-        return 'Sync user data between composr and a remote database.';
+        return 'Sync user data between your site and a remote database.';
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_rootkit_detector
      */
     public function get_description() : string
     {
-        return 'A tool to help power-user webmasters identify if a "rootkit" has been placed on the server.';
+        return 'A tool to help power-user webmasters identify if a "rootkit" has been placed on the server (checks things like system commands in the calendar, staff groups and their members, zone access, privileges, and file hashes).';
     }
 
     /**

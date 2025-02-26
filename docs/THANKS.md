@@ -20,8 +20,8 @@ Developers (e.g. the "Core Development Team") include:
 - Robbie Goacher
 - Salman Abbas
 
-*Developers suffixed with an asterisk are still active among the Core Development Team as of this writing.
-**The developer suffixed with a double asterisk is the current lead developer.
+*This developer is still active among the Core Development Team as of this writing.
+**This is the lead core developer(s) as of this writing.
 
 If you make a contribution (e.g. by patch or GitLab merge request) please feel free to add yourself to this list (preserving alphabetical order).
 

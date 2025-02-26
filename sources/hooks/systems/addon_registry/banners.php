@@ -121,7 +121,7 @@ class Hook_addon_registry_banners
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['ecommerce', 'shopping'],
             'conflicts_with' => [],
         ];
     }

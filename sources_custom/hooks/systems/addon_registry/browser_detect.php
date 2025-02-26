@@ -113,7 +113,7 @@ class Hook_addon_registry_browser_detect
 
 [code][block ie_needed="12.0"]browser_upgrade_suggest[/block][/code]
 
-If you would like to show the message as a Composr warning (at the top of the screen), use [tt]attach="1"[/tt] in the parameters.';
+If you would like to show the message as a warning (at the top of the screen), use [tt]attach="1"[/tt] in the block parameters.';
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_helper_scripts
      */
     public function get_description() : string
     {
-        return 'Scripts to help maintain sites, mostly for Linux/Unix servers or Windows servers running Cygwin.';
+        return "Various low-level CLI scripts that can help webmasters maintain their site: quick database exporting/importing, clearing caches, fixing file permissions, and viewing recent file or theme changes.";
     }
 
     /**
@@ -132,9 +132,9 @@ class Hook_addon_registry_helper_scripts
     public function get_file_list() : array
     {
         return [
-            'db_export.sh',
-            'db_import.sh',
-            'db_init.sh',
+            'db_export.php',
+            'db_import.php',
+            'db_init.php',
             'decache.php',
             'fixperms.php',
             'recentchanges.sh',

@@ -82,7 +82,7 @@ class Hook_addon_registry_printer_friendly_block
      */
     public function get_description() : string
     {
-        return 'A block to provide a link for the current screen to be turned into it\'s printer-friendly equivalent.';
+        return 'A block to provide a link for the current screen to be turned into its printer-friendly equivalent.';
     }
 
     /**

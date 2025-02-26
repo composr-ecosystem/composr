@@ -82,7 +82,7 @@ class Hook_addon_registry_news_shared
      */
     public function get_description() : string
     {
-        return '(Common files needed for RSS and News addons)';
+        return 'Core files for RSS feeds and news addons';
     }
 
     /**
@@ -108,7 +108,7 @@ class Hook_addon_registry_news_shared
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['news'],
             'conflicts_with' => [],
         ];
     }

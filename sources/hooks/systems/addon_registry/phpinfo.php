@@ -82,7 +82,7 @@ class Hook_addon_registry_phpinfo
      */
     public function get_description() : string
     {
-        return 'Access PHP configurational information from inside Composr.';
+        return 'Access PHP configurational information, and server performance information, from inside the software.';
     }
 
     /**

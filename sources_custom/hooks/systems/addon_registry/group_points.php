@@ -130,6 +130,7 @@ class Hook_addon_registry_group_points
         return [
             'requires' => [
                 'points',
+                'System scheduler',
             ],
             'recommends' => [],
             'conflicts_with' => [],

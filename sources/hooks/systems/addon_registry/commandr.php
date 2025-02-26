@@ -82,7 +82,7 @@ class Hook_addon_registry_commandr
      */
     public function get_description() : string
     {
-        return 'A command-line environment for managing your website, designed for Linux/Unix lovers.';
+        return "A command-line environment for managing your website, designed for Linux/Unix lovers. This addon also implements the enterprise repository (commandr-fs) for your site.";
     }
 
     /**

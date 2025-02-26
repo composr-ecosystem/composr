@@ -82,7 +82,7 @@ class Hook_addon_registry_failover
      */
     public function get_description() : string
     {
-        return 'Advanced system to detect if the site goes down, and provide an automatic fallback.';
+        return "Creates static caches of some pages on your site, and will automatically redirect visitors to those pages if problems are detected. Configuration is done through installer options ([tt]config_editor.php[/tt]).";
     }
 
     /**
@@ -126,6 +126,7 @@ class Hook_addon_registry_failover
      */
     public function get_file_list() : array
     {
+        // TODO: Missing API files
         return [
             'data/failover_script.php',
             'sources/hooks/systems/addon_registry/failover.php',

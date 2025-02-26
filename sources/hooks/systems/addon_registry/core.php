@@ -82,7 +82,7 @@ class Hook_addon_registry_core
      */
     public function get_description() : string
     {
-        return '(Core ' . brand_name() . ' code)';
+        return 'Core ' . brand_name() . ' code';
     }
 
     /**

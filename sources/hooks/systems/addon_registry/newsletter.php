@@ -82,7 +82,7 @@ class Hook_addon_registry_newsletter
      */
     public function get_description() : string
     {
-        return 'Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.';
+        return "Implements newsletter functionality. You can send out manual newsletters, or newsletters auto-generated based on new site content. You can send them out manually or, if the system scheduler is enabled, periodically. Define newsletter types which visitors (guests and members) can subscribe. Auto-handle bounced e-mails through IMAP.";
     }
 
     /**

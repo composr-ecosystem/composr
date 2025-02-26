@@ -82,7 +82,7 @@ class Hook_addon_registry_aggregate_types
      */
     public function get_description() : string
     {
-        return 'Define complex aggregate types in XML, and spawn them.';
+        return "Use special XML syntax to define complex aggregate types. And then use a user interface to create or sync instances of them. For example, you can make a 'department' type which creates a usergroup, forum, catalogue, and news category for the department.";
     }
 
     /**

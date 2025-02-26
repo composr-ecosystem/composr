@@ -82,7 +82,7 @@ class Hook_addon_registry_wiki
      */
     public function get_description() : string
     {
-        return 'Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.';
+        return "Provides Wiki-like functionality to your site. Create a hierarchal structure of Wiki pages and children with optional body content. And allow members to contribute their own content to a page by making a Wiki post on it.";
     }
 
     /**

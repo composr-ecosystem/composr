@@ -82,7 +82,7 @@ class Hook_addon_registry_core_comcode_pages
      */
     public function get_description() : string
     {
-        return 'Manage new pages on the website, known as Comcode pages.';
+        return "Comcode pages are the primary facility for displaying information on a site (using the Comcode syntax).";
     }
 
     /**

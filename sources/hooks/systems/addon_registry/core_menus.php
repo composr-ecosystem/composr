@@ -82,7 +82,7 @@ class Hook_addon_registry_core_menus
      */
     public function get_description() : string
     {
-        return 'Edit menus.';
+        return "Implements static or dynamic (sitemap) menus in the software, and a UI to edit them.";
     }
 
     /**

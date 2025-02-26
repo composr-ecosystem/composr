@@ -82,7 +82,7 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_description() : string
     {
-        return 'Behind-the-scenes maintenance tasks.';
+        return 'Software tools for cleaning up and re-organising things.';
     }
 
     /**

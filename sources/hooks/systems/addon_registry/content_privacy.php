@@ -82,7 +82,7 @@ class Hook_addon_registry_content_privacy
      */
     public function get_description() : string
     {
-        return 'Allows users to specify privacy level for their content.';
+        return "Allow more fine-grained control of content privacy at the member level (members can define who can view their content).";
     }
 
     /**
@@ -107,7 +107,7 @@ class Hook_addon_registry_content_privacy
     {
         return [
             'requires' => [],
-            'recommends' => ['cns_cpfs'],
+            'recommends' => ['cns_cpfs', 'chat'],
             'conflicts_with' => [],
         ];
     }

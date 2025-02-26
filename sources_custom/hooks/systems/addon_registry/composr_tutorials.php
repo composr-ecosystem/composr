@@ -143,6 +143,7 @@ The documentation is primarily maintained on our website, and this archive is on
                 'cms_homesite',
                 'cms_homesite_tracker',
                 'cms_release_build',
+                'geshi',
             ],
             'conflicts_with' => [],
         ];

@@ -107,7 +107,7 @@ class Hook_addon_registry_antispam_question
      */
     public function get_description() : string
     {
-        return 'Puts a member on probation if they get a question wrong when joining. This is a code example, the code needs tweaking for your site.';
+        return "Utilises an implicit usergroup hook to put a member on probation if they define a 'wrong answer' for a custom profile field. This can be useful to shadow-ban potential spammers. The hook will need editing after you install this addon.";
     }
 
     /**

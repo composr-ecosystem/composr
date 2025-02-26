@@ -82,7 +82,7 @@ class Hook_addon_registry_leader_board
      */
     public function get_description() : string
     {
-        return 'Allow website administrators to display leader-boards of members earning the most points.';
+        return 'Create auto-generating leader-boards of various criteria to show your top members by the points they earned or hold. Supports weekly, monthly, and yearly leader-boards. Supports filtering out staff members or filtering by groups.';
     }
 
     /**

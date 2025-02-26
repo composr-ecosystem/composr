@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_description() : string
     {
-        return 'Clubs for members, each of which comes with a forum.';
+        return "Enable the ability for members to create clubs, which are low-functioning groups which come with their own forum.";
     }
 
     /**

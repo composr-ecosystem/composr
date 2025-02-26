@@ -69,7 +69,8 @@ class Hook_addon_registry_facebook_support
     {
         // Best to just categorise properly as it's not bundled
         //return is_maintained('facebook') ? 'Third Party Integration' : 'Development';
-        return 'Third Party Integration';
+        //return 'Third Party Integration';
+        return 'Development';
     }
 
     /**

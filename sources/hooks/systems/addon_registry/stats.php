@@ -82,7 +82,7 @@ class Hook_addon_registry_stats
      */
     public function get_description() : string
     {
-        return 'Show advanced graphs (analytics) and dumps of raw data relating to your website activity.';
+        return "Implements an advanced statistics and analytics system for your site along with support for Key Performance Indicators (KPIs). This keeps track of many categories of statistics which can be viewed in several date/time pivots or with filters. This addon also implements the ability to create your own event or link tracking. Statistics can be exported as CSV sheets. And KPIs can send notifications when reached.";
     }
 
     /**

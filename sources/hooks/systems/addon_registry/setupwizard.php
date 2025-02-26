@@ -82,7 +82,7 @@ class Hook_addon_registry_setupwizard
      */
     public function get_description() : string
     {
-        return 'Quick-start setup wizard.';
+        return "Provides an easy wizard-based interface to set up your new site with pre-configured options (based on profiles).";
     }
 
     /**

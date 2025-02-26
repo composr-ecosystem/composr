@@ -82,7 +82,7 @@ class Hook_addon_registry_core_feedback_features
      */
     public function get_description() : string
     {
-        return 'Features for user interaction with content.';
+        return 'Features for user interaction with content (likes/ratings, comments, reviews, trackbacks, contact forms).';
     }
 
     /**

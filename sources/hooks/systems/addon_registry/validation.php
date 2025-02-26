@@ -106,7 +106,7 @@ class Hook_addon_registry_validation
     {
         return [
             'requires' => [],
-            'recommends' => ['commandr'],
+            'recommends' => ['commandr', 'System scheduler'],
             'conflicts_with' => [],
             'previously_in_addon' => ['core_unvalidated', 'unvalidated'],
         ];

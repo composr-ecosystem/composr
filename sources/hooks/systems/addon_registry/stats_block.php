@@ -82,7 +82,7 @@ class Hook_addon_registry_stats_block
      */
     public function get_description() : string
     {
-        return 'A block to show a selection of your website statistics to your visitors.';
+        return "Provides a block where you can show some basic site statistics to your visitors.";
     }
 
     /**

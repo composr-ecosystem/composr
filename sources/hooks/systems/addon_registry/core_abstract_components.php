@@ -82,7 +82,7 @@ class Hook_addon_registry_core_abstract_components
      */
     public function get_description() : string
     {
-        return 'Core rendering functionality.';
+        return 'Core rendering functionality (e.g. graphs, visual Comcode elements).';
     }
 
     /**

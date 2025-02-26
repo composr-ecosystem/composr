@@ -110,7 +110,7 @@ class Hook_addon_registry_getid3
      */
     public function get_description() : string
     {
-        return 'Detect the Height/Width/Length of video files when they are uploaded to the gallery.';
+        return 'Detect the Height/Width/Length of video files when they are uploaded to the gallery via their ID3 tags.';
     }
 
     /**

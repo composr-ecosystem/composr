@@ -107,12 +107,12 @@ class Hook_addon_registry_idolisr
      */
     public function get_description() : string
     {
-        return 'Show the top performing members in a community. The addon adds a [tt]main_stars[/tt] block that ranks members on how many points they have been given in a certain category (also it changes the points module to allow selection of such categories when giving points). It also adds a block to show recent points transfers. Finally, it adds a line to member\'s profile screens that says how many topics they have created, and how many they have replied to, to give a reflection of whether they help more than they ask or vice-versa.
+        return 'Show the top performing members in a community by points. The addon adds a [tt]main_stars[/tt] block that ranks members on how many points they have been given in a certain category (also it changes the points module to allow selection of such categories when giving points). It also adds a block to show recent points transfers. Finally, it adds a line to member\'s profile screens that says how many topics they have created, and how many they have replied to, to give a reflection of whether they help more than they ask or vice-versa.
 
 Usage:
 [code="Comcode"][block max="10"]side_recent_points[/block][/code]
 and
-[code="Comcode"][block="Helpful soul"]main_stars[/block][/code]The [tt]POINTS_SEND[/tt] ([tt]themes/default/templates_custom[/tt]) template contains hard-coded HTML that defines each kind of points category that can be used. It is likely you will want to put out one an instance of the [tt]main_stars[/tt] block for each category (using the syntax demonstrated above).';
+[code="Comcode"][block="Helpful soul"]main_stars[/block][/code]The [tt]Idolisr roles[/tt] configuration option defines a list of categories that can be used when giving points. It is likely you will want to put out one instance of the [tt]main_stars[/tt] block for each category (using the syntax demonstrated above).';
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_core_upgrader
      */
     public function get_description() : string
     {
-        return 'The upgrader code.';
+        return "The software upgrader for checking and upgrading to newer versions (from the homesite).";
     }
 
     /**

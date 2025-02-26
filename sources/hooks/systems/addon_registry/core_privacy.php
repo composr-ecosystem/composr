@@ -82,7 +82,7 @@ class Hook_addon_registry_core_privacy
      */
     public function get_description() : string
     {
-        return 'Features relating to maintaining a privacy policy and complying with privacy regulations.';
+        return "Privacy tools to ensure GDPR compliance: member and administrator level data purging and downloading, Privacy Policy generator, automatic log purging, telemetry with the homesite (relaying errors and statistics to the core developers, requesting the site to be featured).";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_core_privacy
     {
         return [
             'requires' => [],
-            'recommends' => ['content_privacy', 'cns_cpfs', 'securitylogging', 'stats'],
+            'recommends' => ['content_privacy', 'cns_cpfs', 'securitylogging', 'stats', 'actionlog'],
             'conflicts_with' => [],
         ];
     }

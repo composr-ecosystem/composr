@@ -109,7 +109,7 @@ class Hook_addon_registry_comcode_html_safelist
     {
         return 'Fine-grained control over Comcode permissions.
 
-Normally there is a set of Comcode tags that regular users simply cannot use. However, with the Comcode/HTML safelist addon you can define a list of special cases, portions of Comcode that are allowed regardless of the limitation on the tag itself. Put each sequence of Comcode on it\'s own line, and make sure that each line starts and ends with the open/close for the tag that is being safelisted on. i.e. each line should look like [code="Comcode"][tag...]...[/tag][/code]
+Normally there is a set of Comcode tags that regular users simply cannot use. However, with the Comcode/HTML safelist addon you can define a list of special cases, portions of Comcode that are allowed regardless of the limitation on the tag itself. Put each sequence of Comcode on its own line, and make sure that each line starts and ends with the open/close for the tag that is being safelisted on. i.e. each line should look like [code="Comcode"][tag...]...[/tag][/code]
 
 Alternatively you can also use regular expressions (explained here: http://php.net/manual/en/book.pcre.php), if you surround with slashes and encode things appropriately.
 

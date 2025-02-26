@@ -82,7 +82,7 @@ class Hook_addon_registry_recommend
      */
     public function get_description() : string
     {
-        return 'Allow members to easily recommend the website to others.';
+        return "Provides a simple form on the share bar for members to recommend the site or specific pages to others (through e-mail). A privilege is created so you can prevent certain groups (e.g. Guests) from defining their own message for spam purposes.";
     }
 
     /**

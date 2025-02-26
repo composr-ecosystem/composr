@@ -82,7 +82,7 @@ class Hook_addon_registry_calendar
      */
     public function get_description() : string
     {
-        return 'An advanced community calendar.';
+        return "An advanced site calendar. Features event types, public (site-wide) events, and private member-based (diary) events. Supports advanced recurrence rules. Supports subscriptions to event types or individual events for reminders and updates. Can also be used to schedule system commands (e.g. Commandr commands, Commandr scripts, or PHP code) to run on a given date/time.";
     }
 
     /**

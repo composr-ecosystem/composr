@@ -82,7 +82,7 @@ class Hook_addon_registry_site_messaging
      */
     public function get_description() : string
     {
-        return 'Functionality to display site messages (such as announcements and maintenance windows) at the top of pages with optional criteria.';
+        return "Adds the ability to display messages at the top of pages (e.g. announcements, scheduled maintenance). You can define match-key filters to show on specific screens, usergroup filters, and date/time ranges.";
     }
 
     /**

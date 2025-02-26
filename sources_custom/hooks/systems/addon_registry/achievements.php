@@ -133,7 +133,8 @@ class Hook_addon_registry_achievements
             'requires' => [
             ],
             'recommends' => [
-                'points'
+                'points',
+                'System scheduler',
             ],
             'conflicts_with' => [],
         ];

@@ -82,7 +82,8 @@ class Hook_addon_registry_realtime_rain
      */
     public function get_description() : string
     {
-        return 'Real-time/historic display of website activity.';
+        // TODO: document in tutorial the different bubble colours and symbols
+        return "Implements a powerful visual consisting of 'raining bubbles' to visualise real-time website activity (may include information such as member, country, page-link, and action). The bubbles have various colours and symbols, which you can review in the statistics tutorial, for different actions. And bubbles can be clicked to be taken to a follow-up screen (e.g. a hit bubble will take you to the page that was hit).";
     }
 
     /**

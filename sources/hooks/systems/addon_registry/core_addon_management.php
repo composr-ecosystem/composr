@@ -82,7 +82,7 @@ class Hook_addon_registry_core_addon_management
      */
     public function get_description() : string
     {
-        return 'Install or uninstall addons.';
+        return 'Management of addons, modules, blocks, themes, and language packs.';
     }
 
     /**

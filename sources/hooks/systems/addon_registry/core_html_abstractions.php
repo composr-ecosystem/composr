@@ -82,7 +82,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_description() : string
     {
-        return 'Core rendering functionality.';
+        return 'Core HTML components (typically rendered by Comcode).';
     }
 
     /**

@@ -107,9 +107,9 @@ class Hook_addon_registry_referrals
      */
     public function get_description() : string
     {
-        return 'A referrals package.
+        return 'Adds a referrals system to your site.
 
-Allows people to specify who referred them when they join your site or other configurable triggers in the system, and defines award levels people can reach. Note that tracking of referrals and award of points is a default part of Composr, but referrals are only picked up if made via the recommend module or if the new member uses the same address they were recommended to. This addon will allow referrals to be specified explicitly on the join form.
+Allows people to specify who referred them when they join your site or other configurable triggers in the system, and defines award levels people can reach. Note that tracking of referrals and award of points is a default part of the software, but referrals are only picked up if made via the recommend module or if the new member uses the same address they were recommended to. This addon will allow referrals to be specified explicitly on the join form.
 
 1) Edit the settings in text_custom/referrals.txt (there is an editing link for this on the setup menu)
 

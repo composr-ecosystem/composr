@@ -82,7 +82,7 @@ class Hook_addon_registry_match_key_permissions
      */
     public function get_description() : string
     {
-        return 'Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.';
+        return 'Implements a User Interface where you can deny access to screens based on match-keys to select groups. Also supports making your own access denied message or defining a redirect.';
     }
 
     /**

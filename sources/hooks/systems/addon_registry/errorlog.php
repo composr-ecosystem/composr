@@ -82,7 +82,7 @@ class Hook_addon_registry_errorlog
      */
     public function get_description() : string
     {
-        return 'Log of errors that have happened on the website.';
+        return "Log errors specific to the software to an error log located at [tt]data_custom/errorlog.php[/tt] (and render on a special UI in the Admin Zone) opposed to using shared PHP error logs. Highly recommended if you have telemetry enabled to relay errors to the core developers.";
     }
 
     /**

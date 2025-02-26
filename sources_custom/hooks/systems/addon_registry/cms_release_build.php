@@ -107,7 +107,7 @@ class Hook_addon_registry_cms_release_build // TODO: renamed; do we need upgrade
      */
     public function get_description() : string
     {
-        return 'The Composr release build platform. It should be run from a developers machine, not the server.
+        return 'The Composr release build platform. It should be run from a developers machine, not the server / homesite.
 
 If running on Windows, you need to install the following commands in your path or C:\cygwin64...
  - Infozip\'s zip.exe (ftp://ftp.info-zip.org/pub/infozip/win32/zip231xn-x64.zip)

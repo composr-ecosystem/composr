@@ -107,7 +107,7 @@ class Hook_addon_registry_wordpress_style_page_children
      */
     public function get_description() : string
     {
-        return 'Make links to child pages look more like Wordpress, including a thumbnail for each child page".';
+        return 'Modifies the Comcode page children block to make links to child pages look more like Wordpress, including a thumbnail for each child page.';
     }
 
     /**

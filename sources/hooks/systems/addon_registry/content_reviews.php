@@ -82,7 +82,7 @@ class Hook_addon_registry_content_reviews
      */
     public function get_description() : string
     {
-        return 'Regularly review content for accuracy.';
+        return "Adds a facility for regular reminders to review content for accuracy. This addon can also be used to automatically turn off validation on a certain date/time (if validation is installed) or to automatically delete content on a certain date/time.";
     }
 
     /**

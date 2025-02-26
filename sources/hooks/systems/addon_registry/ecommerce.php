@@ -97,7 +97,7 @@ class Hook_addon_registry_ecommerce
      */
     public function get_description() : string
     {
-        return 'eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.';
+        return "eCommerce infrastructure, with support for digital purchases / discounts and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Includes basic accounting functionality. Also includes basic invoice support and manual transaction entry. Developers can create their own manual or automatic products through hooks.";
     }
 
     /**
@@ -122,7 +122,7 @@ class Hook_addon_registry_ecommerce
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['shopping'],
             'conflicts_with' => [],
         ];
     }

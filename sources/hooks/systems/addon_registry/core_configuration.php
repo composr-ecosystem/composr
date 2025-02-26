@@ -82,7 +82,7 @@ class Hook_addon_registry_core_configuration
      */
     public function get_description() : string
     {
-        return 'Set configuration options.';
+        return 'Core configuration options for the software.';
     }
 
     /**

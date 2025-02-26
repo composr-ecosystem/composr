@@ -82,7 +82,7 @@ class Hook_addon_registry_quizzes
      */
     public function get_description() : string
     {
-        return 'Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.';
+        return "Construct competitions, surveys, and tests, for members to participate. Highly configurable, and comes with administrative tools to handle the results. Various anti-cheat settings are also provided.";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_quizzes
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['points'],
             'conflicts_with' => [],
         ];
     }

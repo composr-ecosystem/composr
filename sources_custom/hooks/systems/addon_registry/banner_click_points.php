@@ -107,7 +107,7 @@ class Hook_addon_registry_banner_click_points
      */
     public function get_description() : string
     {
-        return 'Give each person who clicks a banner 1 site point (only works with regular image banners). Note that you should check the terms and conditions of any commercial banner relationships in case providing incentives for clicks is not allowed.';
+        return 'Give each person who clicks a banner 1 site point (only works with regular image banners). Be careful because it is often against the Terms of Service of ad providers to give incentives for clicking ads.';
     }
 
     /**

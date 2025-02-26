@@ -109,7 +109,7 @@ class Hook_addon_registry_cms_homesite_tracker
      */
     public function get_description() : string
     {
-        return 'The homesite issue tracker.';
+        return "Implements a custom version of the Mantis bug tracker for use on the homesite.";
     }
 
     /**
@@ -131,17 +131,17 @@ class Hook_addon_registry_cms_homesite_tracker
     {
         return [
             'requires' => [
-                'tickets',
-                'ecommerce',
+                //'tickets',
+                //'ecommerce',
                 'points',
-                'Conversr',
+                //'Conversr',
                 //'core_all_icons',
                 'cms_homesite',
                 'PHP 7.4',
+                'MySQL',
             ],
             'recommends' => [
                 'stats',
-                'MySQL',
                 'cms_release_build',
                 'composr_tutorials',
             ],

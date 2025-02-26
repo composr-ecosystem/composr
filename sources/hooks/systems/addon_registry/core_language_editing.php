@@ -82,7 +82,7 @@ class Hook_addon_registry_core_language_editing
      */
     public function get_description() : string
     {
-        return 'Translate the software, or just change what it says for stylistic reasons.';
+        return 'Translate the software, or just change what it says for stylistic or branding reasons.';
     }
 
     /**

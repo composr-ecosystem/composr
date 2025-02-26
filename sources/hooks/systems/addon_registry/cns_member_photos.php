@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_member_photos
      */
     public function get_description() : string
     {
-        return 'Member photos.';
+        return "Enable the ability for members to upload their own photos to be display on their profile page. These are larger photos than avatars but are less prominent as they only show up on a member's profile page.";
     }
 
     /**

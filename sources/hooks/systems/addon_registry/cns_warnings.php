@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_description() : string
     {
-        return 'Member warnings and punishment.';
+        return "This is an advanced system for moderating troublesome members. Warnings can be formal (visible to the member, and counts against their account standing) or off-the-book (hidden and do not count against their account). There are many punitive actions you can take depending on the addons you have installed (e.g. banning, putting members on probation, silencing from forums and topics, usergroup changes, syndication as a spammer, deletion of recent content / topics / posts, and reversal or charging of points). Warning messages can be sent as Private Topics. Warnings can be reviewed by staff and the member who received the warning (e.g. to undo certain punitive actions or view details). A private 'standing' tab is added to member profiles so members can review their history and any active punitive actions. And statistics (if installed) can generate a graph of warnings issued including by country or by reason.";
     }
 
     /**
@@ -108,7 +108,8 @@ class Hook_addon_registry_cns_warnings
         return [
             'requires' => [],
             'recommends' => [
-                'actionlog'
+                'actionlog',
+                'stats'
             ],
             'conflicts_with' => [],
         ];

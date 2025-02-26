@@ -82,7 +82,7 @@ class Hook_addon_registry_users_online_block
      */
     public function get_description() : string
     {
-        return 'A block to show which users who are currently visiting the website, and birthdays.';
+        return "A side block for displaying current online members and anyone with a birthday.";
     }
 
     /**

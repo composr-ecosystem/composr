@@ -82,7 +82,7 @@ class Hook_addon_registry_import
      */
     public function get_description() : string
     {
-        return 'Switch to ' . brand_name() . ' from other software. This addon provides the architecture for importing, and a number of prewritten importers.';
+        return 'Switch to ' . brand_name() . ' from other software (or from other ' . brand_name() . ' installations). This addon provides the architecture for importing, and a number of prewritten importers.';
     }
 
     /**

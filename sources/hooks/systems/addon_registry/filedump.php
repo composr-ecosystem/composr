@@ -97,7 +97,7 @@ class Hook_addon_registry_filedump
      */
     public function get_description() : string
     {
-        return 'File/media library, for use in attachments or for general ad-hoc sharing.';
+        return "Implements a file/media library where staff (and optionally members) can store files. These files can then be used throughout the site, e.g. attachments, themes, uploads, or embedding through Comcode. This tool is useful for storing site-specific files which are used in multiple locations.";
     }
 
     /**

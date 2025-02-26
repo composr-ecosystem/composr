@@ -125,14 +125,21 @@ From there you can choose to run tests that have been written.
 
 [title="2"]Writing tests[/title]
 
-Tests are stored under the [tt]_tests/tests[/tt] directory, and are classed as either "regression tests" (tests written to illustrate a bug, that fail before we fix the bug, but pass after we fix the bug) or "unit tests" (a test designed to test some part of Composr, we usually actually refer to these as \'automated tests\').
-Tests are PHP scripts, so a good understand if PHP is required to write them.
+Tests are stored under the [tt]_tests/tests[/tt] directory, and are classed as the following:
+ - [tt]async_tests[/tt]: Tests that can run in parallel with other tests
+ - [tt]cli_tests[/tt]: Tests that must be run from the command line
+ - [tt]first_tests[/tt]: Tests that must be run first when running a full test suite before a release
+ - [tt]regression_tests[/tt]: Tests that address a prior bug and ensure the same bug does not happen again
+ - [tt]sync_tests[/tt]: Tests that must not be run/running when other tests are also running
+  - These tests might use a lot of memory, take a lot of time to finish, or change configuration which can conflict with other tests
+
+Tests are PHP scripts, so a good understanding of PHP is required to write them.
 
 The testing framework is built around SimpleTest (https://github.com/simpletest/simpletest), so all their API can be used. We have extended it a little bit, so:
 - you can call up page-links
 - any pages loaded up are saved as HTML so you can check them via other means also (e.g. passing through an HTML validator, or checking them manually for aesthetic issues).
-- you can make Composr think you are a logged in administrator
-- there is some standard setUp/tearDown code should use for any test, to make sure Composr starts in a good state for testing (currently it just makes sure the site is not closed)
+- you can make Composr think you are a logged in administrator, guest, or test account
+- there is some standard setUp/tearDown code should use for any test, to make sure Composr starts in a good state for testing
 Read about the SimpleTest API on their website to understand what things like assertTrue mean, and what tools you have at your disposal.
 
 [title="2"]Continuous Integration (CI)[/title]
@@ -170,7 +177,7 @@ We hope other users will appreciate your efforts and give you some points to rew
     public function get_dependencies() : array
     {
         return [
-            'requires' => [ // Actually, it's all
+            'requires' => [ // Actually, we need every bundled addon, but that's unreasonable to list
                 'meta_toolkit',
             ],
             'recommends' => [],

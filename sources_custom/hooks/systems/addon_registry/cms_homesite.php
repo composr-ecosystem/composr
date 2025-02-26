@@ -111,8 +111,7 @@ class Hook_addon_registry_cms_homesite
  - CMS release management and upgrading
  - homesite addon management scripts
  - CMS download scripts
- - The deployment/hosting platform (Demonstratr)
- - Error message explainer system
+ - Telemetry service
  - Various other scripts for running the homesite
 
 This addon does not contain the homesite install code and the overall site and theme. That is not categorised into an addon, but is in the Git branch.

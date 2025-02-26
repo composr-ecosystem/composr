@@ -107,7 +107,7 @@ class Hook_addon_registry_mentorr
      */
     public function get_description() : string
     {
-        return 'Assign trusted members as mentors who will help new members. As a bonus the mentor will get the same amount of points that his new friend gained during the first week.
+        return 'Assign trusted members as mentors who will help new members. As a bonus the mentor will get the same amount of points that their new friend gained during the first week.
 
 There will be a configurable mentors usergroup, from which random members will be selected to be made friends with newly joined members (it will make them friends and also will create a Private Topic between them explaining the automatic friendship).
 
