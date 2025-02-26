@@ -39,8 +39,18 @@ class Hook_snippet_realtime_rain_load
         }
 
         require_lang('realtime_rain');
+        require_css('realtime_rain');
+
+        // Call init functions on hooks in case any non-bundled addons need to load up their own CSS for realtime-rain.
+        $hooks = find_all_hook_obs('systems', 'realtime_rain', 'Hook_realtime_rain_');
+        foreach ($hooks as $hook => $ob) {
+            if (method_exists($ob, 'init')) {
+                $ob->init();
+            }
+        }
 
         $min_time = $GLOBALS['SITE_DB']->query_select_value('stats', 'MIN(date_and_time)');
+
         return do_template('REALTIME_RAIN_OVERLAY', ['_GUID' => '1b3535932bbefcb9474fbfc2297b4d71', 'MIN_TIME' => strval($min_time)]);
     }
 }
