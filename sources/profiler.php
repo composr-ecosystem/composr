@@ -77,7 +77,7 @@ function cms_profile_is_enabled() : bool
     global $PROFILING_ALLOWED, $PROFILING_LINUX_FULL;
     if (!isset($PROFILING_ALLOWED)) {
         $val = get_value('enable_profiler');
-        $PROFILING_ALLOWED = ($val == '1' || $val == '2') && (cms_is_writable(get_custom_file_base() . '/data_custom'));
+        $PROFILING_ALLOWED = ($val == '1' || $val == '2') && (cms_is_writable(get_custom_file_base() . '/data_custom/profiling'));
         $PROFILING_LINUX_FULL = ($val == '2');
     }
     return $PROFILING_ALLOWED;

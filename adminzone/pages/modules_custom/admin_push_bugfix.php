@@ -321,7 +321,6 @@ class Module_admin_push_bugfix
         // Confirmation
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '6cf847d883b093f78225685d6f2d38b3', 'TITLE' => do_lang_tempcode('PUSH_BUGFIX_CONFIRMATION'), 'HELP' => do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_CONFIRMATION')]));
         $fields->attach(form_input_tick(do_lang_tempcode('PUSH_BUGFIX_ISSUE_TESTED'), do_lang_tempcode('DESCRIPTION_PUSH_BUGFIX_ISSUE_TESTED'), 'tested', false));
-        // TODO: validation for this tick
 
         $hidden = build_keep_post_fields();
 
