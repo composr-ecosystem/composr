@@ -5906,3 +5906,24 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
 
     return false;
 }
+
+/**
+ * Reset the number of iterations performed on a check_for_infinite_loop call.
+ * This should be called when applicable, say, if a cache was cleared.
+ *
+ * @param  ID_TEXT $codename The codename to clear
+ * @param  ?array $args Reset iterations on the call which used these arguments (null: reset everything on $codename)
+ */
+function clear_infinite_loop_iterations(string $codename, ?array $args = null)
+{
+    global $CHECK_FOR_INFINITE_LOOP;
+
+    if ($args === null) {
+        unset($CHECK_FOR_INFINITE_LOOP[$codename]);
+        return;
+    }
+
+    $hash = md5(serialize($args));
+
+    unset($CHECK_FOR_INFINITE_LOOP[$codename][$hash]);
+}

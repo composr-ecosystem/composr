@@ -47,16 +47,21 @@ function clear_permissions_runtime_cache()
     global $PRIVILEGE_CACHE, $GROUP_PRIVILEGE_CACHE, $ZONE_ACCESS_CACHE, $PAGE_ACCESS_CACHE, $PAGE_ACCESS_CACHE_MATCH_KEYS, $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE, $SUBMIT_PERMISSION_CACHE, $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED;
 
     $PRIVILEGE_CACHE = [];
+    clear_infinite_loop_iterations('has_privilege');
 
     $GROUP_PRIVILEGE_CACHE = [];
+    clear_infinite_loop_iterations('has_privilege_group');
 
     $ZONE_ACCESS_CACHE = [];
+    clear_infinite_loop_iterations('has_zone_access');
 
     $PAGE_ACCESS_CACHE = [];
     $PAGE_ACCESS_CACHE_MATCH_KEYS = [];
+    clear_infinite_loop_iterations('has_page_access');
 
     $CATEGORY_ACCESS_CACHE = [];
     $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE = [];
+    clear_infinite_loop_iterations('has_category_access');
 
     $SUBMIT_PERMISSION_CACHE = [];
 
@@ -203,6 +208,8 @@ function has_zone_access(int $member_id, string $zone) : bool
             $ZONE_ACCESS_CACHE[$member_id][$zone_access_needed] = false;
         }
     }
+
+    check_for_infinite_loop('has_zone_access', func_get_args());
 
     return has_zone_access($member_id, $zone);
 }
@@ -417,7 +424,6 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
         }
     }
 
-    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
     check_for_infinite_loop('has_page_access', func_get_args());
 
     // Had to populate cache, so we must check again now with the caches populated
@@ -505,9 +511,6 @@ function has_category_access(int $member_id, string $permission_module, string $
 
     // Not loaded yet, load, then re-call ourself...
 
-    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
-    check_for_infinite_loop('has_category_access', func_get_args());
-
     $where = ' AND (1=0';
     if (($permission_module != 'forums') || (!is_on_multi_site_network())) {
         global $SMART_CACHE;
@@ -549,6 +552,8 @@ function has_category_access(int $member_id, string $permission_module, string $
             $CATEGORY_ACCESS_CACHE[$member_id][$module_access_needed . '/' . $category_access_needed] = false;
         }
     }
+
+    check_for_infinite_loop('has_category_access', func_get_args());
 
     return has_category_access($member_id, $permission_module, $category);
 }
@@ -864,9 +869,6 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
 
     // Not loaded yet, load, then re-call ourself...
 
-    // Infinite loop prevention; we should never reach this point more than once on the same execution for the same parameters
-    check_for_infinite_loop('has_privilege', func_get_args());
-
     global $SMART_CACHE;
     static $run_once = false;
     $where = ' AND (1=0';
@@ -917,6 +919,8 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
             $PRIVILEGE_CACHE[$member_id][$privilege_needed][''][''][''] = false;
         }
     }
+
+    check_for_infinite_loop('has_privilege', func_get_args());
 
     return has_privilege($member_id, $privilege, $page, $cats);
 }
