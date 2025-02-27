@@ -464,30 +464,7 @@ class Module_wiki
     {
         attach_message(do_lang_tempcode('TAKEN_RANDOM_WIKI_PAGE'), 'inform');
 
-        $num_pages = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'MAX(id)');
-        $tried = [];
-        $iterations = 0;
-        if ($num_pages <= db_get_first_id()) {
-            $id = $num_pages;
-        } else {
-            do { // TODO: Needs further optimisation
-                $page = null;
-
-                if ($iterations >= 10000) { // We tried enough times; fall back to the most recent page
-                    $id = $num_pages;
-                    break;
-                }
-                $id = mt_rand(db_get_first_id(), $num_pages);
-                if (isset($tried[$id])) {
-                    $iterations++;
-                    continue;
-                }
-
-                $tried[$id] = true;
-                $page = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'id', ['id' => $id]);
-                $iterations += 10; // Count a DB query as 10 iterations as queries are much more resource intensive than simple array checks
-            } while ($page === null);
-        }
+        $id = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'id', [], ' ORDER BY ' . db_function('RAND'));
         $redir_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $id], '_SELF');
         return redirect_screen(get_screen_title('RANDOM_PAGE'), $redir_url);
     }
