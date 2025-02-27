@@ -148,9 +148,13 @@ function disable_content_translation()
  */
 function enable_content_translation()
 {
-    return; // TODO: catastrophically broken and will corrupt websites! Disabled for integrity.
+    $dry_run = (get_param_integer('dry_run', 0) == 1);
+    $dry_run_file = null;
+    if ($dry_run) {
+        require_code('files');
+        $dry_run_file = cms_fopen_text_write(get_custom_file_base() . '/data_custom/' . uniqid('multi_content_on__', false) . '.log', false, 'ab');
+    }
 
-    /*
     push_db_scope_check(false);
     push_query_limiting(false);
 
@@ -172,77 +176,149 @@ function enable_content_translation()
 
     $type_remap = $db->driver->get_type_remap(true);
 
-    $_table_lang_fields = $db->query('SELECT m_table,m_name,m_type FROM ' . $db->get_table_prefix() . 'db_meta WHERE m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_table,m_name');
-    foreach ($_table_lang_fields as $field) {
-        if (running_script('execute_temp')) {
-            @var_dump($field);
+    $tables = $db->query_select('db_meta', ['DISTINCT m_table']);
+    foreach ($tables as $_table) {
+        $table = $_table['m_table'];
+
+        if ($dry_run) {
+            fwrite($dry_run_file, '--- process db_meta table: ' . json_encode($table) . ' ---' . "\n");
         }
 
-        // Remove old full-text search index
-        $GLOBALS['SITE_DB']->delete_index_if_exists($field['m_table'], '#' . $field['m_name']);
-
-        // Rename main field to temporary one
-        $is_autoincrement = false;
-        $queries = $db->driver->alter_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $type_remap['LONG_TEXT'], false, $is_autoincrement, $field['m_name'] . '__old');
-        foreach ($queries as $query) {
-            $db->query($query);
+        // Get primary keys on this table
+        $primary_keys = $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table], ' AND m_type LIKE \'' . db_encode_like('*%') . '\' ORDER BY m_name');
+        if ($dry_run) {
+            fwrite($dry_run_file, 'Primary keys: ' . json_encode($primary_keys) . "\n");
         }
 
-        // Add new field for translate reference
-        $query = $db->driver->add_table_field__sql($db->table_prefix . $field['m_table'], $field['m_name'], $field['m_type'], 0);
-        $db->query($query);
-
-        $has_comcode = (strpos($field['m_type'], '__COMCODE') !== false);
-
-        // Copy to translate table
-        $start = 0;
-        do {
-            $trans = $db->query_select($field['m_table'], ['*'], [], '', 100, $start, false, []);
-            foreach ($trans as $t) {
-                $lang_id = null;
-                $lock = false;
-                table_id_locking_start($db, $lang_id, $lock);
-
-                $insert_map = [
-                    'language' => get_site_default_lang(),
-                    'importance_level' => 3,
-                    'text_original' => $t[$field['m_name'] . '__old'],
-                    'text_parsed' => $has_comcode ? $t[$field['m_name'] . '__text_parsed'] : '',
-                    'broken' => 0,
-                    'source_user' => $has_comcode ? $t[$field['m_name'] . '__source_user'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                ];
-                if ($lang_id === null) {
-                    $lang_id = $db->query_insert('translate', $insert_map, true);
-                } else {
-                    $db->query_insert('translate', ['id' => $lang_id] + $insert_map);
-                }
-
-                table_id_locking_end($db, $lang_id, $lock);
-
-                $GLOBALS['SITE_DB']->query_update($field['m_table'], [$field['m_name'] => $lang_id], $t, '', 1);
+        // Process language fields on the table
+        $lang_fields = $db->query_select('db_meta', ['m_name', 'm_type'], ['m_table' => $table], ' AND m_type LIKE \'' . db_encode_like('%\_TRANS%') . '\' ORDER BY m_name');
+        foreach ($lang_fields as $field) {
+            if ($dry_run) {
+                fwrite($dry_run_file, '- process field: ' . json_encode($field) . ' -' . "\n");
             }
-            $start += 100;
-        } while (!empty($trans));
 
-        // Delete old fields
-        $to_delete = ['old'];
-        if ($has_comcode) {
-            // Delete old implied fields for holding extra Comcode details
-            $to_delete = array_merge($to_delete, ['text_parsed', 'source_user']);
-        }
-        foreach ($to_delete as $sub_name) {
-            $sub_name = $field['m_name'] . '__' . $sub_name;
-            $query = $db->driver->alter_delete_table_field__sql($db->table_prefix . $field['m_table'], $sub_name);
-            $db->query($query);
+            // Remove old full-text search index
+            if ($dry_run) {
+                fwrite($dry_run_file, 'Delete index if exists: ' . '#' . $field['m_name'] . "\n");
+            } else {
+                $GLOBALS['SITE_DB']->delete_index_if_exists($table, '#' . $field['m_name']);
+            }
+
+            // Rename main field to temporary one
+            $is_autoincrement = false;
+            $queries = $db->driver->alter_table_field__sql($db->table_prefix . $table, $field['m_name'], $type_remap['LONG_TEXT'], false, $is_autoincrement, $field['m_name'] . '__old');
+            foreach ($queries as $query) {
+                if ($dry_run) {
+                    fwrite($dry_run_file, 'temporary rename query: ' . $query . "\n");
+                } else {
+                    $db->query($query);
+                }
+            }
+
+            // Add new field for translate reference
+            $query = $db->driver->add_table_field__sql($db->table_prefix . $table, $field['m_name'], $field['m_type'], 0);
+            if ($dry_run) {
+                fwrite($dry_run_file, 'New field for translate reference: ' . $query . "\n");
+            } else {
+                $db->query($query);
+            }
         }
 
-        reload_lang_fields(true, $field['m_table']);
+        // Process every record on the table
+        if (count($lang_fields) > 0) { // Nothing to do if there are no lang fields
+            $start = 0;
+            do {
+                $trans = $db->query_select($table, ['*'], [], '', 100, $start, false, []);
+                foreach ($trans as $t) {
+                    $update_map = [];
+
+                    // Insert lang field contents into translate table, and prepare for lang ID update
+                    foreach ($lang_fields as $field) {
+                        $has_comcode = (strpos($field['m_type'], '__COMCODE') !== false);
+
+                        $lang_id = null;
+                        $lock = false;
+
+                        table_id_locking_start($db, $lang_id, $lock);
+                        if ($dry_run) {
+                            fwrite($dry_run_file, 'ID-Locked?: ' . ($lock ? 'Yes' : 'No') . "\n");
+                            fwrite($dry_run_file, 'Start on ID: ' . (($lang_id === null) ? 'Null' : strval($lang_id)) . "\n");
+                        }
+
+                        $insert_map = [
+                            'language' => get_site_default_lang(),
+                            'importance_level' => 3,
+                            'text_original' => $dry_run ? '(unavailable in dry run)' : $t[$field['m_name'] . '__old'],
+                            'text_parsed' => $has_comcode ? $t[$field['m_name'] . '__text_parsed'] : '',
+                            'broken' => 0,
+                            'source_user' => $has_comcode ? $t[$field['m_name'] . '__source_user'] : $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+                        ];
+                        if ($dry_run) {
+                            fwrite($dry_run_file, 'Insert into translate for ' . $field['m_name'] . ': ' . json_encode($insert_map) . "\n");
+                        } else {
+                            if (($lang_id === null) || ($locked === false)) {
+                                $lang_id = $db->query_insert('translate', $insert_map, true);
+                            } else {
+                                $db->query_insert('translate', ['id' => $lang_id] + $insert_map);
+                            }
+                        }
+
+                        table_id_locking_end($db, $lang_id, $lock);
+
+                        $update_map[$field['m_name']] = $lang_id;
+                    }
+
+                    // Update original rows with new language IDs
+                    $where = [];
+                    foreach ($primary_keys as $key) {
+                        $where[$key['m_name']] = $t[$key['m_name']];
+                    }
+                    if ($dry_run) {
+                        fwrite($dry_run_file, 'update map: ' . json_encode($update_map) . "\n");
+                        fwrite($dry_run_file, 'where: ' . json_encode($where) . "\n");
+                    } else {
+                        $GLOBALS['SITE_DB']->query_update($table, $update_map, $where, '', 1);
+                    }
+                }
+                $start += 100;
+            } while (!empty($trans));
+        }
+
+        foreach ($lang_fields as $field) {
+            $has_comcode = (strpos($field['m_type'], '__COMCODE') !== false);
+
+            // Delete old fields
+            $to_delete = ['old'];
+            if ($has_comcode) {
+                // Delete old implied fields for holding extra Comcode details
+                $to_delete = array_merge($to_delete, ['text_parsed', 'source_user']);
+            }
+            foreach ($to_delete as $sub_name) {
+                $sub_name = $field['m_name'] . '__' . $sub_name;
+                $query = $db->driver->alter_delete_table_field__sql($db->table_prefix . $table, $sub_name);
+                if ($dry_run) {
+                    fwrite($dry_run_file, 'delete old field: ' . $query . "\n");
+                } else {
+                    $db->query($query);
+                }
+            }
+        }
+
+        if ($dry_run) {
+            fwrite($dry_run_file, 'Reload lang fields' . "\n");
+        } else {
+            reload_lang_fields(true, $table);
+        }
     }
 
-    _update_base_config_for_content_translation(true);
-
-    rebuild_indices(true);
-    */
+    if ($dry_run) {
+        fwrite($dry_run_file, 'Update base configuration for content translations' . "\n");
+        fwrite($dry_run_file, 'Rebuild indices' . "\n");
+        fclose($dry_run_file);
+    } else {
+        _update_base_config_for_content_translation(true);
+        rebuild_indices(true);
+    }
 }
 
 /**
