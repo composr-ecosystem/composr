@@ -147,7 +147,7 @@ function download_map(int $realm, int $sx, int $sy)
 
             // Check user has been in room, to see if we perhaps need to mask the room name
             $yes = $GLOBALS['SITE_DB']->query_select_value_if_there('w_travelhistory', 'member_id', ['x' => $x, 'y' => $y, 'realm' => $realm, 'member_id' => $member_id]);
-            if (!isset($yes)) {
+            if (!isset($yes) && (($x != $sx) || ($y != $sy))) { // When a member first starts Buildr, their initial location might not be logged in the travel history
                 $name = do_lang('W_UNKNOWN_ROOM_NAME');
             }
 
@@ -159,7 +159,7 @@ function download_map(int $realm, int $sx, int $sy)
             $bx = $_x * $room_size + $border_size + $room_size - 1;
             $by = $_y * $room_size + $border_size + $room_size - 1;
 
-            $owner = ($room['owner'] !== null) ? $GLOBALS['FORUM_DRIVER']->get_username($room['owner']) : do_lang('NA');
+            $owner = ($room['owner'] !== null) ? $GLOBALS['FORUM_DRIVER']->get_username($room['owner']) : '';
 
             // Draw room
             if (($x == $sx) && ($y == $sy)) {
@@ -187,9 +187,9 @@ function download_map(int $realm, int $sx, int $sy)
             $room_name3 = substr($name, $roomnameclip * 2, $roomnameclip);
             $room_name4 = substr($name, $roomnameclip * 3);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 0, cms_empty_safe($room_name1) ? do_lang('NA') : $room_name1, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, cms_empty_safe($room_name2) ? do_lang('NA') : $room_name2, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, cms_empty_safe($room_name3) ? do_lang('NA') : $room_name3, $txcolor);
-            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, cms_empty_safe($room_name4) ? do_lang('NA') : $room_name4, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 1, cms_empty_safe($room_name2) ? '' : $room_name2, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 2, cms_empty_safe($room_name3) ? '' : $room_name3, $txcolor);
+            imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 3, cms_empty_safe($room_name4) ? '' : $room_name4, $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 4, $portal, $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 6, ':' . strval($x) . ':' . strval($y), $txcolor);
             imagestring($my_img, $my_font, $ax + 2, $ay + 2 + (imagefontheight($my_font) + 2) * 7, strval($owner), $txcolor);

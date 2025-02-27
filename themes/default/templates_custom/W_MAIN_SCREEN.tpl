@@ -254,136 +254,171 @@
 				</h2>
 
 				<div class="toggleable-tray js-tray-content" style="{HIDE_ACTIONS*}">
-					<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
-						{$INSERT_FORM_POST_SECURITY}
-
-						<table class="columned-table results-table wide-table autosized-table">
-							<colgroup>
-								<col style="width: 20%" />
-								<col style="width: 20%" />
-								<col style="width: 20%" />
-								<col style="width: 20%" />
-								<col style="width: 20%" />
-							</colgroup>
-							<thead>
-							<tr class="buildr-posttop">
-								<th>
-									{!ACTION}
-								</th>
-								<th>
-									{!W_TARGET_PERSON}
-								</th>
-								<th>
-									{!W_ITEM_INVOLVED}
-								</th>
-								<th>
-									{!W_PARAMETER}
-								</th>
-								<th>
-									{!PROCEED}
-								</th>
-							</tr>
-							</thead>
-							{+START,IF_NON_EMPTY,{ITEMS_HELD}}
-								<tr>
-									<td>
-										{!W_DROP}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{ITEMS_HELD}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+					<table class="columned-table results-table wide-table autosized-table">
+						<colgroup>
+							<col style="width: 20%" />
+							<col style="width: 20%" />
+							<col style="width: 20%" />
+							<col style="width: 20%" />
+							<col style="width: 20%" />
+						</colgroup>
+						<thead>
+						<tr class="buildr-posttop">
+							<th>
+								{!ACTION}
+							</th>
+							<th>
+								{!W_TARGET_PERSON}
+							</th>
+							<th>
+								{!W_ITEM_INVOLVED}
+							</th>
+							<th>
+								{!W_PARAMETER}
+							</th>
+							<th>
+								{!PROCEED}
+							</th>
+						</tr>
+						</thead>
+						{+START,IF_NON_EMPTY,{ITEMS_HELD}}
+							<tr>
+								<td>
+									{!W_DROP}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{ITEMS_HELD}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="drop" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										{!W_GIVE}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{ITEMS_HELD}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										<input type="hidden" name="type" value="give" />
-										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										{!W_PICKPOCKET}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										<input type="hidden" name="btype" value="pickpocket" />
-										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										{!W_USE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{ITEMS_HELD}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										<input type="hidden" name="type" value="use" />
-										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										{!W_DELETE_MATCHING_MESSAGES}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										&nbsp;
-									</td>
-									<td>
-										<input type="text" size="20" name="param" class="form-control" />
-									</td>
-									<td>
-										<input type="hidden" name="btype" value="delete-message-by-person" />
-										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-							{+END}
+									</form>
+								</td>
+							</tr>
 
 							<tr>
 								<td>
-									{!W_FIND_PERSON}
+									{!W_GIVE}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{ITEMS_HELD}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
+										<input type="hidden" name="type" value="give" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									</form>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									{!W_PICKPOCKET}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
+										<input type="hidden" name="btype" value="pickpocket" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									</form>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									{!W_USE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{ITEMS_HELD}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
+										<input type="hidden" name="type" value="use" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									</form>
+								</td>
+							</tr>
+
+							<tr>
+								<td>
+									{!W_DELETE_MATCHING_MESSAGES}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									&nbsp;
+								</td>
+								<td>
+									<input type="text" size="20" name="param" class="form-control" />
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
+										<input type="hidden" name="btype" value="delete-message-by-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									</form>
+								</td>
+							</tr>
+						{+END}
+
+						<tr>
+							<td>
+								{!W_FIND_PERSON}
+							</td>
+							<td>
+								{PEOPLE}
+							</td>
+							<td>
+								{!NA}
+							</td>
+							<td>
+								<input type="text" size="20" name="param" class="form-control" />
+							</td>
+							<td>
+								<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+									{$INSERT_FORM_POST_SECURITY}
+									<input type="hidden" name="type" value="findperson" />
+									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+								</form>
+							</td>
+						</tr>
+
+						{+START,IF,{IS_STAFF}}
+							<tr>
+								<td>
+									{!W_TELEPORT_PERSON}
 								</td>
 								<td>
 									{PEOPLE}
@@ -395,147 +430,147 @@
 									<input type="text" size="20" name="param" class="form-control" />
 								</td>
 								<td>
-									<input type="hidden" name="type" value="findperson" />
-									<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
+										<input type="hidden" name="type" value="teleport-person" />
+										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
+									</form>
 								</td>
 							</tr>
 
-							{+START,IF,{IS_STAFF}}
-								<tr>
-									<td>
-										{!W_TELEPORT_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										<input type="text" size="20" name="param" class="form-control" />
-									</td>
-									<td>
-										<input type="hidden" name="type" value="teleport-person" />
-										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-
-								<tr>
-									<td>
-										{!W_IMPRISON_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_IMPRISON_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="imprison-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
+									</form>
+								</td>
+							</tr>
 
-								<tr>
-									<td>
-										{!W_HURT_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_HURT_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="hurt-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
+									</form>
+								</td>
+							</tr>
 
-								<tr>
-									<td>
-										{!W_HEAL_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_HEAL_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="dehurt-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
+									</form>
+								</td>
+							</tr>
 
-								<tr>
-									<td>
-										{!W_BAN_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_BAN_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="ban-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
+									</form>
+								</td>
+							</tr>
 
-								<tr>
-									<td>
-										{!W_UNBAN_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_UNBAN_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="unban-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
+									</form>
+								</td>
+							</tr>
 
-								<tr>
-									<td>
-										{!W_TAKE_FROM_PERSON}
-									</td>
-									<td>
-										{PEOPLE}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
-										{!NA}
-									</td>
-									<td>
+							<tr>
+								<td>
+									{!W_TAKE_FROM_PERSON}
+								</td>
+								<td>
+									{PEOPLE}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									{!NA}
+								</td>
+								<td>
+									<form method="post" class="inline" action="{$PAGE_LINK*,_SELF:_SELF}">
+										{$INSERT_FORM_POST_SECURITY}
 										<input type="hidden" name="type" value="take-from-person" />
 										<button class="btn btn-primary btn-scri buttons--proceed" type="submit">{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} <span>{!PROCEED}</span></button>
-									</td>
-								</tr>
-							{+END}
-						</table>
-					</form>
+									</form>
+								</td>
+							</tr>
+						{+END}
+					</table>
 				</div>
 			</div>
 		</div>

@@ -405,8 +405,8 @@ function try_to_enter_room(int $member_id, int $dx, int $dy, string $given_passw
  */
 function hurt(int $member_id)
 {
-    $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]) - 1;
-    $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health], ['id' => $member_id], '', 1);
+    $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]);
+    $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health - 1], ['id' => $member_id], '', 1);
 }
 
 /**
@@ -416,8 +416,8 @@ function hurt(int $member_id)
  */
 function dehurt(int $member_id)
 {
-    $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]) + 1;
-    $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health], ['id' => $member_id], '', 1);
+    $health = $GLOBALS['SITE_DB']->query_select_value('w_members', 'health', ['id' => $member_id]);
+    $GLOBALS['SITE_DB']->query_update('w_members', ['health' => $health + 1], ['id' => $member_id], '', 1);
 }
 
 /**
