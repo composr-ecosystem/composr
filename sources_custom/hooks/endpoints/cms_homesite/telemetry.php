@@ -55,6 +55,7 @@ class Hook_endpoint_cms_homesite_telemetry
         require_code('cms_homesite');
 
         switch ($type) {
+            // Relay an error message
             case 'add':
                 // The JSON payload was coerced by the main endpoints script
                 $data = json_decode($_POST['data'], true);
@@ -197,6 +198,7 @@ class Hook_endpoint_cms_homesite_telemetry
                 }
                 break;
 
+            // Get the software public key, where ID is the version
             case 'key':
                 require_code('global3');
                 $file = cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($id) . '.pub');
@@ -206,6 +208,7 @@ class Hook_endpoint_cms_homesite_telemetry
                 }
                 return ['success' => true, 'key' => $file];
 
+            // Register a site in the telemetry service
             case 'register':
                 // The JSON payload was coerced by the main endpoints script
                 $data = json_decode($_POST['data'], true);
@@ -232,10 +235,10 @@ class Hook_endpoint_cms_homesite_telemetry
                 // Verify site ownership by accessing their installed.php endpoint for the telemetry challenge
                 require_code('http');
                 $url = $decrypted_data['website_url'] . '/data/installed.php';
-                $actual_challenge = http_get_contents($url);
+                $actual_challenge = http_get_contents($url, ['byte_limit' => 256/*security*/, 'trigger_error' => false]);
                 if (($actual_challenge !== $decrypted_data['challenge'])) {
                     http_response_code(403);
-                    return ['success' => false, 'error_details' => 'The site you attempted to register failed the telemetry challenge. Make sure we can access your /data/installed.php file at the moment of registration.'];
+                    return ['success' => false, 'error_details' => 'The site you attempted to register failed the telemetry challenge. Make sure we can access your /data/installed.php file at the moment of registration and that the string matches what was sent in the payload.'];
                 }
 
                 // Same public and signing key provided? The site may have changed their base URL.
@@ -272,11 +275,13 @@ class Hook_endpoint_cms_homesite_telemetry
                 }
                 return ['success' => true];
 
+            // Check if the given website (base URL) is registered in telemetry
             case 'is_registered':
                 $website_url = substr(get_param_string('url', false, INPUT_FILTER_URL_GENERAL), 0, 255);
                 $id = $GLOBALS['SITE_DB']->query_select_value_if_there('telemetry_sites', 'id', ['website_url' => $website_url]);
                 return ['success' => true, 'registered' => ($id !== null)];
 
+            // Get data pertaining to the given website on what the telemetry service knows
             case 'get_data':
                 // The JSON payload was coerced by the main endpoints script
                 $data = json_decode($_POST['data'], true);
