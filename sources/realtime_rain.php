@@ -204,7 +204,7 @@ function rain_get_special_icons(?string $ip_address, int $timestamp, ?string $us
             $icon = 'phone';
             $tooltip = do_lang('RTEV_PHONE');
         } else {
-            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_date_and_time' => $timestamp]);
+            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_date_and_time' => $timestamp]); // TODO: crude; it's possible time will be off by a second depending on precision and server speed
             if ($mails_sent > 0) {
                 $multiplicity = $mails_sent;
                 $icon = 'email';

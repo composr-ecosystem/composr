@@ -15,13 +15,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    search
+ * @package    cns_warnings
  */
 
 /**
  * Hook class.
  */
-class Hook_realtime_rain_search
+class Hook_realtime_rain_cns_warnings
 {
     /**
      * Run function for realtime-rain hooks.
@@ -32,36 +32,42 @@ class Hook_realtime_rain_search
      */
     public function run(int $from, int $to) : array
     {
-        if (!addon_installed('search')) {
+        if (!addon_installed('cns_warnings')) {
             return [];
         }
 
         $drops = [];
 
-        if (has_actual_page_access(get_member(), 'admin_stats')) {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT s_primary,s_member_id AS member_id,s_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'searches_logged WHERE s_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+        if (has_actual_page_access(get_member(), 'warnings')) {
+            require_lang('cns_warnings');
+
+            $rows = $GLOBALS['FORUM_DB']->query('SELECT id,w_issuing_member,w_explanation,w_member_id,w_time,w_is_warning FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_warnings WHERE w_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
-                $timestamp = $row['timestamp'];
-                $member_id = $row['member_id'];
+                $timestamp = $row['w_time'];
+                $member_id = $row['w_issuing_member'];
+                $to_member_id = $row['w_member_id'];
+                $reason = get_translated_text($row['w_explanation']);
+
+                $title = rain_truncate_for_title(do_lang('WARNING_SUMMARY', $reason));
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
-                    'TYPE' => 'search',
+                    'TYPE' => 'warning',
                     'FROM_MEMBER_ID' => strval($member_id),
-                    'TO_MEMBER_ID' => null,
-                    'TITLE' => rain_truncate_for_title($row['s_primary']),
-                    'IMAGE' => find_theme_image('icons/menu/adminzone/audit/statistics/search'),
+                    'TO_MEMBER_ID' => strval($to_member_id),
+                    'TITLE' => $title,
+                    'IMAGE' => $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($to_member_id),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => build_url(['page' => 'search', 'type' => 'results', 'content' => $row['s_primary']], get_module_zone('search')),
+                    'URL' => build_url(['page' => 'warnings', 'type' => 'view', 'id' => strval($row['id'])], get_module_zone('warnings')),
                     'IS_POSITIVE' => false,
-                    'IS_NEGATIVE' => false,
+                    'IS_NEGATIVE' => ($row['w_is_warning'] == 1),
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => 'member_' . strval($member_id),
-                    'TO_ID' => null,
-                    'GROUP_ID' => 'search_' . $row['s_primary'],
+                    'TO_ID' => 'member_' . strval($to_member_id),
+                    'GROUP_ID' => 'reason_' . md5($reason),
                 ];
             }
         }

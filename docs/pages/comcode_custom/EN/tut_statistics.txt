@@ -527,7 +527,7 @@ Each bubble in the graph has its own colour depending on the type of analytic:
  - [b][font color="#AD1457"]Maroon[/font][/b] - Calendar event starting
  - [b][font color="#303F9F"]Indigo[/font][/b] - Chat message sent
  - [b][font color="#00C853"]Green[/font][/b] - New member joined
- - [b][font color="#558B2F"]Forest Green[/font][/b] - New forum post
+ - [b][font color="#558B2F"]Forest Green[/font][/b] - New forum post (new topics always also contain a post)
  - [b][font color="#795548"]Brown[/font][/b] - eCommerce transaction
  - [b][font color="#F57C00"]Orange[/font][/b] - News/blog entry posted
  - [b][font color="#0288D1"]Blue[/font][/b] - Point transactions*
@@ -538,12 +538,23 @@ Each bubble in the graph has its own colour depending on the type of analytic:
  - [b][font color="#FF1744"]Red[/font][/b] - Hack-attack was triggered*
  - [b][font color="#D32F2F"]Dark Red[/font][/b] - Failed login attempt
  - [b][font color="#5A5A5A"]Gray[/font][/b] - A page was viewed
+ - [b][font color="#AAAA00"]Yellow[/font][/b] - A warning was issued to a member*
+
+Non-bundled addons:
+ - [b][font color="#FBC02D"]Yellow Orange[/font][/b] - Achievement earned
 
 *Bubbles can also have an 'effect' which is something that surrounds it. When a bubble has an effect, there is additional context:
- - [b]Halo[/b] - A positive action (e.g. member sent points to another member, escrow completed)
- - [b]Horns[/b] - A malicious action (e.g. escrow cancelled, hack-attack [risk score 5 or higher])
- - [b]Shadow[/b] - A deduction of some sort (e.g. points debited from a member)
- - [b]Sun rays[/b] - An addition of some sort (e.g. points credited to a member)
+ - [b]Halo[/b] - A positive action
+  - Member sent points to another member
+  - Escrow completed / satisfied
+ - [b]Horns[/b] - A malicious action
+  - Escrow cancelled
+  - Hack-attack with a risk score of 5 or higher
+  - Formal warning issued
+ - [b]Shadow[/b] - A deduction of some sort
+  - Points were debited from a member
+ - [b]Sun rays[/b] - An addition of some sort
+  - Points were credited to a member
 
 [title="3"]Browsing basic logs[/title]
 

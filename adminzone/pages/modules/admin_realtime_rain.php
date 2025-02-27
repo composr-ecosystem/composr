@@ -85,6 +85,7 @@ class Module_admin_realtime_rain
         require_lang('realtime_rain');
 
         set_helper_panel_text(comcode_lang_string('DOC_REALTIME_RAIN'));
+        set_helper_panel_tutorial('tut_statistics');
 
         $this->title = get_screen_title('REALTIME_RAIN');
 

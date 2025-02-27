@@ -201,7 +201,7 @@
 	padding: 21px;
 	margin: -21px;
 }
-.attitude-security-negative, .attitude-escrow-negative {
+.attitude-security-negative, .attitude-escrow-negative, .attitude-warning-negative {
 	background: url('{$IMG;,realtime_rain/effects/horns_effect}') no-repeat 0 0;
 	background-size: 100% 100% !important;
 	width: 224px;
@@ -348,6 +348,7 @@
 	background: url('{$IMG;,realtime_rain/avatars/chat-avatar}') no-repeat;
 }
 
+/* Gray */
 .bubble-stats {
 	background: url('{$IMG;,realtime_rain/bubbles/stats-bubble}') no-repeat;
 }
@@ -401,6 +402,14 @@
 }
 .bubble-banners .avatar-icon {
 	background: url('{$IMG;,realtime_rain/avatars/banners-avatar}') no-repeat;
+}
+
+/* Yellow */
+.bubble-warning {
+	background: url('{$IMG;,realtime_rain/bubbles/warning-bubble}') no-repeat;
+}
+.bubble-warning .avatar-icon {
+	background: url('{$IMG;,realtime_rain/avatars/warning-avatar}') no-repeat;
 }
 
 .bubble-wrap {
