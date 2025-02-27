@@ -75,6 +75,10 @@ class Hook_config_telemetry
 
         // We need to make sure we are registered with the telemetry service.
         require_code('encryption');
-        register_site_telemetry();
+        $success = register_site_telemetry();
+        if ($success === false) {
+            require_lang('privacy');
+            attach_message(do_lang_tempcode('TELEMETRY_FAILED_TO_REGISTER', escape_html(get_brand_base_url())), 'warn', false, true);
+        }
     }
 }
