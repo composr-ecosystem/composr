@@ -183,4 +183,75 @@ To configure the diseases go to Admin Zone > Setup > Manage Diseases.';
             'uploads/disastr_addon/index.html',
         ];
     }
+
+    /**
+     * Get an array of maps containing predefined diseases.
+     *
+     * @return array Predefined diseases as database rows
+     */
+    protected function _predefined_content() : array
+    {
+        $ret = [];
+        $ret[] = ['name' => 'Zombiism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Zombiism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from Zombiism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'A bad case of Hiccups', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Hiccup vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from the Hiccups', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'Vampirism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Vampirism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against Vampirism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'The Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flu vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against the Flu', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'Lice', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lice-Away Spray', 'cure_price' => 100, 'immunisation' => 'Lice repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'Fleas', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flea spray', 'cure_price' => 100, 'immunisation' => 'Flea repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1];
+        $ret[] = ['name' => 'Man-Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lots and lots of TLC', 'cure_price' => 1000, 'immunisation' => 'Anti Man-Flu Serum', 'immunisation_price' => 250, 'spread_rate' => 12, 'points_per_spread' => 100, 'last_spread_time' => 0, 'enabled' => 1];
+        return $ret;
+    }
+
+    /**
+     * Find available predefined content, and what is installed.
+     *
+     * @return array A map of available predefined content codenames, and details (if installed, and title)
+     */
+    public function enumerate_predefined_content() : array
+    {
+        $ret = [];
+
+        $diseases = $this->_predefined_content();
+        foreach ($diseases as $disease) {
+            $installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('diseases', 'id', ['name' => $disease['name']]) !== null);
+
+            $ret[md5($disease['name'])] = [
+                'title' => $disease['name'],
+                'description' => new Tempcode(),
+                'installed' => $installed,
+            ];
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Install predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to install (null: all)
+     */
+    public function install_predefined_content(?array $content = null)
+    {
+        $diseases = $this->_predefined_content();
+        foreach ($diseases as $disease) {
+            if ((($content === null) || (in_array(md5($disease['name']), $content))) && (!has_predefined_content('disastr', md5($disease['name'])))) {
+                $GLOBALS['SITE_DB']->query_insert('diseases', $disease);
+            }
+        }
+    }
+
+    /**
+     * Uninstall predefined content.
+     *
+     * @param  ?array $content A list of predefined content labels to uninstall (null: all)
+     */
+    public function uninstall_predefined_content(?array $content = null)
+    {
+        $diseases = $this->_predefined_content();
+        foreach ($diseases as $disease) {
+            if ((($content === null) || (in_array(md5($disease['name']), $content))) && (has_predefined_content('disastr', md5($disease['name'])))) {
+                $GLOBALS['SITE_DB']->query_delete('diseases', ['name' => $disease['name']]);
+            }
+        }
+    }
 }

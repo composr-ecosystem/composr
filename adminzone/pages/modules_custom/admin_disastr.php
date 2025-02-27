@@ -93,15 +93,6 @@ class Module_admin_disastr extends Standard_crud_module
                 'cure' => 'BINARY',
                 'immunisation' => 'BINARY',
             ]);
-
-            // TODO: Move to pre-defined content
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Zombiism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Zombiism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from Zombiism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'A bad case of Hiccups', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Hiccup vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself from the Hiccups', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Vampirism', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Vampirism vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against Vampirism', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'The Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flu vaccine', 'cure_price' => 100, 'immunisation' => 'Immunise yourself against the Flu', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Lice', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lice-Away Spray', 'cure_price' => 100, 'immunisation' => 'Lice repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Fleas', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Flea spray', 'cure_price' => 100, 'immunisation' => 'Flea repellant', 'immunisation_price' => 50, 'spread_rate' => 12, 'points_per_spread' => 10, 'last_spread_time' => 0, 'enabled' => 1], true);
-            $GLOBALS['SITE_DB']->query_insert('diseases', ['name' => 'Man-Flu', 'image_url' => 'data_custom/images/disastr/hazard.png', 'cure' => 'Lots and lots of TLC', 'cure_price' => 1000, 'immunisation' => 'Anti Man-Flu Serum', 'immunisation_price' => 250, 'spread_rate' => 12, 'points_per_spread' => 100, 'last_spread_time' => 0, 'enabled' => 1], true);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 3)) { // LEGACY
@@ -177,6 +168,18 @@ class Module_admin_disastr extends Standard_crud_module
             breadcrumb_set_self(do_lang_tempcode('VIEW_DISEASE'));
         }
 
+        if ($type == 'predefined_content') {
+        }
+
+        if ($type == '_predefined_content') {
+            breadcrumb_set_parents([['_SELF:_SELF:browse', do_lang_tempcode('EDIT_THIS_DISEASE')], ['_SELF:_SELF:predefined_content', do_lang_tempcode('PREDEFINED_CONTENT')]]);
+            breadcrumb_set_self(do_lang_tempcode('DONE'));
+        }
+
+        if ($type == 'predefined_content' || $type == '_predefined_content') {
+            $this->title = get_screen_title('PREDEFINED_CONTENT');
+        }
+
         return parent::pre_run($top_level);
     }
 
@@ -203,6 +206,12 @@ class Module_admin_disastr extends Standard_crud_module
         if ($type == 'view') {
             return $this->view();
         }
+        if ($type == 'predefined_content') {
+            return $this->predefined_content();
+        }
+        if ($type == '_predefined_content') {
+            return $this->_predefined_content();
+        }
         return new Tempcode();
     }
 
@@ -220,6 +229,7 @@ class Module_admin_disastr extends Standard_crud_module
             [
                 ['admin/add', ['_SELF', ['type' => 'add'], '_SELF'], do_lang('ADD_DISEASE')],
                 ['admin/edit', ['_SELF', ['type' => 'edit'], '_SELF'], do_lang('EDIT_DISEASE')],
+                has_privilege(get_member(), 'mass_import') ? ['admin/install', ['_SELF', ['type' => 'predefined_content'], '_SELF'], do_lang('PREDEFINED_CONTENT')] : null,
             ],
             do_lang('DISASTR_TITLE')
         );
@@ -426,5 +436,27 @@ class Module_admin_disastr extends Standard_crud_module
         $GLOBALS['SITE_DB']->query_delete('diseases', ['id' => $id], '', 1);
 
         log_it('DELETE_DISEASE', strval($id), $name);
+    }
+
+    /**
+     * UI for install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function predefined_content() : object
+    {
+        require_code('content2');
+        return predefined_content_changes_ui('disastr', $this->title, build_url(['page' => '_SELF', 'type' => '_predefined_content'], '_SELF'));
+    }
+
+    /**
+     * Actualise install/uninstall of predefined content.
+     *
+     * @return Tempcode The UI
+     */
+    public function _predefined_content() : object
+    {
+        require_code('content2');
+        return predefined_content_changes_actualiser('disastr', $this->title);
     }
 }
