@@ -63,6 +63,10 @@ class Hook_config_telemetry_may_feature
     {
         // We need to update this setting with the homesite
         require_code('encryption');
-        register_site_telemetry(true);
+        $success = register_site_telemetry();
+        if ($success === false) {
+            require_lang('privacy');
+            attach_message(do_lang_tempcode('TELEMETRY_FAILED_TO_REGISTER', escape_html(get_brand_base_url())), 'warn', false, true);
+        }
     }
 }

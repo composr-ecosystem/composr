@@ -118,6 +118,7 @@ _meta_tree
 /data_custom/keys/telemetry-site.pub
 /data_custom/keys/telemetry-site-sign.key
 /data_custom/keys/telemetry-site-sign.pub
+/data_custom/telemetry_challenge.txt
 /data_custom/keys/*.ini
 /_compiled/*
 !/_compiled/.htaccess
