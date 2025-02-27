@@ -44,6 +44,8 @@ function init__permissions()
  */
 function clear_permissions_runtime_cache()
 {
+    require_code('global3');
+
     global $PRIVILEGE_CACHE, $GROUP_PRIVILEGE_CACHE, $ZONE_ACCESS_CACHE, $PAGE_ACCESS_CACHE, $PAGE_ACCESS_CACHE_MATCH_KEYS, $CATEGORY_ACCESS_CACHE, $LOADED_ALL_CATEGORY_PERMISSIONS_FOR_CACHE, $SUBMIT_PERMISSION_CACHE, $PERMISSION_CHECK_LOGGER, $PERMISSIONS_ALREADY_LOGGED;
 
     $PRIVILEGE_CACHE = [];
@@ -552,8 +554,6 @@ function has_category_access(int $member_id, string $permission_module, string $
             $CATEGORY_ACCESS_CACHE[$member_id][$module_access_needed . '/' . $category_access_needed] = false;
         }
     }
-
-    check_for_infinite_loop('has_category_access', func_get_args());
 
     return has_category_access($member_id, $permission_module, $category);
 }
