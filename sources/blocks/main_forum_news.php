@@ -102,6 +102,8 @@ PHP;
 
         $date_key = array_key_exists('date_key', $map) ? $map['date_key'] : 'firsttime';
 
+        $member_based = array_key_exists('member_based', $map) ? $map['member_based'] : '0';
+
         $rows = [];
         $archive_url = null;
         $submit_url = new Tempcode();
@@ -164,7 +166,7 @@ PHP;
             $id = $myrow['id'];
             $date = get_timezoned_date_time_tempcode($myrow[$date_key]);
             $author_url = new Tempcode();
-            if ((addon_installed('authors')) && ($map['member_based'] != '1') && (!array_key_exists('member_based', $map))) {
+            if ((addon_installed('authors')) && ($member_based != '1')) {
                 $author_url = build_url(['page' => 'authors', 'type' => 'browse', 'author' => $myrow['firstusername']], get_module_zone('authors'));
             }
             $author = $myrow['firstusername'];

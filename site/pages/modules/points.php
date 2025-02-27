@@ -102,7 +102,7 @@ class Module_points
                 'locked' => 'BINARY', // 1 = status cannot be changed
                 'is_ranked' => 'BINARY', // Whether this transaction counts towards the member's rank points (to system = affects sender negatively; from system or transaction between members = affects recipient)
 
-                // TODO: These fields are not preserved in cms_merge at this time (e.g. auto-reversing from content deletion will not work)
+                // TODO: These fields are not preserved in cms_merge at this time due to potential remap issues (e.g. auto-reversing from content deletion will not work)
                 't_type' => 'ID_TEXT', // Content type or category of transaction
                 't_subtype' => 'ID_TEXT', // Content action or subcategory of transaction
                 't_type_id' => 'ID_TEXT', // Content or row ID of t_type

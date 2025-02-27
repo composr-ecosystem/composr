@@ -97,7 +97,7 @@ class Hook_addon_registry_downloads
      */
     public function get_description() : string
     {
-        return 'Host a downloads directory.';
+        return "Implements a downloads directory on your site. Easily host files of various types which others can download. You can also specify licence agreements for downloads. You can also use downloads to host software with basic support of mapping to previous / new versions of files. If the points addon is installed, you can charge points to download something. If the galleries addon is installed, you can include preview images for each download.";
     }
 
     /**
@@ -123,7 +123,7 @@ class Hook_addon_registry_downloads
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['points', 'galleries'],
             'conflicts_with' => [],
         ];
     }

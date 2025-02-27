@@ -2024,7 +2024,7 @@ function ecv2_MATURITY_FILTER_REQUESTED(string $lang, array $escaped, array $par
     } elseif (isset($_SERVER['HTTP_PREFER'])) {
         $safe = $_SERVER['HTTP_PREFER'];
     }
-    if (cms_strtolower_ascii($safe) == 'safe') {
+    if (strpos(cms_strtolower_ascii($safe), 'safe') !== false) {
         return '1';
     }
     return '0';
@@ -2747,7 +2747,7 @@ function ecv2_KEEP_POST(string $lang, array $escaped, array $param) : string
  */
 function ecv2_DO_NOT_TRACK_REQUESTED(string $lang, array $escaped, array $param) : string
 {
-    $safe = '';
+    $dnt = '';
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
         if (isset($headers['DNT'])) {
@@ -2812,4 +2812,57 @@ function ecv2_WHILE(string &$value, string $lang, array $escaped, array $param)
 function ecv2_CURRENT_FATALISTIC(string $lang, array $escaped, array $param) : string
 {
     return strval(current_fatalistic());
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv2_TO_EPOCH_INTERVAL_INDEX(string $lang, array $escaped, array $param) : string
+{
+    require_code('temporal');
+
+    $interval = (isset($param[0])) ? $param[0] : 'weeks';
+    $timestamp = (isset($param[1])) ? intval($param[1]) : time();
+    $epoch = (isset($param[2])) ? intval($param[2]) : 0;
+
+    $value = integer_format(to_epoch_interval_index($timestamp, $interval, $epoch));
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+    return $value;
+}
+
+/**
+ * Evaluate a particular Tempcode symbol.
+ *
+ * @ignore
+ *
+ * @param  LANGUAGE_NAME $lang The language to evaluate this symbol in (some symbols refer to language elements)
+ * @param  array $escaped Array of escaping operations
+ * @param  array $param Parameters to the symbol. For all but directive it is an array of strings. For directives it is an array of Tempcode objects. Actually there may be template-style parameters in here, as an influence of singular_bind and these may be Tempcode, but we ignore them.
+ * @return string The result
+ */
+function ecv2_FROM_EPOCH_INTERVAL_INDEX(string $lang, array $escaped, array $param) : string
+{
+    require_code('temporal');
+
+    $interval = (isset($param[0])) ? $param[0] : 'weeks';
+    $epoch = (isset($param[2])) ? intval($param[2]) : 0;
+
+    $index = (isset($param[1])) ? intval($param[1]) : to_epoch_interval_index(time(), $interval, $epoch);
+
+    $value = strval(from_epoch_interval_index($index, $interval, $epoch));
+
+    if ($GLOBALS['XSS_DETECT']) {
+        ocp_mark_as_escaped($value);
+    }
+    return $value;
 }

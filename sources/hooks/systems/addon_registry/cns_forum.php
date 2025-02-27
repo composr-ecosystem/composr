@@ -99,7 +99,7 @@ class Hook_addon_registry_cns_forum
      */
     public function get_description() : string
     {
-        return 'The Conversr forum- a modern advanced forum for members to interact on.';
+        return 'The Conversr forum; a modern advanced forum system for members to interact on.';
     }
 
     /**

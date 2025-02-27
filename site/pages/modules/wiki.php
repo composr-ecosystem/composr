@@ -35,7 +35,7 @@ class Module_wiki
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -132,6 +132,7 @@ class Module_wiki
                 'the_message' => 'LONG_TRANS__COMCODE',
                 'date_and_time' => 'TIME',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'wiki_views' => 'INTEGER',
                 'member_id' => 'MEMBER',
                 'edit_date' => '?TIME',
@@ -214,6 +215,10 @@ class Module_wiki
             $GLOBALS['SITE_DB']->alter_table_field('wiki_pages', 'description', 'LONG_TRANS__COMCODE', 'the_description');
 
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('points_gained_wiki');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('wiki_posts', 'validation_time', '?TIME');
         }
     }
 
@@ -459,30 +464,7 @@ class Module_wiki
     {
         attach_message(do_lang_tempcode('TAKEN_RANDOM_WIKI_PAGE'), 'inform');
 
-        $num_pages = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'MAX(id)');
-        $tried = [];
-        $iterations = 0;
-        if ($num_pages <= db_get_first_id()) {
-            $id = $num_pages;
-        } else {
-            do { // TODO: Needs further optimisation
-                $page = null;
-
-                if ($iterations >= 10000) { // We tried enough times; fall back to the most recent page
-                    $id = $num_pages;
-                    break;
-                }
-                $id = mt_rand(db_get_first_id(), $num_pages);
-                if (isset($tried[$id])) {
-                    $iterations++;
-                    continue;
-                }
-
-                $tried[$id] = true;
-                $page = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'id', ['id' => $id]);
-                $iterations += 10; // Count a DB query as 10 iterations as queries are much more resource intensive than simple array checks
-            } while ($page === null);
-        }
+        $id = $GLOBALS['SITE_DB']->query_select_value('wiki_pages', 'id', [], ' ORDER BY ' . db_function('RAND'));
         $redir_url = build_url(['page' => '_SELF', 'type' => 'browse', 'id' => $id], '_SELF');
         return redirect_screen(get_screen_title('RANDOM_PAGE'), $redir_url);
     }
@@ -1062,11 +1044,15 @@ class Module_wiki
             $submit_name = do_lang_tempcode('SAVE');
 
             $validated = $myrow['validated'];
+            $validation_time = $myrow['validation_time'];
 
             list($warning_details, $ping_url) = handle_conflict_resolution();
 
-            if (has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki', ['wiki_page', $page_id])) {
+            if ((addon_installed('validation')) && has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki', ['wiki_page', $page_id])) {
                 $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', $validated == 1));
+            }
+            if ((addon_installed('validation')) && (addon_installed('commandr')) && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $specialisation2->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'wiki_post'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
 
             require_code('content2');
@@ -1092,8 +1078,11 @@ class Module_wiki
 
             list($warning_details, $ping_url) = [null, null];
 
-            if (has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki')) {
+            if ((addon_installed('validation')) && has_privilege(get_member(), 'bypass_validation_lowrange_content', 'cms_wiki')) {
                 $specialisation2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'wiki_post'), 'validated', true));
+            }
+            if ((addon_installed('validation')) && (addon_installed('commandr')) && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $specialisation2->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'wiki_post'), 'validation_time', false, true, true, null));
             }
 
             require_code('content2');
@@ -1178,6 +1167,8 @@ class Module_wiki
      */
     protected function _post() : object
     {
+        require_code('temporal2');
+
         if (addon_installed('captcha')) {
             require_code('captcha');
             enforce_captcha();
@@ -1201,6 +1192,7 @@ class Module_wiki
         $message = post_param_string('post');
 
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         if ($id == db_get_first_id()) {
             check_privilege('feature');
@@ -1276,6 +1268,11 @@ class Module_wiki
         if (addon_installed('awards')) {
             require_code('awards');
             handle_award_setting('wiki_post', strval($post_id));
+        }
+
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('wiki_post', strval($post_id), $validation_time);
         }
 
         // Show it worked / Refresh

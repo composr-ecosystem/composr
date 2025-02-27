@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_signatures
      */
     public function get_description() : string
     {
-        return 'Member signatures.';
+        return "Enables the ability for members to define signatures (text which appears at the bottom of every forum post they make).";
     }
 
     /**

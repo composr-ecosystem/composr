@@ -84,6 +84,7 @@ class Hook_content_meta_aware_quiz extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => 'q_add_date',
             'validated_field' => 'q_validated',
+            'validation_time_field' => 'q_validation_time', // Already has open time, but difference is quiz is still visible when not open; this allows hiding the quiz
             'additional_sort_fields' => [
                 'q_type' => null,
             ],

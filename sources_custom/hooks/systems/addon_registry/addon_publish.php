@@ -107,7 +107,7 @@ class Hook_addon_registry_addon_publish
      */
     public function get_description() : string
     {
-        return 'Scripts to help us in mass-publishing addons to composr.app (not useful in their direct form to anyone else).
+        return 'Scripts to help in mass-publishing addons to the homesite (not useful in their direct form to anyone else).
 
 Includes the code for pulling translations from {$IS_MAINTAINED,transifex,Transifex}.';
     }

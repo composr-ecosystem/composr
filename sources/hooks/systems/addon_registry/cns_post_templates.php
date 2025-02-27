@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_post_templates
      */
     public function get_description() : string
     {
-        return 'Post Templates for the Conversr forum.';
+        return "Enables the ability to define templates which can be used as posts in the Conversr forum. Templates are available as a dropdown when adding or editing a post which then auto-populates the text editor. This tool can also be used with the tickets system.";
     }
 
     /**
@@ -108,7 +108,7 @@ class Hook_addon_registry_cns_post_templates
             'requires' => [
                 'cns_forum',
             ],
-            'recommends' => [],
+            'recommends' => ['tickets'],
             'conflicts_with' => [],
         ];
     }

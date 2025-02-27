@@ -107,7 +107,7 @@ class Hook_addon_registry_multi_domain_login
      */
     public function get_description() : string
     {
-        return 'Share active logins between multiple domains of a Composr install, by copying session cookies automatically.';
+        return 'Share active logins between multiple domains, by copying session cookies automatically.';
     }
 
     /**

@@ -699,6 +699,43 @@ function database_specific() : bool
         $done_something = true;
     }
 
+    // LEGACY: 11 beta7. Remove in final release.
+    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1739479687)) {
+        $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_validation_time', '?TIME');
+
+        // Migrate old publication time code to our new validation time
+        $GLOBALS['FORUM_DB']->add_table_field('f_topics', 't_validation_time', '?TIME');
+        if (addon_installed('calendar')) {
+            require_code('calendar2');
+            require_code('temporal');
+
+            // Gather our calendar events
+            $sql = 'SELECT e.id,e.e_content FROM ' . get_table_prefix() . 'calendar_events e WHERE ' . $GLOBALS['SITE_DB']->translate_field_ref('e_content') . ' LIKE \'' . db_encode_like('run_scheduled_action publish_topic%') . '\'';
+            $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true, ['e_content' => 'LONG_TRANS__COMCODE']);
+
+            foreach ($rows as $row) {
+                $content = get_translated_text($row['e_content']);
+                $matches = [];
+                if (preg_match('/run_scheduled_action publish_topic "(\d+)"/', $content, $matches) != 0) {
+                    $topic_id = $matches[1];
+
+                    // Get the time of publication
+                    $_time = get_schedule_code_event_time('publish_topic', $topic_id);
+                    if ($_time !== null) {
+                        list($minute, $hour, $month, $day, $year) = $_time;
+                        $time = cms_mktime($hour, $minute, 0, $month, $day, $year);
+
+                        // Set publication time into our new validation time field
+                        $GLOBALS['SITE_DB']->query_update('f_topics', ['t_validation_time' => $time], ['id' => intval($topic_id)]);
+                    }
+
+                    // Un-schedule the event from the calendar
+                    unschedule_code('publish_topic', $topic_id);
+                }
+            }
+        }
+    }
+
     return $done_something;
 }
 

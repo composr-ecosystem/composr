@@ -14,7 +14,7 @@ social	forum
 xml_fields	filtering
 banner	advert	advertising	advertise	ad
 masthead	header
-news	blog	weblog	press release	journal
+news	blog	weblog	press release	journal	article	story
 check-in	workflow	validated	validation	valid	approve	approval	approved	live	accept	posted	online	active	activate	activation	visible	verify	publish
 webstandards	check	conformance
 theme	skin	style
@@ -24,7 +24,7 @@ pruning	prune	lurkers
 lost password	forgot password	forgotten password	reset password
 pm	pt	dm	private message	private topic	whisper
 filedump	library	file manager	asset
-word-filter	wordfilter	swear	curse
+word-filter	wordfilter	swear	curse	censor
 colour	color	css	font	background
 dob	date of birth	age	birthday
 sef	seo	google	search engine	search-engine-friendly	search-engine-optimisation
@@ -49,9 +49,9 @@ license	licence
 search	find	filter
 recommend	refer
 quizzes	surveys	tests	competitions	questionnaires	prize-draw	exam	assessment
-securitylogging	audit
+securitylogging	audit	WAF	firewall	hack-attack
 content reviews	audit
-award	highlight	feature
+award	highlight	feature	top content
 bookmark	favorite
 calendar	event	diary	schedule
 admin zone	admincp	admin panel	control panel
@@ -62,7 +62,7 @@ display	render	view
 gallery	album	galleries	podcast	multimedia
 audit	log	usage
 download	file	document	publication	library
-page	article	comcode
+page	comcode
 entry	item	content	resource	submission	sku
 category	node	section	repository	collection
 directory	folder
@@ -82,7 +82,7 @@ configure	configuration	setup	install	core_configuration
 emoticon	smiley	smile	face	emoji
 forum	board	bbs	cns_forum	message board
 thread	topic
-karma	point
+virtual currency	point
 batch	bulk	mass
 subscribe	track	notification	alert	monitor	watch	follow	tracking
 bbcode	wikicode	comcode	shortcode
@@ -102,7 +102,6 @@ edit	modify	manage	change	control	moderate	update
 changes	revisions	diff	history	undelete	version
 delete	erase	remove	discard	prune	trash
 restore	revert	undo
-news	story	stories	article
 language	unicode	utf	utf8	utf-8	character	charset	24	clock	timezone	time-zone	time	date	translate
 ldap	active directory
 contact	feedback	ticket	message	issue	email	e-mail	support	desk
@@ -119,6 +118,7 @@ ipb	invision
 random_quotes	testimonials
 join	register	signup	sign-up	create-account
 logout	log-out	sign-out	sign-off
+author	bio	biography
 login	log-in	sign-in	sign-on	logon	log-on	authorize
 shopping	ecommerce	payment	purchase	products	store	buy	bought	checkout
 cvv	cid	csc	cvc2	cvd	cvv2	cv2
@@ -130,7 +130,6 @@ cache	decache	cleanup
 ssl	https	tls
 seed	theme wizard
 chart	graph
-author	bio	biography
 block	widget	pagelet	portlet
 moniker	slug
 guest	anonymous
@@ -154,3 +153,24 @@ recent	latest
 autofill	autocomplete	autosuggest
 update	upgrade
 bitmap  raster
+chat	instant message
+club	member group
+custom profile field	CPF
+forum	bulletin board
+warning	punishment	discipline	infraction
+addon	plugin
+cleanup	maintenance	optimisation
+feedback	rating	review	comment	trackback
+language editing	translation
+menu	navigation
+notification	subscription
+zone	sub-site	sub-section
+debrand	rebrand
+failover	fallback
+filedump	file/media library
+health check	monitoring
+match-key	page-link query
+realtime rain	audit	statistics
+rootkit	backdoor	shell script
+site messaging	announcement
+themewizard	colour palette	colour scheme

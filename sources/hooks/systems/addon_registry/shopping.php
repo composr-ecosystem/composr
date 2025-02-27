@@ -82,7 +82,7 @@ class Hook_addon_registry_shopping
      */
     public function get_description() : string
     {
-        return 'Shopping catalogue functionality.';
+        return "Implements the ability to sell products on your site via a products catalogue. This also implements shopping cart functionality for members.";
     }
 
     /**

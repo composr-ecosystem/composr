@@ -1583,10 +1583,12 @@ function warn_exit($text, bool $support_match_key_messages = false, bool $log_er
 {
     require_code('failure');
     suggest_fatalistic();
-    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status, $title, $image_url);
+
     if (running_script('cron_bridge')) {
-        relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), false, 'error_occurred_cron');
+        relay_error_notification(is_object($text) ? $text->evaluate() : escape_html($text), true, 'error_occurred_cron');
     }
+
+    _generic_exit($text, 'WARN_SCREEN', $support_match_key_messages, $log_error, $http_status, $title, $image_url);
 }
 
 /**

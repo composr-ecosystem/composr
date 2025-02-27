@@ -489,6 +489,7 @@ class Hook_commandr_fs_forums extends Resource_fs_base
             'description' => $row['t_description'],
             'emoticon' => $row['t_emoticon'],
             'validated' => $row['t_validated'],
+            'validation_time' => remap_time_as_portable($row['t_validation_time']),
             'open' => $row['t_is_open'],
             'pinned' => $row['t_pinned'],
             'cascading' => $row['t_cascading'],

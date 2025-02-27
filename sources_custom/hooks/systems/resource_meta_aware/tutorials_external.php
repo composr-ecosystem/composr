@@ -77,6 +77,7 @@ class Hook_resource_meta_aware_tutorials_external
             'edit_time_field' => 't_edit_date',
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => [
                 't_author' => null, // NB: t_author is not an actual reference to a CMS author
                 't_media_type' => null,

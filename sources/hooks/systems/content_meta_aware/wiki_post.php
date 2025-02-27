@@ -83,6 +83,7 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
             'date_field' => 'date_and_time',
             'validated_field' => 'validated',
             'validation_is_minor' => true,
+            'validation_time_field' => 'validation_time', // NB: Could see the argument of deferring future info on a Wiki until it becomes applicable
             'additional_sort_fields' => null,
 
             'seo_type_code' => null,

@@ -82,7 +82,7 @@ class Hook_addon_registry_polls
      */
     public function get_description() : string
     {
-        return 'A poll (voting) system.';
+        return "Implements a simple website-level poll system. Members can suggest polls for staff to choose.";
     }
 
     /**

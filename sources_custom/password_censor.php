@@ -131,11 +131,13 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 }
 
                 if ($GLOBALS['FORUM_DRIVER']->get_member_from_username($m) !== null) {
-                    continue; // A username
+                    continue; // Skip; is a username
                 }
                 if (preg_match('#://[^ ]*' . preg_quote($m, '#') . '#', $text) != 0) {
-                    continue; // Part of a URL
+                    continue; // Skip; is a URL
                 }
+
+                // TODO: skip emoticons
 
                 // Add a point for each category of characters found
                 $c = 0;

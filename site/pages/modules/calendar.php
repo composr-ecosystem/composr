@@ -42,7 +42,7 @@ class Module_calendar
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -131,6 +131,7 @@ class Module_calendar
                 'notes' => 'LONG_TEXT',
                 'e_type' => 'AUTO_LINK',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'e_previous_recurrence_time' => '?TIME',
                 'e_next_recurrence_time' => '?TIME',
             ]);
@@ -296,6 +297,10 @@ class Module_calendar
         if (($upgrade_from !== null) && ($upgrade_from < 10)) { // LEGACY: 11.beta1
             // Database consistency fixes
             $GLOBALS['SITE_DB']->alter_table_field('calendar_types', 't_external_feed', 'URLPATH', 't_external_feed_url');
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('calendar_events', 'validation_time', '?TIME');
         }
     }
 

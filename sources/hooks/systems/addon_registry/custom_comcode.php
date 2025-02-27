@@ -82,7 +82,7 @@ class Hook_addon_registry_custom_comcode
      */
     public function get_description() : string
     {
-        return 'Create new Comcode tags.';
+        return "Provides a user interface where staff can create custom Comcode tags (very useful if your site has repeating styles, such as formatted block quotes or various boxes)";
     }
 
     /**

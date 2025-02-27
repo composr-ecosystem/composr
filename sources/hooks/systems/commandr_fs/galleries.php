@@ -412,6 +412,7 @@ class Hook_commandr_fs_galleries extends Resource_fs_base
             'description' => get_translated_text($row['the_description']),
             'url' => remap_urlpath_as_portable($row['url']),
             'validated' => $row['validated'],
+            'validation_time' => remap_time_as_portable($row['validation_time']),
             'allow_rating' => $row['allow_rating'],
             'allow_comments' => $row['allow_comments'],
             'allow_trackbacks' => $row['allow_trackbacks'],

@@ -1310,7 +1310,7 @@ function get_translated_text($entry, ?object $db = null, ?string $lang = null, b
             trigger_error(do_lang('NOT_STRING_CONTENT_LANG_STRING'), E_USER_WARNING);
         }
 
-        return $entry;
+        return strval($entry); // PHP might coerce a string number into an integer
     }
 
     if (is_string($entry)) { // Strings should have been returned before this point
@@ -1377,7 +1377,7 @@ function get_translated_text($entry, ?object $db = null, ?string $lang = null, b
         $db->text_lookup_cache[$entry] = $result[0]['text_parsed'];
     }
 
-    return $result[0]['text_original'];
+    return strval($result[0]['text_original']);
 }
 
 /**

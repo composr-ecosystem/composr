@@ -1008,6 +1008,7 @@ class Module_cms_comcode_pages
         if (array_key_exists(0, $rows)) {
             // Existing
             $validated = $rows[0]['p_validated'] == 1;
+            $validation_time = $rows[0]['p_validation_time'];
             $parent_page = $rows[0]['p_parent_page'];
             $show_as_edit = $rows[0]['p_show_as_edit'] == 1;
             $owner = $rows[0]['p_submitter'];
@@ -1015,6 +1016,7 @@ class Module_cms_comcode_pages
         } else {
             // New or raw .txt not processed into DB yet
             $validated = true;
+            $validation_time = null;
             $parent_page = get_param_string('parent_page', '');
             $show_as_edit = false;
             $owner = get_member();
@@ -1025,12 +1027,23 @@ class Module_cms_comcode_pages
             $order++;
         }
 
-        if (!$validated) {
-            $validated = (get_param_integer('validated', 0) == 1);
-        }
-        if (has_bypass_validation_comcode_page_permission($zone)) {
-            if (addon_installed('validation')) {
-                $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'comcode_page'), 'validated', $validated));
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            }
+
+            if (has_bypass_validation_comcode_page_permission($zone)) {
+                if (addon_installed('validation')) {
+                    $fields2->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'comcode_page'), 'validated', $validated));
+                }
+            }
+
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields2->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'comcode_page'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
@@ -1233,7 +1246,9 @@ class Module_cms_comcode_pages
             $file = $new_file;
         }
 
+        require_code('temporal2');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         if (!addon_installed('validation')) {
             $validated = 1;
         }
@@ -1319,6 +1334,11 @@ class Module_cms_comcode_pages
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
             content_review_set('comcode_page', $zone . ':' . $new_file, $zone . ':' . $file);
+        }
+
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('comcode_page', $zone . ':' . $new_file, $validation_time);
         }
 
         // Update any current menu link(s)

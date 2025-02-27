@@ -1767,9 +1767,6 @@ class Module_topics
                 ];
             }
             $moderation_options[] = [do_lang_tempcode('CASCADING'), 'cascading', '1', do_lang_tempcode('DESCRIPTION_CASCADING'), false, false];
-            if (addon_installed('calendar')) {
-                $specialisation2->attach(form_input_date__cron(do_lang_tempcode('CNS_PUBLICATION_TIME'), do_lang_tempcode('CNS_DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true));
-            }
         } else {
             $hidden_fields->attach(form_input_hidden('open', '1'));
             $hidden_fields->attach(form_input_hidden('validated', '1'));
@@ -1809,6 +1806,9 @@ class Module_topics
         }
         if (!empty($moderation_options)) {
             $specialisation2->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
+        }
+        if ((addon_installed('validation')) && (addon_installed('commandr')) && (!$private_topic) && has_privilege(get_member(), 'scheduled_publication_times')) {
+            $specialisation2->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'topic'), 'validation_time', false, true, true, null));
         }
 
         // Custom fields?
@@ -2166,9 +2166,6 @@ class Module_topics
                 $options[] = [do_lang_tempcode('CASCADING'), 'cascading', '1', do_lang_tempcode('DESCRIPTION_CASCADING'), false, $topic_info['t_cascading'] == 1];
             }
             $specialisation2->attach(form_input_various_ticks($options, ''));
-            if (addon_installed('calendar')) {
-                $specialisation2->attach(form_input_date__cron(do_lang_tempcode('CNS_PUBLICATION_TIME'), do_lang_tempcode('CNS_DESCRIPTION_PUBLICATION_TIME'), 'schedule', false, true, true));
-            }
         }
 
         require_code('content2');
@@ -2298,6 +2295,7 @@ class Module_topics
         require_code('attachments2');
         require_code('cns_posts_action');
         require_code('cns_posts_action2');
+        require_code('temporal2');
 
         $invited_members = [];
 
@@ -2341,6 +2339,7 @@ class Module_topics
         }
 
         $validated = post_param_integer('validated', post_param_integer('_validated', 0));
+        $validation_time = post_param_date_components_utc('validation_time');
         $is_emphasised = post_param_integer('is_emphasised', 0);
         $skip_sig = post_param_integer('skip_sig', 0);
 
@@ -2428,25 +2427,14 @@ class Module_topics
                 $first_post = true;
                 $_title = get_screen_title('ADD_TOPIC');
 
-                $schedule = post_param_date('schedule');
-
-                if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $parameters = [];
-                    require_code('calendar');
-                    $start_year = intval(date('Y', $schedule));
-                    $start_month = intval(date('m', $schedule));
-                    $start_day = intval(date('d', $schedule));
-                    $start_hour = intval(date('H', $schedule));
-                    $start_minute = intval(date('i', $schedule));
-                    require_code('calendar2');
-                    schedule_code('publish_topic', strval($topic_id), $parameters, do_lang('ADD_SCHEDULED_TOPIC', $topic_title), $start_year, $start_month, $start_day, $start_hour, $start_minute);
-
-                    $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_validated' => 0], ['id' => $topic_id], '', 1);
-                }
-
                 if (addon_installed('awards')) {
                     require_code('awards');
                     handle_award_setting('topic', strval($topic_id));
+                }
+
+                if (addon_installed('validation')) {
+                    require_code('validation');
+                    schedule_validation('topic', strval($topic_id), $validation_time);
                 }
             }
 
@@ -2490,45 +2478,10 @@ class Module_topics
                 $open = post_param_integer('open', 0);
                 $topic_validated = post_param_integer('topic_validated', 0);
                 $to = post_param_integer('to', null);
-                $schedule = post_param_date('schedule');
 
                 cns_edit_topic($topic_id, null, null, $topic_validated, $open, $pinned, $cascading, '', ($new_title == '') ? null : $new_title);
                 if (($to != $forum_id) && ($to !== null)) {
                     cns_move_topics($forum_id, $to, [$topic_id]);
-                }
-
-                if (($schedule !== null) && (addon_installed('calendar'))) {
-                    $parameters = [$forum_id, $title, $post, $skip_sig, false, $is_emphasised, $poster_name_if_guest, $whisper_to_member, $topic_title, $anonymous, get_member(), get_ip_address()];
-                    require_code('calendar');
-                    $start_year = intval(date('Y', $schedule));
-                    $start_month = intval(date('m', $schedule));
-                    $start_day = intval(date('d', $schedule));
-                    $start_hour = intval(date('H', $schedule));
-                    $start_minute = intval(date('i', $schedule));
-                    require_code('calendar2');
-                    schedule_code('publish_post', strval($topic_id), $parameters, do_lang('ADD_POST'), $start_year, $start_month, $start_day, $start_hour, $start_minute);
-
-                    $text = do_lang_tempcode('SUCCESS');
-                    $map = ['page' => 'topicview', 'type' => 'first_unread', 'id' => $topic_id];
-                    $test = get_param_string('kfs' . strval($forum_id), null, INPUT_FILTER_GET_COMPLEX);
-                    if (($test !== null) && ($test !== '0')) {
-                        $map['kfs' . strval($forum_id)] = $test;
-                    }
-                    $test_threaded = get_param_integer('threaded', null);
-                    if ($test_threaded !== null) {
-                        $map['threaded'] = $test_threaded;
-                    }
-                    $_url = build_url($map, get_module_zone('topicview'), [], false, false, false, 'first-unread');
-                    $url = $_url->evaluate();
-                    $url = get_param_string('redirect', $url, INPUT_FILTER_URL_INTERNAL);
-
-                    return [
-                        'forum_id' => $forum_id,
-                        'topic_id' => $topic_id,
-                        'post_id' => null,
-                        'member_id' => $member_id,
-                        'output' => redirect_screen($_title, $url, $text),
-                    ];
                 }
             }
         }
@@ -2656,7 +2609,7 @@ class Module_topics
 
     /**
      * Used by Module_topics#add_poll() to validate input for new topic to be created together with the poll in one go.
-     * We don't combine this with the code in Module_topics#_add_topic() as that also is doing stuff to the read in input. Cleaner to copy and paste in this rare instance.
+     * We don't combine this with the code in Module_topics#_add_reply() as that also is doing stuff to the read in input. Cleaner to copy and paste in this rare instance.
      */
     public function _validate_request_for_potential_topic()
     {
@@ -3135,15 +3088,16 @@ class Module_topics
         // Voting Open Until option
         if ($_default_options['votingPeriodHours'] !== null) { // If XML restriction set
             $actual_poll_closing_time = time();
-            $schedule = post_param_date('schedule');
             $topic_id = get_param_integer('id', null);
 
             if (!$new_poll) { // If we are editing a poll, keep the current poll closing time value
                 $actual_poll_closing_time = $poll_closing_time;
             } elseif ($_default_options['votingPeriodHours'] === false) { // If the XML votingPeriodHours is false, do not allow setting a closing time
                 $actual_poll_closing_time = null;
+            /* TODO
             } elseif ($schedule !== null) { // If a topic scheduled time was provided, add votingPeriodHours to that
                 $actual_poll_closing_time = $schedule + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
+            */
             } elseif ($topic_id !== null) { // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
@@ -3829,6 +3783,9 @@ class Module_topics
         if (!empty($moderation_options)) {
             $fields->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
+        if ((addon_installed('validation')) && (addon_installed('commandr')) && (!$private_topic) && has_privilege(get_member(), 'scheduled_publication_times')) {
+            $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'topic'), 'validation_time', false, ($topic_info['t_validation_time'] === null), true, $topic_info['t_validation_time']));
+        }
 
         require_code('fields');
         if (has_tied_catalogue('topic')) {
@@ -3866,11 +3823,14 @@ class Module_topics
      */
     public function _edit_topic() : object // Type
     {
+        require_code('temporal2');
+
         $topic_id = get_param_integer('id');
         $cascading = post_param_integer('cascading', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $pinned = post_param_integer('pinned', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $open = post_param_integer('open', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $title = post_param_string('title');
 
         require_code('cns_topics_action');
@@ -3889,6 +3849,11 @@ class Module_topics
         if (addon_installed('awards')) {
             require_code('awards');
             handle_award_setting('topic', strval($topic_id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('topic', strval($topic_id), $validation_time);
         }
 
         return $this->redirect_to('EDIT_TOPIC', $topic_id);

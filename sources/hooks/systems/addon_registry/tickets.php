@@ -82,7 +82,7 @@ class Hook_addon_registry_tickets
      */
     public function get_description() : string
     {
-        return 'A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.';
+        return "A forum-based support ticket system, along with content reporting capabilities (to report rule-violating content to staff) and a contact block. Support tickets enable organised and private communication between members and staff (with support for searching the default FAQ catalogue). Content reporting allows visitors to report problematic content to the staff for review (which creates a support ticket containing a hard copy of the content).";
     }
 
     /**
@@ -108,7 +108,7 @@ class Hook_addon_registry_tickets
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['validation'],
             'conflicts_with' => [],
         ];
     }

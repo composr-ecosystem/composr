@@ -374,19 +374,20 @@ class Module_cms_banners extends Standard_crud_module
      * @param  ?TIME $expiry_date The banner expiry date (null: never expires)
      * @param  ?MEMBER $submitter The banners submitter (null: current member)
      * @param  BINARY $validated Whether the banner has been validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ID_TEXT $b_type The banner type (can be anything, where blank means 'normal')
      * @param  array $b_types The secondary banner types (empty: no secondary banner types)
      * @param  array $regions The regions (empty: not region-limited)
      * @param  SHORT_TEXT $title_text The title text for the banner (only used for text banners, and functions as the 'trigger text' if the banner type is shown inline)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields(string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 0, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
+    public function get_form_fields(string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 0, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, ?int $validation_time = null, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
     {
         if ($b_type == '') {
             $b_type = get_param_string('b_type', '');
         }
 
-        list($fields, $js_function_calls) = get_banner_form_fields(false, $name, $image_url, $site_url, $caption, $direct_code, $notes, $display_likelihood, $campaign_remaining, $deployment_agreement, $expiry_date, $submitter, $validated, $b_type, $b_types, $regions, $title_text);
+        list($fields, $js_function_calls) = get_banner_form_fields(false, $name, $image_url, $site_url, $caption, $direct_code, $notes, $display_likelihood, $campaign_remaining, $deployment_agreement, $expiry_date, $submitter, $validated, $validation_time, $b_type, $b_types, $regions, $title_text);
 
         if (is_array($js_function_calls) && (!empty($js_function_calls))) {
             $this->js_function_calls = array_merge($this->js_function_calls, $js_function_calls);
@@ -444,7 +445,7 @@ class Module_cms_banners extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'banner', 'content_id' => $id]));
 
-        return $this->get_form_fields($id, $myrow['img_url'], $myrow['site_url'], get_translated_text($myrow['caption']), $myrow['direct_code'], $myrow['notes'], $myrow['display_likelihood'], $myrow['campaign_remaining'], $myrow['deployment_agreement'], $myrow['expiry_date'], $myrow['submitter'], $myrow['validated'], $myrow['b_type'], $b_types, $regions, $myrow['title_text']);
+        return $this->get_form_fields($id, $myrow['img_url'], $myrow['site_url'], get_translated_text($myrow['caption']), $myrow['direct_code'], $myrow['notes'], $myrow['display_likelihood'], $myrow['campaign_remaining'], $myrow['deployment_agreement'], $myrow['expiry_date'], $myrow['submitter'], $myrow['validated'], $myrow['validation_time'], $myrow['b_type'], $b_types, $regions, $myrow['title_text']);
     }
 
     /**
@@ -454,6 +455,8 @@ class Module_cms_banners extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         $name = post_param_string('banner_codename');
         $caption = post_param_string('caption');
         $direct_code = post_param_string('direct_code', '');
@@ -464,6 +467,7 @@ class Module_cms_banners extends Standard_crud_module
         $deployment_agreement = post_param_integer('deployment_agreement', 1);
         $expiry_date = post_param_date('expiry_date');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $b_type = post_param_string('b_type');
         $b_types = isset($_POST['b_types']) ? $_POST['b_types'] : [];
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
@@ -501,6 +505,11 @@ class Module_cms_banners extends Standard_crud_module
             content_review_set('banner', $name);
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('banner', $name, $validation_time);
+        }
+
         require_code('templates_donext');
         if (has_simplified_donext()) {
             $tpl = null;
@@ -517,6 +526,8 @@ class Module_cms_banners extends Standard_crud_module
      */
     public function edit_actualisation(string $id) : ?object
     {
+        require_code('temporal2');
+
         $orig_submitter = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'submitter', ['name' => $id]);
         if ($orig_submitter === null) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'banner'));
@@ -525,6 +536,7 @@ class Module_cms_banners extends Standard_crud_module
         $title_text = post_param_string('title_text', '');
         $direct_code = post_param_string('direct_code', '');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $b_type = post_param_string('b_type');
         $b_types = isset($_POST['b_types']) ? $_POST['b_types'] : [];
         $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
@@ -551,6 +563,11 @@ class Module_cms_banners extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('banner', $new_id, $id);
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('banner', $new_id, $validation_time);
         }
 
         return null;

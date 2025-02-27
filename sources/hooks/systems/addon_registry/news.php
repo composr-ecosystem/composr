@@ -82,7 +82,7 @@ class Hook_addon_registry_news
      */
     public function get_description() : string
     {
-        return 'News and blogging.';
+        return "Implements news and blogging functionality. Create news articles under your choice of categories. Optionally allow members to make their own blog posts (reduced functionality news articles) displayed on their profile. Various blocks are provided for rendering news articles in different ways.";
     }
 
     /**
@@ -111,7 +111,7 @@ class Hook_addon_registry_news
             'requires' => [
                 'news_shared',
             ],
-            'recommends' => [],
+            'recommends' => ['newsletter'],
             'conflicts_with' => [],
         ];
     }

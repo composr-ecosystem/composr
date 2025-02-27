@@ -82,7 +82,7 @@ class Hook_addon_registry_robots_txt
      */
     public function get_description() : string
     {
-        return 'Configure robots.txt.';
+        return "Provides a default robots.txt file and an interface for editing it.";
     }
 
     /**

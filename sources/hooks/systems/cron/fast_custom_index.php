@@ -85,7 +85,9 @@ class Hook_cron_fast_custom_index
             foreach ($statistics_map as $lang => $_statistics_map) {
                 arsort($_statistics_map);
 
-                foreach ($_statistics_map as $ngram => $total) {
+                foreach ($_statistics_map as $_ngram => $total) {
+                    $ngram = strval($_ngram); // Key could be a number which is coerced by PHP into an integer; we don't want that
+
                     if (strlen($ngram) > 255) {
                         continue;
                     }

@@ -82,7 +82,7 @@ class Hook_addon_registry_breadcrumbs
      */
     public function get_description() : string
     {
-        return 'Advanced breadcrumb editing.';
+        return "Customise breadcrumbs on your site using special XML and match-key syntax (e.g. perhaps you want something to appear under a specific page rather than a Composr module / feature).";
     }
 
     /**

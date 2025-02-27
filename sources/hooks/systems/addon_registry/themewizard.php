@@ -82,7 +82,7 @@ class Hook_addon_registry_themewizard
      */
     public function get_description() : string
     {
-        return 'Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.';
+        return 'Automatically generate a new theme with your own colour schemes, using your choice of theme as a base. Uses the sophisticated chromagraphic equations built into the software.';
     }
 
     /**

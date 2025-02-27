@@ -85,6 +85,7 @@ class Module_admin_realtime_rain
         require_lang('realtime_rain');
 
         set_helper_panel_text(comcode_lang_string('DOC_REALTIME_RAIN'));
+        set_helper_panel_tutorial('tut_statistics');
 
         $this->title = get_screen_title('REALTIME_RAIN');
 
@@ -100,6 +101,14 @@ class Module_admin_realtime_rain
     {
         require_javascript('realtime_rain');
         require_css('realtime_rain');
+
+        // Call init functions on hooks in case any non-bundled addons need to load up their own CSS for realtime-rain.
+        $hooks = find_all_hook_obs('systems', 'realtime_rain', 'Hook_realtime_rain_');
+        foreach ($hooks as $hook => $ob) {
+            if (method_exists($ob, 'init')) {
+                $ob->init();
+            }
+        }
 
         $min_time = $GLOBALS['SITE_DB']->query_select_value('stats', 'MIN(date_and_time)');
         if ($min_time === null) {

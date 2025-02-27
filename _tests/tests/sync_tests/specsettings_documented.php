@@ -39,7 +39,7 @@ class specsettings_documented_test_set extends cms_test_case
         for ($i = 0; $i < $num_matches; $i++) {
             $directive = $matches[1][$i];
 
-            $this->assertTrue(strpos($tempcode_tutorial, $directive) !== false, 'Missing documented directive, ' . $directive);
+            $this->assertTrue(strpos($tempcode_tutorial, $directive) !== false, 'Directive not documented, ' . $directive);
         }
     }
 
@@ -58,7 +58,13 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $this->assertTrue(strpos($tempcode_tutorial, '{$' . $symbol) !== false, 'Missing documented symbol, {$' . $symbol . '}');
+            $this->assertTrue(strpos($tempcode_tutorial, '{$' . $symbol) !== false, 'Symbol not documented, {$' . $symbol . '}');
+        }
+
+        // Also scan non-custom hooks
+        $hooks = find_all_hooks('systems', 'symbols', false);
+        foreach ($hooks as $symbol => $implementation) {
+            $this->assertTrue(strpos($tempcode_tutorial, '{$' . $symbol) !== false, 'Symbol not documented, {$' . $symbol . '}');
         }
     }
 
@@ -77,7 +83,7 @@ class specsettings_documented_test_set extends cms_test_case
                 continue;
             }
 
-            $this->assertTrue(function_exists('ecv_' . $symbol) || function_exists('ecv2_' . $symbol) || is_file(get_file_base() . '/sources/hooks/systems/symbols/' . $symbol . '.php'), 'Missing documented symbol, ' . $symbol);
+            $this->assertTrue(function_exists('ecv_' . $symbol) || function_exists('ecv2_' . $symbol) || is_file(get_file_base() . '/sources/hooks/systems/symbols/' . $symbol . '.php'), 'Documented symbol does not exist, ' . $symbol);
         }
     }
 

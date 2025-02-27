@@ -164,13 +164,14 @@ function create_selection_list_banners(?string $it = null, ?int $only_owned = nu
  * @param  ?TIME $expiry_date The banner expiry date (null: never expires)
  * @param  ?MEMBER $submitter The banners submitter (null: current member)
  * @param  BINARY $validated Whether the banner has been validated
+ * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
  * @param  ID_TEXT $b_type The banner type (can be anything, where blank means 'normal')
  * @param  array $b_types The secondary banner types (empty: no secondary banner types)
  * @param  array $regions The regions (empty: not region-limited)
  * @param  SHORT_TEXT $title_text The title text for the banner (only used for text banners, and functions as the 'trigger text' if the banner type is shown inline)
  * @return array A pair: The input field Tempcode, JavaScript code
  */
-function get_banner_form_fields(bool $simplified = false, string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 1, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
+function get_banner_form_fields(bool $simplified = false, string $name = '', string $image_url = '', string $site_url = '', string $caption = '', string $direct_code = '', string $notes = '', int $display_likelihood = 3, ?int $campaign_remaining = 50, int $deployment_agreement = 1, ?int $expiry_date = null, ?int $submitter = null, int $validated = 1, ?int $validation_time = null, string $b_type = '', array $b_types = [], array $regions = [], string $title_text = '') : array
 {
     require_code('images');
 
@@ -200,19 +201,24 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
         $fields->attach(form_input_text(do_lang_tempcode('NOTES'), do_lang_tempcode('DESCRIPTION_NOTES'), 'notes', $notes, false, false));
     }
 
-    if (has_privilege(get_member(), 'bypass_validation_midrange_content', 'cms_banners')) {
+    // Validation
+    if (addon_installed('validation')) {
         $_validated = get_param_integer('validated', 0);
         if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
+            if ($_validated == 1) {
                 $validated = 1;
                 attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($name !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_DOWNLOAD', 'param_a' => $name]);
+        } elseif (($validated == 1) && ($_validated == 1) && ($name != '')) {
+            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_BANNER', 'param_a' => $name]);
             attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
         }
-        if (addon_installed('validation')) {
+
+        if (has_privilege(get_member(), 'bypass_validation_midrange_content', 'cms_banners')) {
             $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'banner'), 'validated', $validated == 1));
+        }
+        if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+            $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'banner'), 'validation_time', false, ($validation_time === null), true, $validation_time));
         }
     }
 

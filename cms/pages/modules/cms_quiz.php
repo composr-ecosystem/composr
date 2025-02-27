@@ -310,6 +310,7 @@ class Module_cms_quiz extends Standard_crud_module
      * @param  ID_TEXT $type The type
      * @set SURVEY COMPETITION TEST
      * @param  BINARY $validated Whether this is validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?string $text Text for questions (null: default)
      * @param  integer $points_for_passing The number of points awarded for completing/passing the quiz/test
      * @param  ?AUTO_LINK $tied_newsletter Newsletter for which a member must be on to enter (null: none)
@@ -318,7 +319,7 @@ class Module_cms_quiz extends Standard_crud_module
      * @param  BINARY $shuffle_answers Whether to shuffle multiple-choice answers, to make cheating a bit harder
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $name = '', ?int $timeout = null, string $start_text = '', string $end_text = '', string $end_text_fail = '', string $notes = '', int $percentage = 70, ?int $open_time = null, ?int $close_time = null, int $num_winners = 2, ?int $redo_time = null, string $type = 'SURVEY', int $validated = 1, ?string $text = null, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0) : array
+    public function get_form_fields(?int $id = null, string $name = '', ?int $timeout = null, string $start_text = '', string $end_text = '', string $end_text_fail = '', string $notes = '', int $percentage = 70, ?int $open_time = null, ?int $close_time = null, int $num_winners = 2, ?int $redo_time = null, string $type = 'SURVEY', int $validated = 1, ?int $validation_time = null, ?string $text = null, int $points_for_passing = 0, ?int $tied_newsletter = null, int $reveal_answers = 0, int $shuffle_questions = 0, int $shuffle_answers = 0) : array
     {
         if ($open_time === null) {
             $open_time = time();
@@ -338,18 +339,26 @@ class Module_cms_quiz extends Standard_crud_module
         $fields->attach(form_input_huge(do_lang_tempcode('QUESTIONS'), do_lang_tempcode('IMPORT_QUESTIONS_TEXT'), 'text', $text, true, null, 20, '', true));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_START_TEXT'), do_lang_tempcode('DESCRIPTION_QUIZ_START_TEXT'), 'start_text', $start_text, false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('QUIZ_END_TEXT'), do_lang_tempcode('DESCRIPTION_QUIZ_END_TEXT'), 'end_text', $end_text, false));
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
-            }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
+
+        // Validation
         if (addon_installed('validation')) {
-            $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_VALIDATED_SIMPLE'), 'validated', $validated == 1));
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_QUIZ', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
+            }
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_quiz', $this->permissions_module_require)) {
+                $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'quiz'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'quiz'), 'validation_time', false, ($validation_time === null), true, $validation_time));
+            }
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '43499b3d39e5743f27852e84cd6d3296', 'TITLE' => do_lang_tempcode('TEST'), 'SECTION_HIDDEN' => $type != 'TEST']));
@@ -475,10 +484,13 @@ class Module_cms_quiz extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         $open_time = post_param_date('open_time');
         $close_time = post_param_date('close_time');
 
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         $_tied_newsletter = post_param_string('tied_newsletter', '');
         $tied_newsletter = ($_tied_newsletter == '') ? null : intval($_tied_newsletter);
@@ -526,6 +538,11 @@ class Module_cms_quiz extends Standard_crud_module
             content_review_set('quiz', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('quiz', strval($id), $validation_time);
+        }
+
         return [strval($id), null];
     }
 
@@ -537,6 +554,8 @@ class Module_cms_quiz extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : ?object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
 
         $open_time = fractional_edit() ? INTEGER_MAGIC_NULL : post_param_date('open_time');
@@ -550,6 +569,7 @@ class Module_cms_quiz extends Standard_crud_module
 
         $name = post_param_string('quiz_name', STRING_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         if (($validated == 1) || (!addon_installed('validation'))) {
             require_code('users2');
@@ -606,6 +626,11 @@ class Module_cms_quiz extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('quiz', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('quiz', strval($id), $validation_time);
         }
 
         return null;

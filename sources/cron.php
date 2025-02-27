@@ -320,6 +320,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
 
                 // Run, with timing and error catching
                 $last_error = '';
+                $last_error_trace = '';
                 $time_before = time();
                 if ($verbose) {
                     $object->run($last_run);
@@ -329,6 +330,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                         $object->run($last_run);
                     } catch (Exception $e) {
                         $last_error = $e->getMessage();
+                        $last_error_trace = $e->getTraceAsString();
                     }
                     set_throw_errors(false);
                 }
@@ -369,11 +371,22 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                     $GLOBALS['SITE_DB']->query_insert_or_replace('cron_progression', $cron_progression[$hook], ['c_hook' => $hook]);
                 }
 
-                // Unlock
-                delete_value('cron_currently_running__' . $hook, true);
+                // Unlock, but only if there were no errors
+                if ($last_error == '') {
+                    delete_value('cron_currently_running__' . $hook, true);
+                    $log_message = loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n";
+                } else {
+                    $log_message = loggable_date() . '  FINISHED WITH ERRORS ' . $hook . ' (' . $info['label'] . ') (Hook will remain locked because of errors)' . "\n";
+
+                    // Log the error and relay it to telemetry
+                    require_code('failure');
+                    if (php_function_allowed('error_log')) {
+                        @error_log('Composr Scheduler: ERROR ' . $last_error . "\n" . $last_error_trace);
+                    }
+                    relay_error_notification($last_error . "\n" . $last_error_trace, true, 'error_occurred_cron');
+                }
 
                 // Update log to say finished
-                $log_message = loggable_date() . '  FINISHED ' . $hook . ' (' . $info['label'] . ')' . "\n";
                 if ($verbose) {
                     $ret .= $log_message;
                     if ($echo_out) {

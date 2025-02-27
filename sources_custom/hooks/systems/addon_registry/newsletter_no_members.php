@@ -107,7 +107,7 @@ class Hook_addon_registry_newsletter_no_members
      */
     public function get_description() : string
     {
-        return 'Unsubscribes everyone from newsletters that have recently become a member. This is useful to keep your mailing audiences distinct.';
+        return "Removes e-mail addresses of newsletter subscribers when they register an account. This is useful to keep your mailing lists distinct.";
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_core_webstandards
      */
     public function get_description() : string
     {
-        return 'Web Standards checking tools.';
+        return "Tools for checking webstandards (e.g. Comcode pages)";
     }
 
     /**

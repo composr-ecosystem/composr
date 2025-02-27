@@ -97,7 +97,7 @@ class Hook_addon_registry_backup
      */
     public function get_description() : string
     {
-        return 'Perform incremental or full backups of files and the database. Supports scheduling.';
+        return 'Perform incremental or full backups of site files and the database. Supports scheduling. While it is highly recommended to use your webhost backup tools, this tool can be used as a last resort or when you want backups which specifically omit stuff which is not important (e.g. caches).';
     }
 
     /**

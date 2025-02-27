@@ -31,7 +31,7 @@ function adminzone_common_pages_code()
             $has_fails = false;
             $categories = run_health_check($has_fails, [
                 'Stability \\ Error log',
-                'System scheduler \\ System scheduler set up'
+                'System scheduler \\ System scheduler set up',
             ]);
             if ($has_fails) {
                 foreach ($categories as $category_label => $sections) {

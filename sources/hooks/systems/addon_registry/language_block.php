@@ -82,7 +82,7 @@ class Hook_addon_registry_language_block
      */
     public function get_description() : string
     {
-        return 'Blocks to allow visitors to choose their language.';
+        return 'Blocks to allow visitors to choose their language. Also includes language / region flags.';
     }
 
     /**

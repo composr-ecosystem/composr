@@ -111,7 +111,11 @@ function _handle_permission_check_logging(int $member_id, string $op, array $par
                 $str .= ',';
             }
 
-            $str .= is_string($p) ? $p : (($p === null) ? '' : strval($p));
+            if (is_array($p)) {
+                $str .= serialize($p);
+            } else {
+                $str .= is_string($p) ? $p : (($p === null) ? '' : strval($p));
+            }
         }
     }
 
@@ -182,6 +186,8 @@ function has_privilege_group(int $group_id, string $privilege, ?string $page = n
             $GROUP_PRIVILEGE_CACHE[$group_id][$p['privilege']][$p['the_page']][$p['module_the_name']][$p['category_name']] = ($p['the_value'] == 1);
         }
     }
+
+    check_for_infinite_loop('has_privilege_group', func_get_args());
 
     return has_privilege_group($group_id, $privilege, $page, $cats);
 }

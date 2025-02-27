@@ -107,7 +107,7 @@ class Hook_addon_registry_member_comments
      */
     public function get_description() : string
     {
-        return 'A comments tab for member profiles.';
+        return "This adds a comments tab to member profiles where other members can leave comments or ratings directly on other members.";
     }
 
     /**

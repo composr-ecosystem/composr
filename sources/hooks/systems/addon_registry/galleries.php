@@ -101,7 +101,7 @@ class Hook_addon_registry_galleries
      */
     public function get_description() : string
     {
-        return 'Galleries, including support for video galleries, and member personal galleries.';
+        return "Implements a gallery system for your website. Galleries can showcase images, videos, audio, and other multimedia. Also supports slideshow functionality. You can also enable member galleries where members can upload their own multimedia which is visible on their profile. Galleries also support watermarking on images.";
     }
 
     /**

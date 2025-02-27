@@ -278,9 +278,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
 
         $zone = $category;
         $page = $this->_create_name_from_label($label);
-        $page = preg_replace('#^.*:#', '', $page); // ID also contains zone, so strip that
 
-        $lang = get_site_default_lang();
         $_parent_page = $this->_default_property_str($properties, 'parent_page');
         $parent_page = ($_parent_page == '') ? '' : $this->_create_name_from_label($_parent_page);
         $order = $this->_default_property_int_null($properties, 'order');
@@ -303,7 +301,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         if ($submitter === null) {
             $submitter = get_member();
         }
-        $text = $this->_default_property_str($properties, 'text');
+        $text = $this->_default_property_lang_multi_content($properties, 'text');
 
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
@@ -314,8 +312,12 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         }
 
         require_code('zones3');
-        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, null, $meta_keywords, $meta_description);
-        $page = basename($full_path, '.txt');
+        foreach ($text as $lang => $comcode) {
+            $full_path = save_comcode_page($zone, $page, $lang, $comcode, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, null, $meta_keywords, $meta_description);
+            if ($lang == get_site_default_lang()) {
+                $page = basename($full_path, '.txt');
+            }
+        }
 
         $this->_resource_save_extend($this->file_resource_type, $zone . ':' . $page, $filename, $label, $properties);
 
@@ -361,11 +363,12 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         list($meta_keywords, $meta_description) = seo_meta_get_for('comcode_page', $row['the_zone'] . ':' . $row['the_page']);
 
         $properties = [
-            'label' => $row['the_zone'] . ':' . $row['the_page'],
+            'label' => $row['the_page'], // NB: Do not include zone; we already use it as the category (folder)
             'text' => $text,
             'parent_page' => $row['p_parent_page'],
             'order' => $row['p_order'],
             'validated' => $row['p_validated'],
+            'validation_time' => remap_time_as_portable($row['p_validation_time']),
             'show_as_edit' => $row['p_show_as_edit'],
             'include_on_sitemap' => $row['p_include_on_sitemap'],
             'meta_keywords' => $meta_keywords,
@@ -397,6 +400,8 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
             return false;
         }
 
+        $old_page = preg_replace('#^.*:#', '', $old_page); // old page also contains zone, but save_comcode_page does not allow that
+
         if ($category === null) {
             return false; // Folder not found
         }
@@ -405,9 +410,8 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
 
         $label = $this->_default_property_str($properties, 'label');
         $page = $this->_create_name_from_label($label);
-        $page = preg_replace('#^.*:#', '', $page); // ID also contains zone, so strip that
+        $zone_page = $zone . ':' . $page;
 
-        $lang = get_site_default_lang();
         $parent_page = $this->_create_name_from_label($this->_default_property_str($properties, 'parent_page'));
         $order = $this->_default_property_int_null($properties, 'order');
         if ($order === null) {
@@ -429,7 +433,7 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         if ($submitter === null) {
             $submitter = get_member();
         }
-        $text = $this->_default_property_str($properties, 'text');
+        $text = $this->_default_property_lang_multi_content($properties, 'text');
 
         $meta_keywords = $this->_default_property_str($properties, 'meta_keywords');
         $meta_description = $this->_default_property_str($properties, 'meta_description');
@@ -442,8 +446,13 @@ class Hook_commandr_fs_comcode_pages extends Resource_fs_base
         }
 
         require_code('zones3');
-        $full_path = save_comcode_page($zone, $page, $lang, $text, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, $old_page, $meta_keywords, $meta_description);
-        $page = basename($full_path, '.txt');
+
+        foreach ($text as $lang => $comcode) {
+            $full_path = save_comcode_page($zone, $page, $lang, $comcode, $validated, $include_on_sitemap, $parent_page, $order, $add_time, $edit_time, $show_as_edit, $submitter, $old_page, $meta_keywords, $meta_description);
+            if ($lang == get_site_default_lang()) {
+                $page = basename($full_path, '.txt');
+            }
+        }
 
         $this->_resource_save_extend($this->file_resource_type, $zone . ':' . $page, $filename, $label, $properties);
 

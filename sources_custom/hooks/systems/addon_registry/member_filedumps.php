@@ -107,7 +107,7 @@ class Hook_addon_registry_member_filedumps
      */
     public function get_description() : string
     {
-        return 'A tab for member profiles to show file/media library contents from a folder corresponding to the member\'s username.';
+        return "This expands the file/media library by allowing members to have their own files (as a folder with the same name as their username directly under root). These files are then listed on their profile for others to see.";
     }
 
     /**

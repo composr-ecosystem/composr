@@ -97,7 +97,7 @@ class Hook_addon_registry_captcha
      */
     public function get_description() : string
     {
-        return 'Stop spam-bots from performing actions on the website.';
+        return "Stop spam-bots from performing actions on the website. Supports image-based CAPTCHA challenges (with optional JavaScript and CSS complexity), question and answer CAPTCHAs, and reCAPTCHA integration.";
     }
 
     /**

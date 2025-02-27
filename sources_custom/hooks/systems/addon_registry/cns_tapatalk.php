@@ -162,8 +162,8 @@ Tapatalk does not support the following Composr forum features:
  - Forced rule acceptance when creating private topics with another member (the recipients rules)
  - Complex HTML posts (posts are simplified down); for example, image-links are specifically prohibited, and no HTML requiring CSS or JavaScript will function
  - Post Templates
- - Polls (we will say when there is a poll, but won\'t show the results and can\'t allow voting)
- - Rank images
+ - Topic Polls (we will say when there is a poll, but won\'t show the results and can\'t allow voting)
+ - Rank images (including anything non-bundled addons inject, such as achievements or karma)
  - Per-forum rules
  - Join-rules (although you can workaround it by configuring a topic the new member is directed to after joining)
  - Browsing usergroups and usergroup memberships
@@ -217,7 +217,7 @@ Forum groupings are supported via extended nesting. If all the forums on a singl
 
 The mobiquo folder is where most of the code is kept. This is the default folder name for a Tapatalk implementation.
 
-Tapatalk\'s API is documented on Tapatalk\'s website. At the time of writing it has many documentation errors (and poor English), which we have reported.
+Tapatalk\'s API is documented on Tapatalk\'s website.
 
 The Tapatalk implementation is organised by API category. The API functions (aka methods, aka endpoints) call read/write classes. The classes generally are Tapatalk-independent, while the direct API functions convert XML-RPC inputs and formulate things into the XML-RPC and precise structure that Tapatalk requires.
 

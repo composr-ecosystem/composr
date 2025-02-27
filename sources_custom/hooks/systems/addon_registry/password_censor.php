@@ -112,7 +112,7 @@ class Hook_addon_registry_password_censor
 In detail:
 This is a system scheduler hook that regularly censors anything looking like a password stored in support ticket posts over 60 days old to limit the potential fallout if your ticket system ever got compromised.
 
-[tt]encrypt[/tt] and [tt]self_destruct[/tt] Comcode tags are also added.
+[tt]encrypt[/tt] and [tt]self_destruct[/tt] Comcode tags are also added; [tt]encrypt[/tt] will use the configured public and private keys to encrypt text, and [tt]self_destruct[/tt] will destroy itself after 30 days (while also not appearing in notifications).
 ';
     }
 
@@ -134,7 +134,7 @@ This is a system scheduler hook that regularly censors anything looking like a p
     public function get_dependencies() : array
     {
         return [
-            'requires' => [],
+            'requires' => ['System scheduler'],
             'recommends' => [],
             'conflicts_with' => [],
         ];

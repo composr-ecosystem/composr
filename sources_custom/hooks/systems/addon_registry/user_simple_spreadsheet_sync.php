@@ -128,7 +128,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
     public function get_dependencies() : array
     {
         return [
-            'requires' => [],
+            'requires' => ['System scheduler'],
             'recommends' => [],
             'conflicts_with' => [],
         ];

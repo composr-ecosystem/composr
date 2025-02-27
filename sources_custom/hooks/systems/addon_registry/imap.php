@@ -134,11 +134,12 @@ class Hook_addon_registry_imap
     {
         return [
             'requires' => [],
-            'recommends' => [ // These addons use IMAP to some optional capacity
-                'cns_forum',
-                'tickets',
-                'ecommerce',
-                'newsletter'
+            'recommends' => [
+                // These addons use IMAP to some optional capacity
+                //'cns_forum',
+                //'tickets',
+                //'ecommerce',
+                //'newsletter',
             ],
             'conflicts_with' => [],
         ];

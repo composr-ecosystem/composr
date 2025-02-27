@@ -82,7 +82,7 @@ class Hook_addon_registry_search
      */
     public function get_description() : string
     {
-        return 'Multi-content search engine.';
+        return "A search engine for your site. This enables visitors to be able to search for content on your site. If the system scheduler is operational, this also provides some fallback full-text search capabilities where the database might not be able to perform it.";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_search
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['System scheduler'],
             'conflicts_with' => [],
         ];
     }

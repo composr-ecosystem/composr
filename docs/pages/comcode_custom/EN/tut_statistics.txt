@@ -520,6 +520,42 @@ Admin Zone > Audit > What's happening now (RTR)
 It is a good way to visualise how people are using the site. This works best when the site has multiple online users performing options, but you can move the timeline back to when stuff was happening previously (i.e. view activity from a historic viewpoint).
 [/surround]
 
+[title="4"]Real-time analytics: Keys[/title]
+Each bubble in the graph has its own colour depending on the type of analytic:
+ - [b][font color="#455A64"]Blue Gray[/font][/b] - Action log entry added
+ - [b][font color="#BCAAA4"]Light Brown[/font][/b] - Banner clicked
+ - [b][font color="#AD1457"]Maroon[/font][/b] - Calendar event starting
+ - [b][font color="#303F9F"]Indigo[/font][/b] - Chat message sent
+ - [b][font color="#00C853"]Green[/font][/b] - New member joined
+ - [b][font color="#558B2F"]Forest Green[/font][/b] - New forum post (new topics always also contain a post)
+ - [b][font color="#795548"]Brown[/font][/b] - eCommerce transaction
+ - [b][font color="#F57C00"]Orange[/font][/b] - News/blog entry posted
+ - [b][font color="#0288D1"]Blue[/font][/b] - Point transactions*
+ - [b][font color="#00897B"]Teal[/font][/b] - Point Escrows*
+ - [b][font color="#512DA8"]Dark purple[/font][/b] - Website poll closed
+ - [b][font color="#AA00FF"]Purple[/font][/b] - Someone recommended the site or a page to someone else
+ - [b][font color="#AEEA00"]Lime[/font][/b] - A member performed a search
+ - [b][font color="#FF1744"]Red[/font][/b] - Hack-attack was triggered*
+ - [b][font color="#D32F2F"]Dark Red[/font][/b] - Failed login attempt
+ - [b][font color="#5A5A5A"]Gray[/font][/b] - A page was viewed
+ - [b][font color="#AAAA00"]Yellow[/font][/b] - A warning was issued to a member*
+
+Non-bundled addons:
+ - [b][font color="#FBC02D"]Yellow Orange[/font][/b] - Achievement earned
+
+*Bubbles can also have an 'effect' which is something that surrounds it. When a bubble has an effect, there is additional context:
+ - [b]Halo[/b] - A positive action
+  - Member sent points to another member
+  - Escrow completed / satisfied
+ - [b]Horns[/b] - A malicious action
+  - Escrow cancelled
+  - Hack-attack with a risk score of 5 or higher
+  - Formal warning issued
+ - [b]Shadow[/b] - A deduction of some sort
+  - Points were debited from a member
+ - [b]Sun rays[/b] - An addition of some sort
+  - Points were credited to a member
+
 [title="3"]Browsing basic logs[/title]
 
 You can use the "Investigate user" feature (from the [tt]securitylogging[/tt] addon) to view all the hits from particular members and IP addresses. You just do a search from that module.

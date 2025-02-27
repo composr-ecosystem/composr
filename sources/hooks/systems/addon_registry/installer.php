@@ -132,6 +132,7 @@ class Hook_addon_registry_installer
      */
     public function get_file_list() : array
     {
+        // TODO: does not include install.php
         return [
             'sources/hooks/systems/addon_registry/installer.php',
             'themes/default/templates/INSTALLER_DONE_SOMETHING.tpl',

@@ -82,6 +82,7 @@ class Hook_content_meta_aware_news extends Hook_CMA
             'edit_time_field' => 'edit_date',
             'date_field' => 'date_and_time',
             'validated_field' => 'validated',
+            'validation_time_field' => 'validation_time',
             'additional_sort_fields' => null,
 
             'seo_type_code' => 'news',

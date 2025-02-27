@@ -82,7 +82,7 @@ class Hook_addon_registry_xml_fields
      */
     public function get_description() : string
     {
-        return 'Advanced form field filtering.';
+        return "Provides an XML interface where you can specify special constraints, rules, or requirements on form fields. Examples are provided.";
     }
 
     /**

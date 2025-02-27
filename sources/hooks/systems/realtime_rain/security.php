@@ -39,13 +39,15 @@ class Hook_realtime_rain_security
         $drops = [];
 
         if (has_actual_page_access(get_member(), 'admin_security')) {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT id,reason,ip,date_and_time AS timestamp,member_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'hackattack WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+            require_lang('security');
+
+            // Hack-attacks
+            $rows = $GLOBALS['SITE_DB']->query('SELECT id,reason,ip,date_and_time,risk_score,silent_to_staff_log AS timestamp,member_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'hackattack WHERE silent_to_staff_log<>1 AND risk_score>0 AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
-                require_lang('security');
-
                 $timestamp = $row['timestamp'];
                 $member_id = $row['member_id'];
+                $risk_score = $row['risk_score'];
 
                 $drops[] = rain_get_special_icons($row['ip'], $timestamp) + [
                     'TYPE' => 'security',
@@ -58,12 +60,39 @@ class Hook_realtime_rain_security
                     'TICKER_TEXT' => null,
                     'URL' => build_url(['page' => 'admin_security', 'type' => 'view', 'id' => $row['id']], get_module_zone('admin_security')),
                     'IS_POSITIVE' => false,
-                    'IS_NEGATIVE' => true,
+                    'IS_NEGATIVE' => ($risk_score >= 5),
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => 'member_' . strval($member_id),
                     'TO_ID' => null,
                     'GROUP_ID' => 'hack_type_' . $row['reason'],
+                ];
+            }
+
+            // Failed logins
+            $rows = $GLOBALS['SITE_DB']->query('SELECT id,ip,date_and_time,failed_account FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'failedlogins WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+
+            foreach ($rows as $row) {
+                $timestamp = $row['date_and_time'];
+                $member_id = $row['failed_account'];
+
+                $drops[] = rain_get_special_icons($row['ip'], $timestamp) + [
+                    'TYPE' => 'failedlogin',
+                    'FROM_MEMBER_ID' => null,
+                    'TO_MEMBER_ID' => null,
+                    'TITLE' => rain_truncate_for_title(do_lang('FAILED_LOGIN', comcode_escape($member_id))),
+                    'IMAGE' => rain_get_country_image($row['ip']),
+                    'TIMESTAMP' => strval($timestamp),
+                    'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
+                    'TICKER_TEXT' => null,
+                    'URL' => build_url(['page' => 'admin_security'], get_module_zone('admin_security')),
+                    'IS_POSITIVE' => false,
+                    'IS_NEGATIVE' => true,
+
+                    // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
+                    'FROM_ID' => null,
+                    'TO_ID' => null,
+                    'GROUP_ID' => null,
                 ];
             }
         }

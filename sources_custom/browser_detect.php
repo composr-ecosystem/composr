@@ -6,7 +6,7 @@
  * @version 1.9.6
  *
  * Copyright 2019 Chris Schuld
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
  * to deal in the Software without restriction, including without
@@ -14,13 +14,13 @@
  * sublicense, and/or sell copies of the Software, and to permit persons to
  * whom the Software is furnished to do so, subject to the following
  * conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
  * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
  * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
@@ -120,6 +120,24 @@ class Browser
     const BROWSER_SILK = "Silk";
     const BROWSER_I_FRAME = "Iframely";
     const BROWSER_COCOA = "CocoaRestClient";
+    const BROWSER_AVANT = 'Avant Browser'; // http://www.avantbrowser.com/
+    const BROWSER_SEAMONKEY = 'SeaMonkey'; // http://www.seamonkey-project.org/
+    const BROWSER_MAXTHON = 'Maxthon'; // http://www.maxthon.com/
+    const BROWSER_IRON = 'SRWare Iron'; // http://www.srware.net/en/software_srware_iron.php
+    const BROWSER_SLEIPNIR = 'Sleipnir'; // http://www.fenrir-inc.com/us/sleipnir/
+    const BROWSER_BAIDU = 'Baidu'; // http://www.baidu.com/
+    const BROWSER_YANDEX_BROWSER = 'Yandex Browser'; // https://browser.yandex.com/
+    const BROWSER_QQ = 'QQ Browser'; // http://browser.qq.com/
+    const BROWSER_SOGOU = 'Sogou'; // http://www.sogou.com/
+    const BROWSER_DOLPHIN = 'Dolphin'; // http://dolphin.com/
+    const BROWSER_NINTENDO = 'Nintendo Browser'; // https://www.nintendo.com/
+    const BROWSER_TIZEN = 'Tizen'; // https://www.tizen.org/
+    const BROWSER_BOTIFY = 'Botify'; // https://www.botify.com/
+    const BROWSER_SEZNAMBOT = 'SeznamBot'; // https://napoveda.seznam.cz/en/seznambot-intro/
+    const BROWSER_APPLEBOT = 'AppleBot'; // https://support.apple.com/en-us/HT204683
+    const BROWSER_FACEBOT = 'Facebot'; // https://developers.facebook.com/docs/sharing/webmasters/crawler
+    const BROWSER_TWITTERBOT = 'Twitterbot'; // https://developer.twitter.com/en/docs/twitter-for-websites/cards/guides/getting-started
+    const BROWSER_LINKEDINBOT = 'LinkedInBot'; // https://www.linkedin.com/
 
     const PLATFORM_UNKNOWN = 'unknown';
     const PLATFORM_WINDOWS = 'Windows';
@@ -149,6 +167,117 @@ class Browser
     const PLATFORM_JAVA_ANDROID = "Java/Android";
     const PLATFORM_POSTMAN = "Postman";
     const PLATFORM_I_FRAME = "Iframely";
+
+    const PLATFORM_WINDOWS_PHONE = 'Windows Phone';
+    const PLATFORM_TIZEN = 'Tizen';
+    const PLATFORM_BADA = 'Bada';
+    const PLATFORM_SYMBIAN = 'Symbian';
+    const PLATFORM_WEBOS = 'webOS';
+    const PLATFORM_MEEGO = 'MeeGo';
+    const PLATFORM_CHROMIUM_OS = 'Chromium OS';
+    const PLATFORM_AMIGAOS = 'AmigaOS';
+    const PLATFORM_RISC_OS = 'RISC OS';
+    const PLATFORM_DRAGONFLY_BSD = 'DragonFly BSD';
+    const PLATFORM_HAIKU = 'Haiku';
+    const PLATFORM_SERENITY_OS = 'SerenityOS';
+    const PLATFORM_AROS = 'AROS';
+    const PLATFORM_MORPHOS = 'MorphOS';
+    const PLATFORM_MINIX = 'MINIX';
+    const PLATFORM_QNX = 'QNX';
+    const PLATFORM_HURD = 'GNU Hurd';
+    const PLATFORM_REACTOS = 'ReactOS';
+    const PLATFORM_SOLARIS = 'Solaris';
+    const PLATFORM_AIX = 'AIX';
+    const PLATFORM_HPUX = 'HP-UX';
+    const PLATFORM_IRIX = 'IRIX';
+    const PLATFORM_TRU64 = 'Tru64';
+    const PLATFORM_VMS = 'OpenVMS';
+    const PLATFORM_ZOS = 'z/OS';
+    const PLATFORM_OS400 = 'OS/400';
+    const PLATFORM_VXWORKS = 'VxWorks';
+    const PLATFORM_INFERNO = 'Inferno';
+    const PLATFORM_PLAN9 = 'Plan 9';
+    const PLATFORM_RISCOS = 'RISC OS';
+    const PLATFORM_SERENITYOS = 'SerenityOS';
+    const PLATFORM_GENODE = 'Genode';
+    const PLATFORM_FUCHSIA = 'Fuchsia';
+    const PLATFORM_REDSTAR_OS = 'Red Star OS';
+    const PLATFORM_TAILS = 'Tails';
+    const PLATFORM_QUBES_OS = 'Qubes OS';
+    const PLATFORM_PARROT_OS = 'Parrot OS';
+    const PLATFORM_KALI_LINUX = 'Kali Linux';
+    const PLATFORM_BLACKARCH = 'BlackArch';
+    const PLATFORM_GARUDA_LINUX = 'Garuda Linux';
+    const PLATFORM_SOLUS = 'Solus';
+    const PLATFORM_ZORIN_OS = 'Zorin OS';
+    const PLATFORM_POP_OS = 'Pop!_OS';
+    const PLATFORM_ELEMENTARY_OS = 'elementary OS';
+    const PLATFORM_DEEPIN = 'Deepin';
+    const PLATFORM_ENDLESS_OS = 'Endless OS';
+    const PLATFORM_CLEAR_LINUX = 'Clear Linux';
+    const PLATFORM_FEDORA = 'Fedora';
+    const PLATFORM_CENTOS = 'CentOS';
+    const PLATFORM_REDHAT = 'Red Hat';
+    const PLATFORM_OPENSUSE = 'openSUSE';
+    const PLATFORM_SUSE = 'SUSE';
+    const PLATFORM_MAGEIA = 'Mageia';
+    const PLATFORM_PCLINUXOS = 'PCLinuxOS';
+    const PLATFORM_MANJARO = 'Manjaro';
+    const PLATFORM_ARCH_LINUX = 'Arch Linux';
+    const PLATFORM_GENTOO = 'Gentoo';
+    const PLATFORM_SABAYON = 'Sabayon';
+    const PLATFORM_SLACKWARE = 'Slackware';
+    const PLATFORM_ALPINE_LINUX = 'Alpine Linux';
+    const PLATFORM_NIXOS = 'NixOS';
+    const PLATFORM_VOID_LINUX = 'Void Linux';
+    const PLATFORM_DEVUAN = 'Devuan';
+    const PLATFORM_UBUNTU = 'Ubuntu';
+    const PLATFORM_DEBIAN = 'Debian';
+    const PLATFORM_LINUX_MINT = 'Linux Mint';
+    const PLATFORM_KUBUNTU = 'Kubuntu';
+    const PLATFORM_XUBUNTU = 'Xubuntu';
+    const PLATFORM_LUBUNTU = 'Lubuntu';
+    const PLATFORM_UBUNTU_MATE = 'Ubuntu MATE';
+    const PLATFORM_UBUNTU_BUDGIE = 'Ubuntu Budgie';
+    const PLATFORM_UBUNTU_KYLIN = 'Ubuntu Kylin';
+    const PLATFORM_UBUNTU_STUDIO = 'Ubuntu Studio';
+    const PLATFORM_UBUNTU_CORE = 'Ubuntu Core';
+    const PLATFORM_RASPBIAN = 'Raspbian';
+    const PLATFORM_RISC_OS_PI = 'RISC OS Pi';
+    const PLATFORM_PI_OS = 'Pi OS';
+    const PLATFORM_TINYCORE = 'Tiny Core Linux';
+    const PLATFORM_DAMN_SMALL_LINUX = 'Damn Small Linux';
+    const PLATFORM_PUPPY_LINUX = 'Puppy Linux';
+    const PLATFORM_ANTIX = 'antiX';
+    const PLATFORM_MX_LINUX = 'MX Linux';
+    const PLATFORM_BODHI_LINUX = 'Bodhi Linux';
+    const PLATFORM_PEPPERMINT = 'Peppermint OS';
+    const PLATFORM_LXLE = 'LXLE';
+    const PLATFORM_Q4OS = 'Q4OS';
+    const PLATFORM_TRISQUEL = 'Trisquel';
+    const PLATFORM_PARABOLA = 'Parabola';
+    const PLATFORM_HYPERBOLA = 'Hyperbola';
+    const PLATFORM_GNEWSENSE = 'gNewSense';
+    const PLATFORM_UTUTO = 'Ututo';
+    const PLATFORM_BLAG = 'BLAG';
+    const PLATFORM_DRAGORA = 'Dragora';
+    const PLATFORM_GUIX = 'Guix';
+    const PLATFORM_REPLICANT = 'Replicant';
+    const PLATFORM_PUREOS = 'PureOS';
+    const PLATFORM_TORIOS = 'ToriOS';
+    const PLATFORM_UBUNTU_TOUCH = 'Ubuntu Touch';
+    const PLATFORM_POSTMARKETOS = 'postmarketOS';
+    const PLATFORM_SAILFISH_OS = 'Sailfish OS';
+    const PLATFORM_LUNE_OS = 'LuneOS';
+    const PLATFORM_FIREFOX_OS = 'Firefox OS';
+    const PLATFORM_LI_MO = 'LiMo';
+    const PLATFORM_MAEMO = 'Maemo';
+    const PLATFORM_OPENMOKO = 'Openmoko';
+    const PLATFORM_PALMOS = 'Palm OS';
+    const PLATFORM_WINDOWS_MOBILE = 'Windows Mobile';
+    const PLATFORM_BLACKBERRY_OS = 'BlackBerry OS';
+    const PLATFORM_BLACKBERRY_10 = 'BlackBerry 10';
+    const PLATFORM_ANDROID_TV = 'Android TV';
 
     const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 

@@ -82,7 +82,7 @@ class Hook_addon_registry_core_fields
      */
     public function get_description() : string
     {
-        return '(Core fields API)';
+        return 'The core field API for defining field types (used by catalogues, custom profile fields, and some other systems).';
     }
 
     /**

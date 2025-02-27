@@ -82,6 +82,7 @@ class Hook_content_meta_aware_comcode_page extends Hook_CMA
             'edit_time_field' => 'p_edit_date',
             'date_field' => 'p_add_date',
             'validated_field' => 'p_validated',
+            'validation_time_field' => 'p_validation_time',
             'additional_sort_fields' => [
                 'page_title' => [ // No SQL; cms_comcode_pages manages sorting because of field translation
                     'ASC' => '',

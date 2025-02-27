@@ -107,7 +107,7 @@ class Hook_addon_registry_alternate_emoticons
      */
     public function get_description() : string
     {
-        return 'Replaces most of the main emoticons which are included within Composr as standard.';
+        return 'Replaces most of the main emoticons which are included within the software as standard.';
     }
 
     /**

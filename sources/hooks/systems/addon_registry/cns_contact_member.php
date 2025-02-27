@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_contact_member
      */
     public function get_description() : string
     {
-        return 'Off-site e-mailing of members (more private, and may be used by guests).';
+        return "Enable a facility for guests to send off-site messages (e-mails) to members without e-mail addresses being exposed.";
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_filebased_persistent_caching
      */
     public function get_description() : string
     {
-        return 'A persistent data cache, using disk files for data storage.';
+        return "Provides a fallback file-based persistent cache in the event no other PHP persistent cache is available.";
     }
 
     /**
@@ -128,6 +128,7 @@ class Hook_addon_registry_filebased_persistent_caching
      */
     public function get_file_list() : array
     {
+        // TODO: Missing API files
         return [
             'caches/persistent/.htaccess',
             'caches/persistent/index.html',

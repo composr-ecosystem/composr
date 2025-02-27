@@ -107,7 +107,7 @@ class Hook_addon_registry_related_members
      */
     public function get_description() : string
     {
-        return 'Tie members together into groups, via a new profile tab.
+        return 'Tie members together into groups of related members, via a new profile tab.
 
 Allows using a CPF to group members together (by virtue of a shared CPF value), showing which members are related via a tab in member profiles.
 

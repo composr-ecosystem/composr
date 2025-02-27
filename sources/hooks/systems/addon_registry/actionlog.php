@@ -82,7 +82,7 @@ class Hook_addon_registry_actionlog
      */
     public function get_description() : string
     {
-        return 'Audit-trail functionality.';
+        return "The action log provides extensive logging of administrative, moderation, and content actions. Keep track of what your members and staff are doing on the site. Filter by member / IP address / action. Perform follow-up actions on a log entry. Action logs are permanent and cannot be edited or removed (aside from privacy purging and manual edits in the database).";
     }
 
     /**

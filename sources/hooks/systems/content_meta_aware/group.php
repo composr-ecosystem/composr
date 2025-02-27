@@ -84,6 +84,7 @@ class Hook_content_meta_aware_group extends Hook_CMA
             'edit_time_field' => null,
             'date_field' => null,
             'validated_field' => null,
+            'validation_time_field' => null,
             'additional_sort_fields' => [
                 'g_is_presented_at_install' => null,
                 'g_is_default' => null,

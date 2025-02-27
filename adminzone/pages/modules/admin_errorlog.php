@@ -300,7 +300,13 @@ class Module_admin_errorlog
                 $log_level = 'UNKNOWN';
             }
 
-            $message = str_replace(get_file_base(), '', $log_message);
+            // Remove file base (and escaped path separators)
+            $message = str_replace(['\\\\', '//', get_file_base()], ['\\', '/', ''], $log_message);
+
+            // We want to render new lines as HTML line breaks but escape all other HTML
+            $message = str_replace("\n", '<br />', escape_html($message));
+            $tempcode_message = new Tempcode();
+            $tempcode_message->attach($message);
 
             $td_class = cms_mb_strtolower($log_level);
 
@@ -316,7 +322,7 @@ class Module_admin_errorlog
                 $log_type,
                 $log_level,
                 $telemetry,
-                $message,
+                $tempcode_message,
             ], true, 'errorlog', '4469d055e697470a8cb58e8415debaaa', $td_class)));
         }
         $errors = results_table(do_lang_tempcode('ERRORLOG'), $start, 'start', $max, 'max', $i, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', new Tempcode(), ['180px', '180px', '90px', '75px'], 'errorlog');
@@ -581,8 +587,10 @@ class Module_admin_errorlog
                 $td_class = 'disabled';
             } elseif (strpos($details[6]->evaluate(), do_lang('NO')) !== false) {
                 $td_class = 'critical';
-            } elseif (strpos($details[7]->evaluate(), do_lang('UNAVAILABLE')) !== false) {
+            } elseif ($details[7]->evaluate() == do_lang('YES')) {
                 $td_class = 'error';
+            } elseif ($details[7]->evaluate() == do_lang('IS_LOCKED_RUNNING')) {
+                $td_class = 'warning';
             }
             $result_entries->attach(results_entry($details, true, null, '392f1980c81e4083885cb177c911e619', $td_class));
         }

@@ -1045,8 +1045,13 @@ function seo_meta_set_for_implicit(string $type, string $id, array $keyword_sour
  */
 function has_predefined_content(string $addon, string $codename) : bool
 {
-    $enumerated = enumerate_predefined_content($addon);
-    return $enumerated[$codename]['installed'];
+    static $enumerated = [];
+    if (isset($enumerated[$addon][$codename]['installed'])) {
+        return $enumerated[$addon][$codename]['installed'];
+    }
+
+    $enumerated[$addon] = enumerate_predefined_content($addon);
+    return $enumerated[$addon][$codename]['installed'];
 }
 
 /**

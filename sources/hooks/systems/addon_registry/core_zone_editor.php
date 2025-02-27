@@ -82,7 +82,7 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_description() : string
     {
-        return 'Manage zones (sub-sites).';
+        return "The zone editor to manage zones (sub-sites or sub-sections).";
     }
 
     /**

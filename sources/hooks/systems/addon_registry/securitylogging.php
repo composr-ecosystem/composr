@@ -82,7 +82,7 @@ class Hook_addon_registry_securitylogging
      */
     public function get_description() : string
     {
-        return 'Log/display security alerts.';
+        return "The Web Application Firewall of the software; implements many security policies and logging to prevent hackers from breaching your site. This also implements IP banning and syndication with spam blocklists. Highly recommended you have this installed.";
     }
 
     /**

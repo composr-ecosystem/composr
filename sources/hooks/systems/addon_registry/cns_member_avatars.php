@@ -97,7 +97,7 @@ class Hook_addon_registry_cns_member_avatars
      */
     public function get_description() : string
     {
-        return 'Member avatars.';
+        return "Enable the ability for members to use avatars (you can choose various options like who can upload their own avatars and who must use ones you define in theme images).";
     }
 
     /**

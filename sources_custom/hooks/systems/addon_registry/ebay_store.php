@@ -67,7 +67,8 @@ class Hook_addon_registry_ebay_store
      */
     public function get_category() : string
     {
-        return 'Third Party Integration'; // $MAINTAINED_STATUS: Change to 'Development' if the integration breaks and is not fixed
+        // return 'Third Party Integration'; // $MAINTAINED_STATUS: Change to 'Development' if the integration breaks and is not fixed
+        return 'Development';
     }
 
     /**

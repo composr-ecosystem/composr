@@ -50,7 +50,7 @@ class Hook_realtime_rain_search
                     'FROM_MEMBER_ID' => strval($member_id),
                     'TO_MEMBER_ID' => null,
                     'TITLE' => rain_truncate_for_title($row['s_primary']),
-                    'IMAGE' => find_theme_image('icons/admin/site_meta/search'),
+                    'IMAGE' => find_theme_image('icons/menu/adminzone/audit/statistics/search'),
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,

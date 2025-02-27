@@ -82,7 +82,7 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_description() : string
     {
-        return 'Show RSS and Atom feeds from other websites.';
+        return "Provides blocks allowing you to safely embed RSS and Atom feeds from other websites.";
     }
 
     /**

@@ -41,6 +41,7 @@ class Hook_realtime_rain_points
         if (has_actual_page_access(get_member(), 'points')) {
             require_lang('points');
             require_code('points');
+            require_code('urls');
 
             // point debits
             $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,date_and_time AS timestamp,sending_member,receiving_member FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE receiving_member=' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
@@ -50,7 +51,7 @@ class Hook_realtime_rain_points
                 $sending_member = $row['sending_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
-                    'TYPE' => 'point_debits',
+                    'TYPE' => 'points',
                     'FROM_MEMBER_ID' => strval($sending_member),
                     'TO_MEMBER_ID' => null,
                     'TITLE' => do_lang('MEMBER_SPENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
@@ -78,7 +79,7 @@ class Hook_realtime_rain_points
                 $receiving_member = $row['receiving_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
-                    'TYPE' => 'point_credits',
+                    'TYPE' => 'points',
                     'FROM_MEMBER_ID' => ($row['anonymous'] == 1) ? null : strval($member_id),
                     'TO_MEMBER_ID' => strval($receiving_member),
                     'TITLE' => do_lang('MEMBER_SENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
@@ -97,7 +98,7 @@ class Hook_realtime_rain_points
                 ];
             }
 
-            // Point transactions
+            // Points exchanged between members
             $rows = $GLOBALS['SITE_DB']->query('SELECT reason,amount_gift_points,amount_points,sending_member AS member_id,receiving_member,date_and_time AS timestamp,anonymous FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'points_ledger WHERE sending_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND receiving_member<>' . strval($GLOBALS['FORUM_DRIVER']->get_guest_id()) . ' AND date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
 
             foreach ($rows as $row) {
@@ -106,7 +107,7 @@ class Hook_realtime_rain_points
                 $receiving_member = $row['receiving_member'];
 
                 $drops[] = rain_get_special_icons(null, $timestamp) + [
-                    'TYPE' => 'point_transactions',
+                    'TYPE' => 'points_sent', // NB: Actually, we use the same bubble and avatar as points, but a different attitude
                     'FROM_MEMBER_ID' => ($row['anonymous'] == 1) ? null : strval($member_id),
                     'TO_MEMBER_ID' => strval($receiving_member),
                     'TITLE' => do_lang('MEMBER_SENT_POINTS', integer_format($row['amount_gift_points'] + $row['amount_points'], 0), get_translated_text($row['reason'])),
@@ -115,12 +116,50 @@ class Hook_realtime_rain_points
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
                     'URL' => points_url($receiving_member),
-                    'IS_POSITIVE' => false,
+                    'IS_POSITIVE' => true,
                     'IS_NEGATIVE' => false,
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => ($row['anonymous'] == 1) ? null : ('member_' . strval($member_id)),
                     'TO_ID' => 'member_' . strval($receiving_member),
+                    'GROUP_ID' => null,
+                ];
+            }
+
+            // Point escrows
+            $rows = $GLOBALS['SITE_DB']->query('SELECT e.id AS e_id,l.id AS l_id,l.escrow_id,l.log_type,l.date_and_time,e.reason,e.sending_member,e.receiving_member,e.amount FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'escrow_logs l LEFT JOIN ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'escrow e ON e.id=l.escrow_id WHERE l.date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+
+            foreach ($rows as $row) {
+                // We are selecting by escrow logs rather than escrows, but we only want certain types of logs to count as a drop
+                $allowed_logs = [
+                    'LOG_ESCROW_CREATED',
+                    'LOG_ESCROW_COMPLETED',
+                    'LOG_ESCROW_CANCELLED'
+                ];
+                if (!in_array($row['log_type'], $allowed_logs)) {
+                    continue;
+                }
+
+                $timestamp = $row['date_and_time'];
+                $member_id = $row['sending_member'];
+                $receiving_member = $row['receiving_member'];
+
+                $drops[] = rain_get_special_icons(null, $timestamp) + [
+                    'TYPE' => 'escrow',
+                    'FROM_MEMBER_ID' => strval($member_id),
+                    'TO_MEMBER_ID' => (($receiving_member !== null) ? strval($receiving_member) : null),
+                    'TITLE' => do_lang('ESCROW_REASON', integer_format($row['amount'], 0), get_translated_text($row['reason'])),
+                    'IMAGE' => (($receiving_member !== null) ? $GLOBALS['FORUM_DRIVER']->get_member_avatar_url($receiving_member) : null),
+                    'TIMESTAMP' => strval($timestamp),
+                    'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
+                    'TICKER_TEXT' => null,
+                    'URL' => build_url(['page' => 'points', 'type' => 'view_escrow', 'id' => strval($row['e_id'])], get_module_zone('points')),
+                    'IS_POSITIVE' => ($row['log_type'] == 'LOG_ESCROW_COMPLETED'),
+                    'IS_NEGATIVE' => ($row['log_type'] == 'LOG_ESCROW_CANCELLED'),
+
+                    // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
+                    'FROM_ID' => 'member_' . strval($member_id),
+                    'TO_ID' => (($receiving_member !== null) ? 'member_' . strval($receiving_member) : null),
                     'GROUP_ID' => null,
                 ];
             }

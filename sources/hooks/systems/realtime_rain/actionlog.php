@@ -37,18 +37,25 @@ class Hook_realtime_rain_actionlog
         }
 
         $drops = [];
-
-        $rows = $GLOBALS['SITE_DB']->query('SELECT ip,the_type,member_id,date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'actionlogs WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
-
         if (has_actual_page_access(get_member(), 'admin_actionlog')) {
             require_all_lang();
 
+            $rows = $GLOBALS['SITE_DB']->query('SELECT ip,the_type,member_id,date_and_time AS timestamp FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'actionlogs WHERE date_and_time BETWEEN ' . strval($from) . ' AND ' . strval($to));
+
             foreach ($rows as $row) {
                 // Events considered elsewhere anyway
-                if ($row['the_type'] == 'ADD_NEWS') {
-                    continue;
-                }
-                if ($row['the_type'] == 'CHOOSE_POLL') {
+                $events_elsewhere = [
+                    // Actually we do not want to hide any of these; these drops link specifically to the action log even if they seem repetitive
+                    /*
+                    'ADD_NEWS',
+                    'CHOOSE_POLL',
+                    'LOG_ESCROW_CREATED',
+                    'LOG_ESCROW_COMPLETED',
+                    'LOG_ESCROW_CANCELLED',
+                    'REPLY', // post
+                    */
+                ];
+                if (in_array($row['the_type'], $events_elsewhere)) {
                     continue;
                 }
 

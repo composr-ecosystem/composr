@@ -82,7 +82,7 @@ class Hook_addon_registry_page_management
      */
     public function get_description() : string
     {
-        return 'Manage pages on the website.';
+        return "Provides a user interface for editing your site-map.";
     }
 
     /**

@@ -82,7 +82,7 @@ class Hook_addon_registry_awards
      */
     public function get_description() : string
     {
-        return 'Pick out content for featuring.';
+        return "Awards can be used to feature and reward high-quality content on your site. Use in conjunction with various content blocks to render awarded content. If points is installed, you can credit points to those whose content is featured.";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_awards
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['points'],
             'conflicts_with' => [],
         ];
     }

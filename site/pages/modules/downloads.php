@@ -35,7 +35,7 @@ class Module_downloads
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 10;
+        $info['version'] = 11;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -133,6 +133,7 @@ class Module_downloads
                 'add_date' => 'TIME',
                 'edit_date' => '?TIME',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'default_pic' => 'INTEGER',
                 'file_size' => '?INTEGER',
                 'allow_rating' => 'BINARY',
@@ -218,6 +219,10 @@ class Module_downloads
 
         if (($upgrade_from === null) || ($upgrade_from < 10)) {
             $GLOBALS['SITE_DB']->create_index('download_downloads', 'ddl', ['download_licence_id']); // For when deleting a download license and for choosing the most common as the new default
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('download_downloads', 'validation_time', '?TIME');
         }
     }
 

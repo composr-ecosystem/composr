@@ -710,6 +710,7 @@ class Hook_commandr_fs_catalogues extends Resource_fs_base
 
         $properties = [
             'validated' => $row['ce_validated'],
+            'validation_time' => remap_time_as_portable($row['ce_validation_time']),
             'notes' => $row['notes'],
             'allow_rating' => $row['allow_rating'],
             'allow_comments' => $row['allow_comments'],

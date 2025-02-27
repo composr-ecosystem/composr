@@ -107,7 +107,7 @@ class Hook_addon_registry_extended_media_rendering
      */
     public function get_description() : string
     {
-        return 'A collection of additional media renderers. Currently, this only includes CNN video (which is actually broken) -- however, further renderers that don\'t belong in the Composr core will be added to this addon as they are developed.';
+        return 'A collection of additional media renderers not bundled with the software by default. Currently, this only includes CNN video (which is actually broken) -- however, further renderers that don\'t belong in the core code will be added to this addon as they are developed.';
     }
 
     /**

@@ -23,8 +23,13 @@
  */
 class Hook_cron_tasks
 {
-    protected const MAX_TIME = 10.0; // Once tasks have exceeded this long in seconds, stop (and resume on the next Cron execution)
+    protected const MAX_TIME = 8.0; // Once tasks have exceeded this long in seconds, stop (and resume on the next Cron execution)
     protected const MAX_QUERIES = 1000; // Once tasks have exceeded this many queries (calculated by query limiting), stop (and resume on the next Cron execution)
+
+    protected const CATCH_UP_THRESHOLD = 1000; // When we have this many items in the queue or more, use CATCH_UP_* constants instead
+    protected const CATCH_UP_MAX_TIME = 16.0;
+    protected const CATCH_UP_MAX_QUERIES = 2000;
+
 
     /**
      * Get info from this hook.
@@ -101,6 +106,8 @@ class Hook_cron_tasks
         $start_time = microtime(true);
         $elapsed_time = 0.0;
         $starting_queries = $QUERY_COUNT;
+        $max_time = self::MAX_TIME;
+        $max_queries = self::MAX_QUERIES;
 
         $forced = get_param_integer('force', 0) == 1;
         $where = [];
@@ -114,6 +121,12 @@ class Hook_cron_tasks
             return;
         }
 
+        // Give higher priority if we have a lot of items in the queue
+        if ($num_task_rows >= self::CATCH_UP_THRESHOLD) {
+            $max_time = self::CATCH_UP_MAX_TIME;
+            $max_queries = self::CATCH_UP_MAX_QUERIES;
+        }
+
         require_code('tasks');
         require_code('notifications'); // Needed as a task may require the notification object, and any class that has a deserialised reference needs to be loaded first to avoid being an 'incomplete object'
         require_code('files');
@@ -122,7 +135,7 @@ class Hook_cron_tasks
         do {
             // Load in tasks in batches of 100
             if (empty($_task_rows)) {
-                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, ' ORDER BY t_add_time ASC', 100);
+                $_task_rows = $GLOBALS['SITE_DB']->query_select('task_queue', ['*'], $where, ' AND t_add_time <= ' . float_to_raw_string($start_time, 0) . ' ORDER BY t_add_time ASC', 100);
             }
 
             // No more tasks to process
@@ -136,6 +149,7 @@ class Hook_cron_tasks
                 'task_queue',
                 [
                     't_locked' => 1,
+                    't_add_time' => intval($start_time), // Done so we do not run into a loop of selecting locked tasks if we do not filter them out by $where
                 ],
                 [
                     'id' => $task_row['id'],
@@ -149,6 +163,6 @@ class Hook_cron_tasks
             execute_task_background($task_row);
 
             $elapsed_time = microtime(true) - $start_time;
-        } while (($elapsed_time < self::MAX_TIME) && (($QUERY_COUNT - $starting_queries) < self::MAX_QUERIES));
+        } while (($elapsed_time < $max_time) && (($QUERY_COUNT - $starting_queries) < $max_queries));
     }
 }

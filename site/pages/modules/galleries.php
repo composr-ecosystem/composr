@@ -35,7 +35,7 @@ class Module_galleries
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 11;
+        $info['version'] = 12;
         $info['update_require_upgrade'] = true;
         $info['locked'] = false;
         $info['min_cms_version'] = 11.0;
@@ -137,6 +137,7 @@ class Module_galleries
                 'notes' => 'LONG_TEXT',
                 'submitter' => 'MEMBER',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'add_date' => 'TIME',
                 'edit_date' => '?TIME',
                 'image_views' => 'INTEGER',
@@ -162,6 +163,7 @@ class Module_galleries
                 'notes' => 'LONG_TEXT',
                 'submitter' => 'MEMBER',
                 'validated' => 'BINARY',
+                'validation_time' => '?TIME',
                 'add_date' => 'TIME',
                 'edit_date' => '?TIME',
                 'video_views' => 'INTEGER',
@@ -287,6 +289,11 @@ class Module_galleries
 
             set_option('gallery_media_default_sort_order', str_replace('add_date', 'recent', get_option('gallery_media_default_sort_order')));
             set_option('galleries_sort_order', str_replace('name', 'title', str_replace('add_date', 'recent', get_option('gallery_media_default_sort_order'))));
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 12)) { // LEGACY: 11.beta7
+            $GLOBALS['SITE_DB']->add_table_field('images', 'validation_time', '?TIME');
+            $GLOBALS['SITE_DB']->add_table_field('videos', 'validation_time', '?TIME');
         }
     }
 

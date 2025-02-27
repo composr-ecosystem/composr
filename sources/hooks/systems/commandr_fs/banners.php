@@ -356,6 +356,7 @@ class Hook_commandr_fs_banners extends Resource_fs_base
             'deployment_agreement' => $row['deployment_agreement'],
             'expiry_date' => remap_time_as_portable($row['expiry_date']),
             'validated' => $row['validated'],
+            'validation_time' => remap_time_as_portable($row['validation_time']),
             'b_types' => collapse_1d_complexity('b_type', $GLOBALS['SITE_DB']->query_select('banners_types', ['b_type'], ['name' => $row['name']])),
             'regions' => collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'banner', 'content_id' => $row['name']])),
             'hits_from' => $row['hits_from'],

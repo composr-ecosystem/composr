@@ -107,7 +107,7 @@ class Hook_addon_registry_image_source_files
      */
     public function get_description() : string
     {
-        return 'A few source files for graphics. Also dark versions of Composr\'s animated gif emoticons (although ideally people will have browsers that support APNG, so there should not be an issue in the future).';
+        return 'A few source files for graphics. Also dark versions of animated gif emoticons (although ideally people will have browsers that support APNG, so there should not be an issue in the future).';
     }
 
     /**

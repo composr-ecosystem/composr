@@ -82,7 +82,7 @@ class Hook_addon_registry_apache_config_files
      */
     public function get_description() : string
     {
-        return 'Sample .htaccess files to help achieve optimal configuration on the Apache web server.';
+        return 'Sample .htaccess files to help achieve optimal configuration on the Apache web server. Highly recommended.';
     }
 
     /**

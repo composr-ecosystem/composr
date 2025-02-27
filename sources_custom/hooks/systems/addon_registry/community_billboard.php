@@ -107,7 +107,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_description() : string
     {
-        return 'Community billboard messages, designed to work with eCommerce to allow people buy community billboard advertising on the website.';
+        return 'Community billboard messages (displayed in the footer of every page by default), designed to work with eCommerce to allow people buy community billboard advertising on the website.';
     }
 
     /**

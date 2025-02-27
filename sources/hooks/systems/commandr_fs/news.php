@@ -297,6 +297,7 @@ class Hook_commandr_fs_news extends Resource_fs_base
             'article' => get_translated_text($row['news_article']),
             'author' => $row['author'],
             'validated' => $row['validated'],
+            'validation_time' => remap_time_as_portable($row['validation_time']),
             'allow_rating' => $row['allow_rating'],
             'allow_comments' => $row['allow_comments'],
             'allow_trackbacks' => $row['allow_trackbacks'],

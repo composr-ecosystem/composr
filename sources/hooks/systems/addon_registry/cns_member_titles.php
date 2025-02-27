@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_member_titles
      */
     public function get_description() : string
     {
-        return 'Member titles.';
+        return "Enable short, custom member titles that can be defined on a member's forum posts (such as ranks or company positions).";
     }
 
     /**

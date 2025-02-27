@@ -82,7 +82,7 @@ class Hook_addon_registry_core_permission_management
      */
     public function get_description() : string
     {
-        return 'Manage permissions.';
+        return "The core permissions and privileges management system for defining who can do (and see) what.";
     }
 
     /**

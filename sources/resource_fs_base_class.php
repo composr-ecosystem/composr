@@ -534,9 +534,9 @@ abstract class Resource_fs_base
      *
      * @param  array $properties The properties
      * @param  ID_TEXT $property The property
-     * @return ?string The value (null: null value)
+     * @return string The value
      */
-    protected function _default_property_str(array $properties, string $property) : ?string
+    protected function _default_property_str(array $properties, string $property) : string
     {
         return array_key_exists($property, $properties) ? $properties[$property] : '';
     }
@@ -551,6 +551,33 @@ abstract class Resource_fs_base
     protected function _default_property_str_null(array $properties, string $property) : ?string
     {
         return array_key_exists($property, $properties) ? $properties[$property] : null;
+    }
+
+    /**
+     * Find a default array property mapping language identifiers to strings.
+     *
+     * @param  array $properties The properties
+     * @param  ID_TEXT $property The property
+     * @return array The value
+     */
+    protected function _default_property_lang_multi_content(array $properties, string $property) : array
+    {
+        require_code('lang');
+
+        if (!array_key_exists($property, $properties)) {
+            return [get_site_default_lang() => ''];
+        }
+
+        $ret = [get_site_default_lang() => ''];
+
+        require_code('site');
+        foreach (array_keys(find_all_langs()) as $lang) {
+            if (array_key_exists($lang, $properties[$property])) {
+                $ret[$lang] = $properties[$property][$lang];
+            }
+        }
+
+        return $ret;
     }
 
     /**
@@ -2343,6 +2370,7 @@ abstract class Resource_fs_base
             }
         }
 
+        // Feedback
         if ($cma_info['feedback_type_code'] !== null) {
             if (get_forum_type() == 'cns') {
                 // Comments & Reviews
@@ -2419,6 +2447,14 @@ abstract class Resource_fs_base
             if (isset($properties['privileges__members'])) {
                 $member_settings = $properties['privileges__members'];
                 $this->set_resource_privileges__members(null, $member_settings, $resource_type, $resource_id);
+            }
+        }
+
+        // Validation time
+        if (addon_installed('validation') && ($cma_info['validation_time_field'] !== null)) {
+            if (array_key_exists('validation_time', $properties)) {
+                require_code('validation');
+                schedule_validation($resource_type, $resource_id, $properties['validation_time']);
             }
         }
     }

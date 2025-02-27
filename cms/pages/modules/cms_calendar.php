@@ -393,6 +393,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  BINARY $do_timezone_conv Whether the time should be presented in the viewer's own timezone
      * @param  ?MEMBER $member_calendar The member's calendar it will be on (null: not on a specific member's calendar)
      * @param  BINARY $validated Whether the event is validated
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
@@ -400,7 +401,7 @@ class Module_cms_calendar extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A tuple: The input fields, Hidden fields, ...
      */
-    public function get_form_fields(?int $id = null, ?int $type = null, ?int $start_year = null, ?int $start_month = null, ?int $start_day = null, string $start_monthly_spec_type = 'day_of_month', ?int $start_hour = null, ?int $start_minute = null, string $title = '', string $content = '', string $recurrence = 'none', ?int $recurrences = null, int $seg_recurrences = 0, int $priority = 3, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 0, ?int $member_calendar = null, int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
+    public function get_form_fields(?int $id = null, ?int $type = null, ?int $start_year = null, ?int $start_month = null, ?int $start_day = null, string $start_monthly_spec_type = 'day_of_month', ?int $start_hour = null, ?int $start_minute = null, string $title = '', string $content = '', string $recurrence = 'none', ?int $recurrences = null, int $seg_recurrences = 0, int $priority = 3, ?int $end_year = null, ?int $end_month = null, ?int $end_day = null, string $end_monthly_spec_type = 'day_of_month', ?int $end_hour = null, ?int $end_minute = null, ?string $timezone = null, int $do_timezone_conv = 0, ?int $member_calendar = null, int $validated = 1, ?int $validation_time = null, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -552,19 +553,23 @@ class Module_cms_calendar extends Standard_crud_module
         }
 
         // Validation
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CALENDAR_EVENT', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_CALENDAR_EVENT', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('validation')) {
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', 'cms_calendar', $this->permissions_module_require)) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'event'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'event'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
@@ -881,7 +886,7 @@ class Module_cms_calendar extends Standard_crud_module
 
         $content = get_translated_text($myrow['e_content']);
 
-        $fields = $this->get_form_fields($myrow['id'], $myrow['e_type'], $myrow['e_start_year'], $myrow['e_start_month'], $myrow['e_start_day'], $myrow['e_start_monthly_spec_type'], $myrow['e_start_hour'], $myrow['e_start_minute'], get_translated_text($myrow['e_title']), $content, $myrow['e_recurrence'], $myrow['e_recurrences'], $myrow['e_seg_recurrences'], $myrow['e_priority'], $myrow['e_end_year'], $myrow['e_end_month'], $myrow['e_end_day'], $myrow['e_end_monthly_spec_type'], $myrow['e_end_hour'], $myrow['e_end_minute'], $myrow['e_timezone'], $myrow['e_do_timezone_conv'], $myrow['e_member_calendar'], $myrow['validated'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
+        $fields = $this->get_form_fields($myrow['id'], $myrow['e_type'], $myrow['e_start_year'], $myrow['e_start_month'], $myrow['e_start_day'], $myrow['e_start_monthly_spec_type'], $myrow['e_start_hour'], $myrow['e_start_minute'], get_translated_text($myrow['e_title']), $content, $myrow['e_recurrence'], $myrow['e_recurrences'], $myrow['e_seg_recurrences'], $myrow['e_priority'], $myrow['e_end_year'], $myrow['e_end_month'], $myrow['e_end_day'], $myrow['e_end_monthly_spec_type'], $myrow['e_end_hour'], $myrow['e_end_minute'], $myrow['e_timezone'], $myrow['e_do_timezone_conv'], $myrow['e_member_calendar'], $myrow['validated'], $myrow['validation_time'], $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
 
         if (has_delete_permission('low', get_member(), $myrow['e_submitter'], 'cms_calendar')) {
             $radios = form_input_radio_entry('delete', '0', true, do_lang_tempcode('EDIT_ALL_RECURRENCES'));
@@ -910,6 +915,8 @@ class Module_cms_calendar extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         list($type, $recurrence, $recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar) = $this->get_event_parameters();
 
         $allow_trackbacks = post_param_integer('allow_trackbacks', 0);
@@ -917,6 +924,7 @@ class Module_cms_calendar extends Standard_crud_module
         $allow_comments = post_param_integer('allow_comments', 0);
         $notes = post_param_string('notes', '');
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $seg_recurrences = post_param_integer('seg_recurrences', 0);
 
         $metadata = actual_metadata_get_fields('event', null);
@@ -1070,6 +1078,11 @@ class Module_cms_calendar extends Standard_crud_module
             content_review_set('event', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('event', strval($id), $validation_time);
+        }
+
         return [strval($id), $_description];
     }
 
@@ -1081,6 +1094,8 @@ class Module_cms_calendar extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
 
         $rows = $GLOBALS['SITE_DB']->query_select('calendar_events', ['*'], ['id' => $id], '', 1);
@@ -1100,6 +1115,7 @@ class Module_cms_calendar extends Standard_crud_module
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $notes = post_param_string('notes', STRING_MAGIC_NULL);
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $seg_recurrences = post_param_integer('seg_recurrences', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
 
         $fixed_past = false;
@@ -1249,6 +1265,11 @@ class Module_cms_calendar extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('event', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('event', strval($id), $validation_time);
         }
 
         return $_description;

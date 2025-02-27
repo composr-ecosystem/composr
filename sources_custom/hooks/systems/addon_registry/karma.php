@@ -96,7 +96,7 @@ class Hook_addon_registry_karma
      */
     public function get_licence() : string
     {
-        return 'GNU General Public License v3.0';
+        return 'Licensed on the same terms as ' . brand_name();
     }
 
     /**

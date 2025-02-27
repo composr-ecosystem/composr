@@ -112,7 +112,7 @@ class Hook_addon_registry_health_check
      */
     public function get_description() : string
     {
-        return 'The Health Check addon automatically finds problems on your website and server.';
+        return "Check for a wide variety of problems which may arise on your site. If the system scheduler is operational, health checks can also be run automatically on an interval with notifications sent of results (full reports, or only failed items).";
     }
 
     /**
@@ -136,7 +136,7 @@ class Hook_addon_registry_health_check
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['System scheduler'],
             'conflicts_with' => []
         ];
     }

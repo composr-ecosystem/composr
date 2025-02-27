@@ -140,6 +140,16 @@
 	</p>
 {+END}
 
+<h2>{!ACTIONS}</h2>
+{+START,IF_NON_EMPTY,{ACTIONLOG}}
+	{ACTIONLOG}
+{+END}
+{+START,IF_EMPTY,{ACTIONLOG}}
+	<p class="nothing-here">
+		{!NONE}
+	</p>
+{+END}
+
 <h2>{!VIEWS}{+START,IF,{$IS_GUEST,{MEMBER_ID}}} ({!IP_ADDRESS}){+END}</h2>
 
 {STATS}

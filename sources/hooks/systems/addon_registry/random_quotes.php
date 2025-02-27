@@ -82,7 +82,7 @@ class Hook_addon_registry_random_quotes
      */
     public function get_description() : string
     {
-        return 'A block to display random quotes on your website, and an administrative tool to choose them.';
+        return 'A block to display random quotes on your website, and an administrative tool to define them.';
     }
 
     /**

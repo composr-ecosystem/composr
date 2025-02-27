@@ -82,7 +82,7 @@ class Hook_addon_registry_core_notifications
      */
     public function get_description() : string
     {
-        return 'Sends out action-triggered notifications to members listening to them.';
+        return "Implements a notifications system where members can receive notifications (e-mail, web, or Private Topics) for various site actions. Highly configurable; can define defaults and also locked-down settings. Members can choose their own notifications by editing their profile or using the monitor/unmonitor buttons. If the system scheduler is operational, digests can be used to group together notifications from a period of time (to reduce the number of notifications received).";
     }
 
     /**
@@ -106,7 +106,7 @@ class Hook_addon_registry_core_notifications
     {
         return [
             'requires' => [],
-            'recommends' => [],
+            'recommends' => ['System scheduler'],
             'conflicts_with' => [],
         ];
     }

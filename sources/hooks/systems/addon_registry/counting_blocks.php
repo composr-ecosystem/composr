@@ -82,7 +82,7 @@ class Hook_addon_registry_counting_blocks
      */
     public function get_description() : string
     {
-        return 'Blocks for hit counters, and count-downs.';
+        return "Various blocks that can be used for count-downs and hit counters.";
     }
 
     /**

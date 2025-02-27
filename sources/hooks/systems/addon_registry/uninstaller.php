@@ -82,7 +82,7 @@ class Hook_addon_registry_uninstaller
      */
     public function get_description() : string
     {
-        return 'The uninstaller.';
+        return "A simple script to help you uninstall the software. It is not recommend you install this addon until and unless you are going to uninstall the software.";
     }
 
     /**

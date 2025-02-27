@@ -97,7 +97,7 @@ class Hook_addon_registry_catalogues
      */
     public function get_description() : string
     {
-        return 'Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard CMS features (e.g. ratings).';
+        return "An advanced data management tool. Create catalogues with your own fields (many field types to choose from). Define flat or tree-based categories for entries. Integrate into other content types to extend what data / fields are present on content entries. Use in conjunction with included blocks to generate web forms. Integrates into the privacy system for GDPR compliance.";
     }
 
     /**

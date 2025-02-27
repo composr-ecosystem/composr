@@ -1,4 +1,4 @@
-[title sub="Written by Chris Graham"]Composr Tutorial: Addon index[/title]
+﻿[title sub="Written by Chris Graham"]Composr Tutorial: Addon index[/title]
 
 This tutorial features an index of the Composr addons, with links to tutorials that are relevant to them, and other useful information and links.
 
@@ -7,7 +7,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
 [title="2"]Addons[/title]
 
 [staff_note]Automatic code inserts after this[/staff_note][semihtml]
-<div class="wide-table-wrap"><table class="wide-table columned-table results-table autosized-table">
+<table class="wide-table columned-table results-table autosized-table">
     <thead>
         <tr>
             <th>Addon</th>
@@ -24,7 +24,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Audit-trail functionality.</td>
+            <td>The action log provides extensive logging of administrative, moderation, and content actions. Keep track of what your members and staff are doing on the site. Filter by member / IP address / action. Perform follow-up actions on a log entry. Action logs are permanent and cannot be edited or removed (aside from privacy purging and manual edits in the database).</td>
             <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
             <td>audit</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=actionlog&amp;status_id=10">Link</a></td>
@@ -36,22 +36,10 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>commandr</kbd>, <kbd>import</kbd>
             </td>
-            <td>Define complex aggregate types in XML, and spawn them.</td>
+            <td>Use special XML syntax to define complex aggregate types. And then use a user interface to create or sync instances of them. For example, you can make a &#039;department&#039; type which creates a usergroup, forum, catalogue, and news category for the department.</td>
             <td><a href="https://composr.app/docs11/tut-aggregate-types.htm">Aggregate Content Types</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=aggregate_types&amp;status_id=10">Link</a></td>
-        </tr>
-    
-        <tr>
-            <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />All Icons<br />(<kbd>all_icons</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)</td>
-            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
-            <td></td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=all_icons&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -60,7 +48,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Sample .htaccess files to help achieve optimal configuration on the Apache web server.</td>
+            <td>Sample .htaccess files to help achieve optimal configuration on the Apache web server. Highly recommended.</td>
             <td><a href="https://composr.app/docs11/tut-adv-configuration.htm">Advanced configuration</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=apache_config_files&amp;status_id=10">Link</a></td>
@@ -74,7 +62,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             </td>
             <td>Certain kinds of content can have authors instead of submitters (e.g. &#039;Core Development Team&#039;). The authors may be independently described and searched under.</td>
             <td><a href="https://composr.app/docs11/tut-authors.htm">Authors</a><br /><br /><a href="https://composr.app/docs11/tut-users.htm">People in their roles</a></td>
-            <td>login<br /><br />log-in<br /><br />sign-in<br /><br />sign-on<br /><br />logon<br /><br />log-on<br /><br />authorize<br /><br />bio<br /><br />biography</td>
+            <td>bio<br /><br />biography<br /><br />login<br /><br />log-in<br /><br />sign-in<br /><br />sign-on<br /><br />logon<br /><br />log-on<br /><br />authorize</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=authors&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -84,9 +72,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Pick out content for featuring.</td>
-            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
-            <td>highlight<br /><br />feature</td>
+            <td>Awards can be used to feature and reward high-quality content on your site. Use in conjunction with various content blocks to render awarded content. If points is installed, you can credit points to those whose content is featured.</td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Featuring content</a></td>
+            <td>highlight<br /><br />feature<br /><br />top content</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=awards&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -96,7 +84,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Perform incremental or full backups of files and the database. Supports scheduling.</td>
+            <td>Perform incremental or full backups of site files and the database. Supports scheduling. While it is highly recommended to use your webhost backup tools, this tool can be used as a last resort or when you want backups which specifically omit stuff which is not important (e.g. caches).</td>
             <td><a href="https://composr.app/docs11/tut-backup.htm">Backing up your site</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=backup&amp;status_id=10">Link</a></td>
@@ -120,7 +108,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Advanced breadcrumb editing.</td>
+            <td>Customise breadcrumbs on your site using special XML and match-key syntax (e.g. perhaps you want something to appear under a specific page rather than a Composr module / feature).</td>
             <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=breadcrumbs&amp;status_id=10">Link</a></td>
@@ -132,7 +120,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>An advanced community calendar.</td>
+            <td>An advanced site calendar. Features event types, public (site-wide) events, and private member-based (diary) events. Supports advanced recurrence rules. Supports subscriptions to event types or individual events for reminders and updates. Can also be used to schedule system commands (e.g. Commandr commands, Commandr scripts, or PHP code) to run on a given date/time.</td>
             <td><a href="https://composr.app/docs11/tut-calendar.htm">Running a calendar/diary</a></td>
             <td>event<br /><br />diary<br /><br />schedule</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=calendar&amp;status_id=10">Link</a></td>
@@ -144,7 +132,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Stop spam-bots from performing actions on the website.</td>
+            <td>Stop spam-bots from performing actions on the website. Supports image-based CAPTCHA challenges (with optional JavaScript and CSS complexity), question and answer CAPTCHAs, and reCAPTCHA integration.</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=captcha&amp;status_id=10">Link</a></td>
@@ -156,7 +144,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Describe your own custom data record types (by choosing and configuring fields) and populate with records. Supports tree structures, and most standard Composr features (e.g. ratings).</td>
+            <td>An advanced data management tool. Create catalogues with your own fields (many field types to choose from). Define flat or tree-based categories for entries. Integrate into other content types to extend what data / fields are present on content entries. Use in conjunction with included blocks to generate web forms. Integrates into the privacy system for GDPR compliance.</td>
             <td><a href="https://composr.app/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a><br /><br /><a href="https://composr.app/docs11/tut-fields.htm">Custom fields</a></td>
             <td>catalogue<br /><br />database<br /><br />classified<br /><br />catalog<br /><br />directory<br /><br />schema<br /><br />field</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=catalogues&amp;status_id=10">Link</a></td>
@@ -168,9 +156,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Chatrooms and instant messaging.</td>
+            <td>Add basic real-time chat rooms and Instant Messaging on your site which runs natively in the software (no special message broker software required).</td>
             <td><a href="https://composr.app/docs11/tut-chat.htm">Running chatrooms (features and advice)</a></td>
-            <td></td>
+            <td>instant message</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=chat&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -202,9 +190,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/menu/cms/clubs.svg" />Conversr Clubs<br />(<kbd>cns_clubs</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
+                <strong>Dependencies</strong>: <kbd>cns_forum</kbd>
             </td>
-            <td>Clubs for members, each of which comes with a forum.</td>
+            <td>Enable the ability for members to create clubs, which are low-functioning groups which come with their own forum.</td>
             <td><a href="https://composr.app/docs11/tut-subcom.htm">Tools for subsites and subcommunities</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_clubs&amp;status_id=10">Link</a></td>
@@ -216,7 +204,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Off-site e-mailing of members (more private, and may be used by guests).</td>
+            <td>Enable a facility for guests to send off-site messages (e-mails) to members without e-mail addresses being exposed.</td>
             <td><a href="https://composr.app/docs11/tut-correspondence.htm">Correspondence between members</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_contact_member&amp;status_id=10">Link</a></td>
@@ -228,7 +216,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Custom Profile Fields, so members may save additional details. If this is uninstalled any existing Custom Profile Fields will remain in the system.</td>
+            <td>Add the ability to define Custom Profile fields, so members may save additional details on their profile. If this is uninstalled any existing Custom Profile Fields will remain in the system.</td>
             <td><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_cpfs&amp;status_id=10">Link</a></td>
@@ -240,7 +228,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>The Conversr forum- a modern advanced forum for members to interact on.</td>
+            <td>The Conversr forum; a modern advanced forum system for members to interact on.</td>
             <td><a href="https://composr.app/docs11/tut-forums.htm">Discussion forums</a><br /><br /><a href="https://composr.app/docs11/tut-adv-forums.htm">Advanced forum settings</a><br /><br /><a href="https://composr.app/docs11/tut-forum-tracking.htm">Keeping on track of busy forums</a><br /><br /><a href="https://composr.app/docs11/tut-moderation.htm">Basic forum moderation</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_forum&amp;status_id=10">Link</a></td>
@@ -252,7 +240,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Member avatars.</td>
+            <td>Enable the ability for members to use avatars (you can choose various options like who can upload their own avatars and who must use ones you define in theme images).</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_member_avatars&amp;status_id=10">Link</a></td>
@@ -264,7 +252,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Member photos.</td>
+            <td>Enable the ability for members to upload their own photos to be display on their profile page. These are larger photos than avatars but are less prominent as they only show up on a member&#039;s profile page.</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_member_photos&amp;status_id=10">Link</a></td>
@@ -276,7 +264,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Member titles.</td>
+            <td>Enable short, custom member titles that can be defined on a member&#039;s forum posts (such as ranks or company positions).</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_member_titles&amp;status_id=10">Link</a></td>
@@ -288,7 +276,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_forum</kbd>
             </td>
-            <td>Multi-moderations for the Conversr forum.</td>
+            <td>Adds the ability to define multi-moderation &#039;templates&#039; which are quick actions moderators may take in Conversr forums. For example, you could define a template which locks a topic and posts a template message in the topic indicating it has been locked.</td>
             <td><a href="https://composr.app/docs11/tut-moderation.htm">Basic forum moderation</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_multi_moderations&amp;status_id=10">Link</a></td>
@@ -300,7 +288,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>cns_forum</kbd>
             </td>
-            <td>Post Templates for the Conversr forum.</td>
+            <td>Enables the ability to define templates which can be used as posts in the Conversr forum. Templates are available as a dropdown when adding or editing a post which then auto-populates the text editor. This tool can also be used with the tickets system.</td>
             <td><a href="https://composr.app/docs11/tut-support-desk.htm">Running a virtual support desk</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_post_templates&amp;status_id=10">Link</a></td>
@@ -312,7 +300,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Member signatures.</td>
+            <td>Enables the ability for members to define signatures (text which appears at the bottom of every forum post they make).</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_signatures&amp;status_id=10">Link</a></td>
@@ -336,7 +324,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Member warnings and punishment.</td>
+            <td>This is an advanced system for moderating troublesome members. Warnings can be formal (visible to the member, and counts against their account standing) or off-the-book (hidden and do not count against their account). There are many punitive actions you can take depending on the addons you have installed (e.g. banning, putting members on probation, silencing from forums and topics, usergroup changes, syndication as a spammer, deletion of recent content / topics / posts, and reversal or charging of points). Warning messages can be sent as Private Topics. Warnings can be reviewed by staff and the member who received the warning (e.g. to undo certain punitive actions or view details). A private &#039;standing&#039; tab is added to member profiles so members can review their history and any active punitive actions. And statistics (if installed) can generate a graph of warnings issued including by country or by reason.</td>
             <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a><br /><br /><a href="https://composr.app/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=cns_warnings&amp;status_id=10">Link</a></td>
@@ -348,7 +336,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>For programmers- A simple editor for editing Composr code files, with support for override support and saving via FTP.</td>
+            <td>For programmers- A simple editor for editing Composr code files, with support for overrides and saving via FTP.</td>
             <td><a href="https://composr.app/docs11/tut-framework.htm">The Composr programming framework</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=code_editor&amp;status_id=10">Link</a></td>
@@ -358,9 +346,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/commandr.svg" />Commandr<br />(<kbd>commandr</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <kbd>import</kbd>
+                <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A command-line environment for managing your website, designed for Linux/Unix lovers.</td>
+            <td>A command-line environment for managing your website, designed for Linux/Unix lovers. This addon also implements the enterprise repository (commandr-fs) for your site.</td>
             <td><a href="https://composr.app/docs11/tut-commandr.htm">Commandr</a><br /><br /><a href="https://composr.app/docs11/tut-repository.htm">The Composr Enterprise Repository</a></td>
             <td>console<br /><br />command prompt<br /><br />command line<br /><br />cle</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=commandr&amp;status_id=10">Link</a></td>
@@ -372,8 +360,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Allows users to specify privacy level for their content.</td>
-            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td>Allow more fine-grained control of content privacy at the member level (members can define who can view their content).</td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a><br /><br /><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=content_privacy&amp;status_id=10">Link</a></td>
         </tr>
@@ -382,9 +370,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/admin/tool.svg" />Content Reviews<br />(<kbd>content_reviews</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <kbd>validation</kbd>, <kbd>commandr</kbd>
+                <strong>Dependencies</strong>: <kbd>validation</kbd>, <kbd>commandr</kbd>, <kbd>System scheduler</kbd>
             </td>
-            <td>Regularly review content for accuracy.</td>
+            <td>Adds a facility for regular reminders to review content for accuracy. This addon can also be used to automatically turn off validation on a certain date/time (if validation is installed) or to automatically delete content on a certain date/time.</td>
             <td><a href="https://composr.app/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
             <td>content reviews<br /><br />audit</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=content_reviews&amp;status_id=10">Link</a></td>
@@ -396,7 +384,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>(Core Composr code)</td>
+            <td>Core Composr code</td>
             <td><a href="https://composr.app/docs11/tut-do.htm">Dos and Do-nots of a (Composr) website</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a><br /><br /><a href="https://composr.app/docs11/tut-metadata.htm">Metadata</a><br /><br /><a href="https://composr.app/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a><br /><br /><a href="https://composr.app/docs11/tut-url-schemes.htm">URL Schemes in Composr</a><br /><br /><a href="https://composr.app/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="https://composr.app/docs11/tut-selectcode.htm">Filtering using Selectcode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-filtercode.htm">Filtering using Filtercode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-keymap.htm">Composr keyboard shortcuts</a><br /><br /><a href="https://composr.app/docs11/tut-email.htm">Understanding and configuring e-mail</a><br /><br /><a href="https://composr.app/docs11/tut-disaster.htm">Disaster recovery</a><br /><br /><a href="https://composr.app/docs11/tut-antispam.htm">Anti-spam settings</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core&amp;status_id=10">Link</a></td>
@@ -408,7 +396,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Core rendering functionality.</td>
+            <td>Core rendering functionality (e.g. graphs, visual Comcode elements).</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_abstract_components&amp;status_id=10">Link</a></td>
@@ -420,7 +408,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Core rendering functionality.</td>
+            <td>Core rendering functionality (e.g. tables, pagination, tooltips).</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_abstract_interfaces&amp;status_id=10">Link</a></td>
@@ -432,7 +420,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Install or uninstall addons.</td>
+            <td>Management of addons, modules, blocks, themes, and language packs.</td>
             <td><a href="https://composr.app/docs11/tut-framework.htm">The Composr programming framework</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_addon_management&amp;status_id=10">Link</a></td>
@@ -452,11 +440,23 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core All Icons<br />(<kbd>core_all_icons</kbd>)<br /><br />
+                <strong>Core</strong>: Yes<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>The full Composr icon set, including extra icons and icons from all bundled addons (to make them available even if they are not installed)</td>
+            <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_all_icons&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/tools/cleanup.svg" />Core Cleanup Tools<br />(<kbd>core_cleanup_tools</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Behind-the-scenes maintenance tasks.</td>
+            <td>Software tools for cleaning up and re-organising things.</td>
             <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_cleanup_tools&amp;status_id=10">Link</a></td>
@@ -480,7 +480,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Manage new pages on the website, known as Comcode pages.</td>
+            <td>Comcode pages are the primary facility for displaying information on a site (using the Comcode syntax).</td>
             <td><a href="https://composr.app/docs11/tut-comcode-pages.htm">Adding standalone pages of content (via Comcode)</a><br /><br /><a href="https://composr.app/docs11/tut-adv-comcode-pages.htm">Using blocks</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_comcode_pages&amp;status_id=10">Link</a></td>
@@ -492,7 +492,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Set configuration options.</td>
+            <td>Core configuration options for the software.</td>
             <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="https://composr.app/docs11/tut-adv-configuration.htm">Advanced configuration</a><br /><br /><a href="https://composr.app/docs11/tut-moving.htm">Moving sites</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_configuration&amp;status_id=10">Link</a></td>
@@ -516,7 +516,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Features for user interaction with content.</td>
+            <td>Features for user interaction with content (likes/ratings, comments, reviews, trackbacks, contact forms).</td>
             <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_feedback_features&amp;status_id=10">Link</a></td>
@@ -528,7 +528,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>(Core fields API)</td>
+            <td>The core field API for defining field types (used by catalogues, custom profile fields, and some other systems).</td>
             <td><a href="https://composr.app/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="https://composr.app/docs11/tut-fields.htm">Custom fields</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_fields&amp;status_id=10">Link</a></td>
@@ -576,7 +576,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Core rendering functionality.</td>
+            <td>Core HTML components (typically rendered by Comcode).</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_html_abstractions&amp;status_id=10">Link</a></td>
@@ -588,10 +588,22 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Translate the software, or just change what it says for stylistic reasons.</td>
+            <td>Translate the software, or just change what it says for stylistic or branding reasons.</td>
             <td><a href="https://composr.app/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="https://composr.app/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="https://composr.app/docs11/tut-intl-content.htm">Translating Composr content</a><br /><br /><a href="https://composr.app/docs11/tut-intl-code-philosophy.htm">Translations code philosophy</a><br /><br /><a href="https://composr.app/docs11/tut-intl-maintenance.htm">International support communities</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_language_editing&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Mediaelement<br />(<kbd>core_mediaelement</kbd>)<br /><br />
+                <strong>Core</strong>: Yes<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>Embeds media using the MediaElement.js player.</td>
+            <td><a href="https://composr.app/docs11/tut-fringe.htm">Supplementary web technologies (media, social networking, etc)</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_mediaelement&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -600,7 +612,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Edit menus.</td>
+            <td>Implements static or dynamic (sitemap) menus in the software, and a UI to edit them.</td>
             <td><a href="https://composr.app/docs11/tut-menus.htm">Customising what&#039;s on the menus</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_menus&amp;status_id=10">Link</a></td>
@@ -612,7 +624,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Sends out action-triggered notifications to members listening to them.</td>
+            <td>Implements a notifications system where members can receive notifications (e-mail, web, or Private Topics) for various site actions. Highly configurable; can define defaults and also locked-down settings. Members can choose their own notifications by editing their profile or using the monitor/unmonitor buttons. If the system scheduler is operational, digests can be used to group together notifications from a period of time (to reduce the number of notifications received).</td>
             <td><a href="https://composr.app/docs11/tut-notifications.htm">Notifications</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_notifications&amp;status_id=10">Link</a></td>
@@ -624,7 +636,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Manage permissions.</td>
+            <td>The core permissions and privileges management system for defining who can do (and see) what.</td>
             <td><a href="https://composr.app/docs11/tut-permissions.htm">Access control and privileges</a><br /><br /><a href="https://composr.app/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_permission_management&amp;status_id=10">Link</a></td>
@@ -644,11 +656,23 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Privacy<br />(<kbd>core_privacy</kbd>)<br /><br />
+                <strong>Core</strong>: Yes<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>Privacy tools to ensure GDPR compliance: member and administrator level data purging and downloading, Privacy Policy generator, automatic log purging, telemetry with the homesite (relaying errors and statistics to the core developers, requesting the site to be featured).</td>
+            <td><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_privacy&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Rich Media<br />(<kbd>core_rich_media</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Comcode and attachments.</td>
+            <td>Renderers for various Comcode tags and media / attachments.</td>
             <td><a href="https://composr.app/docs11/tut-comcode.htm">Comcode and the attachment system</a><br /><br /><a href="https://composr.app/docs11/tut-adv-comcode.htm">Advanced Comcode</a><br /><br /><a href="https://composr.app/docs11/tut-wysiwyg.htm">WYSIWYG editing</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_rich_media&amp;status_id=10">Link</a></td>
@@ -660,7 +684,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Themeing the website, via CSS, HTML, and images.</td>
+            <td>The core theme system for managing themes and their HTML, CSS, JavaScript, and templates.</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-releasing-themes.htm">Releasing a theme</a><br /><br /><a href="https://composr.app/docs11/tut-theme-lifecycle.htm">Theme Lifecycle</a><br /><br /><a href="https://composr.app/docs11/tut-tempcode.htm">Tempcode programming</a><br /><br /><a href="https://composr.app/docs11/tut-fixed-width.htm">Fixed-width layouts</a><br /><br /><a href="https://composr.app/docs11/tut-design.htm">Introduction to web design</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a><br /><br /><a href="https://composr.app/docs11/tut-mobile.htm">Mobile design</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_themeing&amp;status_id=10">Link</a></td>
@@ -672,7 +696,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>The upgrader code.</td>
+            <td>The software upgrader for checking and upgrading to newer versions (from the homesite).</td>
             <td><a href="https://composr.app/docs11/tut-upgrade.htm">Performing an upgrade</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_upgrader&amp;status_id=10">Link</a></td>
@@ -684,7 +708,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Web Standards checking tools.</td>
+            <td>Tools for checking webstandards (e.g. Comcode pages)</td>
             <td><a href="https://composr.app/docs11/tut-accessibility.htm">Helping improve site accessibility for disabled users</a><br /><br /><a href="https://composr.app/docs11/tut-markup.htm">Guide to web technologies (including HTML, CSS, and JavaScript)</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_webstandards&amp;status_id=10">Link</a></td>
@@ -696,7 +720,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Manage zones (sub-sites).</td>
+            <td>The zone editor to manage zones (sub-sites or sub-sections).</td>
             <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_zone_editor&amp;status_id=10">Link</a></td>
@@ -708,8 +732,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Blocks for hit counters, and count-downs.</td>
-            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td>Various blocks that can be used for count-downs and hit counters.</td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Featuring content</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=counting_blocks&amp;status_id=10">Link</a></td>
         </tr>
@@ -720,7 +744,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Create new Comcode tags.</td>
+            <td>Provides a user interface where staff can create custom Comcode tags (very useful if your site has repeating styles, such as formatted block quotes or various boxes)</td>
             <td><a href="https://composr.app/docs11/tut-adv-comcode.htm">Advanced Comcode</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=custom_comcode&amp;status_id=10">Link</a></td>
@@ -732,9 +756,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Allow easy debranding of the website software.</td>
+            <td>Allow easy debranding of the website software. This is meant for agencies who want to use the software as a white-labeled product. De-branding also allows agencies to define a new homesite where the software will do its upgrade checking and telemetry.</td>
             <td><a href="https://composr.app/docs11/codebook-3.htm">Code Book, part 3 (Miscellany)</a></td>
-            <td></td>
+            <td>rebrand</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=debrand&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -744,7 +768,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Host a downloads directory.</td>
+            <td>Implements a downloads directory on your site. Easily host files of various types which others can download. You can also specify licence agreements for downloads. You can also use downloads to host software with basic support of mapping to previous / new versions of files. If the points addon is installed, you can charge points to download something. If the galleries addon is installed, you can include preview images for each download.</td>
             <td><a href="https://composr.app/docs11/tut-downloads.htm">Providing downloads</a><br /><br /><a href="https://composr.app/docs11/tut-adv-downloads.htm">Advanced provision of downloads</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td>file<br /><br />document<br /><br />publication<br /><br />library</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=downloads&amp;status_id=10">Link</a></td>
@@ -756,7 +780,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>eCommerce infrastructure, with support for digital purchase and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Accounting functionality.</td>
+            <td>eCommerce infrastructure, with support for digital purchases / discounts and usergroup subscriptions. Provides a number of virtual products to your members in exchange for money or points. Includes basic accounting functionality. Also includes basic invoice support and manual transaction entry. Developers can create their own manual or automatic products through hooks.</td>
             <td><a href="https://composr.app/docs11/tut-ecommerce.htm">eCommerce</a><br /><br /><a href="https://composr.app/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
             <td>shopping<br /><br />payment<br /><br />purchase<br /><br />products<br /><br />store<br /><br />buy<br /><br />bought<br /><br />checkout</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=ecommerce&amp;status_id=10">Link</a></td>
@@ -768,7 +792,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Log of errors that have happened on the website.</td>
+            <td>Log errors specific to the software to an error log located at [tt]data_custom/errorlog.php[/tt] (and render on a special UI in the Admin Zone) opposed to using shared PHP error logs. Highly recommended if you have telemetry enabled to relay errors to the core developers.</td>
             <td><a href="https://composr.app/docs11/tut-adminzone.htm">Admin Zone overview</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=errorlog&amp;status_id=10">Link</a></td>
@@ -780,9 +804,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Advanced system to detect if the site goes down, and provide an automatic fallback.</td>
+            <td>Creates static caches of some pages on your site, and will automatically redirect visitors to those pages if problems are detected. Configuration is done through installer options ([tt]config_editor.php[/tt]).</td>
             <td><a href="https://composr.app/docs11/tut-performance.htm">Optimising Performance</a></td>
-            <td></td>
+            <td>fallback</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=failover&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -792,7 +816,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A persistent data cache, using disk files for data storage.</td>
+            <td>Provides a fallback file-based persistent cache in the event no other PHP persistent cache is available.</td>
             <td><a href="https://composr.app/docs11/tut-performance.htm">Optimising Performance</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=filebased_persistent_caching&amp;status_id=10">Link</a></td>
@@ -804,9 +828,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>File/media library, for use in attachments or for general ad-hoc sharing.</td>
+            <td>Implements a file/media library where staff (and optionally members) can store files. These files can then be used throughout the site, e.g. attachments, themes, uploads, or embedding through Comcode. This tool is useful for storing site-specific files which are used in multiple locations.</td>
             <td><a href="https://composr.app/docs11/tut-collaboration.htm">Running a collaboration hub</a></td>
-            <td>library<br /><br />file manager<br /><br />asset</td>
+            <td>library<br /><br />file manager<br /><br />asset<br /><br />file/media library</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=filedump&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -817,7 +841,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Dependencies</strong>: <kbd>news_shared</kbd>
             </td>
             <td>Blocks to draw forum posts and topics into the main website.</td>
-            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Featuring content</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=forum_blocks&amp;status_id=10">Link</a></td>
         </tr>
@@ -828,7 +852,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Galleries, including support for video galleries, and member personal galleries.</td>
+            <td>Implements a gallery system for your website. Galleries can showcase images, videos, audio, and other multimedia. Also supports slideshow functionality. You can also enable member galleries where members can upload their own multimedia which is visible on their profile. Galleries also support watermarking on images.</td>
             <td><a href="https://composr.app/docs11/tut-galleries.htm">Providing galleries</a><br /><br /><a href="https://composr.app/docs11/tut-adv-galleries.htm">Advanced galleries</a></td>
             <td>gallery<br /><br />album<br /><br />podcast<br /><br />multimedia</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=galleries&amp;status_id=10">Link</a></td>
@@ -852,9 +876,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>The Health Check addon automatically finds problems on your website and server.</td>
+            <td>Check for a wide variety of problems which may arise on your site. If the system scheduler is operational, health checks can also be run automatically on an interval with notifications sent of results (full reports, or only failed items).</td>
             <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
-            <td></td>
+            <td>monitoring</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=health_check&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -872,11 +896,23 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Helper Scripts<br />(<kbd>helper_scripts</kbd>)<br /><br />
+                <strong>Core</strong>: No<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>Various low-level CLI scripts that can help webmasters maintain their site: quick database exporting/importing, clearing caches, fixing file permissions, and viewing recent file or theme changes.</td>
+            <td><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-linux.htm">Installation on Linux</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-server.htm">Installation on a Windows server</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=helper_scripts&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/admin/import.svg" />Import<br />(<kbd>import</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Switch to Composr from other software. This addon provides the architecture for importing, and a number of prewritten importers.</td>
+            <td>Switch to Composr from other software (or from other Composr installations). This addon provides the architecture for importing, and a number of prewritten importers.</td>
             <td><a href="https://composr.app/docs11/tut-importer.htm">Importing data into Composr</a></td>
             <td>convert<br /><br />migrate<br /><br />interchange<br /><br />importance<br /><br />priority<br /><br />precedence<br /><br />level</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=import&amp;status_id=10">Link</a></td>
@@ -900,7 +936,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Blocks to allow visitors to choose their language.</td>
+            <td>Blocks to allow visitors to choose their language. Also includes language / region flags.</td>
             <td><a href="https://composr.app/docs11/tut-intl.htm">Localisation and internationalisation</a><br /><br /><a href="https://composr.app/docs11/tut-intl-users.htm">Changing the site language (for end users)</a><br /><br /><a href="https://composr.app/docs11/tut-intl-maintenance.htm">International support communities</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=language_block&amp;status_id=10">Link</a></td>
@@ -920,14 +956,14 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Linux Helper Scripts<br />(<kbd>linux_helper_scripts</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/leader_board.svg" />Leader Board<br />(<kbd>leader_board</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
+                <strong>Dependencies</strong>: <kbd>points</kbd>, <kbd>System scheduler</kbd>
             </td>
-            <td>Bash shell scripts to help configure permissions on Linux/Unix servers.</td>
-            <td><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-linux.htm">Installation on Linux</a></td>
+            <td>Create auto-generating leader-boards of various criteria to show your top members by the points they earned or hold. Supports weekly, monthly, and yearly leader-boards. Supports filtering out staff members or filtering by groups.</td>
+            <td><a href="https://composr.app/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
             <td></td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=linux_helper_scripts&amp;status_id=10">Link</a></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=leader_board&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -936,22 +972,10 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Match-key-permissions allow advanced setting of permissions on a screen-by-screen basis.</td>
+            <td>Implements a User Interface where you can deny access to screens based on match-keys to select groups. Also supports making your own access denied message or defining a redirect.</td>
             <td><a href="https://composr.app/docs11/tut-adv-permissions.htm">Advanced access control</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=match_key_permissions&amp;status_id=10">Link</a></td>
-        </tr>
-    
-        <tr>
-            <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/structure/multi_site_network.svg" />MSN<br />(<kbd>msn</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>Features to support multi-site-networks (networks of linked sites that usually share a common member system).</td>
-            <td><a href="https://composr.app/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></td>
-            <td></td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=msn&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -960,9 +984,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>news_shared</kbd>
             </td>
-            <td>News and blogging.</td>
-            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
-            <td>blog<br /><br />weblog<br /><br />press release<br /><br />journal<br /><br />story<br /><br />stories<br /><br />article</td>
+            <td>Implements news and blogging functionality. Create news articles under your choice of categories. Optionally allow members to make their own blog posts (reduced functionality news articles) displayed on their profile. Various blocks are provided for rendering news articles in different ways.</td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a><br /><br /><a href="https://composr.app/docs11/tut-site-messaging.htm">Pinning messages at the top of pages</a></td>
+            <td>blog<br /><br />weblog<br /><br />press release<br /><br />journal<br /><br />article<br /><br />story</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=news&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -972,8 +996,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>(Common files needed for RSS and News addons)</td>
-            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td>Core files for RSS feeds and news addons</td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-site-messaging.htm">Pinning messages at the top of pages</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=news_shared&amp;status_id=10">Link</a></td>
         </tr>
@@ -984,7 +1008,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Support for users to join newsletters, and for the staff to send out newsletters to subscribers, and to specific usergroups.</td>
+            <td>Implements newsletter functionality. You can send out manual newsletters, or newsletters auto-generated based on new site content. You can send them out manually or, if the system scheduler is enabled, periodically. Define newsletter types which visitors (guests and members) can subscribe. Auto-handle bounced e-mails through IMAP.</td>
             <td><a href="https://composr.app/docs11/tut-newsletter.htm">Running a newsletter</a></td>
             <td>mass-mail<br /><br />mass-mailing<br /><br />bulletin<br /><br />mail-merge<br /><br />announcement</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=newsletter&amp;status_id=10">Link</a></td>
@@ -996,7 +1020,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Manage pages on the website.</td>
+            <td>Provides a user interface for editing your site-map.</td>
             <td><a href="https://composr.app/docs11/tut-structure.htm">Composr site structure</a><br /><br /><a href="https://composr.app/docs11/tut-adv-structure.htm">Advanced site structure and flow</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=page_management&amp;status_id=10">Link</a></td>
@@ -1008,7 +1032,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Access PHP configurational information from inside Composr.</td>
+            <td>Access PHP configurational information, and server performance information, from inside the software.</td>
             <td><a href="https://composr.app/docs11/tut-website-health.htm">Website Health</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=phpinfo&amp;status_id=10">Link</a></td>
@@ -1020,9 +1044,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Allow members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points act as a ranking system as well as a virtual currency.</td>
+            <td>Implements a powerful virtual currency system to encourage member engagement and content submission. This allows members to accumulate points via a number of configurable activities, as well as exchange points with each other. Points can act as a ranking system (rank points) as well as a virtual currency (points balance) to purchase various things depending on addons installed and configuration. Points can also be &#039;escrowed&#039;, with a written agreement, between members in exchange for a product or service (and disputes can be sent to staff for review and resolution).</td>
             <td><a href="https://composr.app/docs11/tut-points.htm">Creating an economy/reward-system for members via points</a></td>
-            <td>karma</td>
+            <td>virtual currency</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=points&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1032,7 +1056,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A poll (voting) system.</td>
+            <td>Implements a simple website-level poll system. Members can suggest polls for staff to choose.</td>
             <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=polls&amp;status_id=10">Link</a></td>
@@ -1044,7 +1068,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A block to provide a link for the current screen to be turned into it&#039;s printer-friendly equivalent.</td>
+            <td>A block to provide a link for the current screen to be turned into its printer-friendly equivalent.</td>
             <td><a href="https://composr.app/docs11/tut-browsers.htm">Browser version requirements</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=printer_friendly_block&amp;status_id=10">Link</a></td>
@@ -1056,7 +1080,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Construct competitions, surveys, and tests, for members to perform. Highly configurable, and comes with administrative tools to handle the results.</td>
+            <td>Construct competitions, surveys, and tests, for members to participate. Highly configurable, and comes with administrative tools to handle the results. Various anti-cheat settings are also provided.</td>
             <td><a href="https://composr.app/docs11/tut-quizzes.htm">Quizzes</a></td>
             <td>surveys<br /><br />tests<br /><br />competitions<br /><br />questionnaires<br /><br />prize-draw<br /><br />exam<br /><br />assessment</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=quizzes&amp;status_id=10">Link</a></td>
@@ -1068,8 +1092,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A block to display random quotes on your website, and an administrative tool to choose them.</td>
-            <td><a href="https://composr.app/docs11/tut-featured.htm">Providing featured content</a></td>
+            <td>A block to display random quotes on your website, and an administrative tool to define them.</td>
+            <td><a href="https://composr.app/docs11/tut-featured.htm">Featuring content</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=random_quotes&amp;status_id=10">Link</a></td>
         </tr>
@@ -1080,9 +1104,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>stats</kbd>
             </td>
-            <td>Real-time/historic display of website activity.</td>
-            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
-            <td></td>
+            <td>Implements a powerful visual consisting of &#039;raining bubbles&#039; to visualise real-time website activity (may include information such as member, country, page-link, and action). The bubbles have various colours and symbols, which you can review in the statistics tutorial, for different actions. And bubbles can be clicked to be taken to a follow-up screen (e.g. a hit bubble will take you to the page that was hit).</td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Statistics for your site (analytics)</a></td>
+            <td>audit<br /><br />statistics</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=realtime_rain&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1092,7 +1116,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Allow members to easily recommend the website to others.</td>
+            <td>Provides a simple form on the share bar for members to recommend the site or specific pages to others (through e-mail). A privilege is created so you can prevent certain groups (e.g. Guests) from defining their own message for spam purposes.</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td>refer</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=recommend&amp;status_id=10">Link</a></td>
@@ -1112,11 +1136,23 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/spare/seo.svg" />Robots Txt<br />(<kbd>robots_txt</kbd>)<br /><br />
+                <strong>Core</strong>: No<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>Provides a default robots.txt file and an interface for editing it.</td>
+            <td><a href="https://composr.app/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="https://composr.app/docs11/tut-security.htm">Security</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=robots_txt&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Rootkit Detector<br />(<kbd>rootkit_detector</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A tool to help power-user webmasters identify if a &quot;rootkit&quot; has been placed on the server.</td>
+            <td>A tool to help power-user webmasters identify if a &quot;rootkit&quot; has been placed on the server (checks things like system commands in the calendar, staff groups and their members, zone access, privileges, and file hashes).</td>
             <td><a href="https://composr.app/docs11/tut-security.htm">Security</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=rootkit_detector&amp;status_id=10">Link</a></td>
@@ -1128,7 +1164,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Multi-content search engine.</td>
+            <td>A search engine for your site. This enables visitors to be able to search for content on your site. If the system scheduler is operational, this also provides some fallback full-text search capabilities where the database might not be able to perform it.</td>
             <td><a href="https://composr.app/docs11/tut-search.htm">Searching your website</a></td>
             <td>find<br /><br />filter</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=search&amp;status_id=10">Link</a></td>
@@ -1140,9 +1176,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Log/display security alerts.</td>
+            <td>The Web Application Firewall of the software; implements many security policies and logging to prevent hackers from breaching your site. This also implements IP banning and syndication with spam blocklists. Highly recommended you have this installed.</td>
             <td><a href="https://composr.app/docs11/tut-security.htm">Security</a><br /><br /><a href="https://composr.app/docs11/tut-trace.htm">Using IP addresses to trace users</a></td>
-            <td>audit</td>
+            <td>audit<br /><br />WAF<br /><br />firewall<br /><br />hack-attack</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=securitylogging&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1152,7 +1188,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Quick-start setup wizard.</td>
+            <td>Provides an easy wizard-based interface to set up your new site with pre-configured options (based on profiles).</td>
             <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=setupwizard&amp;status_id=10">Link</a></td>
@@ -1164,10 +1200,22 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>ecommerce</kbd>, <kbd>catalogues</kbd>
             </td>
-            <td>Shopping catalogue functionality.</td>
+            <td>Implements the ability to sell products on your site via a products catalogue. This also implements shopping cart functionality for members.</td>
             <td><a href="https://composr.app/docs11/tut-ecommerce.htm">eCommerce</a></td>
             <td>ecommerce<br /><br />payment<br /><br />purchase<br /><br />products<br /><br />store<br /><br />buy<br /><br />bought<br /><br />checkout<br /><br />merchant retailer seller<br /><br />business<br /><br />company<br /><br />firm<br /><br />enterprise<br /><br />corporation<br /><br />store</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=shopping&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/social/chat/chat.svg" />Site Messaging<br />(<kbd>site_messaging</kbd>)<br /><br />
+                <strong>Core</strong>: No<br /><br />
+                <strong>Dependencies</strong>: <em>None</em>
+            </td>
+            <td>Adds the ability to display messages at the top of pages (e.g. announcements, scheduled maintenance). You can define match-key filters to show on specific screens, usergroup filters, and date/time ranges.</td>
+            <td><a href="https://composr.app/docs11/tut-site-messaging.htm">Pinning messages at the top of pages</a></td>
+            <td>site messaging<br /><br />announcement</td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=site_messaging&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -1184,24 +1232,12 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/security/ssl.svg" />SSL<br />(<kbd>ssl</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>Choose which pages of your website run over HTTPS (SSL). Requires an SSL certificate to be installed on the webserver, and a dedicated IP address.</td>
-            <td><a href="https://composr.app/docs11/tut-security.htm">Security</a></td>
-            <td>https</td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=ssl&amp;status_id=10">Link</a></td>
-        </tr>
-    
-        <tr>
-            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/statistics/statistics.svg" />Stats<br />(<kbd>stats</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
+                <strong>Dependencies</strong>: <kbd>System scheduler</kbd>
             </td>
-            <td>Show advanced graphs (analytics) and dumps of raw data relating to your website activity.</td>
-            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
+            <td>Implements an advanced statistics and analytics system for your site along with support for Key Performance Indicators (KPIs). This keeps track of many categories of statistics which can be viewed in several date/time pivots or with filters. This addon also implements the ability to create your own event or link tracking. Statistics can be exported as CSV sheets. And KPIs can send notifications when reached.</td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Statistics for your site (analytics)</a></td>
             <td>engagement<br /><br />metric<br /><br />kpi<br /><br />analytics<br /><br />statistics<br /><br />hits</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=stats&amp;status_id=10">Link</a></td>
         </tr>
@@ -1212,8 +1248,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A block to show a selection of your website statistics to your visitors.</td>
-            <td><a href="https://composr.app/docs11/tut-statistics.htm">Activity statistics for your site (analytics)</a></td>
+            <td>Provides a block where you can show some basic site statistics to your visitors.</td>
+            <td><a href="https://composr.app/docs11/tut-statistics.htm">Statistics for your site (analytics)</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=stats_block&amp;status_id=10">Link</a></td>
         </tr>
@@ -1224,8 +1260,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>syndication_blocks</kbd>
             </td>
-            <td>Syndicate RSS/Atom feeds of your content.</td>
-            <td><a href="https://composr.app/docs11/tut-integration.htm">Integration of Composr and other installed scripts/applications</a><br /><br /><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td>Implements RSS and Atom feeds of your site content.</td>
+            <td><a href="https://composr.app/docs11/tut-integration.htm">Integration of Composr and other installed scripts/applications</a><br /><br /><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-site-messaging.htm">Pinning messages at the top of pages</a></td>
             <td>atom<br /><br />rss<br /><br />feed</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=syndication&amp;status_id=10">Link</a></td>
         </tr>
@@ -1236,8 +1272,8 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <kbd>news</kbd>
             </td>
-            <td>Show RSS and Atom feeds from other websites.</td>
-            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a></td>
+            <td>Provides blocks allowing you to safely embed RSS and Atom feeds from other websites.</td>
+            <td><a href="https://composr.app/docs11/tut-news.htm">Releasing news &amp; running a Blog</a><br /><br /><a href="https://composr.app/docs11/tut-adv-news.htm">Advanced news</a><br /><br /><a href="https://composr.app/docs11/tut-site-messaging.htm">Pinning messages at the top of pages</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=syndication_blocks&amp;status_id=10">Link</a></td>
         </tr>
@@ -1248,9 +1284,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Automatically generate your own colour schemes using the default theme as a base. Uses the sophisticated chromagraphic equations built into Composr.</td>
+            <td>Automatically generate a new theme with your own colour schemes, using your choice of theme as a base. Uses the sophisticated chromagraphic equations built into the software.</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
-            <td></td>
+            <td>colour palette<br /><br />colour scheme</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=themewizard&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1260,7 +1296,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A support ticket system. Also provides an integrated standalone contact block, and integrated content reporting functionality.</td>
+            <td>A forum-based support ticket system, along with content reporting capabilities (to report rule-violating content to staff) and a contact block. Support tickets enable organised and private communication between members and staff (with support for searching the default FAQ catalogue). Content reporting allows visitors to report problematic content to the staff for review (which creates a support ticket containing a hard copy of the content).</td>
             <td><a href="https://composr.app/docs11/tut-feedback.htm">Feedback and user interaction</a><br /><br /><a href="https://composr.app/docs11/tut-support-desk.htm">Running a virtual support desk</a><br /><br /><a href="https://composr.app/docs11/tut-staff.htm">Coordination between staff and staff/members</a></td>
             <td>contact<br /><br />feedback<br /><br />message<br /><br />issue<br /><br />email<br /><br />e-mail<br /><br />support<br /><br />desk</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=tickets&amp;status_id=10">Link</a></td>
@@ -1272,22 +1308,10 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>The uninstaller.</td>
+            <td>A simple script to help you uninstall the software. It is not recommend you install this addon until and unless you are going to uninstall the software.</td>
             <td><a href="https://composr.app/docs11/tut-uninstall.htm">Uninstalling Composr from a server</a></td>
             <td>uninstall<br /><br />disable<br /><br />remove</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=uninstaller&amp;status_id=10">Link</a></td>
-        </tr>
-    
-        <tr>
-            <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/not_validated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>Subject member&#039;s to validation (approval) of their content submissions, and enable/disable content.</td>
-            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
-            <td>check-in<br /><br />workflow<br /><br />validation<br /><br />valid<br /><br />approve<br /><br />approval<br /><br />approved<br /><br />live<br /><br />accept<br /><br />posted<br /><br />online<br /><br />active<br /><br />activate<br /><br />activation<br /><br />visible<br /><br />verify<br /><br />publish</td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=validation&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -1296,7 +1320,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>A block to show which users who are currently visiting the website, and birthdays.</td>
+            <td>A side block for displaying current online members and anyone with a birthday.</td>
             <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=users_online_block&amp;status_id=10">Link</a></td>
@@ -1304,11 +1328,23 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg" />Welcome E-mails<br />(<kbd>welcome_emails</kbd>)<br /><br />
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/audit/not_validated.svg" />Validation<br />(<kbd>validation</kbd>)<br /><br />
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Welcome e-mails for new members.</td>
+            <td>This addon enables the ability to set content as validated (public) or not (staff / direct link only), and to subject content submissions by members to approval (validation) by staff. Additionally, if you have Commandr installed, you can schedule content to automatically validate at a given date and time.</td>
+            <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
+            <td>check-in<br /><br />workflow<br /><br />validated<br /><br />approve<br /><br />approval<br /><br />approved<br /><br />live<br /><br />accept<br /><br />posted<br /><br />online<br /><br />active<br /><br />activate<br /><br />activation<br /><br />visible<br /><br />verify<br /><br />publish</td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=validation&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/menu/adminzone/setup/welcome_emails.svg" />Welcome E-mails<br />(<kbd>welcome_emails</kbd>)<br /><br />
+                <strong>Core</strong>: No<br /><br />
+                <strong>Dependencies</strong>: <kbd>System scheduler</kbd>
+            </td>
+            <td>Set up e-mails which are automatically sent to new members after defined periods of time since registration. You could use these to welcome new members, guide them to next steps, or showcase the most important sections of your site.</td>
             <td><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=welcome_emails&amp;status_id=10">Link</a></td>
@@ -1320,22 +1356,10 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Collaborative/encyclopaedic database interface. A wiki-like community database with rich media capabilities.</td>
+            <td>Provides Wiki-like functionality to your site. Create a hierarchal structure of Wiki pages and children with optional body content. And allow members to contribute their own content to a page by making a Wiki post on it.</td>
             <td><a href="https://composr.app/docs11/tut-wiki.htm">Custom structured content (via Wiki+)</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a></td>
             <td>knowledgebase</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=wiki&amp;status_id=10">Link</a></td>
-        </tr>
-    
-        <tr>
-            <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Windows Helper Scripts<br />(<kbd>windows_helper_scripts</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>A .bat script to help configure permissions on Windows servers.</td>
-            <td><a href="https://composr.app/docs11/tut-install-permissions.htm">File permissions</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-desktop.htm">Installation on a Windows desktop</a><br /><br /><a href="https://composr.app/docs11/tut-install-windows-server.htm">Installation on a Windows server</a></td>
-            <td></td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=windows_helper_scripts&amp;status_id=10">Link</a></td>
         </tr>
     
         <tr>
@@ -1344,9 +1368,9 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Block rude/offensive/inappropriate words.</td>
+            <td>Keep your site family friendly by blocking or filtering certain words.</td>
             <td><a href="https://composr.app/docs11/tut-censor.htm">Dealing with annoying users</a></td>
-            <td>word-filter<br /><br />swear<br /><br />curse</td>
+            <td>word-filter<br /><br />swear<br /><br />curse<br /><br />censor</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=wordfilter&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1356,25 +1380,13 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Advanced form field filtering.</td>
+            <td>Provides an XML interface where you can specify special constraints, rules, or requirements on form fields. Examples are provided.</td>
             <td><a href="https://composr.app/docs11/tut-fields-filter.htm">The form field filter system</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=xml_fields&amp;status_id=10">Link</a></td>
         </tr>
     
-        <tr>
-            <td>
-                <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Zone Logos<br />(<kbd>zone_logos</kbd>)<br /><br />
-                <strong>Core</strong>: No<br /><br />
-                <strong>Dependencies</strong>: <em>None</em>
-            </td>
-            <td>Support for having different logos for individual zones.</td>
-            <td><a href="https://composr.app/docs11/tut-configuration.htm">Basic configuration and getting started</a></td>
-            <td></td>
-            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=zone_logos&amp;status_id=10">Link</a></td>
-        </tr>
-    
-</table></div>
-[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="https://composr.app/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="https://composr.app/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a></li><li><a href="https://composr.app/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="https://composr.app/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="https://composr.app/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="https://composr.app/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="https://composr.app/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
+</table>
+[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="https://composr.app/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="https://composr.app/docs11/tut-endpoints.htm">Server-side public API</a></li><li><a href="https://composr.app/docs11/tut-foss.htm">The Pillars of Free and Open Source Software (FOSS)</a></li><li><a href="https://composr.app/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="https://composr.app/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="https://composr.app/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></li><li><a href="https://composr.app/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="https://composr.app/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="https://composr.app/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="https://composr.app/docs11/tut-telemetry.htm">Relaying Errors and Statistics to Composr</a></li><li><a href="https://composr.app/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
 
 {$SET,tutorial_tags,Addon,Introduction,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,An index showing what addons are available, and linking to relevant tutorials.}[block]main_tutorial_rating[/block]

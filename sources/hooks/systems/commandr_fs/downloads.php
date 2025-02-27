@@ -332,6 +332,7 @@ class Hook_commandr_fs_downloads extends Resource_fs_base
             'additional_details' => $row['additional_details'],
             'out_mode_id' => $row['out_mode_id'],
             'validated' => $row['validated'],
+            'validation_time' => remap_time_as_portable($row['validation_time']),
             'allow_rating' => $row['allow_rating'],
             'allow_comments' => $row['allow_comments'],
             'allow_trackbacks' => $row['allow_trackbacks'],

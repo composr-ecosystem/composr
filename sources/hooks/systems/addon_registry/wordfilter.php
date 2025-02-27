@@ -82,7 +82,7 @@ class Hook_addon_registry_wordfilter
      */
     public function get_description() : string
     {
-        return 'Block rude/offensive/inappropriate words.';
+        return "Keep your site family friendly by blocking or filtering certain words.";
     }
 
     /**

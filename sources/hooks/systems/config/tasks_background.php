@@ -58,9 +58,14 @@ class Hook_config_tasks_background
         }
         */
 
+        // Actually we should enable it by default as it has many benefits; it also handles when the scheduler is not working
+        /*
         if (GOOGLE_APPENGINE) {
             return '1';
         }
         return '0';
+        */
+
+        return '1';
     }
 }

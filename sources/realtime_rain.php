@@ -73,7 +73,7 @@ function realtime_rain_script()
     if (get_param_integer('keep_realtime_test', 0) == 1) {
         require_code('lorem');
 
-        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'banners', 'point_transactions', 'point_debits', 'point_credits'];
+        $types = ['post', 'news', 'recommend', 'polls', 'ecommerce', 'actionlog', 'security', 'chat', 'stats', 'join', 'calendar', 'search', 'banners', 'points', 'points_sent', 'escrow'];
         shuffle($types);
 
         $special_icons = ['email', 'news', 'phone', 'searchengine'];
@@ -99,8 +99,8 @@ function realtime_rain_script()
                 'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                 'TICKER_TEXT' => ($i == 0) ? lorem_sentence_html() : null,
                 'URL' => null,
-                'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join'),
-                'IS_NEGATIVE' => ($type == 'security' || $type == 'point_debits' || $type == 'point_credits'),
+                'IS_POSITIVE' => ($type == 'ecommerce' || $type == 'join' || $type == 'points_sent' || $type == 'escrow'),
+                'IS_NEGATIVE' => ($type == 'security' || $type == 'points'),
 
                 // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                 'FROM_ID' => null,
@@ -204,7 +204,7 @@ function rain_get_special_icons(?string $ip_address, int $timestamp, ?string $us
             $icon = 'phone';
             $tooltip = do_lang('RTEV_PHONE');
         } else {
-            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_date_and_time' => $timestamp]);
+            $mails_sent = $GLOBALS['SITE_DB']->query_select_value('logged_mail_messages', 'COUNT(*)', ['m_date_and_time' => $timestamp]); // TODO: crude; it's possible time will be off by a second depending on precision and server speed
             if ($mails_sent > 0) {
                 $multiplicity = $mails_sent;
                 $icon = 'email';

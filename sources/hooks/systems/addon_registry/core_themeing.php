@@ -82,7 +82,7 @@ class Hook_addon_registry_core_themeing
      */
     public function get_description() : string
     {
-        return 'Themeing the website, via CSS, HTML, and images.';
+        return "The core theme system for managing themes and their HTML, CSS, JavaScript, and templates.";
     }
 
     /**

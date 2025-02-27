@@ -107,7 +107,7 @@ class Hook_addon_registry_workflows
      */
     public function get_description() : string
     {
-        return 'Extend the simple yes/no validation system of Composr to allows user-defined "workflows". A workflow contains an ordered list of "approval levels", such as \'design\' or \'spelling\', and each of these has a list of usergroups which have permission to approve it.
+        return 'Extend the simple yes/no validation system of Composr to implement user-defined "workflows". A workflow contains an ordered list of "approval levels", such as \'design\' or \'spelling\', and each of these has a list of usergroups which have permission to approve it.
 
 New content enters the default workflow (unless another is specified) and notifications are sent to those users with permission to approve the next level. This continues until all of the levels are approved, at which point the content goes live.
 

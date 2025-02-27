@@ -82,7 +82,7 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_description() : string
     {
-        return 'Multi-moderations for the Conversr forum.';
+        return "Adds the ability to define multi-moderation 'templates' which are quick actions moderators may take in Conversr forums. For example, you could define a template which locks a topic and posts a template message in the topic indicating it has been locked.";
     }
 
     /**

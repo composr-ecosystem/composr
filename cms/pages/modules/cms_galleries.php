@@ -777,6 +777,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  LONG_TEXT $description The image description
      * @param  URLPATH $url URL to the image
      * @param  BINARY $validated Image validation status
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
@@ -784,7 +785,7 @@ class Module_cms_galleries extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
+    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', int $validated = 1, ?int $validation_time = null, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -847,21 +848,27 @@ class Module_cms_galleries extends Standard_crud_module
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('IMAGE'), '', $hidden, 'image', null, true, $url, false, null, IMAGE_CRITERIA_WEBSAFE));
 
         $fields->attach(form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false));
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+
+        // Validation
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_IMAGE', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_IMAGE', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
+                $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'image'), 'validation_time', false, ($validation_time === null), true, $validation_time));
+            }
         }
-        $validated_field = new Tempcode();
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'image'), 'validated', $validated == 1);
-        }
-        $fields->attach($validated_field);
 
         $do_watermark = ($this->has_at_least_one_watermark($cat));
         $do_rep_image = ((get_option('gallery_rep_image') == '1') && (($cat == '') || (has_edit_permission('cat_mid', get_member(), get_member_id_from_gallery_name($cat), 'cms_galleries', ['galleries', $cat]))));
@@ -963,6 +970,7 @@ class Module_cms_galleries extends Standard_crud_module
         $description = get_translated_text($myrow['the_description']);
         $cat = $myrow['cat'];
         $validated = $myrow['validated'];
+        $validation_time = $myrow['validation_time'];
 
         $delete_fields = null;
         if (get_option('cleanup_files') == '1') {
@@ -982,7 +990,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'image', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $myrow['url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $myrow['url'], $validated, $validation_time, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $regions);
 
         $ret[2] = $delete_fields;
         $ret[3] = '';
@@ -997,10 +1005,13 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         $cat = post_param_string('cat', 'root');
         $description = post_param_string('description', '');
 
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
         $notes = post_param_string('notes', '');
@@ -1063,6 +1074,11 @@ class Module_cms_galleries extends Standard_crud_module
             content_review_set('image', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('image', strval($id), $validation_time);
+        }
+
         return [strval($id), null];
     }
 
@@ -1074,6 +1090,8 @@ class Module_cms_galleries extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : ?object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
         $cat = post_param_string('cat', fractional_edit() ? STRING_MAGIC_NULL : 'root');
 
@@ -1096,6 +1114,7 @@ class Module_cms_galleries extends Standard_crud_module
         $description = post_param_string('description', STRING_MAGIC_NULL);
 
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         if (!fractional_edit()) {
             require_code('upload_syndication');
@@ -1155,6 +1174,11 @@ class Module_cms_galleries extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('image', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('image', strval($id), $validation_time);
         }
 
         return null;
@@ -1339,6 +1363,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  URLPATH $url The URL to the video file (blank: not yet added)
      * @param  URLPATH $thumb_url The URL to the thumbnail
      * @param  BINARY $validated Video validation status
+     * @param  ?TIME $validation_time The time on which this content should be validated (null: do not schedule)
      * @param  ?BINARY $allow_rating Whether rating is allowed (null: decide statistically, based on existing choices)
      * @param  ?SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style) (null: decide statistically, based on existing choices)
      * @param  ?BINARY $allow_trackbacks Whether trackbacks are allowed (null: decide statistically, based on existing choices)
@@ -1350,7 +1375,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
      * @param  array $regions The regions (empty: not region-limited)
      * @return array A pair: The input fields, Hidden fields
      */
-    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', string $thumb_url = '', int $validated = 1, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', ?int $video_length = null, ?int $video_width = null, ?int $video_height = null, string $closed_captions_url = '', array $regions = []) : array
+    public function get_form_fields(?int $id = null, string $title = '', string $cat = '', string $description = '', string $url = '', string $thumb_url = '', int $validated = 1, ?int $validation_time = null, ?int $allow_rating = null, ?int $allow_comments = null, ?int $allow_trackbacks = null, string $notes = '', ?int $video_length = null, ?int $video_width = null, ?int $video_height = null, string $closed_captions_url = '', array $regions = []) : array
     {
         list($allow_rating, $allow_comments, $allow_trackbacks) = $this->choose_feedback_fields_statistically($allow_rating, $allow_comments, $allow_trackbacks);
 
@@ -1411,27 +1436,30 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('VIDEO'), '', $hidden, 'video', null, true, $url, false, $supported, null));
 
-        $_validated = get_param_integer('validated', 0);
-        if ($validated == 0) {
-            if (($_validated == 1) && (addon_installed('validation'))) {
-                $validated = 1;
-                attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+        // Validation
+        if (addon_installed('validation')) {
+            $_validated = get_param_integer('validated', 0);
+            if ($validated == 0) {
+                if ($_validated == 1) {
+                    $validated = 1;
+                    attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
+                }
+            } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
+                $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_VIDEO', 'param_a' => strval($id)]);
+                attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-        } elseif (($validated == 1) && ($_validated == 1) && ($id !== null)) {
-            $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_VIDEO', 'param_a' => strval($id)]);
-            attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
-        }
-        $validated_field = new Tempcode();
-        if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
-            if (addon_installed('validation')) {
-                $validated_field = form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', $validated == 1);
+
+            if (has_some_cat_privilege(get_member(), 'bypass_validation_' . $this->permissions_require . 'range_content', null, $this->permissions_module_require)) {
+                $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATED_SIMPLE' : 'DESCRIPTION_VALIDATED', 'video'), 'validated', $validated == 1));
+            }
+            if (addon_installed('commandr') && has_privilege(get_member(), 'scheduled_publication_times')) {
+                $fields->attach(form_input_date__cron(do_lang_tempcode('VALIDATION_TIME'), do_lang_tempcode($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()) ? 'DESCRIPTION_VALIDATION_TIME_SIMPLE' : 'DESCRIPTION_VALIDATION_TIME', 'video'), 'validation_time', false, ($validation_time === null), true, $validation_time));
             }
         }
 
         $description_field = form_input_text_comcode(do_lang_tempcode('DESCRIPTION'), do_lang_tempcode('DESCRIPTION_DESCRIPTION_ACCESSIBILITY'), 'description', $description, false);
         if ($no_thumb_needed) {
             $fields->attach($description_field);
-            $fields->attach($validated_field);
             $temp = do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '9843d9412a6659d06b4667c2fa0f0e45', 'TITLE' => do_lang_tempcode('ADVANCED'), 'SECTION_HIDDEN' => true]);
             $fields->attach($temp);
         }
@@ -1445,9 +1473,6 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
         $fields->attach(form_input_integer(do_lang_tempcode('VIDEO_LENGTH'), do_lang_tempcode('DESCRIPTION_VIDEO_LENGTH'), 'video_length', $video_length, false));
         $fields->attach(form_input_dimensions(do_lang_tempcode('DIMENSIONS'), do_lang_tempcode('DESCRIPTION_VIDEO_DIMENSIONS'), 'video_width', 'video_height', $video_width, $video_height, false));
-        if (!$no_thumb_needed) {
-            $fields->attach($validated_field);
-        }
 
         // Advanced
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c09d066b272c40ef91f058c40b5c27d0', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
@@ -1541,6 +1566,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $url = $myrow['url'];
         $cat = $myrow['cat'];
         $validated = $myrow['validated'];
+        $validation_time = $myrow['validation_time'];
 
         $delete_fields = null;
         if (get_option('cleanup_files') == '1') {
@@ -1560,7 +1586,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $regions = collapse_1d_complexity('region', $GLOBALS['SITE_DB']->query_select('content_regions', ['region'], ['content_type' => 'video', 'content_id' => strval($id)]));
 
-        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $url, $myrow['thumb_url'], $validated, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['video_length'], $myrow['video_width'], $myrow['video_height'], $myrow['closed_captions_url'], $regions);
+        $ret = $this->get_form_fields($id, get_translated_text($myrow['title']), $cat, $description, $url, $myrow['thumb_url'], $validated, $validation_time, $myrow['allow_rating'], $myrow['allow_comments'], $myrow['allow_trackbacks'], $myrow['notes'], $myrow['video_length'], $myrow['video_width'], $myrow['video_height'], $myrow['closed_captions_url'], $regions);
 
         $ret[2] = $delete_fields;
         $ret[3] = '';
@@ -1575,6 +1601,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function add_actualisation() : array
     {
+        require_code('temporal2');
+
         list(
             $url,
             $thumb_url,
@@ -1596,6 +1624,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $description = post_param_string('description', '');
 
         $validated = post_param_integer('validated', 0);
+        $validation_time = post_param_date_components_utc('validation_time');
         $allow_rating = post_param_integer('allow_rating', 0);
         $allow_comments = post_param_integer('allow_comments', 0);
         $notes = post_param_string('notes', '');
@@ -1636,6 +1665,11 @@ class Module_cms_galleries_alt extends Standard_crud_module
             content_review_set('video', strval($id));
         }
 
+        if (addon_installed('validation')) {
+            require_code('validation');
+            schedule_validation('video', strval($id), $validation_time);
+        }
+
         return [strval($id), null];
     }
 
@@ -1647,6 +1681,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
      */
     public function edit_actualisation(string $_id) : ?object
     {
+        require_code('temporal2');
+
         $id = intval($_id);
 
         list(
@@ -1672,6 +1708,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $description = post_param_string('description', STRING_MAGIC_NULL);
 
         $validated = post_param_integer('validated', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
+        $validation_time = post_param_date_components_utc('validation_time');
 
         $allow_rating = post_param_integer('allow_rating', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
         $allow_comments = post_param_integer('allow_comments', fractional_edit() ? INTEGER_MAGIC_NULL : 0);
@@ -1720,6 +1757,11 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         if (addon_installed('content_reviews')) {
             content_review_set('video', strval($id));
+        }
+
+        if (addon_installed('validation') && (!fractional_edit())) {
+            require_code('validation');
+            schedule_validation('video', strval($id), $validation_time);
         }
 
         return null;
