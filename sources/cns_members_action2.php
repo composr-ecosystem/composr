@@ -474,15 +474,18 @@ function cns_get_member_fields(bool $mini_mode = true, string $special_type = ''
  * @param  ?TIME $probation_expiration_time When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
  * @param  array $adjusted_config_options A map of adjusted config options
+ * @param  integer $parental_consent The parental consent status of the member
+ * @set 0 1 2
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
+function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = [], int $parental_consent = 0) : array
 {
     require_code('form_templates');
     require_code('cns_members_action');
     require_code('cns_field_editability');
     require_code('form_templates');
     require_code('encryption');
+    require_code('temporal');
 
     $added_section = false;
 
@@ -519,6 +522,10 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
         fatal_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d9343d1793595470a889a2db4b301813')));
     }
 
+    if ($timezone === null) {
+        $timezone = get_site_timezone();
+    }
+
     $fields = new Tempcode();
 
     // Username
@@ -537,8 +544,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     }
 
     // Work out what options we need to present
-    $doing_timezones = (get_option_with_overrides('enable_timezones', $adjusted_config_options) == (($member_id === null) ? '2' : '1'));
-    $_langs = find_all_langs();
+    $doing_timezones = member_field_is_required($member_id, 'timezone_offset', null, null, $adjusted_config_options);
     if (((multi_lang()) || ((isset($adjusted_config_options['enable_language_selection'])) && ($adjusted_config_options['enable_language_selection'])))) {
         $doing_langs = (get_option_with_overrides('enable_language_selection', $adjusted_config_options) == (($member_id === null) ? '2' : '1'));
     } else {
@@ -591,12 +597,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
     // DOB
     if (cns_field_editable('dob', $special_type)) {
-        // If we have points installed and are awarding birthday points, then birthdays cannot be edited except by another staff member
-        if (addon_installed('points')) {
-            $can_edit_birthday = cns_can_edit_birthday($member_id);
-        } else {
-            $can_edit_birthday = true;
-        }
+        $can_edit_birthday = cns_can_edit_birthday($member_id);
 
         $default_time = ($dob_month === null) ? null : usertime_to_utctime(cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year));
         if (get_option_with_overrides('dobs', $adjusted_config_options) >= (($member_id === null) ? '2' : '1')) {
@@ -636,7 +637,14 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
     // Timezones, if enabled
     if ($doing_timezones) {
-        $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER'), 'timezone', $timezone));
+        $can_edit_timezone = cns_can_edit_timezone($member_id);
+        if ($can_edit_timezone) {
+            $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER');
+        } else {
+            $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER_LOCKED');
+        }
+
+        $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), $tz_description, 'timezone', $timezone, true, 10, null, (!$can_edit_timezone)));
     }
 
     // Language choice, if we have multiple languages on site
@@ -773,6 +781,12 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
         // Special admin options
         if (has_privilege(get_member(), 'member_maintenance')) {
+            // Name highlighting
+            if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
+                $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
+            }
+
+            // Validation
             $_validated = get_param_integer('validated', 0);
             if ($validated == 0) {
                 if (($_validated == 1) && (addon_installed('validation'))) {
@@ -783,12 +797,20 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
                 $action_log = build_url(['page' => 'admin_actionlog', 'type' => 'list', 'to_type' => 'VALIDATE_MEMBER', 'param_a' => strval($member_id)]);
                 attach_message(do_lang_tempcode('ALREADY_VALIDATED', escape_html($action_log->evaluate())), 'warn');
             }
-            if (get_option_with_overrides('enable_highlight_name', $adjusted_config_options) == '1') {
-                $fields->attach(form_input_tick(do_lang_tempcode('HIGHLIGHTED_NAME'), do_lang_tempcode(addon_installed('ecommerce') ? 'DESCRIPTION_HIGHLIGHTED_NAME_P' : 'DESCRIPTION_HIGHLIGHTED_NAME'), 'highlighted_name', $highlighted_name == 1));
-            }
             if (addon_installed('validation')) {
                 $fields->attach(form_input_tick(do_lang_tempcode('VALIDATED'), do_lang_tempcode('DESCRIPTION_MEMBER_VALIDATED'), 'validated', $validated == 1));
             }
+
+            // Parental consent
+            if (get_member() !== $member_id) { // Must not allow staff to edit this setting on their own profile
+                $consent = new Tempcode();
+                $consent->attach(form_input_list_entry('0', ($parental_consent == 0), do_lang('PARENTAL_CONSENT_STATUS_0')));
+                $consent->attach(form_input_list_entry('1', ($parental_consent == 1), do_lang('PARENTAL_CONSENT_STATUS_1')));
+                $consent->attach(form_input_list_entry('2', ($parental_consent == 2), do_lang('PARENTAL_CONSENT_STATUS_2')));
+                $fields->attach(form_input_list(do_lang_tempcode('PARENTAL_CONSENT_STATUS'), do_lang_tempcode('DESCRIPTION_PARENTAL_CONSENT_STATUS'), 'parental_consent', $consent));
+            }
+
+            // Banning
             if (($member_id !== null) && ($member_id != get_member())) {// Can't ban someone new, and can't ban yourself
                 require_code('input_filter');
                 list(, $reasoned_bans) = load_advanced_banning();
@@ -1198,9 +1220,13 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         }
     }
 
-    if ($timezone !== null) {
-        $update['m_timezone_offset'] = $timezone;
+    $can_edit_timezone = cns_can_edit_timezone($member_id);
+    if ($can_edit_timezone) {
+        if ($timezone !== null) {
+            $update['m_timezone_offset'] = $timezone;
+        }
     }
+
     if ($language !== null) {
         $update['m_language'] = $language;
     }
@@ -2772,32 +2798,73 @@ function rebuild_all_cpf_indices(bool $leave_existing = false)
 }
 
 /**
- * Check if the date of birth field can be edited based on whether it is set and birthday points are given.
+ * Check if the date of birth field can be edited.
  *
- * @param  ?MEMBER $member_id The member being edited (null: we are creating a new member)
- * @return boolean If $member_id is null, whether the new member will be able to edit their DOB once set, and if $member_id is not null, whether the provided member can edit their DOB right now
+ * @param  ?MEMBER $member_id The member being edited (null: new member)
+ * @return boolean Whether the birthday can be edited after joining (if $member_id is null) or if it can be edited right now (if $member_id is not null)
  */
 function cns_can_edit_birthday(?int $member_id) : bool
 {
-    if (!addon_installed('points')) {
+    // Other members (e.g. staff) can edit the field depending on permissions / privileges
+    if (($member_id !== null) && (get_member() != $member_id)) {
         return true;
     }
 
-    $can_edit_birthday = true;
-    $_birthday_points = get_option('points_birthday', true);
-    $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
-
+    // First, determine if the birthday is set now by looking at year
+    $birthday_set = false;
     if ($member_id !== null) {
-        $_dob_day = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
-        $_dob_month = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
         $_dob_year = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
-
-        $can_edit_birthday = ((!$birthday_points) || // Birthday points is disabled
-            (get_member() != $member_id) || // Editing member is not the same as the member being edited
-            (!is_guest($member_id) && (($_dob_day === null) || ($_dob_month === null) || ($_dob_year === null)))); // Date of birth day, month, or year are not set, and we are not a guest.
-    } else {
-        $can_edit_birthday = (!$birthday_points);
+        $birthday_set = ($_dob_year !== null);
     }
 
-    return $can_edit_birthday;
+    // Parental controls
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+    if ($pc->get_option('lock_dob') !== null) {
+        if ($member_id === null) {
+            return false;
+        }
+        return (!$birthday_set);
+    }
+
+    // Birthday points
+    if (addon_installed('points')) {
+        $_birthday_points = get_option('points_birthday', true);
+        $birthday_points = ($_birthday_points !== null) && ($_birthday_points != '') && (intval($_birthday_points) > 0);
+
+        if ($member_id !== null) {
+            $can_edit_birthday = ((!$birthday_points) || (!is_guest($member_id) && (!$birthday_set)));
+        } else {
+            $can_edit_birthday = (!$birthday_points);
+        }
+
+        if (!$can_edit_birthday) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Check if the time zone field can be edited.
+ *
+ * @param  ?MEMBER $member_id The member being edited (null: new member)
+ * @return boolean Whether the field can be edited after joining (if $member_id is null) or if it can be edited right now (if $member_id is not null)
+ */
+function cns_can_edit_timezone(?int $member_id) : bool
+{
+    // Other members (e.g. staff) can edit the field depending on permissions / privileges
+    if (($member_id !== null) && (get_member() != $member_id)) {
+        return true;
+    }
+
+    // Parental controls
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+    if ($pc->get_option('lock_timezone') !== null) {
+        return false;
+    }
+
+    return true;
 }

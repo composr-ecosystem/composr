@@ -135,6 +135,7 @@ class Hook_addon_registry_validation
             'sources/hooks/blocks/main_staff_checklist/validation.php',
             'sources/hooks/systems/addon_registry/validation.php',
             'sources/hooks/systems/config/validate_new_comcode_pages.php',
+            'sources/hooks/systems/cron/publish_content.php',
             'sources/hooks/systems/notifications/content_validated.php',
             'sources/hooks/systems/notifications/needs_validation.php',
             'sources/hooks/systems/page_groupings/validation.php',

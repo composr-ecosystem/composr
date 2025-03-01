@@ -1,0 +1,6 @@
+{
+    "require": {
+        "sokil/php-isocodes-db-only": "^4.0",
+        "sokil/php-isocodes": "^4.2"
+    }
+}

@@ -4,6 +4,7 @@
 
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in Git
 /data_custom/xml_config/hybridauth.xml
+/data_custom/xml_config/parental_controls.xml
 /_tests/assets/keys.csv
 /lorem
 /psalm.xml

@@ -234,7 +234,14 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     }
     $reveal_age = post_param_integer('reveal_age', 0);
 
-    $timezone = post_param_string('timezone', get_users_timezone());
+    $timezone = post_param_string('timezone', null);
+    if ($timezone === null) {
+        if (member_field_is_required(null, 'timezone_offset', null, null, $adjusted_config_options)) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'timezone'));
+        }
+
+        $timezone = get_users_timezone();
+    }
 
     $language = post_param_string('language', user_lang());
 
@@ -321,14 +328,14 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         log_stats_event('_JOIN');
     }
 
+    require_code('temporal');
+
     // Add member
     require_code('crypt');
-    require_code('temporal');
     $email_validation = (get_option_with_overrides('email_confirm_join', $adjusted_config_options) == '1');
     $validated_email_confirm_code = $email_validation ? strval(get_secure_random_number()) : '';
     $staff_validation = (get_option_with_overrides('require_new_member_validation', $adjusted_config_options) == '1');
-    $parental_consent = (get_option_with_overrides('is_on_parental_consent', $adjusted_config_options) == '1') && ($dob_year !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $dob_month, $dob_day, $dob_year)) / 31536000.0)) < intval(get_option('parental_consent_age')));
-    $validated = ($staff_validation || $parental_consent) ? 0 : 1;
+    $validated = (($staff_validation) ? 0 : 1);
     if ($member_id === null) {
         $member_id = cns_make_member(
             $username, // username
@@ -373,6 +380,14 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     // Save declarations
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', $declarations_made);
 
+    // Load parental controls
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+
+    // Run parental consent checks and notification when necessary
+    $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
+    $parental_consent_info = $pc->run('parental_consent', $age, null, ['member_id' => $member_id]);
+
     // Send confirm mail
     if ($email_validation) {
         $zone = get_module_zone('join');
@@ -386,40 +401,9 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         }
         $message = do_lang('CNS_SIGNUP_TEXT', comcode_escape(get_site_name()), comcode_escape($url), [$url_simple, $email_address, $validated_email_confirm_code], $language);
         require_code('mail');
-        if (!$parental_consent) {
+        if ($parental_consent_info === null) {
             dispatch_mail(do_lang('CONFIRM_EMAIL_SUBJECT', get_site_name(), null, null, $language), $message, do_lang('mail:NO_MAIL_WEB_VERSION__SENSITIVE'), [$email_address], $username, '', '', ['bypass_queue' => true]);
         }
-    }
-
-    // Send parental consent mail
-    if ($parental_consent) {
-        require_code('fields');
-        $fields_done = [];
-        $fields_done[] = ['LABEL' => do_lang('USERNAME'), 'VALUE' => make_string_tempcode(escape_html($username))];
-        foreach ($custom_fields as $custom_field) {
-            if (isset($actual_custom_fields[$custom_field['id']])) {
-                $fields_ob = get_fields_hook($custom_field['cf_type']);
-                $ev = $actual_custom_fields[$custom_field['id']];
-                $rendered = $fields_ob->render_field_value($custom_field, $ev);
-                $fields_done[] = ['LABEL' => $custom_field['trans_name'], 'VALUE' => escape_html_in_comcode(is_object($rendered) ? $rendered->evaluate($language) : $rendered)];
-            }
-        }
-
-        $privacy_policy_url = build_url(['page' => 'privacy'], '_SEARCH', [], false, false, true);
-        $rules_url = build_url(['page' => 'rules'], '_SEARCH', [], false, false, true);
-
-        $message = do_template('PARENTAL_CONSENT_MAIL', [
-            '_GUID' => 'a35c7a16288baec9ec6260d9d7195465',
-            'FAX' => get_option('privacy_fax'),
-            'POSTAL_ADDRESS' => get_option('privacy_postal_address'),
-            'EMAIL_ADDRESS' => get_option('staff_address'),
-            'FIELDS_DONE' => $fields_done,
-            'PRIVACY_POLICY_URL' => $privacy_policy_url,
-            'RULES_URL' => $rules_url,
-        ], $language, false, null, '.txt', 'text');
-
-        require_code('mail');
-        dispatch_mail(do_lang('PARENTAL_CONSENT_JOIN_SUBJECT', $username, get_site_name(), null, $language), $message->evaluate($language), '', [$email_address], $username);
     }
 
     // Run form handlers for joining
@@ -475,7 +459,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     // Alert user to situation
     $message = new Tempcode();
     $ready = false;
-    if ($parental_consent) {
+    if ($parental_consent_info !== null) {
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));
         }

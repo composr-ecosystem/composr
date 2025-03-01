@@ -1,0 +1,22 @@
+{
+    "name": "sokil/php-isocodes-db-only",
+    "license": "MIT",
+    "description": "Database for ISO country, subdivision, language, currency and script definitions and their translations. Based on pythons pycountry and Debian's iso-codes.",
+    "authors": [
+        {
+            "name": "Dmytro Sokil",
+            "email": "dmytro.sokil@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "sokil/php-isocodes": "^4.1.1",
+        "phpunit/phpunit": "^9.5"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    }
+}

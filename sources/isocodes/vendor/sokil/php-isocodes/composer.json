@@ -1,0 +1,58 @@
+{
+    "name": "sokil/php-isocodes",
+    "license" : "MIT",
+    "description": "ISO country, subdivision, language, currency and script definitions and their translations. Based on pythons pycountry and Debian's iso-codes.",
+    "authors": [
+        {
+            "name": "Dmytro Sokil",
+            "email": "dmytro.sokil@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "ext-gettext": "*",
+        "sokil/php-isocodes-db-i18n": "^4.0.0",
+        "phpunit/phpunit": ">=7.5.20",
+        "php-coveralls/php-coveralls": "^2.1",
+        "squizlabs/php_codesniffer": "^3.4",
+        "phpmd/phpmd" : "@stable",
+        "symfony/translation": "^4.4.17|^5.2",
+        "vimeo/psalm": "^4.3",
+        "infection/infection": ">=0.11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sokil\\IsoCodes\\": ["src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sokil\\IsoCodes\\": ["tests/", "benchmarks/"]
+        }
+    },
+    "suggest": {
+        "sokil/php-isocodes-db-only": "If frequent database updates is not necessary, and only database without localization is required.",
+        "sokil/php-isocodes-db-i18n": "If frequent database updates is not necessary, and database with localization is required.",
+        "ext-gettext": "Required for gettext translation driver",
+        "symfony/translation": "Translation driver by Symfont project",
+        "phpbench/phpbench": "Required to run benchmarks"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "cover": "./vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml",
+        "coveralls": "./vendor/bin/php-coveralls -v",
+        "check-style": "./vendor/bin/phpcs",
+        "fix-style": "./vendor/bin/phpcbf",
+        "bench": "phpbench run benchmarks/  --report=default",
+        "infection": "infection --min-msi=82 --min-covered-msi=91 --log-verbosity=default",
+        "psalm": "./vendor/bin/psalm"
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
+    }
+}

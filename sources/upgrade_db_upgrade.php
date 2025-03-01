@@ -736,6 +736,14 @@ function database_specific() : bool
         }
     }
 
+    // LEGACY: 11 beta7. Remove in final release.
+    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1740769698)) {
+        require_code('config2');
+        delete_config_option('is_on_parental_consent');
+        delete_config_option('parental_consent_age');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_parental_consent', 'SHORT_INTEGER', 0);
+    }
+
     return $done_something;
 }
 

@@ -576,7 +576,7 @@ function transaction_reverse_screen(int $id, int $confirm, object $title) : ?obj
         list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
 
         return do_template('CONFIRM_SCREEN', [
-            '_GUID' => '74f1a21b64dc67a9953a5823462bab38',
+            '_GUID' => '28dcd972d9f65bcabbe8e912ba3abe6c',
             'TITLE' => $title,
             'PREVIEW' => $preview,
             'URL' => get_self_url(false, false, ['confirm' => 1]),

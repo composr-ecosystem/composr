@@ -1263,6 +1263,7 @@ function list_untouchable_third_party_directories() : array
         'nbproject',
         '_old',
         //'sources/diff', We maintain this now
+        'sources/isocodes',
         'sources_custom/aws_ses',
         'sources_custom/Cloudinary',
         'sources_custom/composr_mobile_sdk',
@@ -1305,7 +1306,7 @@ function list_untouchable_third_party_files() : array
         'data_custom/errorlog.php',
         'data_custom/execute_temp.php',
         'data_custom/webfonts/adgs-icons.svg',
-        'data/modules/admin_stats/IP_Country.txt',
+        // 'data/locations/IP_Country.txt', needs to be tracked by core_locations so the addon version bumps when this is changed (to trigger an update)
         'install.sql',
         'mobiquo/lib/xmlrpc.php',
         'mobiquo/lib/xmlrpcs.php',

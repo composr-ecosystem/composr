@@ -46,7 +46,46 @@ function get_option_with_overrides(string $option_name, ?array $overrides) : ?st
  */
 function member_field_is_required(?int $member_id, string $field_class, $current_value = null, ?int $editing_member = null, array $adjusted_config_options = []) : bool
 {
-    if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) == '0') || ((get_option_with_overrides('dobs', $adjusted_config_options) == '1') && ($member_id === null)))) {
+    // Check parental controls; this takes priority over everything else for legal reasons
+    $requires_pc = [
+        'dob',
+        'timezone_offset',
+    ];
+    if (in_array($field_class, $requires_pc)) {
+        require_code('cns_parental_controls');
+        $pc = load_parental_control_settings();
+
+        switch ($field_class) {
+            case 'dob':
+                $dob_option = get_option_with_overrides('dobs', $adjusted_config_options);
+                if (($dob_option === null) || ($dob_option == '0')) {
+                    break;
+                }
+                if ($pc->get_option('require_dob') !== null) {
+                    return true;
+                }
+                break;
+
+            case 'timezone_offset':
+                $tz_option = get_option_with_overrides('enable_timezones', $adjusted_config_options);
+
+                if (($tz_option === null) || ($tz_option == '0')) {
+                    break;
+                }
+
+                if ($pc->get_option('require_timezone') !== null) {
+                    return true;
+                }
+
+                // Special case: '1' means do not present on join form
+                if (($tz_option == '1') && ($member_id === null)) {
+                    return false;
+                }
+                break;
+        }
+    }
+
+    if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) !== '1') || ((get_option_with_overrides('dobs', $adjusted_config_options) === '1') && ($member_id === null)))) {
         return false;
     }
 
@@ -63,7 +102,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
     // Existing member, allow blank to persist if such a privilege
     if ($member_id !== null) {
         if ($current_value === null) {
-            $current_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, ($field_class == 'dob') ? ('m_' . $field_class . '_day') : ('m_' . $field_class));
+            $current_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, ($field_class == 'dob') ? ('m_' . $field_class . '_year') : ('m_' . $field_class));
         }
 
         if (is_string($current_value)) {

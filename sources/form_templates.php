@@ -1898,9 +1898,10 @@ function form_input_upload_multi($pretty_name, $description, string $name, bool 
  * @param  ?array $images List of theme images that $content is allowing selection of (so that we can show the images within the list, if JS is enabled) (null: none)
  * @param  integer $size How much space the list takes up (inline lists only)
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $read_only Whether the field should be disabled / read-only
  * @return Tempcode The input field
  */
-function form_input_list($pretty_name, $description, string $name, object $content, ?int $tabindex = null, bool $inline_list = false, bool $required = true, ?array $images = null, int $size = 5, $autocomplete = null) : object
+function form_input_list($pretty_name, $description, string $name, object $content, ?int $tabindex = null, bool $inline_list = false, bool $required = true, ?array $images = null, int $size = 5, $autocomplete = null, bool $read_only = false) : object
 {
     $tabindex = get_form_field_tabindex($tabindex);
 
@@ -1922,6 +1923,7 @@ function form_input_list($pretty_name, $description, string $name, object $conte
         'IMAGES' => $images,
         'SIZE' => strval($size),
         'AUTOCOMPLETE' => $autocomplete,
+        'READ_ONLY' => $read_only ? strval(1) : strval(0)
     ]);
     return _form_input($name, $pretty_name, $description, $input, $required, false, $tabindex);
 }
@@ -2740,9 +2742,10 @@ function form_input_float($pretty_name, $description, string $name, ?float $defa
  * @param  boolean $required Whether this is required
  * @param  integer $size How much space the list takes up (inline lists only)
  * @param  ~?mixed $autocomplete The autocomplete field name. (false: explicitly disable autocomplete) (null: no autocomplete attribute unless there's a default for this $name)
+ * @param  boolean $read_only Whether the field should be disabled / read-only
  * @return Tempcode The input field
  */
-function form_input_timezone($pretty_name, $description, string $name, string $default = '', bool $required = true, int $size = 10, $autocomplete = null) : object
+function form_input_timezone($pretty_name, $description, string $name, string $default = '', bool $required = true, int $size = 10, $autocomplete = null, bool $read_only = false) : object
 {
     require_code('caches');
 
@@ -2787,7 +2790,7 @@ function form_input_timezone($pretty_name, $description, string $name, string $d
 
     unset($timezones);
 
-    return form_input_list($pretty_name, $description, $name, $list, null, false, $required, null, $size, $autocomplete);
+    return form_input_list($pretty_name, $description, $name, $list, null, false, $required, null, $size, $autocomplete, $read_only);
 }
 
 /**
@@ -3161,7 +3164,7 @@ function handle_conflict_resolution($id = null, $page_type = null, bool $only_st
         if (count($people_working) < 10) { // Let's not list off all the members if there are 10 or more of them editing the same thing (which is very unusual anyway)
             $warning_details = do_template('WARNING_BOX', ['_GUID' => '10c4e7c0d16df68b38b66d162919c068', 'WARNING' => do_lang_tempcode('EDIT_CONFLICT_WARNING', escape_html(implode(', ', $people_working)))]); // TODO: support lists for different languages
         } else {
-            $warning_details = do_template('WARNING_BOX', ['_GUID' => 'TODO', 'WARNING' => do_lang_tempcode('_EDIT_CONFLICT_WARNING')]);
+            $warning_details = do_template('WARNING_BOX', ['_GUID' => '7adb83de4d065813a18485b0e92f4ec5', 'WARNING' => do_lang_tempcode('_EDIT_CONFLICT_WARNING')]);
         }
     } else {
         $warning_details = null;

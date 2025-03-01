@@ -3916,9 +3916,9 @@ function get_bot_type(?string $agent = null) : ?string
                 'jeeves' => 'Ask Jeeves',
                 'ultraseek' => 'Infoseek',
                 'ia_archiver' => 'Alexa/Archive.org',
-                'msnbot' => 'Bing',
+                'msnbot' => 'Bing/MSN',
                 'bingbot' => 'Bing',
-                'mantraagent' => 'LookSmart',
+                'mantraagent' => 'Looksmart',
                 'wisenutbot' => 'Looksmart',
                 'paros' => 'Paros',
                 'sqworm' => 'Aol.com',
@@ -3930,6 +3930,23 @@ function get_bot_type(?string $agent = null) : ?string
                 'mj12bot' => 'Majestic-12',
                 'blexbot' => 'webmeup',
                 'duckduckbot' => 'DuckDuckGo',
+                'semrushbot' => 'Semrush',
+                'twitterbot' => 'Twitter',
+                'exabot' => 'Exalead',
+                'petalbot' => 'Huawei',
+                'coccocbot' => 'Coc Coc',
+                'slurp' => 'Yahoo',
+                'applebot' => 'Apple',
+                'uptimerobot' => 'UptimeRobot',
+                'discordbot' => 'Discord',
+                'linkedinbot' => 'LinkedIn',
+                'bytespider' => 'ByteDance',
+                'datanyze' => 'Datanyze',
+                'rogerbot' => 'Moz',
+                'dotbot' => 'DotBot',
+                'seoscanners' => 'SEO Scanners',
+                'sitebulb' => 'Sitebulb',
+                'screaming frog seo spider' => 'Screaming Frog',
             ];
         }
     }
@@ -3946,6 +3963,7 @@ function get_bot_type(?string $agent = null) : ?string
         }
     }
 
+    // Fallback in case we might have missed likely bots in our list
     if ((strpos($agent, 'bot') !== false) || (strpos($agent, 'spider') !== false)) {
         $to_a = strpos($agent, ' ');
         if ($to_a === false) {

@@ -83,7 +83,7 @@ function schedule_validation(string $content_type, string $content_id, ?array $v
 
     $cma_ob = get_content_object($content_type);
     if ($cma_ob === null) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('49621183f630591e81094702c1cb120e')));
     }
 
     $cma_info = $cma_ob->info();

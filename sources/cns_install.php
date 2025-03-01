@@ -577,6 +577,7 @@ function install_cns(?float $upgrade_from = null)
             'm_validated_email_confirm_code' => 'SHORT_TEXT',
             'm_probation_expiration_time' => '?TIME',
             'm_is_perm_banned' => 'ID_TEXT',
+            'm_parental_consent' => 'SHORT_INTEGER', // 0 = Not obtained and not notified, 1 = Not obtained but notified, 2 = obtained
 
             // Auto-generated values
             'm_ip_address' => 'IP',
@@ -1617,8 +1618,11 @@ function install_cns(?float $upgrade_from = null)
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         delete_privilege('may_report_post'); // Combined into the enhanced report_content addon
 
-        rename_config_option('is_on_coppa', 'is_on_parental_consent');
-        rename_config_option('coppa_age', 'parental_consent_age');
+        // Replaced by new parental controls system
+        require_code('config2');
+        delete_config_option('is_on_coppa');
+        delete_config_option('coppa_age');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_parental_consent', 'SHORT_INTEGER', 0);
 
         // Migrate old publication time code to our new validation time
         $GLOBALS['FORUM_DB']->add_table_field('f_topics', 't_validation_time', '?TIME');

@@ -1202,7 +1202,7 @@ function _download_latest_data_ip_country()
         fatal_exit('Failed to extract MaxMind IP address data');
     }
 
-    cms_file_put_contents_safe(get_file_base() . '/data/modules/admin_stats/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    cms_file_put_contents_safe(get_file_base() . '/data/locations/IP_Country.txt', $spreadsheet_data, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
 
     @unlink($tmp_name_gzip);
     @unlink($tmp_name_csv);
@@ -1216,11 +1216,30 @@ function _download_latest_data_no_banning()
         'http://www.iplists.com/non_engines.txt',
         'https://www.cloudflare.com/ips-v4',
         'https://www.cloudflare.com/ips-v6',
+        'https://www.gstatic.com/ipranges/goog.json',
     ];
 
     $data = '';
     foreach ($urls as $url) {
-        $data .= http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
+        $__data = http_get_contents($url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
+
+        if ($url == 'https://www.gstatic.com/ipranges/goog.json') {
+            $_data = @json_decode($__data, true);
+            var_dump($_data);
+            if (is_array($_data)) {
+                $data .= "\n\n" . '# Google services (goog.json)' . "\n";
+                foreach ($_data['prefixes'] as $prefix_entry) {
+                    if (isset($prefix_entry['ipv4Prefix'])) {
+                        $data .= trim($prefix_entry['ipv4Prefix']) . "\n";
+                    }
+                    if (isset($prefix_entry['ipv6Prefix'])) {
+                        $data .= trim($prefix_entry['ipv6Prefix']) . "\n";
+                    }
+                }
+            }
+        } else {
+            $data .= $__data;
+        }
     }
 
     $data = trim($data) . "\n";

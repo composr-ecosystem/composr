@@ -158,7 +158,6 @@ class Hook_addon_registry_news
             'sources/hooks/systems/attachments/news.php',
             'sources/hooks/systems/block_ui_renderers/news.php',
             'sources/hooks/systems/commandr_fs/news.php',
-            'sources/hooks/systems/commandr_scheduled/publish_news.php',
             'sources/hooks/systems/config/blog_update_time.php',
             'sources/hooks/systems/config/enable_secondary_news.php',
             'sources/hooks/systems/config/news_categories_per_page.php',

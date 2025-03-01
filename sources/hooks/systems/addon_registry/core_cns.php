@@ -133,11 +133,13 @@ class Hook_addon_registry_core_cns
     public function get_file_list() : array
     {
         return [
+            'adminzone/pages/minimodules/admin_parental_controls.php',
             'adminzone/pages/modules/admin_cns_emoticons.php',
             'adminzone/pages/modules/admin_cns_groups.php',
             'adminzone/pages/modules/admin_cns_members.php',
             'data/approve_ip.php',
             'data/username_check.php',
+            'data/xml_config/parental_controls.xml',
             'lang/EN/cns.ini',
             'lang/EN/cns_autofill.ini',
             'lang/EN/cns_components.ini',
@@ -183,6 +185,7 @@ class Hook_addon_registry_core_cns
             'sources/cns_moderation_action.php',
             'sources/cns_moderation_action2.php',
             'sources/cns_notifications.php',
+            'sources/cns_parental_controls.php',
             'sources/cns_polls.php',
             'sources/cns_polls_action.php',
             'sources/cns_polls_action2.php',
@@ -296,6 +299,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/disposable_values/cns_newest_member_username.php',
             'sources/hooks/systems/disposable_values/cns_post_count.php',
             'sources/hooks/systems/disposable_values/cns_topic_count.php',
+            'sources/hooks/systems/endpoint_authorization/members.php',
             'sources/hooks/systems/notifications/cns.php',
             'sources/hooks/systems/notifications/cns_staff.php',
             'sources/hooks/systems/points/member__join.php',

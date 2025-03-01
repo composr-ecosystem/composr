@@ -387,7 +387,7 @@ function step_1() : object
                     'data/files.bin',
 
                     // Large file size, skip for performance
-                    'data/modules/admin_stats/IP_Country.txt',
+                    'data/locations/IP_Country.txt',
                 ]);
 
                 foreach ($files as $file => $file_info) {
@@ -2845,7 +2845,22 @@ function step_9_populate_database() : object
     global $ADD_MENU_COUNTER;
     $ADD_MENU_COUNTER = 100;
 
-    //$log->attach(do_template('INSTALLER_DONE_SOMETHING', ['_GUID' => '6a160da6fd9031e90b37a40aea149137', 'SOMETHING' => do_lang('TABLES_CREATED', 'Composr'])));
+    // Queue the install of geolocation data
+    require_lang('locations');
+    require_code('crypt');
+    $secure_ref = get_secure_random_string();
+    $GLOBALS['SITE_DB']->query_insert('task_queue', [
+        't_title' => do_lang('INSTALL_GEOLOCATION_DATA'),
+        't_hook' => 'install_geolocation_data',
+        't_args' => serialize([]),
+        't_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
+        't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
+        't_send_notification' => 0,
+        't_locked' => 0,
+        't_add_time' => time(),
+    ], true);
+
+    $log[] = do_lang_tempcode('TABLES_CREATED', 'Geolocation data installation task');
 
     //sort_maps_by($log, '!time'); // Actually this is confusing; we should keep order as-is for chronological display
     $_log = new Tempcode();

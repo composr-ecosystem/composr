@@ -1,0 +1,131 @@
+[title sub="Patrick Schmalstig"]Composr Tutorial: Parental Controls and Child Safety[/title]
+
+If your site will allow users to join / create accounts, chances are that you will have to abide by regional laws and regulations surrounding child safety online. This may mean different things depending on the region (e.g. getting parental consent, restricting site access, restricting data collection, or imposing curfews). Furthermore, since laws dictate that compliance must be based on the region of the user and not the site, it is not merely enough to satisfy the requirements in your own jurisdiction.
+
+Fortunately, Composr has an advanced parental controls system where you can configure different limitations depending on the user's age and/or region. This tutorial will cover the features currently available; additional features are planned for future implementation.
+
+[box="Important information on permissions"]
+[surround]
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
+As parental controls deal with legal compliance, they take priority over Composr's permissions / privileges system. For example, even if you set someone to be a super-administrator, they will still be subject to the defined parental controls applicable to them.
+[/surround]
+[/box]
+
+[contents]decimal,lower-alpha[/contents]
+
+[title="2"]Introduction to the XML Configuration[/title]
+[surround]
+[media width="150" description="Parental controls XML configuration" float="right"]data_custom/images/docs/tut_parental_controls/parental_controls_xml.png[/media]
+While not the most intuitive, we decided on using XML for parental controls. This gives you the most flexibility with configuration while lowering User Interface development and maintenance requirements on our end. Do not worry; we will explain everything you need to know on how to configure the XML in this tutorial.
+
+The XML configuration for parental controls can be accessed and edited under Admin Zone > Setup > Edit parental control settings. This page also supports revisions so you can see what changed over time and undo any changes you made.
+
+When you save, validation will run on your XML. And any issues that are detected will be visible as messages at the top of the screen. This only happens after saving.
+[/surround]
+
+[title="2"]The [tt]parental_controls[/tt] tag[/title]
+The XML configuration is composed of a single [tt]parental_controls[/tt] tag which can contain as many [tt]control[/tt] tags as you like.
+
+The [tt]parental_controls[/tt] tag supports the following attributes:
+[list]
+[*][tt]require_dob[/tt]
+If set (to any value), then the date of birth field will be required on registration of a new account.
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+[*][tt]lock_dob[/tt]
+If set (to any value), then the date of birth field cannot be edited on a member's profile once set except by another member (e.g. a staff member).
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+If birthday points are defined in points configuration, then the field will be locked regardless whether or not this attribute is specified.
+[*][tt]require_timezone[/tt]
+If set (to any value), then the time zone field will be required on registration of a new account.
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+[*][tt]lock_timezone[/tt]
+If set (to any value), then the time zone field cannot be edited on a member's profile once set except by another member (e.g. a staff member).
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+[b]Not recommended[/b] unless laws require that you lock this down; members may move locations and need to change their time zone.
+[*][tt]require_region[/tt]
+If set (to any value), then the region field will be required on registration of a new account.
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+[*][tt]lock_region[/tt]
+If set (to any value), then the region field cannot be edited on a member's profile once set except by another member (e.g. a staff member).
+This is ignored if the field is disabled in site configuration (and you will get a notice about that when saving the XML configuration).
+[b]Not recommended[/b] unless laws require that you lock this down; members may move locations and need to change their region.
+[/list]
+
+Example:
+[code="XML"]
+	<parental_controls require_dob="1" lock_dob="1" require_timezone="1" require_region="1">
+		<!-- Controls would go in here -->
+	</parental_controls>
+[/code]
+
+[title="3"]The [tt]control[/tt] tag[/title]
+The [tt]control[/tt] tags within [tt]parental_controls[/tt] define parental controls which should be used. You can define multiple [tt]control[/tt] tags with the same name attribute that use different filters.
+
+Note that the parental controls system operates based on order of definition using regions. It will seek the defined controls (based on name depending on what we are checking for) from top to bottom until it finds one where the user's region applies to the defined regions, or the control has no regions defined.
+
+As such, you should group your [tt]control[/tt] tags with the same name together, and order them from most specific region filters to least specific ones. Control filters without any regions should be at the bottom of the group (as they are treated "default"). There is an example of this below.
+
+All [tt]control[/tt] tags support the following attributes; additional attributes specific to a control will be mentioned in their respective section of the tutorial:
+[list]
+[*][tt]name[/tt] (required)
+The name of the control; this will determine the behaviour as explained in this tutorial.
+[*][tt]age_threshold[/tt] (required)
+The age at which this control no-longer applies. For example, "16" means this applies to those under the age of 16.
+[*][tt]regions[/tt]
+A comma-delimited list of country, or country-region ISO codes, for which this control should apply. Where a country code is defined without a specific region, it will apply to all regions in that country.
+If this is not defined, the control will apply everywhere (unless a previous control by the same name had a defined region that matched the member).
+[/list]
+
+Example:
+[code="XML"]
+	<!-- This control will match anyone in Florida, Indiana, the UK, or France -->
+	<control name="name_of_control" age_threshold="16" regions="US-FL,US-IN,GB,FR">
+	<control>
+
+	<!-- While this has a catch-all U.S. filter, it will not match anyone in Florida or Indiana because of the above control overriding it -->
+	<control name="name_of_control" age_threshold="14" regions="US">
+	<control>
+
+	<!-- Careful! This will never work because there is already a control above by the same name with a regions filter containing the UK -->
+	<control name="name_of_control" age_threshold="14" regions="GB">
+	<control>
+
+	<!-- Careful! This will also never work because there is already a catch-all for the U.S. above; this should be moved above the catch-all for it to work and match for people in California -->
+	<control name="name_of_control" age_threshold="17" regions="US-CA">
+	<control>
+
+	<!-- Since this has no regions specified and is at the bottom, it will match anyone in any region not defined by the above controls (e.g. everyone not in the U.S., the U.K., or France). Be careful though; at this point, any additional name_of_control controls defined below this one will never match. -->
+	<control name="name_of_control" age_threshold="13">
+	<control>
+
+	<!-- This is a different control, so it is okay to place it under the above one despite having regions filters; just make sure you follow the same rules for this control as well if you define more of them below -->
+	<control name="a_different_control" age_threshold="13" regions="US-FL,US-IN,GB,FR">
+	<control>
+[/code]
+
+[title="4"]The [tt]parental_consent[/tt] control[/title]
+[surround]
+[media width="150" description="The parental consent member setting" float="right"]data_custom/images/docs/tut_parental_controls/parental_controls_consent.png[/media]
+The [tt]parental_consent[/tt] control defines when members must get parental consent to use your site. If a member meets the criteria for parental consent, they will be e-mailed a form which a parent or legal guardian must fill out. The form will also contain your configured staff e-mail address, postal address, and fax number, where applicable, for sending in the form.
+
+Until you indicate on the member's profile that they obtained parental consent (see the photo above), or they reach an age in which the condition no-longer applies, they cannot log in to your site with their account (even if their account is validated).
+
+In this example, members under the age of 13 in the U.S. or Canada must get parental consent (the optional text within the control tag will also be included on the parental consent form):
+[code="XML"]
+	<control name="parental_consent" age_threshold="13" regions="US,CA">
+		Members in the U.S. or Canada under the age of 13 must get parental consent.
+	<control>
+[/code]
+[/surround]
+
+[concepts
+ 1_key="Privacy policy"   1_value="A standard term applied to the document that lays out a website's privacy policy; some laws specifically refer to a privacy policy and require a separate document for it"
+ 2_key="Parental controls" 2_value="Composr's generic term for the settings and configuration governing children's ability to access your website and the regulations thereof"
+]Concepts[/concepts]
+
+[title="2"]See also[/title]
+
+ - [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page]
+ - [url="Children's Online Privacy Protection Act (wikipedia)"]https://en.wikipedia.org/wiki/Children's_Online_Privacy_Protection_Act[/url]
+
+{$SET,tutorial_tags,Advice & Guidance,Configuration,Members,regular,core_privacy,core_cns}{$SET,tutorial_add_date,Feb 2025}{$SET,tutorial_summary,How to comply with regional laws governing child safety and privacy.}[block]main_tutorial_rating[/block]
