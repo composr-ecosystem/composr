@@ -36,7 +36,10 @@ class Hook_logs_commandr
         }
 
         return [
-            'resource_fs.log' => ['days_to_keep' => (get_option('days_to_keep__resource_fs_log') == '') ? null : intval(get_option('days_to_keep__resource_fs_log'))],
+            'resource_fs.log' => [
+                'description' => 'commandr:DESCRIPTION_RESOURCE_FS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__resource_fs_log') == '') ? null : intval(get_option('days_to_keep__resource_fs_log'))
+            ],
         ];
     }
 }

@@ -31,17 +31,50 @@ class Hook_logs_core
     public function enumerate_logs() : array
     {
         return [
-            'errorlog.php' => ['days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))],
-            'cron.log' => ['days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))],
-            'tasks.log' => ['days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))],
-            'permission_checks.log' => ['days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))],
-            'queries.log' => ['days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))],
-            'mail_integration.log' => ['days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))],
-            'debug_fs.log' => ['days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))],
-            'require_code.log' => ['days_to_keep' => (get_option('days_to_keep__require_code_log') == '') ? null : intval(get_option('days_to_keep__require_code_log'))],
-            'http.log' => ['days_to_keep' => (get_option('days_to_keep__http_log') == '') ? null : intval(get_option('days_to_keep__http_log'))],
-            'endpoints.log' => ['days_to_keep' => (get_option('days_to_keep__endpoints_log') == '') ? null : intval(get_option('days_to_keep__endpoints_log'))],
-            'banned_access.log' => ['days_to_keep' => (get_option('days_to_keep__banned_access_log') == '') ? null : intval(get_option('days_to_keep__banned_access_log'))],
+            'errorlog.php' => [
+                'description' => 'privacy:DESCRIPTION_ERRORLOG_LOG',
+                'days_to_keep' => (get_option('days_to_keep__error_log') == '') ? null : intval(get_option('days_to_keep__error_log'))
+            ],
+            'cron.log' => [
+                'description' => 'privacy:DESCRIPTION_CRON_LOG',
+                'days_to_keep' => (get_option('days_to_keep__cron_log') == '') ? null : intval(get_option('days_to_keep__cron_log'))
+            ],
+            'tasks.log' => [
+                'description' => 'privacy:DESCRIPTION_TASKS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__tasks_log') == '') ? null : intval(get_option('days_to_keep__tasks_log'))
+            ],
+            'permission_checks.log' => [
+                'description' => 'privacy:DESCRIPTION_PERMISSION_CHECKS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__permission_checks_log') == '') ? null : intval(get_option('days_to_keep__permission_checks_log'))
+            ],
+            'queries.log' => [
+                'description' => 'privacy:DESCRIPTION_QUERIES_LOG',
+                'days_to_keep' => (get_option('days_to_keep__queries_log') == '') ? null : intval(get_option('days_to_keep__queries_log'))
+            ],
+            'mail_integration.log' => [
+                'description' => 'privacy:DESCRIPTION_MAIL_INTEGRATION_LOG',
+                'days_to_keep' => (get_option('days_to_keep__mail_integration_log') == '') ? null : intval(get_option('days_to_keep__mail_integration_log'))
+            ],
+            'debug_fs.log' => [
+                'description' => 'privacy:DESCRIPTION_DEBUG_FS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__debug_fs_log') == '') ? null : intval(get_option('days_to_keep__debug_fs_log'))
+            ],
+            'require_code.log' => [
+                'description' => 'privacy:DESCRIPTION_REQUIRE_CODE_LOG',
+                'days_to_keep' => (get_option('days_to_keep__require_code_log') == '') ? null : intval(get_option('days_to_keep__require_code_log'))
+            ],
+            'http.log' => [
+                'description' => 'privacy:DESCRIPTION_HTTP_LOG',
+                'days_to_keep' => (get_option('days_to_keep__http_log') == '') ? null : intval(get_option('days_to_keep__http_log'))
+            ],
+            'endpoints.log' => [
+                'description' => 'privacy:DESCRIPTION_ENDPOINTS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__endpoints_log') == '') ? null : intval(get_option('days_to_keep__endpoints_log'))
+            ],
+            'banned_access.log' => [
+                'description' => 'privacy:DESCRIPTION_BANNED_ACCESS_LOG',
+                'days_to_keep' => (get_option('days_to_keep__banned_access_log') == '') ? null : intval(get_option('days_to_keep__banned_access_log'))
+            ],
         ];
     }
 }
