@@ -286,7 +286,7 @@ class Achievements_loader
     }
 
     /**
-     * Run cleanup operations to delete unnecessary database reacords.
+     * Run cleanup operations to delete unnecessary database records.
      * This should be executed when saving new achievements configuration.
      */
     public function cleanup()
