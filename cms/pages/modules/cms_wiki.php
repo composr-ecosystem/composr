@@ -280,7 +280,7 @@ class Module_cms_wiki
 
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
-            $fields2->attach(content_review_get_fields('wiki_page', ($id === null) ? null : strval($id)));
+            $fields2->attach(content_review_get_fields(false, 'wiki_page', ($id === null) ? null : strval($id)));
         }
 
         require_code('permissions2');

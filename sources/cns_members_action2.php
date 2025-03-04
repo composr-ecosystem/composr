@@ -833,7 +833,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
-            $content_review_fields = content_review_get_fields('member', ($member_id === null) ? null : strval($member_id));
+            $content_review_fields = content_review_get_fields(has_privilege(get_member(), 'member_maintenance'), 'member', ($member_id === null) ? null : strval($member_id));
             if (!$content_review_fields->is_empty()) {
                 $fields->attach($content_review_fields);
                 $added_section = true;

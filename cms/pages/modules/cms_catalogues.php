@@ -647,7 +647,8 @@ class Module_cms_catalogues extends Standard_crud_module
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('catalogue_entry', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'catalogue_entry', ($id === null) ? null : strval($id)));
         }
 
         if (addon_installed('content_privacy')) {
@@ -1027,11 +1028,15 @@ class Module_cms_catalogues extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ?ID_TEXT $id The entry being potentially deleted (null: we are creating a new entry)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
+        if ($id === null) {
+            return parent::may_delete_this($id);
+        }
+
         if (!is_ecommerce_catalogue_entry(intval($id))) {
             return true;
         }
@@ -1431,7 +1436,8 @@ class Module_cms_catalogues_cat extends Standard_crud_module
         $fields->attach(seo_get_fields($this->seo_type, ($id === null) ? null : strval($id), false));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('catalogue_category', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'catalogue_category', ($id === null) ? null : strval($id)));
         }
 
         // Permissions
@@ -1485,11 +1491,15 @@ class Module_cms_catalogues_cat extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The category being potentially deleted
+     * @param  ?ID_TEXT $id The category being potentially deleted (null: we are creating a new category)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
+        if ($id === null) {
+            return parent::may_delete_this($id);
+        }
+
         $cat = $GLOBALS['SITE_DB']->query_select('catalogue_categories cc LEFT JOIN ' . get_table_prefix() . 'catalogues c ON c.c_name=cc.c_name', ['cc_parent_id', 'c_is_tree'], ['id' => intval($id)], '', 1);
         if (!array_key_exists(0, $cat)) {
             return true;
@@ -1710,11 +1720,15 @@ class Module_cms_catalogues_alt extends Standard_crud_module
     /**
      * Standard aed_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The catalogue being potentially deleted
+     * @param  ?ID_TEXT $id The catalogue being potentially deleted (null: we are creating a new category)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
+        if ($id === null) {
+            return parent::may_delete_this($id);
+        }
+
         if (substr($id, 0, 1) == '_') {
             return false;
         }
@@ -1860,7 +1874,8 @@ class Module_cms_catalogues_alt extends Standard_crud_module
             $fields->attach(metadata_get_fields('catalogue', ($name == '') ? null : $name));
 
             if (addon_installed('content_reviews')) {
-                $fields->attach(content_review_get_fields('catalogue', ($name == '') ? null : $name));
+                $_id = (($name != '') ? $name : null);
+                $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'catalogue', ($name == '') ? null : $name));
             }
 
             // Permissions

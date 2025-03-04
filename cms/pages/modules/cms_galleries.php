@@ -916,7 +916,8 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('image', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'image', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];
@@ -1511,7 +1512,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('video', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'video', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];
@@ -2012,7 +2014,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('gallery', ($name == '') ? null : $name));
+            $_id = (($name != '') ? $name : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'gallery', ($name == '') ? null : $name));
         }
 
         return [$fields, $hidden];
@@ -2208,12 +2211,16 @@ class Module_cms_galleries_cat extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The category being potentially deleted
+     * @param  ?ID_TEXT $id The category being potentially deleted (null: we are creating a new category)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
-        return $id != 'root';
+        if ($id === null) {
+            return parent::may_delete_this($id);
+        }
+
+        return (($id != 'root') && (parent::may_delete_this($id) === true));
     }
 
     /**

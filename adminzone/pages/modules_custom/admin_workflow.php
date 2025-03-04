@@ -516,10 +516,10 @@ class Module_admin_workflow extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ?ID_TEXT $id The entry being potentially deleted (null: we are creating a new entry)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
         // Workflows are optional, so we can always delete them
         return true;

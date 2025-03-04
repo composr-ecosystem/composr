@@ -1371,12 +1371,35 @@ abstract class Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ?ID_TEXT $content_id The entry being potentially deleted (null: we are adding a new entry and want to know if we can later delete it)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $content_id) : bool
     {
-        list($submitter, $timestamp) = $this->get_submitter($id);
+        // If we're checking for a potential new entry, we need to check if the current user *would* have delete privileges after creating it.
+        if ($content_id === null) {
+            if ($this->permissions_require === null) {
+              return true;
+            }
+
+            // Simulate the conditions of a newly added item to check if we can delete it
+            $submitter = get_member();
+            $delete_permission = has_delete_permission(
+              $this->permissions_require,
+              get_member(),
+              $submitter,
+              ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name,
+              [
+                $this->permissions_module_require,
+                ($this->permissions_cat_name === null) ? null : '', // Empty category for new content. The get_cat() method will not be called for null, we just have to provide a valid input here.
+                $this->permissions_module_require_b,
+                ($this->permissions_cat_name_b === null) ? null : '' // Empty category for new content.
+              ]
+            );
+            return $delete_permission;
+        }
+
+        list($submitter, $timestamp) = $this->get_submitter($content_id);
 
         $delete_permission = true;
         if ($this->permissions_require !== null) {
@@ -1387,13 +1410,13 @@ abstract class Standard_crud_module
                 ($this->privilege_page_name === null) ? get_page_name() : $this->privilege_page_name,
                 [
                     $this->permissions_module_require,
-                    ($this->permissions_cat_name === null) ? null : $this->get_cat($id),
+                    ($this->permissions_cat_name === null) ? null : $this->get_cat($content_id),
                     $this->permissions_module_require_b,
-                    ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($id)
+                    ($this->permissions_cat_name_b === null) ? null : $this->get_cat_b($content_id)
                 ]
             );
         }
-        return (($this->non_integer_id) || (intval($id) >= db_get_first_id() + $this->protect_first)) && ($delete_permission);
+        return (($this->non_integer_id) || (intval($content_id) >= db_get_first_id() + $this->protect_first)) && ($delete_permission);
     }
 
     /**

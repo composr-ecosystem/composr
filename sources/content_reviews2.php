@@ -21,12 +21,13 @@
 /**
  * Get a form to control how some content should be reviewed.
  *
+ * @param  boolean $may_delete Whether to present a delete option for the action
  * @param  ID_TEXT $content_type The content type
  * @param  ?ID_TEXT $content_id The content ID (null: not added yet)
  * @param  ?ID_TEXT $catalogue_name The catalogue name where to grab default settings from (null: content type has no bound catalogue / try and auto-detect)
  * @return Tempcode The fields
  */
-function content_review_get_fields(string $content_type, ?string $content_id = null, ?string $catalogue_name = null) : object
+function content_review_get_fields(bool $may_delete, string $content_type, ?string $content_id = null, ?string $catalogue_name = null) : object
 {
     $fields = new Tempcode();
 
@@ -137,11 +138,10 @@ function content_review_get_fields(string $content_type, ?string $content_id = n
         if ($content_info['validated_field'] !== null) {
             $auto_actions[] = 'invalidate';
         }
-        /* TODO: Disabled to prevent critical errors as is broken right now (#5763)
-            if (($auto_action == 'delete') || ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member())) || (($content_info['permission_module'] !== null) && (has_privilege(get_member(), 'delete_' . $content_info['permission_module'] . 'range_content', $content_info['module'])))) {
-                $auto_actions[] = 'delete';
-            }
-        */
+        if ($may_delete === true) {
+            $auto_actions[] = 'delete';
+        }
+
         foreach ($auto_actions as $type) {
             $auto_action_list->attach(form_input_list_entry($type, $auto_action == $type, do_lang_tempcode('CONTENT_REVIEW_AUTO_ACTION_' . $type)));
         }

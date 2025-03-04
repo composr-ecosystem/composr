@@ -681,7 +681,8 @@ class Module_cms_calendar extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields2->attach(content_review_get_fields('event', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields2->attach(content_review_get_fields($this->may_delete_this($_id), 'event', ($id === null) ? null : strval($id)));
         }
 
         // Relay control parameters
@@ -1548,7 +1549,8 @@ class Module_cms_calendar_cat extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('calendar_type', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'calendar_type', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];

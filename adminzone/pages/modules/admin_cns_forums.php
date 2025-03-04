@@ -317,7 +317,8 @@ class Module_admin_cns_forums extends Standard_crud_module
         $fields->attach(metadata_get_fields('forum', ($id === null) ? null : strval($id)));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('forum', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'forum', ($id === null) ? null : strval($id)));
         }
 
         // Permissions
@@ -548,11 +549,15 @@ class Module_admin_cns_forums extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $_id The forum being potentially deleted
+     * @param  ?ID_TEXT $_id The forum being potentially deleted (null: we are creating a new forum)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $_id) : bool
+    public function may_delete_this(?string $_id) : bool
     {
+        if ($_id === null) {
+            return true;
+        }
+
         $id = intval($_id);
 
         if ($id == db_get_first_id()) {

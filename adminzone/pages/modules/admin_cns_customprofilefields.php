@@ -651,11 +651,15 @@ class Module_admin_cns_customprofilefields extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $_id The entry being potentially deleted
+     * @param  ?ID_TEXT $_id The entry being potentially deleted (null: we are creating a new entry)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $_id) : bool
+    public function may_delete_this(?string $_id) : bool
     {
+        if ($_id === null) {
+            return true;
+        }
+
         $id = intval($_id);
         $locked = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'cf_locked', ['id' => $id]);
         return ($locked == 0);

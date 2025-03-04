@@ -534,7 +534,8 @@ class Module_cms_news extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields2->attach(content_review_get_fields('news', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields2->attach(content_review_get_fields($this->may_delete_this($_id), 'news', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden, null, null, null, null, $fields2, $posting_form_tabindex];
@@ -1063,7 +1064,8 @@ class Module_cms_news_cat extends Standard_crud_module
         $fields->attach(metadata_get_fields('news_category', ($id === null) ? null : strval($id)), false);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('news_category', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'news_category', ($id === null) ? null : strval($id)));
         }
 
         // Permissions

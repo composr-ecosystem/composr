@@ -322,7 +322,8 @@ class Module_admin_cns_groups extends Standard_crud_module
         $fields->attach(metadata_get_fields('group', ($id === null) ? null : strval($id), false, ['submitter']));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('group', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'group', ($id === null) ? null : strval($id)));
         }
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '0fd215401ffaace7f2f9f6aa73db4ce1', 'TITLE' => do_lang_tempcode('ACTIONS')]));
@@ -498,11 +499,15 @@ class Module_admin_cns_groups extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The entry being potentially deleted
+     * @param  ?ID_TEXT $id The entry being potentially deleted (null: we are creating a new entry)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
+        if ($id === null) {
+            return true;
+        }
+
         return !in_array(intval($id), get_all_preserved_groups(true));
     }
 

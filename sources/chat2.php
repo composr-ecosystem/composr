@@ -263,7 +263,7 @@ function get_chatroom_fields(?int $id = null, bool $is_made_by_me = false, strin
 
     if (addon_installed('content_reviews')) {
         require_code('content_reviews2');
-        $fields->attach(content_review_get_fields('chat', ($id === null) ? null : strval($id)));
+        $fields->attach(content_review_get_fields(false, 'chat', ($id === null) ? null : strval($id)));
     }
 
     return [$fields, new Tempcode()];
