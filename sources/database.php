@@ -502,10 +502,13 @@ function get_db_type() : string
  *
  * @return boolean Whether to use persistent database connections
  */
-function get_use_persistent() : bool
+function get_use_persistent_database() : bool
 {
     global $SITE_INFO;
-    return !empty($SITE_INFO['use_persistent']);
+    if (isset($SITE_INFO['use_persistent'])) { // LEGACY
+        return $SITE_INFO['use_persistent'];
+    }
+    return !empty($SITE_INFO['use_persistent_database']);
 }
 
 /**
@@ -1656,12 +1659,12 @@ class DatabaseConnector
 
         $servers = explode(',', $db_host);
         if (count($servers) == 1) {
-            $this->connection_write = [get_use_persistent(), $db_name, $db_host, $db_user, $db_password, $fail_ok];
+            $this->connection_write = [get_use_persistent_database(), $db_name, $db_host, $db_user, $db_password, $fail_ok];
             $this->connection_read = $this->connection_write;
         } else {
-            $this->connection_write = [get_use_persistent(), $db_name, $servers[0], $db_user, $db_password, $fail_ok];
+            $this->connection_write = [get_use_persistent_database(), $db_name, $servers[0], $db_user, $db_password, $fail_ok];
             $min = (count($servers) == 2) ? 0 : 1;
-            $this->connection_read = [get_use_persistent(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok];
+            $this->connection_read = [get_use_persistent_database(), $db_name, $servers[mt_rand($min, count($servers) - 1)], $db_user, $db_password, $fail_ok];
         }
         $this->table_prefix = $table_prefix;
         $this->connection_unique_identifier = serialize([$db_name, $db_host, $db_user, $db_password, $table_prefix]);

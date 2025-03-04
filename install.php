@@ -849,7 +849,7 @@ function step_4() : object
     $cookie_domain = '';//(($domain == 'localhost') || (strpos($domain, '.') === false)) ? '' : ('.' . $domain);
     $cookie_path = '/';
     $cookie_days = '1825';
-    $use_persistent = false;
+    $use_persistent_database = false;
     require_code('version');
     $db_site_host = $PROBED_FORUM_CONFIG['sql_host'];
     if ($db_site_host == '') {
@@ -1093,7 +1093,7 @@ function step_4() : object
         $hidden->attach(form_input_hidden('table_prefix', $table_prefix));
     }
     /*if (!GOOGLE_APPENGINE) {   Excessive, let user tune later
-        $options->attach(make_tick(do_lang_tempcode('USE_PERSISTENT'), example('', 'USE_PERSISTENT_TEXT'), 'use_persistent', $use_persistent ? 1 : 0));
+        $options->attach(make_tick(do_lang_tempcode('USE_PERSISTENT_DATABASE'), example('', 'USE_PERSISTENT_DATABASE_TEXT'), 'use_persistent_database', $use_persistent_database ? 1 : 0));
     }*/
 
     $title = do_lang_tempcode((($forum_type == 'cns' || $forum_type == 'none') && $use_msn == 0) ? 'DATABASE_SETTINGS' : 'CMS_SETTINGS');

@@ -102,6 +102,7 @@ function ce_do_header()
 <body class="website-body" style="margin: 1em"><div class="global-middle">
     <h1 class="screen-title">Installation Options editor</h1>
     <p>This is an editor accessible to administrators of the website only. It is kept as simple as possible, to allow fixing of configuration problems when the software is not in a workable state. It is provided in English only, and only modifies the configuration file, not the database.</p>
+    <p><strong>Caution:</strong> any custom code in the configuration file (such as utilisation of the git_repos function) will be overwritten! You will need to merge the code back into your configuration file from the backup in exports/file_backups.</p>
     <form action="config_editor.php" method="post">
 ';
 }
@@ -155,38 +156,38 @@ function do_access(string $given_password)
         'admin_username' => 'The username used for the administrator when the software is installed to not use a forum. On the vast majority of sites this setting does nothing.',
         'maintenance_password' => 'If you wish the maintenance password to be changed, enter a new password here. Otherwise leave blank.',
 
-        'base_url' => 'A critical option, that defines the URL of the site (no trailing slash). You can blank this out for auto-detection, but only do this during development -- if you do it live and somehow multiple domains can get to your site, random errors will occur due to caching problems.',
+        'base_url' => 'The URL of your site (no trailing slash). You can blank this out for auto-detection, but only do this during development -- if you do it live and somehow multiple domains can get to your site, random errors will occur due to caching problems.',
         'domain' => 'The domain that e-mail addresses are registered on, and possibly other things. This is only used by some very select parts of the system. It may be different from the domain in the base URL due to not having "www." on for example.',
         'default_lang' => 'The default language used on the site (language codename form, of subdirectory under lang/).',
         'block_url_schemes' => 'Whether to block the URL Scheme (mod_rewrite) option. Set this to 1 if you turned on URL Schemes and find your site no longer works.',
-        'on_msn' => 'Whether this is a site on an Conversr multi-site-network (enable for to trigger URLs to avatars and photos to be saved into the database as absolute). This option is only needed if you make satellite sites run the forum through a local base URL, as such a configuration does not know the forum base URL.',
+        'on_msn' => 'Whether this is a site on an Conversr multi-site-network (enable to trigger URLs to avatars and photos to be saved into the database as absolute). This option is only needed if you make satellite sites run the forum through a local base URL, as such a configuration does not know the forum base URL.',
 
         'forum_type' => '<em>Forum:</em> The forum driver to use. Note that it is unwise to change this unless expert, as member-IDs and usergroup-IDs form a binding between portal and forum, and would need remapping. To convert to Conversr, the forum importers can handle all of this automatically.',
         'forum_base_url' => '<em>Forum:</em> This is the base URL for the forums. If it is not correct, various links, such as links to topics, will not function correctly.',
 
         'db_type' => '<em>Database:</em> The database driver to use (code of PHP file in sources[_custom]/database/). Only MySQL supported officially.',
-        'table_prefix' => '<em>Database:</em> The table prefix for the software\'s database tables.',
-        'db_site' => '<em>Database:</em> The database name of the software database.',
-        'db_site_host' => '<em>Database:</em> The database hosting computer name (usually localhost) for the software database. You can also include a port name here if you\'re on a non-default port (<kbd>host:port</kbd>), but if doing so you must not use <kbd>localhost</kbd> as the host unless the local socket/pipe connects to the correct MySQL server.',
-        'db_site_user' => '<em>Database:</em> The database username to connect to the software database with.',
+        'table_prefix' => '<em>Database:</em> The prefix for the software\'s database tables.',
+        'db_site' => '<em>Database:</em> The name of the software database.',
+        'db_site_host' => '<em>Database:</em> The hostname / IP address (usually localhost) for the software database. You can also include a port name here if you\'re on a non-default port (<kbd>host:port</kbd>), but if doing so you must not use <kbd>localhost</kbd> as the host unless the local socket/pipe connects to the correct MySQL server.',
+        'db_site_user' => '<em>Database:</em> The username to connect to the software database with.',
         'db_site_password' => '<em>Database:</em> The password for the software database username.',
         'cns_table_prefix' => '<em>Database:</em> The table prefix for Conversr, if Conversr is being used.',
         'db_forums' => '<em>Database:</em> The database name for the forum driver to tie in to.',
-        'db_forums_host' => '<em>Database:</em> The database hosting computer name for the forum driver to tie in to. See <kbd>db_site_host</kbd>.',
-        'db_forums_user' => '<em>Database:</em> The database username for the forum driver to connect to the forum database with.',
+        'db_forums_host' => '<em>Database:</em> The hostname / IP address for the forum driver to tie in to. See <kbd>db_site_host</kbd>.',
+        'db_forums_user' => '<em>Database:</em> The username for the forum driver to connect to the forum database with.',
         'db_forums_password' => '<em>Database:</em> The password for the forum database username.',
-        'use_persistent' => '<em>Database:</em> Whether to use persistent database connections (most shared webhosts do not like these to be used, and some PHP configurations cannot support them).',
+        'use_persistent_database' => '<em>Database:</em> Whether to use persistent database connections (not recommended unless you have a very high connection overhead and are using a dedicated server, but may be helpful on local development machines).',
         'database_charset' => '<em>Database:</em> The MySQL character set for the connection. Usually you can just leave this blank, but if MySQL\'s character set for your database has been overridden away from the server-default then you will need to set this to be equal to that same character set.',
         'database_collation' => '<em>Database:</em> The MySQL collation for the connection. Usually you can just leave this blank, but if MySQL\'s collation for your database has been overridden away from the server-default then you will need to set this to be equal to that same collation (this can happen when switching between servers, as utf8mb4_unicode_ci, utf8mb4_general_ci, utf8_bin, utf8mb4_unicode_520_ci and utf8mb4_0900_ai_ci [MySQL 8+] are all commonplace).',
 
-        'user_cookie' => '<em>Cookies:</em> The name of the cookie used to hold usernames/ids for each user. Depending on the forum system involved, and may use a special serialisation notation involving a colon (there is no special notation for Conversr).',
-        'pass_cookie' => '<em>Cookies:</em> The name of the cookie used to hold passwords for each user.',
-        'session_cookie' => '<em>Cookies:</em> The name of the cookie used to hold session IDs.',
+        'user_cookie' => '<em>Cookies:</em> The name of the cookie used to hold usernames/ids for each user. Depending on the forum system involved, it may use a special serialisation notation involving a colon (there is no special notation for Conversr). Highly recommended to start it with \'_Secure-\' (the software will handle automatically if your site does not support this).',
+        'pass_cookie' => '<em>Cookies:</em> The name of the cookie used to hold passwords for each user. Highly recommended to start it with \'_Secure-\' (the software will handle automatically if your site does not support this).',
+        'session_cookie' => '<em>Cookies:</em> The name of the cookie used to hold session IDs. Highly recommended to start it with \'_Host-\' (the software will handle automatically if your site does not support this).',
         'cookie_domain' => '<em>Cookies:</em> The domain name the cookies are tied to. Only URLs with this domain, or a subdomain there-of, may access the cookies. You probably want to leave it blank. Use blank if running the software off the DNS system (e.g. localhost), or if you want the active-domain to be used (i.e. autodetection). <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
-        'cookie_path' => '<em>Cookies:</em> The URL path the cookeis are tied to. Only URLs branching from this may access the cookies. Either set it to the path portion of the base URL, or a shortened path if cookies need to work with something elsewhere on the domain, or leave blank for auto-detection. <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
+        'cookie_path' => '<em>Cookies:</em> The URL path the cookies are tied to. Only URLs branching from this may access the cookies. Either set it to the path portion of the base URL, or a shortened path if cookies need to work with something elsewhere on the domain, or leave blank for auto-detection. <strong>It\'s best not to change this setting once your community is active, as it can cause logging-out problems.</strong>',
         'cookie_days' => '<em>Cookies:</em> The number of days to store login cookies for.',
 
-        'use_persistent_cache' => '<em>Performance:</em> If persistent memory caching is to be used (caches data in memory between requests using whatever appropriate PHP extensions are available). May be set to <kbd>1</kbd> or the name of a PHP file in <kbd>sources/persistent_caching</kbd> to force a specific method (e.g. <kbd>apc</kbd>).',
+        'use_persistent_cache' => '<em>Performance:</em> If persistent memory caching is to be used (caches data in memory between requests using whatever appropriate PHP extensions are available). May be set to <kbd>0</kbd> to disable, <kbd>1</kbd> for auto-detection, or the name of a PHP file in <kbd>sources/persistent_caching</kbd> to force a specific method (e.g. <kbd>apc</kbd>).',
         'static_caching_hours' => '<em>Performance:</em> The number of hours that the static cache lasts (this sets both HTTP caching, and server retention of cached screens).',
         'any_guest_cached_too' => '<em>Performance:</em> Whether Guest hits are cached with static caching (by default only spiders/bots get static caching).',
         'static_caching_inclusion_list' => '<em>Performance:</em> A regular expresion determining what URLs are subject to the static cache. Does not need to match full URL unless you code your regexp to anchor itself. If not set all URLs will be cached that don\'t have special GET parameters (non-canonical parameters, or extra parameters to home page).',
@@ -203,24 +204,22 @@ function do_access(string $given_password)
         'known_suexec' => '<em>Tuning/Disk performance:</em> Whether we know suEXEC is on the server so will skip checking for it (which involves a disk access).',
         'assume_full_mobile_support' => '<em>Tuning/Disk performance:</em> Whether to assume that the current theme fully supports mobile view-mode, on all pages. This skips a disk access.',
         'no_extra_bots' => '<em>Tuning/Disk performance:</em> Whether to only use the hard-coded bot detection list. This saves a disk access.',
-        'no_extra_closed_file' => '<em>Tuning/Disk performance:</em> Whether to not recognise a closed.html file. This saves a disk access.',
+        'no_extra_closed_file' => '<em>Tuning/Disk performance:</em> Whether to not recognise a closed.html file. This saves a disk access but could be problematic if you want to shut down a horribly-broken site from public access.',
         'no_extra_logs' => '<em>Tuning/Disk performance:</em> Whether to not populate extra logs even if writable files have been put in place for this. This saves disk accesses to look for these files.',
         'no_extra_mobiles' => '<em>Tuning/Disk performance:</em> Whether to only use the hard-coded mobile-device detection list. This saves a disk access.',
         'no_installer_checks' => '<em>Tuning/Disk performance:</em> Whether to skip complaining if the install.php file has been left around. This is intended only for developers working on development machines.',
-        'no_compiled_files' => '<em>Tuning/Disk performance:</em> Whether to disable using the <kbd>_compiled</kbd> directory for code overrides; will save on disk use but will increase memory use and result in weird stack traces on errors.',
+        'no_compiled_files' => '<em>Tuning/Disk performance:</em> Whether to disable using the <kbd>_compiled</kbd> directory for code overrides. Disabling will reduce disk access and storage use but will increase memory use, result in weird stack traces sometimes, and disable support for caching custom overrides in PHP at run-time.',
 
         'prefer_direct_code_call' => '<em>Tuning:</em> Whether to assume a good opcode cache is present, so load up full code files via this rather than trying to save RAM by loading up small parts of files on occasion.',
         'php_path' => '<em>Tuning:</em> The absolute path to the PHP cli binary if the software is not able to auto-detect it (blank: try auto-detecting or use the standard php command).',
         'php_cgi_path' => '<em>Tuning:</em> The absolute path to the PHP cgi interpreter if the software is not able to auto-detect it (blank: try auto-detecting or use the standard php-cgi command).',
 
         'backdoor_ip' => '<em>Security:</em> Always allow users accessing from this IP address/CIDR/hostname in, automatically logged in as the oldest admin of the site. You can enter comma-separated addresses. Hostname checks only work if <kbd>keep_check_backdoor_ip_dns=1</kbd> is set in the URL, for performance reasons.',
-        'trusted_proxies' => '<em>Security:</em> Proxies to trust. For any incoming request by an IP covered in one of the comma-separated IPs (or IP CIDR ranges), "forwarded for" IP headers will be trusted to identify the real IP address. This improves security as the software will be targeting the true IP of visitors rather than the proxy IP, so long as it is a real proxy and not a trick by a hacker trying to masquerade their IP by pretending they\'re just an innocent intermediary node. Defaults to all Cloudflare IP addresses.',
-        'full_ip_addresses' => '<em>Security:</em> Whether to match sessions to the full IP addresses. Set this to 1 if you are sure users don\'t jump around IP addresses on the same 255.255.255.0 subnet (e.g. due to proxy server randomisation).',
-        /*  Don't want this in here, we want it autodetected unless explicitly overridden
-        'dev_mode' => '<em>Development:</em> Whether development mode is enabled (<strong>intended only for core developers</strong>).',
-        */
+        'trusted_proxies' => '<em>Security:</em> Proxies to trust. For any incoming request by an IP covered in one of the comma-separated IPs (or IP CIDR ranges), "forwarded for" IP headers will be trusted to identify the real IP address. This improves security as the software will be targeting the true IP of visitors rather than the proxy IP, so long as it is a real proxy and not a trick by a hacker trying to masquerade their IP by pretending they\'re just an innocent intermediary node. Defaults to all Cloudflare IP addresses (careful because if you set this, then the software will not use Cloudflare IPs anymore unless you explicitly include them).',
+        'full_ip_addresses' => '<em>Security:</em> Whether to match sessions to the full IP addresses instead of the 255.255.255.0 subnet. This increases security but also increases the likelihood members get randomly logged out (e.g. due to proxy server randomisation).',
+        'dev_mode' => '<em>Development:</em> Whether development mode is enabled (<strong>intended only for developers who know what they are doing</strong>). This enables special run-time checks and strict PHP type checking. Note this may significantly reduce page load times; make sure your PHP max_execution_time is 30 or higher. Defaults to auto-detect depending on the presence of a git repository.',
         'no_keep_params' => '<em>Development:</em> Whether to disable support for \'keep_\' params. You probably don\'t want to disable them!',
-        'safe_mode' => '<em>Development:</em> Whether the software is to be forced into safe mode, meaning no custom files will load and most caching will be disabled.',
+        'safe_mode' => '<em>Development:</em> Whether the software is to be forced into safe mode, meaning no custom files / non-bundled addons will load and most caching will be disabled.',
         'no_email_output' => '<em>Development:</em> Whether emails should never be sent.',
         'redirect_email_output' => '<em>Development:</em> Alternate e-mail address to route all e-mails.',
         'email_to' => '<em>Development:</em> If you have set up a customised critical error screen (via a <kbd>_critical_error.html</kbd> file and empty <kbd>critical_errors</kbd> directory), and a background e-mailing process, this defines where error e-mails will be sent.',

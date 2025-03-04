@@ -7910,8 +7910,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USE_MSN
         USE_MULTI_DB
         USE_ON_ZONES
-        USE_PERSISTENT
-        USE_PERSISTENT_TEXT
+        USE_PERSISTENT_DATABASE
+        USE_PERSISTENT_DATABASE_TEXT
         USE_TOPICS
         USE_TRUE_FROM
         USING_SU
