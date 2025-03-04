@@ -404,7 +404,7 @@ class Module_admin_errorlog
         $hook_obs = find_all_hook_obs('systems', 'logs', 'Hook_logs_');
         foreach ($hook_obs as $hook_ob) {
             $logs_available = $hook_ob->enumerate_logs();
-            foreach (array_keys($logs_available) as $filename) {
+            foreach ($logs_available as $filename => $details) {
                 if ((!isset($logs[$filename])) && ($filename != 'errorlog.php')) { // if not already handled
                     // Action URLs
                     $add_url = build_url(['page' => '_SELF', 'type' => 'init_log', 'id' => basename($filename, '.log')], '_SELF');
@@ -412,6 +412,7 @@ class Module_admin_errorlog
                     // Template-ready
                     $logs[$filename] = [
                         'LOG' => null,
+                        'DESCRIPTION' => do_lang_tempcode($details['description']),
                         'DOWNLOAD_URL' => new Tempcode(),
                         'CLEAR_URL' => new Tempcode(),
                         'DELETE_URL' => new Tempcode(),
