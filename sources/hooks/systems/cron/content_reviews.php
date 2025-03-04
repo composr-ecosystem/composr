@@ -140,7 +140,6 @@ class Hook_cron_content_reviews
 
                             // TODO: We need some sort of privilege checking in case the owner or privileges changed
                             // $privileges = $object_fs->get_resource_privileges(null, $content_type, $content_id);
-
                             $object_fs->resource_delete($content_type, $filename, dirname($subpath));
                         }
                     }

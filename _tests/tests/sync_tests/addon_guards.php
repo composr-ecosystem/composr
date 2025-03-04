@@ -731,6 +731,7 @@ class addon_guards_test_set extends cms_test_case
     {
         // This is entirely theoretical and would result in a lot of false-positives since it cannot track run-time execution flow; also not tested.
         // Best way to test if we have require_code where needed is to run penetration testing or a spider on the software.
+        // ...although it wouldn't hurt to be aggressive with require_code. Perhaps that could be a coding standard in the future to reduce bug potential?
         /*
         $info = 'testAddonGuardsRequireCode: This is an aggressive test; consider reviewing the defined exceptions periodically for accuracy.';
         $this->dump($info, 'INFO');

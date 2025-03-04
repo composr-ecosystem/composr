@@ -346,7 +346,7 @@ Do not use braces around the file path for [tt]require[/tt] / [tt]require_once[/
 | Internationalisation / consistency
 | All development
 | Manually
-| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API. The PHP [tt]date[/tt] function doesn't even support non-English strings. Additionally, when dealing with intervals, we have two very-efficient functions in this API that should be used (e.g. instead of the unreliable strtotime): [tt]to_epoch_interval_index[/tt] and [tt]from_epoch_interval_index[/tt].
+| Don't forget about users potentially being in different timezones. Rarely if ever use PHP's inbuilt date/time functions -- use Composr's temporal API. The PHP [tt]date[/tt] function doesn't even support non-English strings. Additionally, when dealing with intervals or trying to calculate amount of time between two timestamps, we have two very-efficient functions in this API that should be used (e.g. instead of the unreliable strtotime): [tt]to_epoch_interval_index[/tt] and [tt]from_epoch_interval_index[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use the [tt]type[/tt] parameter for your modules[/color]
