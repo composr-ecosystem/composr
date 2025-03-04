@@ -236,12 +236,12 @@ function do_access(string $given_password)
         'failover_message_place_after' => '<em>Failover:</em> failover_message will be placed after this HTML marker.',
         'failover_message_place_before' => '<em>Failover:</em> failover_message will be placed before this HTML marker. May be specified in addition to failover_message_place_after, so that two messages show.',
 
-        'rate_limiting' => '<em>Rate limiting:</em> Whether to enable rate limiting for IPs. The data_custom/rate_limiter.php file must exist and be writeable (on a suExec-style server the file will auto-create, otherwise just make it as an empty file). IP addresses passed to PHP must be accurate (some front-end proxying systems break this).',
+        'rate_limiting' => '<em>Rate limiting:</em> Whether to enable rate limiting for IPs (recommended if you get heavy bot activity). The data_custom/rate_limiter.php file must exist and be writeable (on a suExec-style server the file will auto-create, otherwise just make it as an empty file). IP addresses passed to PHP must be accurate (some front-end proxying systems break this).',
         'rate_limit_time_window' => '<em>Rate limiting:</em> The number of seconds hits are counted across. Defaults to <kbd>10</kbd>.',
         'rate_limit_hits_per_window' => '<em>Rate limiting:</em> The number of hits per IP going back as far as the time window. Note that this is any URL hitting the software as a whole, not just pages (i.e. AJAX and banner frames would both count). Defaults to <kbd>5</kbd>.',
 
-        'gae_application' => '<em>Google App Engine:</em> Application name',
-        'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name',
+        'gae_application' => '<em>Google App Engine:</em> Application name (if applicable)',
+        'gae_bucket_name' => '<em>Google App Engine:</em> Cloud Storage bucket name (if applicable)',
     ];
 
     global $SITE_INFO;
