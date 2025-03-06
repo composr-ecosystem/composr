@@ -506,7 +506,7 @@ function get_use_persistent_database() : bool
 {
     global $SITE_INFO;
     if (isset($SITE_INFO['use_persistent'])) { // LEGACY
-        return $SITE_INFO['use_persistent'];
+        return !empty($SITE_INFO['use_persistent']);
     }
     return !empty($SITE_INFO['use_persistent_database']);
 }
