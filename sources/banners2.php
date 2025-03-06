@@ -267,7 +267,7 @@ function get_banner_form_fields(bool $simplified = false, string $name = '', str
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields->attach(form_input_region_multi($regions));
+            $fields->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
         }
     }
 

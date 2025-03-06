@@ -291,18 +291,49 @@ function geolocate_ip(?string $ip = null) : ?string
 function form_input_region($pretty_name, $description, string $stub, ?string $default = null, bool $required = false, bool $read_only = false, ?int $tabindex = null, int $input_size = 10, $autocomplete = null) : object
 {
     require_code('form_templates');
+
+    $field_tabindex = get_form_field_tabindex($tabindex);
+
+    list($country_input, $region_input) = _form_input_region($stub, $default, $required, $read_only, $input_size);
+
+    // Put it all together
+    $form_content = new Tempcode();
+    $form_content->attach($country_input);
+    $form_content->attach($region_input);
+    return _form_input($stub, $pretty_name, $description, $form_content, true, false, $field_tabindex);
+}
+
+/**
+ * Get the Tempcode for a country and region selection.
+ *
+ * @param  ID_TEXT $stub The field name stub
+ * @param  ?ID_TEXT $default The region ISO code which will be populated in the field by default (null: none)
+ * @param  boolean $required Whether the field is required
+ * @param  boolean $read_only Whether the field cannot be edited
+ * @param  integer $input_size The size of the field
+ * @return array A double; the country field and the region field
+ * @ignore
+ */
+function _form_input_region(string $stub, ?string $default = null, bool $required = false, bool $read_only = false, int $input_size = 10) : array
+{
+    require_code('form_templates');
     require_lang('locations');
 
     if ($default == '') { // Treat blank default as null as it is generally not acceptable
         $default = null;
     }
 
-    $field_tabindex = get_form_field_tabindex($tabindex);
-
     $selected_countries = [];
     if ($default !== null) {
         $region_parts = explode('-', $default, 2);
-        $selected_countries[] = $region_parts[0];
+        $selected_countries = [$region_parts[0]];
+    }
+
+    if (count($selected_countries) == 0) {
+        $geo_country = get_country();
+        if ($geo_country !== null) {
+            $selected_countries = [$geo_country];
+        }
     }
 
     // Input for country
@@ -316,7 +347,7 @@ function form_input_region($pretty_name, $description, string $stub, ?string $de
         'CONTENT' => $country_list,
         'INLINE_LIST' => false,
         'IMAGES' => null,
-        'SIZE' => strval(10),
+        'SIZE' => strval($input_size),
         'AUTOCOMPLETE' => null,
         'READ_ONLY' => (($read_only) ? '1' : '0'),
         'ON_CHANGE' => 'country-region',
@@ -327,7 +358,7 @@ function form_input_region($pretty_name, $description, string $stub, ?string $de
     $region_input = new Tempcode();
 
     if ($default !== null) {
-        $region_list = create_region_selection_list($region_parts[0], [$default]);
+        $region_list = create_region_selection_list($selected_countries[0], (($default !== null) ? [$default] : []));
     }
     $region_input = do_template('FORM_SCREEN_INPUT_LIST', [
         '_GUID' => 'TODO',
@@ -337,20 +368,16 @@ function form_input_region($pretty_name, $description, string $stub, ?string $de
         'CONTENT' => $region_list,
         'INLINE_LIST' => false,
         'IMAGES' => null,
-        'SIZE' => strval(10),
+        'SIZE' => strval($input_size),
         'AUTOCOMPLETE' => null,
         'READ_ONLY' => (($read_only) ? '1' : '0')
     ]);
 
-    // Put it all together
-    $form_content = new Tempcode();
-    $form_content->attach($country_input);
-    $form_content->attach($region_input);
-    return _form_input($stub, $pretty_name, $description, $form_content, true, false, $field_tabindex);
+    return [$country_input, $region_input];
 }
 
 /**
- * Retrieve a POSTed region ISO code from a region field.
+ * Retrieve a POSTed region ISO code from a single region field.
  *
  * @param  ID_TEXT $stub The parameter name stub
  * @param  ~?string $default The default value (false: none, and require the parameter to be provided) (null: none, and do not require)
@@ -379,9 +406,174 @@ function post_param_region(string $stub, $default = false, int $filters = INPUT_
     return $region;
 }
 
-function form_input_region_multi(array $regions = []) : object
+/**
+ * Get an input for multiple region codes. A new line is added when the prior one isn't blank.
+ * This renders as multiple lines of text where region codes can be typed. Additionally, a region selection is rendered at the top which can populate the codes according to country and region name.
+ *
+ * @param  mixed $pretty_name A human intelligible name for this input field, provided in plain-text format (string or Tempcode)
+ * @param  mixed $description A description for this input field, provided in HTML format (string or Tempcode)
+ * @param  ID_TEXT $name The base parameter name which this input field is for (as this takes multiple parameters, they are named <name><x>). This name must end with '_'.
+ * @param  array $_default_array An array or map of lines to use as default (at least this many lines, filled by this array, will be presented by default) (map format: [name=>string, readonly=>boolean])
+ * @param  integer $num_required The minimum number of inputs allowed
+ * @param  ?integer $tabindex The tab index of the field (null: not specified)
+ * @param  ?string $pattern Custom regex pattern, covers whole field value (null: none)
+ * @param  ?string $pattern_error Custom regex pattern validation error (null: none)
+ * @return Tempcode The input field
+ */
+function form_input_region_multi($pretty_name, $description, string $name, array $_default_array, int $num_required, ?int $tabindex = null, ?string $pattern = null, ?string $pattern_error = null) : object
 {
-    return new Tempcode(); // TODO
+    require_code('form_templates');
+
+    $field_tabindex = get_form_field_tabindex($tabindex);
+
+    // Multi-line maintenance (must match what we have in form_input_line_multi)
+    if (substr($name, -1) != '_' && substr($name, -2) != '[]') {
+        $name .= '_';
+    }
+
+    if ($num_required == 0) {
+        $required = filter_form_field_required($name, false);
+        if ($required) {
+            $num_required = 1;
+        }
+    }
+
+    // TODO: Region selection with special behaviour
+    /*
+    list($country_input, $region_input) = _form_input_region(preg_replace('#\[\]$#', '', $name) . '_select', null, false, false, 10);
+    $button_input = do_template('BUTTON_SCREEN', [
+        '_GUID' => 'TODO',
+        'IMMEDIATE' => false,
+        'URL' => null,
+        'TITLE' => do_lang_tempcode('SELECT'),
+        'IMG' => 'buttons/proceed',
+        'HIDDEN' => new Tempcode(),
+        'JS_BTN' => 'region-multi',
+        'NAME' => preg_replace('#\[\]$#', '', $name) . '_select_btn',
+    ]);
+    */
+
+    // Multi-line maintenance; must match what we have in form_input_line_multi
+    $tabindex = get_form_field_tabindex($tabindex);
+    $default_array = [];
+
+    // Convert answers to a map.
+    $i = 0;
+    foreach ($_default_array as $default) {
+        $_required = ($i < $num_required) ? '-required' : '';
+        if (is_array($default) && array_key_exists('name', $default)) {
+            $default_array[] = [
+                'NAME' => $default['name'],
+                'I' => strval($i),
+                'REQUIRED' => $_required,
+                'READONLY' => array_key_exists('readonly', $default)
+            ];
+        } else {
+            $default_array[] = [
+                'NAME' => $default,
+                'I' => strval($i),
+                'REQUIRED' => $_required,
+                'READONLY' => false
+            ];
+        }
+        $i++;
+    }
+
+    // Add in blank / initial lines where applicable
+    $num_to_show_initially = max($num_required, count($default_array) + 1);
+    for (; $i < $num_to_show_initially; $i++) {
+        $default_array[] = [
+            'NAME' => ($i === 0) ? filter_form_field_default($name, '') : '',
+            'I' => strval($i),
+            'REQUIRED' => ($i >= $num_required) ? '' : '-required',
+            'READONLY' => false
+        ];
+        $i++;
+    }
+
+    // Multi-line input for region codes
+    $region_multi_input = do_template('FORM_SCREEN_INPUT_LINE_MULTI', [
+        '_GUID' => 'TODO',
+        'CLASS' => 'line',
+        'MAXLENGTH' => get_field_restrict_property('maxlength', $name),
+        'PRETTY_NAME' => $pretty_name,
+        'TABINDEX' => strval($tabindex),
+        'NAME_STUB' => $name,
+        'DEFAULT_ARRAY' => $default_array,
+        'PATTERN' => $pattern,
+        'NUM_REQUIRED' => strval($num_required),
+    ]);
+
+    // Put it all together
+    $form_content = new Tempcode();
+    //$form_content->attach($country_input);
+    //$form_content->attach($region_input);
+    //$form_content->attach($button_input);
+    $form_content->attach($region_multi_input);
+    return _form_input(preg_replace('#\[\]$#', '', $name), $pretty_name, $description, $form_content, $num_required > 0, false, $field_tabindex, false, true, '', $pattern_error);
+}
+
+/**
+ * Retrieve POSTed regions / countries from a multi-region field.
+ *
+ * @param  ID_TEXT $stub The parameter name stub
+ * @param  ~?string $default The default value (false: none, and require the parameter to be provided) (null: none, and do not require)
+ * @param  integer $filters A bitmask of INPUT_FILTER_* filters
+ * @return ?string The ISO region / country codes separated by a new line (null: not provided and was not required)
+ */
+function post_param_regions(string $stub, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
+{
+    require_lang('locations');
+
+    $i = 0;
+    $values = [];
+    $countries_included = [];
+    do {
+        $tmp_name = $stub . '_' . strval($i);
+
+        // NB: We cannot use post_param_region because that comes from the single-item field
+        $_value = post_param_string($tmp_name, null, $filters);
+        if (($_value === null) && ($i == 0)) {
+            return '';
+        }
+        if (!cms_empty_safe($_value)) {
+            $_value = cms_strtoupper_ascii($_value);
+
+            // Integrity check; make sure the region / country code is valid. If not, ignore it but attach a message.
+            if ((find_region_name_from_iso($_value) !== null) || (find_country_name_from_iso($_value) !== null)) {
+                $values[] = $_value;
+
+                if (strpos($_value, '-') === false) {
+                    $countries_included[] = $_value;
+                }
+            } else {
+                attach_message(do_lang_tempcode('NOT_VALID_REGION_COUNTRY', escape_html($_value)), 'warn');
+            }
+        }
+        $i++;
+    } while ($_value !== null);
+
+    // Clean out regions that belong in the same countries as full country codes provided
+    foreach ($values as $i => $value) {
+        $region_parts = explode('-', $value, 2);
+        if (count($region_parts) < 2) {
+            continue;
+        }
+        if (in_array($region_parts[0], $countries_included)) {
+            unset($values[$i]);
+        }
+    }
+
+    // Remove duplicates
+    $values = array_unique($values);
+
+    // Do not accept blank / null final values unless a default value is specified
+    if ((count($values) == 0) && ($default === false)) {
+        require_code('failure');
+        improperly_filled_in_post($stub);
+    }
+
+    return implode("\n", $values);
 }
 
 /**

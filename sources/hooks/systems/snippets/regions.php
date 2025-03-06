@@ -31,13 +31,14 @@ class Hook_snippet_regions
     public function run() : object
     {
         require_code('locations');
+        require_lang('locations');
 
         $country = post_param_string('country', '');
 
-        $ret = ['options' => []];
+        $ret = ['options' => [['value' => '', 'text' => do_lang('CHOOSE_REGION')]]];
 
         if ($country == '') {
-            $ret['options'][] = ['value' => '', 'text' => do_lang('REGION_MUST_CHOOSE_COUNTRY')];
+            $ret['options'] = [['value' => '', 'text' => do_lang('REGION_MUST_CHOOSE_COUNTRY')]];
             return make_string_tempcode(json_encode($ret));
         }
 
