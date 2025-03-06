@@ -32,27 +32,6 @@ function init__locations()
 }
 
 /**
- * TODO: Find structure of continents and countries.
- *
- * @return object
- */
-function find_continents_and_countries() : object
-{
-    global $ISO_CODES;
-    return $ISO_CODES->getCountries();
-}
-
-/**
- * TODO: Find list of continents.
- *
- * @return array List of continents
- */
-function find_continents() : array
-{
-    return []; // TODO
-}
-
-/**
  * Find list of countries.
  *
  * @return array List of countries
@@ -73,17 +52,6 @@ function find_regions_by_country(string $iso) : array
 {
     global $ISO_CODES;
     return $ISO_CODES->getSubdivisions()->getAllByCountryCode($iso);
-}
-
-/**
- * TODO: Find continent of a country.
- *
- * @param  string $country ISO country code
- * @return ?string Continent (null: not found)
- */
-function find_continent(string $country) : ?string
-{
-    return null; // TODO
 }
 
 /**

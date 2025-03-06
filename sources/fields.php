@@ -944,6 +944,8 @@ abstract class ListFieldHook
                 }
                 break;
 
+            // Not supported anymore; there are specific fields for these
+            /*
             case 'REGION':
                 require_code('locations');
                 $continents_and_countries = find_continents_and_countries();
@@ -965,6 +967,7 @@ abstract class ListFieldHook
                 global $USA_STATE_LIST;
                 $list = $USA_STATE_LIST;
                 break;
+            */
 
             default:
                 if ((addon_installed('nested_cpf_spreadsheet_lists')) && (cms_strtolower_ascii(substr($default, -4)) == '.spreadsheet')) {
