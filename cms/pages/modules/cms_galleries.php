@@ -884,7 +884,7 @@ class Module_cms_galleries extends Standard_crud_module
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields->attach(form_input_regions($regions));
+            $fields->attach(form_input_region_multi($regions));
         }
 
         require_code('syndication');
@@ -1479,7 +1479,7 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c09d066b272c40ef91f058c40b5c27d0', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields->attach(form_input_regions($regions));
+            $fields->attach(form_input_region_multi($regions));
         }
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt', null));
 

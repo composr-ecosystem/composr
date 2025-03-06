@@ -781,10 +781,17 @@
         }
     };
 
-    $cms.templates.formScreenInputList = function formScreenInputList(params, selectEl) {
+    $cms.templates.formScreenInputList = function formScreenInputList(params, container) {
+        var selectEl = document.getElementById(params.name);
+        
         var imageSources;
 
         if (params.inlineList) {
+            if (selectEl.classList.contains('js-onchange-country-region')) {
+                selectEl.addEventListener('change', function (e, input) {
+                    loadRegionList(input);
+                });
+            }
             return;
         }
 
@@ -799,6 +806,12 @@
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.options.length > 20)/*only for long lists*/ && (!$dom.html(selectEl.options[1]).match(/^\d+$/)/*not for lists of numbers*/)) {
             selectEl.classList.remove('form-control');
             window.jQuery(selectEl).select2(select2Options);
+            
+            if (selectEl.classList.contains('js-onchange-country-region')) {
+                $(selectEl).on('select2:select', function (e) {
+                    loadRegionList(e.target);
+                });
+            }
         }
 
         function formatSelectSimple(state) {
@@ -820,6 +833,27 @@
             }
 
             return $cms.filter.html(state.text);
+        }
+
+        function loadRegionList(input) {
+            var regionId = input.id.substring(0, (input.id.length - 8)) + '_region';
+    
+            if (input.form) {
+                if (input.form.elements[regionId] !== undefined) {
+                    $dom.html(input.form.elements[regionId], '<option value="">{!LOADING;^}</option>');
+
+                    var post = 'country=' + encodeURIComponent(input.value);
+
+                    $cms.loadSnippet('regions', post).then(function (resp) {
+                        var data = JSON.parse(resp);
+                        var regionHtml = '';
+                        data.options.forEach(function (option) {
+                            regionHtml += '<option value="' + $cms.filter.html(option.value) + '">' + $cms.filter.html(option.text) + '</option>';
+                        });
+                        $dom.html(input.form.elements[regionId], regionHtml);
+                    });
+                }
+            }
         }
     };
 

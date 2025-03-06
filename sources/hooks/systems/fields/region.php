@@ -95,12 +95,24 @@ class Hook_fields_region
 
         require_code('locations');
 
-        $test = find_country_name_from_iso($ev);
-        if ($test !== null) {
-            $ev = $test;
+        $ret = '';
+
+        $ev_parts = explode('-', $ev, 2);
+
+        $country = find_country_name_from_iso($ev_parts[0]);
+        if ($country === null) {
+            return '';
+        }
+        $ret .= $country;
+
+        if (array_key_exists(1, $ev_parts)) {
+            $region = find_region_name_from_iso($ev);
+            if ($region !== null) {
+                $ret .= ' >> ' . $region;
+            }
         }
 
-        return escape_html($ev);
+        return escape_html($ret);
     }
 
     // ======================
@@ -126,11 +138,7 @@ class Hook_fields_region
         $input_name = @cms_empty_safe($field['cf_input_name']) ? ('field_' . strval($field['id'])) : $field['cf_input_name'];
 
         require_code('locations');
-        $country_list = new Tempcode();
-        $country_list->attach(form_input_list_entry('', '' == $actual_value, do_lang_tempcode('NA_EM')));
-        $country_list->attach(create_region_selection_list([$actual_value]));
-        $autocomplete = ($new && !empty($field['cf_autofill_type'])) ? (($field['cf_autofill_hint'] ? ($field['cf_autofill_hint'] . ' ') : '') . $field['cf_autofill_type']) : null;
-        return form_input_list($_cf_name, $_cf_description, $input_name, $country_list, null, false, $field['cf_required'] == 1, null, 5, $autocomplete);
+        return form_input_region($_cf_name, $_cf_description, $input_name, $actual_value, $field['cf_required'] == 1);
     }
 
     /**
@@ -144,18 +152,13 @@ class Hook_fields_region
      */
     public function inputted_to_field_value(bool $editing, array $field, ?string $upload_dir = 'uploads/catalogues', ?array $old_value = null) : ?string
     {
+        require_code('locations');
+
         $id = $field['id'];
         $tmp_name = 'field_' . strval($id);
-        $value = post_param_string($tmp_name, $editing ? STRING_MAGIC_NULL : '');
 
-        // Validation (region is country)
-        if (($value != '') && ($value != STRING_MAGIC_NULL)) {
-            require_code('locations');
-            $country_name = find_country_name_from_iso($value);
-            if ($country_name === null) {
-                warn_exit(do_lang_tempcode('locations:NOT_VALID_COUNTRY', escape_html($value)));
-            }
-        }
+        // Region validation already happens within the function
+        $value = post_param_region($tmp_name, $editing ? STRING_MAGIC_NULL : '');
 
         return $value;
     }

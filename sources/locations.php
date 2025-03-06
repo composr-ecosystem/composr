@@ -113,6 +113,8 @@ function find_country_name_from_iso(?string $iso) : ?string
 {
     global $ISO_CODES;
 
+    $country = null;
+
     switch (strlen($iso)) {
         case 2:
             $country = $ISO_CODES->getCountries()->getByAlpha2($iso);
@@ -305,16 +307,113 @@ function geolocate_ip(?string $ip = null) : ?string
 }
 
 /**
- * Get a region inputter.
+ * Get a field inputter for a region.
  *
- * @param  array $regions The currently selected regions
- * @return Tempcode The region inputter
+ * @param  mixed $pretty_name The human-readable name for this field (Comcode or Tempcode)
+ * @param  mixed $description The description for this field (Comcode or Tempcode)
+ * @param  ID_TEXT $stub The field name stub
+ * @param  ?ID_TEXT $default The region ISO code which will be populated in the field by default (null: none)
+ * @param  boolean $required Whether the field is required
+ * @param  boolean $read_only Whether the field cannot be edited
+ * @param  ?integer $tabindex The tab index for this field (null: determine for us)
+ * @param  integer $input_size The size of the field
+ * @param  ~?string $autocomplete The autocomplete field to use (false: explicitly disable) (null: use the default for this field if applicable)
+ * @return Tempcode The field
  */
-function form_input_regions(array $regions = []) : object
+function form_input_region($pretty_name, $description, string $stub, ?string $default = null, bool $required = false, bool $read_only = false, ?int $tabindex = null, int $input_size = 10, $autocomplete = null) : object
 {
     require_code('form_templates');
-    $list_groups = create_region_selection_list($regions);
-    return form_input_multi_list(do_lang_tempcode('FILTER_REGIONS'), do_lang_tempcode('DESCRIPTION_FILTER_REGIONS'), 'regions', $list_groups, null, 10);
+    require_lang('locations');
+
+    if ($default == '') { // Treat blank default as null as it is generally not acceptable
+        $default = null;
+    }
+
+    $field_tabindex = get_form_field_tabindex($tabindex);
+
+    $selected_countries = [];
+    if ($default !== null) {
+        $region_parts = explode('-', $default, 2);
+        $selected_countries[] = $region_parts[0];
+    }
+
+    // Input for country
+    $country_list = form_input_list_entry('', ($default === null), do_lang_tempcode('CHOOSE_COUNTRY'));
+    $country_list->attach(create_country_selection_list($selected_countries));
+    $country_input = do_template('FORM_SCREEN_INPUT_LIST', [
+        '_GUID' => 'TODO',
+        'TABINDEX' => strval(get_form_field_tabindex()),
+        'REQUIRED' => true,
+        'NAME' => $stub . '_country',
+        'CONTENT' => $country_list,
+        'INLINE_LIST' => false,
+        'IMAGES' => null,
+        'SIZE' => strval(10),
+        'AUTOCOMPLETE' => null,
+        'READ_ONLY' => (($read_only) ? '1' : '0'),
+        'ON_CHANGE' => 'country-region',
+    ]);
+
+    // Input for region
+    $region_list = form_input_list_entry('', ($default === null), do_lang_tempcode('REGION_MUST_CHOOSE_COUNTRY'));
+    $region_input = new Tempcode();
+
+    if ($default !== null) {
+        $region_list = create_region_selection_list($region_parts[0], [$default]);
+    }
+    $region_input = do_template('FORM_SCREEN_INPUT_LIST', [
+        '_GUID' => 'TODO',
+        'TABINDEX' => strval(get_form_field_tabindex()),
+        'REQUIRED' => true,
+        'NAME' => $stub . '_region',
+        'CONTENT' => $region_list,
+        'INLINE_LIST' => false,
+        'IMAGES' => null,
+        'SIZE' => strval(10),
+        'AUTOCOMPLETE' => null,
+        'READ_ONLY' => (($read_only) ? '1' : '0')
+    ]);
+
+    // Put it all together
+    $form_content = new Tempcode();
+    $form_content->attach($country_input);
+    $form_content->attach($region_input);
+    return _form_input($stub, $pretty_name, $description, $form_content, true, false, $field_tabindex);
+}
+
+/**
+ * Retrieve a POSTed region ISO code from a region field.
+ *
+ * @param  ID_TEXT $stub The parameter name stub
+ * @param  ~?string $default The default value (false: none, and require the parameter to be provided) (null: none, and do not require)
+ * @param  integer $filters A bitmask of INPUT_FILTER_* filters
+ * @return ?string The ISO region code (null: not provided and was not required)
+ */
+function post_param_region(string $stub, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
+{
+    require_lang('locations');
+
+    $name = $stub . '_region';
+
+    $region = post_param_string($name, $default, $filters);
+
+    // Do not accept blank / null regions unless a default value is specified
+    if ((($region === '') || ($region === null)) && ($default === false)) {
+        require_code('failure');
+        improperly_filled_in_post($name);
+    }
+
+    // Integrity check; make sure the region code is valid
+    if (($default !== null) && (find_region_name_from_iso($region) === null)) {
+        warn_exit(do_lang_tempcode('NOT_VALID_REGION', escape_html($region)));
+    }
+
+    return $region;
+}
+
+function form_input_region_multi(array $regions = []) : object
+{
+    return new Tempcode(); // TODO
 }
 
 /**

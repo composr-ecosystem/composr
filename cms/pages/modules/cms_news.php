@@ -502,7 +502,7 @@ class Module_cms_news extends Standard_crud_module
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields2->attach(form_input_regions($regions));
+            $fields2->attach(form_input_region_multi($regions));
         }
 
         $hidden = new Tempcode();
