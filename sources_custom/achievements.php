@@ -81,6 +81,8 @@ class Achievements_loader
             return;
         }
 
+        require_code('global3');
+
         $cache_id = [];
         if (support_smart_decaching(true)) {
             $cache_id['custom'] = filemtime($xml_path);
@@ -100,8 +102,6 @@ class Achievements_loader
                 return;
             }
         }
-
-        require_code('global3');
 
         $hash_check = [];
 
