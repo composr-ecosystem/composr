@@ -446,7 +446,7 @@ function enforce_parental_control_fields(int $member_id)
         return;
     }
 
-    // Check if the member needs parental consent to use the site (TODO: Optimise)
+    // Check if the member needs parental consent to use the site
     $consent = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_parental_consent');
     if ($consent !== 2) { // 2 means we already have consent
         require_code('cns_parental_controls');
@@ -485,7 +485,7 @@ function enforce_parental_control_fields(int $member_id)
 
     $redirect_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, '#tab--edit');
 
-    // Check region geo-location enforcement (TODO: optimise)
+    // Check region geo-location enforcement
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
     if ($pc->get_option('enforce_region') !== null) {

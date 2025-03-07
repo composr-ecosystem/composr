@@ -100,14 +100,15 @@ if ($type == 'save') {
 
     log_it('EDIT_ACHIEVEMENTS');
 
+    // Clear cache for everyone before we parse the new XML
+    require_code('caches');
+    delete_cache_entry('achievements_member');
+    delete_cache_entry('achievements_xml');
+
     // This will display validation errors and run cleanup operations
     require_code('achievements');
     $ob = load_achievements(true);
     $ob->cleanup();
-
-    // Clear cache for everyone
-    require_code('caches');
-    delete_cache_entry('achievements');
 
     attach_message(do_lang_tempcode('SUCCESS'));
 }

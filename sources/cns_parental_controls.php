@@ -20,7 +20,7 @@
 
 /*
     Each control could/should have the following private functions in the Parental_controls_loader class:
-    - pcv__* (optional): A validation function to validate the XML for this specific control (global parameters are already checked)
+    - pcv__* (required): A validation function to validate the XML for this specific control (global parameters are already checked) and to return parsed data
     - pcc__* (required): The execution function to process the control (base age and region filters have already been applied)
     - pcppp__* (optional but recommended): Generate 'positive' Privacy Policy entries for this control based on the configuration
     - pcppg__* (optional but recommended): Generate 'general' Privacy Policy entries for this control based on the configuration
@@ -39,12 +39,12 @@ function init__cns_parental_controls()
  */
 function load_parental_control_settings(bool $show_errors = false) : object
 {
-    static $parental_controls = null;
-    if ($parental_controls === null) {
-        $parental_controls = new Parental_controls_loader($show_errors);
+    static $parental_controls = [];
+    if (!isset($parental_controls[$show_errors])) {
+        $parental_controls[$show_errors] = new Parental_controls_loader($show_errors);
     }
 
-    return $parental_controls;
+    return $parental_controls[$show_errors];
 }
 
 /**
@@ -54,26 +54,50 @@ function load_parental_control_settings(bool $show_errors = false) : object
  */
 class Parental_controls_loader
 {
-    private $options = []; // Base options
-    private $show_errors; // Whether to show parse errors
-    private $xml_path; // The path to the XML file we are using
-    private $controls = []; // Array of valid parental controls
+    private $options = []; // Base options (parsed)
+    private $show_errors = false; // Whether to show parse errors
+    private $xml_path = null; // The path to the XML file we are using
+    private $controls = []; // Array of valid parental controls (parsed)
+    private $_controls = []; // Array of XML controls (not parsed)
 
     /**
      * Upon construction of the class, parse and validate the XML file.
      *
-     * @param  boolean $show_errors Whether to attach validation errors as messages
+     * @param  boolean $show_errors Whether to attach validation errors as messages (true: will also bypass persistent cache)
      */
     public function __construct(bool $show_errors = false)
     {
         $this->show_errors = $show_errors;
 
-        // Determine which XML file we will be loading
+        // Determine which XML file we will be loading, and the cache identifier based on the files' modification times
+        $cache_id = [];
         $full_path_custom = get_custom_file_base() . '/data_custom/xml_config/parental_controls.xml';
         $full_path_orig = get_custom_file_base() . '/data/xml_config/parental_controls.xml';
-        $this->xml_path = $full_path_custom;
-        if (!is_file($full_path_custom)) {
+        if (is_file($full_path_orig)) {
+            if (support_smart_decaching(true)) {
+                $cache_id['original'] = filemtime($full_path_orig);
+            }
             $this->xml_path = $full_path_orig;
+        }
+        if (is_file($full_path_custom)) {
+            if (support_smart_decaching(true)) {
+                $cache_id['custom'] = filemtime($full_path_custom);
+            }
+            $this->xml_path = $full_path_custom;
+        }
+        if ($this->xml_path === null) { // Should never happen; this means both the original and custom XML files do not exist
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+        }
+
+        // Try cache (but only if not showing errors)
+        if (!$show_errors) {
+            require_code('caches');
+            $cache = get_cache_entry('cns_parental_controls', md5(serialize($cache_id)), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
+            if ($cache !== null) {
+                $this->options = $cache['options'];
+                $this->controls = $cache['controls'];
+                return;
+            }
         }
 
         require_code('global3');
@@ -90,7 +114,7 @@ class Parental_controls_loader
             }
         }
 
-        // Attributes
+        // Attributes on the primary XML tag are options; parse those
         $attributes = $ob->attributes();
         foreach ($attributes as $key => $attribute) {
             $this->options[$key] = (string)$attribute[0];
@@ -101,27 +125,49 @@ class Parental_controls_loader
             $c_name = (string)$control['name'];
             $c_name = filter_naughty_harsh($c_name, true);
 
-            if (method_exists($this, 'pcc__' . $c_name)) {
-                // Age threshold is required on all controls
-                if (!is_numeric((string)$control['age_threshold'])) {
-                    if ($show_errors) {
-                        attach_message(do_lang_tempcode('PARENTAL_CONTROLS_NO_AGE', escape_html($c_name)), 'warn');
-                    }
-                    continue;
-                }
-
-                $guid = generate_guid();
-                $this->controls[$guid] = $control;
-
-                if (method_exists($this, 'pcv__' . $c_name)) {
-                    call_user_func_array([$this, 'pcv__' . $c_name], [$guid]); // NB: should unset $this->controls[$guid] if not valid
-                }
-            } else {
+            // Check for required methods on the control, and skip / error if they do not exist
+            if (!method_exists($this, 'pcv__' . $c_name)) {
                 if ($show_errors) {
                     attach_message(do_lang_tempcode('PARENTAL_CONTROLS_INVALID_CONTROL', escape_html($c_name)), 'warn');
                 }
+                continue;
             }
+            if (!method_exists($this, 'pcc__' . $c_name)) {
+                if ($show_errors) {
+                    attach_message(do_lang_tempcode('PARENTAL_CONTROLS_INVALID_CONTROL', escape_html($c_name)), 'warn');
+                }
+                continue;
+            }
+
+            $guid = generate_guid();
+
+            // Parse global attributes on all controls
+            $this->_controls[$guid] = $control;
+            $this->controls[$guid] = [
+                'name' => (string)$control['name'],
+                'age_threshold' => (string)$control['age_threshold'],
+                'regions' => (string)$control['regions'],
+            ];
+
+            // Age threshold is required on all controls; skip controls without it
+            if (!is_numeric($this->controls[$guid]['age_threshold'])) {
+                if ($show_errors) {
+                    attach_message(do_lang_tempcode('PARENTAL_CONTROLS_NO_AGE', escape_html($c_name)), 'warn');
+                }
+                unset($this->controls[$guid]);
+                continue;
+            }
+
+            // Send the rest of the processing to the control's validation function
+            call_user_func_array([$this, 'pcv__' . $c_name], [$guid]); // Should be parsing $this->_controls[$guid] into $this->controls[$guid]
         }
+
+        // Once everything is parsed, we do not need the XML controls anymore
+        unset($this->_controls);
+
+        // Cache the data
+        require_code('caches2');
+        set_cache_entry('cns_parental_controls', (60 * 60), md5(serialize($cache_id)), ['options' => $this->options, 'controls' => $this->controls], CACHE_AGAINST_NOTHING_SPECIAL);
     }
 
     /**
@@ -133,7 +179,7 @@ class Parental_controls_loader
     public function has_control(string $name) : bool
     {
         foreach ($this->controls as $guid => $control) {
-            $c_name = (string)$control['name'];
+            $c_name = $control['name'];
             if ($c_name === $name) {
                 return true;
             }
@@ -172,9 +218,9 @@ class Parental_controls_loader
 
         // Determine which parental controls might apply to this member
         foreach ($this->controls as $guid => $control) {
-            $c_name = (string)$control['name'];
-            $c_age_threshold = (int)$control['age_threshold'];
-            $_c_regions = (string)$control['regions'];
+            $c_name = $control['name'];
+            $c_age_threshold = $control['age_threshold'];
+            $_c_regions = $control['regions'];
             $c_regions = [];
             if (trim($_c_regions) != '') {
                 $c_regions = explode(',', trim($_c_regions));
@@ -261,7 +307,64 @@ class Parental_controls_loader
     }
 
     /**
-     * Run parental consent control.
+     * Generate general 'general' Privacy Policy information.
+     *
+     * @return ?array Array of privacy policy maps
+     */
+    private function pcppg__root() : array
+    {
+        require_lang('cns');
+
+        $ret = [];
+
+        if ($this->get_option('require_dob') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_DOB_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
+
+        if ($this->get_option('require_timezone') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_TIMEZONE_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
+
+        if ($this->get_option('require_region') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_REGION_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Validate / parse the parental_consent control.
+     *
+     * @param  ID_TEXT $guid The GUID of the control to parse
+     */
+    private function pcv__parental_consent(string $guid)
+    {
+        if (!isset($this->_controls[$guid])) {
+            return;
+        }
+        if (!isset($this->controls[$guid]) || ($this->controls[$guid]['name'] != 'parental_consent')) {
+            return;
+        }
+
+        // Parse optional body tags
+        $this->controls[$guid]['mail'] = (string)$this->_controls[$guid]->mail;
+        $this->controls[$guid]['privacy_policy'] = (string)$this->_controls[$guid]->privacy_policy;
+    }
+
+    /**
+     * Run the parental_consent control.
      * If $params contains a member_id, we will also check their consent status and send a consent e-mail if they did not yet receive one.
      *
      * @param  ID_TEXT $guid The GUID of the control to run
@@ -272,7 +375,11 @@ class Parental_controls_loader
      */
     private function pcc__parental_consent(string $guid, int $age, ?string $region, array $params)
     {
-        $body_content = (string)$this->controls[$guid]->mail;
+        if (!isset($this->controls[$guid]) || ($this->controls[$guid]['name'] != 'parental_consent')) {
+            return false;
+        }
+
+        $body_content = $this->controls[$guid]['mail'];
         $ret = ['extra_text' => trim($body_content)];
 
         // Not checking on specific member, so we automatically assume they are subject to restriction
@@ -374,19 +481,19 @@ class Parental_controls_loader
         ];
 
         foreach ($this->controls as $guid => $control) {
-            $c_name = (string)$control['name'];
-            $c_age_threshold = (int)$control['age_threshold'];
-            $_body_content = (string)$this->controls[$guid]->privacy_policy; // NB: cannot use $control
+            $c_name = $control['name'];
+            if ($c_name != 'parental_consent') {
+                continue;
+            }
+
+            $c_age_threshold = $control['age_threshold'];
+            $_body_content = $control['privacy_policy'];
             $body_content = comcode_to_tempcode($_body_content, null, true);
 
-            $_c_regions = (string)$control['regions'];
+            $_c_regions = $control['regions'];
             $c_regions = [];
             if (trim($_c_regions) != '') {
                 $c_regions = explode(',', trim($_c_regions));
-            }
-
-            if ($c_name != 'parental_consent') {
-                continue;
             }
 
             if (count($c_regions) == 0) {
@@ -421,44 +528,6 @@ class Parental_controls_loader
                     'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_CONSENT__REGIONAL', escape_html(strval($c_age_threshold)), escape_html(implode(', ', $locations)), $body_content),
                 ];
             }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * Generate general 'general' Privacy Policy information.
-     *
-     * @return ?array Array of privacy policy maps
-     */
-    private function pcppg__root() : array
-    {
-        require_lang('cns');
-
-        $ret = [];
-
-        if ($this->get_option('require_dob') !== null) {
-            $ret[] = [
-                'heading' => do_lang('PARENTAL_CONTROLS'),
-                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_DOB_ACTION'),
-                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
-            ];
-        }
-
-        if ($this->get_option('require_timezone') !== null) {
-            $ret[] = [
-                'heading' => do_lang('PARENTAL_CONTROLS'),
-                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_TIMEZONE_ACTION'),
-                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
-            ];
-        }
-
-        if ($this->get_option('require_region') !== null) {
-            $ret[] = [
-                'heading' => do_lang('PARENTAL_CONTROLS'),
-                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_REGION_ACTION'),
-                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
-            ];
         }
 
         return $ret;

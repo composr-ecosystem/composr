@@ -57,13 +57,14 @@ if ($type == 'save') {
 
     log_it('EDIT_PARENTAL_CONTROLS');
 
-    // This will display validation errors
-    require_code('cns_parental_controls');
-    load_parental_control_settings(true);
-
-    // Clear Privacy Policy cache because it generates Parental Controls information
+    // Clear caches first before we parse the XML
     require_code('caches');
     delete_cache_entry('main_privacy_policy_auto');
+    delete_cache_entry('cns_parental_controls');
+
+    // This will display validation errors and parse the new XML into the cache
+    require_code('cns_parental_controls');
+    load_parental_control_settings(true);
 
     attach_message(do_lang_tempcode('SUCCESS'));
 }
