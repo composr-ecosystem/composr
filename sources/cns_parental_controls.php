@@ -88,7 +88,7 @@ class Parental_controls_loader
             $this->xml_path = $full_path_custom;
         }
         if ($this->xml_path === null) { // Should never happen; this means both the original and custom XML files do not exist
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('59a6daa4e8745ff4a1cfaa253c3d38cc')));
         }
 
         // Try cache (but only if not showing errors)

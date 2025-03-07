@@ -359,7 +359,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
     $country_list = form_input_list_entry('', ($default === null), do_lang_tempcode('CHOOSE_COUNTRY'));
     $country_list->attach(create_country_selection_list($selected_countries));
     $country_input = do_template('FORM_SCREEN_INPUT_LIST', [
-        '_GUID' => 'TODO',
+        '_GUID' => '68441865957e5f07b44c27e7eb0a2ab8',
         'TABINDEX' => strval(get_form_field_tabindex()),
         'REQUIRED' => true,
         'NAME' => $stub . '_country',
@@ -380,7 +380,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
         $region_list = create_region_selection_list($selected_countries[0], (($default !== null) ? [$default] : []));
     }
     $region_input = do_template('FORM_SCREEN_INPUT_LIST', [
-        '_GUID' => 'TODO',
+        '_GUID' => '3cc8c1f83c0c56dfa810ce97c2fe65af',
         'TABINDEX' => strval(get_form_field_tabindex()),
         'REQUIRED' => true,
         'NAME' => $stub . '_region',
@@ -461,7 +461,7 @@ function form_input_region_multi($pretty_name, $description, string $name, array
     /*
     list($country_input, $region_input) = _form_input_region(preg_replace('#\[\]$#', '', $name) . '_select', null, false, false, 10);
     $button_input = do_template('BUTTON_SCREEN', [
-        '_GUID' => 'TODO',
+        '_GUID' => '853d6cf22ed9547a99893e221d32fbc6',
         'IMMEDIATE' => false,
         'URL' => null,
         'TITLE' => do_lang_tempcode('SELECT'),
@@ -512,7 +512,7 @@ function form_input_region_multi($pretty_name, $description, string $name, array
 
     // Multi-line input for region codes
     $region_multi_input = do_template('FORM_SCREEN_INPUT_LINE_MULTI', [
-        '_GUID' => 'TODO',
+        '_GUID' => '8898fb81b2da5093bae3a351c57a6934',
         'CLASS' => 'line',
         'MAXLENGTH' => get_field_restrict_property('maxlength', $name),
         'PRETTY_NAME' => $pretty_name,

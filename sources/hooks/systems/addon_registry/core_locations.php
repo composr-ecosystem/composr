@@ -171,6 +171,7 @@ class Hook_addon_registry_core_locations
             'sources/hooks/systems/geocoding/google.php',
             'sources/hooks/systems/geocoding/index.html',
             'sources/hooks/systems/geocoding/mapquest.php',
+            'sources/hooks/systems/snippets/regions.php',
             'sources/hooks/systems/tasks/install_geolocation_data.php',
             'sources/isocodes/composer.json',
             'sources/isocodes/composer.lock',
