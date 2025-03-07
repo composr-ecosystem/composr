@@ -483,6 +483,8 @@ function enforce_parental_control_fields(int $member_id)
         return;
     }
 
+    require_code('urls');
+
     $redirect_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, '#tab--edit');
 
     // Check region geo-location enforcement
@@ -494,6 +496,7 @@ function enforce_parental_control_fields(int $member_id)
         if ($geo !== null) {
             $region = get_region();
             if (!cms_empty_safe($region) && (!is_location_within($region, [$geo]))) {
+                require_code('site2');
                 require_lang('locations');
                 redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_REGION_GEO', escape_html($geo)), false, 'warn');
             }
@@ -509,8 +512,6 @@ function enforce_parental_control_fields(int $member_id)
         return;
     }
 
-    require_code('urls');
-    require_code('site2');
     require_code('cns_members_action');
     require_code('cns_field_editability');
     require_lang('cns');
@@ -520,6 +521,8 @@ function enforce_parental_control_fields(int $member_id)
     // DOB
     if (member_field_is_required($member_id, 'dob', $dob, null) && cns_field_editable('dob', $special_type)) {
         if ((cms_empty_safe($dob)) && (has_privilege(get_member(), 'bypass_dob_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
             redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_DOB'), false, 'warn');
         }
     }
@@ -527,6 +530,8 @@ function enforce_parental_control_fields(int $member_id)
     // Time zone
     if (member_field_is_required($member_id, 'timezone_offset', $timezone, null) && cns_field_editable('timezone_offset', $special_type)) {
         if ((cms_empty_safe($timezone)) && (has_privilege(get_member(), 'bypass_timezone_offset_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
             redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_TIMEZONE'), false, 'warn');
         }
     }
@@ -534,6 +539,8 @@ function enforce_parental_control_fields(int $member_id)
     // Region
     if (member_field_is_required($member_id, 'region', $region, null) && cns_field_editable('region', $special_type)) {
         if ((cms_empty_safe($region)) && (has_privilege(get_member(), 'bypass_region_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
             redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_REGION'), false, 'warn');
         }
     }
