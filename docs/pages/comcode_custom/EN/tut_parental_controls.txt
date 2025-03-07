@@ -109,10 +109,10 @@ Example:
 
 [title="4"]The [tt]parental_consent[/tt] control[/title]
 [surround]
-[media width="150" description="The parental consent member setting" float="right"]data_custom/images/docs/tut_parental_controls/parental_controls_consent.png[/media]
+[media width="150" description="The parental consent member setting (note it will not be visible on your own settings)" float="right"]data_custom/images/docs/tut_parental_controls/parental_controls_consent.png[/media]
 The [tt]parental_consent[/tt] control defines when members must get parental consent to use your site. If a member meets the criteria for parental consent, they will be e-mailed a form which a parent or legal guardian must fill out. The form will also contain your configured staff e-mail address, postal address, and fax number, where applicable, for sending in the form.
 
-Until you indicate on the member's profile that they obtained parental consent (see the photo above), or they reach an age in which the condition no-longer applies, they cannot log in to your site with their account (even if their account is validated).
+Until you indicate on the member's account settings that they obtained parental consent (see the photo), or they reach an age in which the condition no-longer applies, they cannot log in to your site with their account (even if their account is validated). Note that you cannot edit your own parental consent setting even if you are staff; it must always be edited by a different person / staff with the privilege to access "Member access and privileges".
 
 Additional tags can be provided within the control as follows:
 [list]
