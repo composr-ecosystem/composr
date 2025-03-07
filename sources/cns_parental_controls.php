@@ -67,6 +67,8 @@ class Parental_controls_loader
      */
     public function __construct(bool $show_errors = false)
     {
+        require_code('global3');
+
         $this->show_errors = $show_errors;
 
         // Determine which XML file we will be loading, and the cache identifier based on the files' modification times
@@ -100,7 +102,6 @@ class Parental_controls_loader
             }
         }
 
-        require_code('global3');
         require_code('global4');
 
         // Begin parsing the XML file
