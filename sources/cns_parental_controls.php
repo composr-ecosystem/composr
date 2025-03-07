@@ -220,7 +220,7 @@ class Parental_controls_loader
         // Determine which parental controls might apply to this member
         foreach ($this->controls as $guid => $control) {
             $c_name = $control['name'];
-            $c_age_threshold = $control['age_threshold'];
+            $c_age_threshold = intval($control['age_threshold']);
             $_c_regions = $control['regions'];
             $c_regions = [];
             if (trim($_c_regions) != '') {
@@ -366,7 +366,7 @@ class Parental_controls_loader
 
     /**
      * Run the parental_consent control.
-     * If $params contains a member_id, we will also check their consent status and send a consent e-mail if they did not yet receive one.
+     * If $params contains member_id, we will also check consent status / send e-mail if necessary, and log them out of they do not have consent.
      *
      * @param  ID_TEXT $guid The GUID of the control to run
      * @param  integer $age The age of the member
@@ -388,15 +388,17 @@ class Parental_controls_loader
             return $ret;
         }
 
-        // If a Member ID is specified, then we are checking their parental consent status and sending an e-mail if necessary
-
         $member_id = $params['member_id'];
 
         $consent_status = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_parental_consent');
-        if ($consent_status === 2) {
-            return false; // The member already has parental consent to use the site
-        } elseif ($consent_status === 1) {
-            return $ret; // We already sent out a consent e-mail
+        if ($consent_status === 2) { // The member already has parental consent to use the site
+            return false;
+        } elseif ($consent_status === 1) { // We already sent out a consent e-mail
+            // Log the member out
+            require_code('users_active_actions');
+            delete_session_by_member_id($member_id);
+
+            return $ret;
         }
 
         require_code('lang');
@@ -455,6 +457,10 @@ class Parental_controls_loader
         // Update the member settings to indicate we sent the notification
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_parental_consent' => 1], ['id' => $member_id], '', 1);
         unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]);
+
+        // Log the member out
+        require_code('users_active_actions');
+        delete_session_by_member_id($member_id);
 
         return $ret;
     }
@@ -527,6 +533,141 @@ class Parental_controls_loader
                 $ret[] = [
                     'heading' => do_lang('PRIVACY_PARENTAL_CONSENT'),
                     'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_CONSENT__REGIONAL', escape_html(strval($c_age_threshold)), escape_html(implode(', ', $locations)), $body_content),
+                ];
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Validate / parse the lockout control.
+     *
+     * @param  ID_TEXT $guid The GUID of the control to parse
+     */
+    private function pcv__lockout(string $guid)
+    {
+        if (!isset($this->_controls[$guid])) {
+            return;
+        }
+        if (!isset($this->controls[$guid]) || ($this->controls[$guid]['name'] != 'lockout')) {
+            return;
+        }
+
+        // Parse optional body tags
+        $this->controls[$guid]['message'] = (string)$this->_controls[$guid]->message;
+        $this->controls[$guid]['privacy_policy'] = (string)$this->_controls[$guid]->privacy_policy;
+    }
+
+    /**
+     * Run the lockout control.
+     * If $params contains member_id, we will also log that member out if they are to be locked out.
+     *
+     * @param  ID_TEXT $guid The GUID of the control to run
+     * @param  integer $age The age of the member
+     * @param  ?ID_TEXT $region The ISO code of the region in which the member is located (null: do not check on region-specific controls)
+     * @param  array $params Array of additional parameters
+     * @return ~array Details about the parental control restriction (false: member is not subject to restriction based on criteria)
+     */
+    private function pcc__lockout(string $guid, int $age, ?string $region, array $params)
+    {
+        if (!isset($this->controls[$guid]) || ($this->controls[$guid]['name'] != 'lockout')) {
+            return false;
+        }
+
+        if (isset($params['member_id'])) {
+            $member_id = $params['member_id'];
+        } else {
+            $member_id = get_member();
+        }
+
+        require_code('comcode');
+
+        $message = comcode_to_tempcode(trim($this->controls[$guid]['message']), null, true);
+        if ($message->is_empty()) {
+            require_lang('cns');
+            require_code('crypt');
+            $staff_address = obfuscate_email_address(get_option('staff_address'));
+            $message = do_lang_tempcode('PARENTAL_CONTROLS_LOCKOUT_DEFAULT_MESSAGE', escape_html(strval($this->controls[$guid]['age_threshold'])), protect_from_escaping($staff_address));
+        }
+
+        // Log the member out if one was specified
+        if (isset($params['member_id'])) {
+            require_code('users_active_actions');
+            delete_session_by_member_id($member_id);
+        }
+
+        return ['message' => $message];
+    }
+
+    /**
+     * Return a positive Privacy Policy entry for the lockout configuration.
+     *
+     * @return ?array Array of privacy policy maps
+     */
+    private function pcppp__lockout() : array
+    {
+        if (!$this->has_control('lockout')) {
+            return [];
+        }
+
+        require_code('comcode');
+        require_code('locations');
+        require_lang('cns');
+
+        $ret = [
+            [
+                'heading' => do_lang('PARENTAL_CONTROLS_LOCKOUT'),
+                'explanation' => do_lang_tempcode('DESCRIPTION_PARENTAL_CONTROLS_LOCKOUT'),
+            ]
+        ];
+
+        foreach ($this->controls as $guid => $control) {
+            $c_name = $control['name'];
+            if ($c_name != 'lockout') {
+                continue;
+            }
+
+            $c_age_threshold = $control['age_threshold'];
+            $_body_content = $control['privacy_policy'];
+            $body_content = comcode_to_tempcode($_body_content, null, true);
+
+            $_c_regions = $control['regions'];
+            $c_regions = [];
+            if (trim($_c_regions) != '') {
+                $c_regions = explode(',', trim($_c_regions));
+            }
+
+            if (count($c_regions) == 0) {
+                $ret[] = [
+                    'heading' => do_lang('PARENTAL_CONTROLS_LOCKOUT'),
+                    'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_LOCKOUT__DEFAULT', escape_html(strval($c_age_threshold)), $body_content),
+                ];
+            } else {
+                // Get human-readable locations from regions
+                $locations = [];
+                foreach ($c_regions as $region) {
+                    $location = '';
+                    $region_bits = explode('-', $region, 2);
+                    $country_name = find_country_name_from_iso($region_bits[0]);
+                    if ($country_name === null) {
+                        continue;
+                    }
+                    $location = $country_name;
+
+                    if (array_key_exists(1, $region_bits)) {
+                        $region_name = find_region_name_from_iso($region);
+                        if ($region_name !== null) {
+                            $location .= ' >> ' . $region_name;
+                        }
+                    }
+
+                    $locations[] = $location;
+                }
+
+                $ret[] = [
+                    'heading' => do_lang('PARENTAL_CONTROLS_LOCKOUT'),
+                    'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_LOCKOUT__REGIONAL', escape_html(strval($c_age_threshold)), escape_html(implode(', ', $locations)), $body_content),
                 ];
             }
         }

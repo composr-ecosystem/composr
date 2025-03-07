@@ -316,7 +316,7 @@ function get_member(bool $quick_only = false) : int
     if ($member_id !== null) {
         enforce_temporary_passwords($member_id);
         enforce_declarations($member_id);
-        enforce_parental_control_fields($member_id);
+        enforce_parental_controls($member_id);
 
         if (get_forum_type() == 'cns') {
             $GLOBALS['FORUM_DRIVER']->cns_flood_control($member_id);
@@ -401,7 +401,7 @@ function enforce_declarations(int $member_id)
     }
 
     // Bail to prevent infinite loops if the member is either on the join page (might be reviewing the rules) or on their own member profile (might be deleting their account)
-    if ((get_page_name() == 'join') || ((get_page_name() == 'members') && (get_param_string('id', '') == '') && (get_param_string('type', 'browse') == 'view'))) {
+    if ((get_page_name() == 'join') || ((get_page_name() == 'members') && ((get_param_string('id', '') == '') || (get_param_string('id', '') == strval($member_id))) && (get_param_string('type', 'browse') == 'view'))) {
         return;
     }
 
@@ -420,11 +420,11 @@ function enforce_declarations(int $member_id)
 }
 
 /**
- * Make sure that all required fields to enforce parental controls have been filled in by the member.
+ * Enforce parental control policies that could affect a member's ability to access the site. Also enforce required fields for parental controls.
  *
  * @param  MEMBER $member_id The member to check
  */
-function enforce_parental_control_fields(int $member_id)
+function enforce_parental_controls(int $member_id)
 {
     // No enforcement if we are checking a member other than ourselves
     if ($member_id != get_member()) {
@@ -446,40 +446,40 @@ function enforce_parental_control_fields(int $member_id)
         return;
     }
 
-    // Check if the member needs parental consent to use the site
-    $consent = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_parental_consent');
-    if ($consent !== 2) { // 2 means we already have consent
-        require_code('cns_parental_controls');
-        require_code('locations');
-        require_code('users_active_actions');
+    // Load in parental controls and member data for checking
+    require_code('cns_parental_controls');
+    require_code('locations');
+    require_code('temporal');
 
-        $pc = load_parental_control_settings();
-        $dob_day = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
-        $dob_month = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
-        $dob_year = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
-        $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
-        $consent_info = $pc->run('parental_consent', $age, get_region(), ['member_id' => $member_id]);
+    $pc = load_parental_control_settings();
 
-        // We need parental consent, so bail out / prevent the user from using the site
-        if ($consent_info !== null) {
-            // Automatically log the member out because the warn_exit below will probably trigger a critical error
-            delete_session(get_session_id());
+    $dob_day = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
+    $dob_month = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
+    $dob_year = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
+    $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
 
-            require_lang('cns');
-            require_code('crypt');
-
-            $staff_address = obfuscate_email_address(get_option('staff_address'));
-            warn_exit(do_lang_tempcode('LOCKED_OUT_PARENTAL_CONSENT', protect_from_escaping($staff_address)));
-        }
+    // Check / enforce age lockout
+    $lockout_info = $pc->run('lockout', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+    if ($lockout_info !== null) {
+        warn_exit($lockout_info['message']);
     }
 
-    // No enforcement if using an external connection, such as Commandr or WebDAV
+    // Check / enforce parental consent
+    $consent_info = $pc->run('parental_consent', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+    if ($consent_info !== null) {
+        require_lang('cns');
+        require_code('crypt');
+        $staff_address = obfuscate_email_address(get_option('staff_address'));
+        warn_exit(do_lang_tempcode('LOCKED_OUT_PARENTAL_CONSENT', protect_from_escaping($staff_address)));
+    }
+
+    // No additional enforcement if using an external connection, such as Commandr or WebDAV
     if (!running_script('index')) {
         return;
     }
 
     // Bail to prevent infinite loops if the member is on their own member profile (might be filling in those fields)
-    if (((get_page_name() == 'members') && (get_param_string('id', '') == '') && (get_param_string('type', 'browse') == 'view'))) {
+    if (((get_page_name() == 'members') && ((get_param_string('id', '') == '') || (get_param_string('id', '') == strval($member_id))) && (get_param_string('type', 'browse') == 'view'))) {
         return;
     }
 

@@ -45,29 +45,39 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             'cookies' => [
             ],
 
-            'positive' => array_merge([
-                [
-                    'heading' => do_lang('COOKIES'),
-                    'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_COOKIES'),
+            'positive' => array_merge(
+        [
+                    [
+                        'heading' => do_lang('COOKIES'),
+                        'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_COOKIES'),
+                    ],
+                    [
+                        'heading' => do_lang('INFORMATION_DISCLOSURE'),
+                        'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_NON_DISCLOSURE'),
+                    ],
                 ],
-                [
-                    'heading' => do_lang('INFORMATION_DISCLOSURE'),
-                    'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_NON_DISCLOSURE'),
-                ],
-            ], $pc->generate_privacy_policy_positive('root'), $pc->generate_privacy_policy_positive('parental_consent')),
+                $pc->generate_privacy_policy_positive('root'),
+                $pc->generate_privacy_policy_positive('parental_consent'),
+                $pc->generate_privacy_policy_positive('lockout')
+            ),
 
-            'general' => array_merge([
-                [
-                    'heading' => do_lang('INFORMATION_DISCLOSURE'),
-                    'action' => do_lang_tempcode('PRIVACY_ACTION_PROFILE_DISCLOSURE'),
-                    'reason' => do_lang_tempcode('PRIVACY_REASON_PROFILE_DISCLOSURE'),
+            'general' => array_merge(
+        [
+                    [
+                        'heading' => do_lang('INFORMATION_DISCLOSURE'),
+                        'action' => do_lang_tempcode('PRIVACY_ACTION_PROFILE_DISCLOSURE'),
+                        'reason' => do_lang_tempcode('PRIVACY_REASON_PROFILE_DISCLOSURE'),
+                    ],
+                    [
+                        'heading' => do_lang('INFORMATION_DISCLOSURE'),
+                        'action' => do_lang_tempcode('PRIVACY_ACTION_PRIVATE_TOPICS'),
+                        'reason' => do_lang_tempcode('PRIVACY_REASON_PRIVATE_TOPICS'),
+                    ],
                 ],
-                [
-                    'heading' => do_lang('INFORMATION_DISCLOSURE'),
-                    'action' => do_lang_tempcode('PRIVACY_ACTION_PRIVATE_TOPICS'),
-                    'reason' => do_lang_tempcode('PRIVACY_REASON_PRIVATE_TOPICS'),
-                ],
-            ], $pc->generate_privacy_policy_general('root'), $pc->generate_privacy_policy_general('parental_consent')),
+                $pc->generate_privacy_policy_general('root'),
+                $pc->generate_privacy_policy_general('parental_consent'),
+                $pc->generate_privacy_policy_general('lockout')
+            ),
 
             'database_records' => [
                 'f_moderator_logs' => [
