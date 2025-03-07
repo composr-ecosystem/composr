@@ -54,13 +54,7 @@ class Achievements_loader
     private $xml_valid = false; // A more strict version of $cleanup_okay; will be false if any issues in the XML were present
     private $achievements = []; // Full XML achievement structure
     private $achievement_progress = []; // Cached calculated achievement progress
-
-    // Used during parsing
-    private $tag_stack;
-    private $attribute_stack;
-    private $text_so_far;
-
-    private $show_errors;
+    private $show_errors = false; // Whether to show validation errors
 
     /**
      * Upon construction of the class, parse and validate the XML file.
@@ -96,7 +90,11 @@ class Achievements_loader
                 $this->achievements = $cache;
 
                 // With cache, we automatically assume all is well
-                $this->cleanup_okay = true;
+                if (count($this->achievements) == 0) {
+                    $this->cleanup_okay = false;
+                } else {
+                    $this->cleanup_okay = false;
+                }
                 $this->xml_valid = true;
 
                 return;
