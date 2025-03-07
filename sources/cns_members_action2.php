@@ -186,7 +186,7 @@ function cns_member_external_linker_ask(string $type, string $username, string $
         $username = process_username_discriminator($username);
     }
 
-    list($fields, $hidden) = cns_get_member_fields(true, $type, null, $username, $email_address, null, null, $dob_day, $dob_month, $dob_year, null, $timezone, $language);
+    list($fields, $hidden) = cns_get_member_fields(true, $type, null, $username, $email_address, null, null, $dob_day, $dob_month, $dob_year, null, $timezone, null, $language);
     $hidden->attach(build_keep_post_fields());
     $hidden->attach(form_input_hidden('finishing_profile', '1'));
 
@@ -311,6 +311,7 @@ function cns_member_external_linker(string $type, string $username, string $pass
         $dob_year, // dob_year
         $actual_custom_fields, // custom_fields
         $timezone, // timezone
+        '', // TODO: region
         $language, // language
         '', // theme
         '', // title
@@ -395,6 +396,7 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
  * @param  ?integer $dob_year Year of date of birth (null: not known)
  * @param  ?array $custom_fields A map of custom fields values (field-id=>value) (null: not known)
  * @param  ?ID_TEXT $timezone The member timezone (null: site default)
+ * @param  ?ID_TEXT $region The member region (null: not known)
  * @param  ?LANGUAGE_NAME $language The member's language (null: auto detect)
  * @param  ?ID_TEXT $theme The member's default theme (null: not known)
  * @param  BINARY $preview_posts Whether posts are previewed before they are made
@@ -413,15 +415,17 @@ function cns_read_in_custom_fields(array $custom_fields, ?int $member_id = null)
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $probation_expiration_time When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
+ * @param  integer $parental_consent The parental consent status of the member
+ * @set 0 1 2
  * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A tuple: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = []) : array
+function cns_get_member_fields(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $region = null, ?string $language = null, ?string $theme = null, int $preview_posts = 0, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', int $parental_consent = 0, array $adjusted_config_options = []) : array
 {
     $fields = new Tempcode();
     $hidden = new Tempcode();
 
-    list($_fields, $_hidden, $added_section_1) = cns_get_member_fields_settings($mini_mode, $special_type, $member_id, $username, $email_address, $primary_group, $groups, $dob_day, $dob_month, $dob_year, $timezone, $language, $theme, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $probation_expiration_time, $is_perm_banned, $adjusted_config_options);
+    list($_fields, $_hidden, $added_section_1) = cns_get_member_fields_settings($mini_mode, $special_type, $member_id, $username, $email_address, $primary_group, $groups, $dob_day, $dob_month, $dob_year, $timezone, $region, $language, $theme, $preview_posts, $reveal_age, $views_signatures, $auto_monitor_contrib_content, $smart_topic_notification, $mailing_list_style, $auto_mark_read, $sound_enabled, $allow_emails, $allow_emails_from_staff, $highlighted_name, $pt_allow, $pt_rules_text, $validated, $probation_expiration_time, $is_perm_banned, $parental_consent, $adjusted_config_options);
     $fields->attach($_fields);
     $hidden->attach($_hidden);
 
@@ -455,6 +459,7 @@ function cns_get_member_fields(bool $mini_mode = true, string $special_type = ''
  * @param  ?integer $dob_month Month of date of birth (null: not known)
  * @param  ?integer $dob_year Year of date of birth (null: not known)
  * @param  ?ID_TEXT $timezone The member timezone (null: site default)
+ * @param  ?ID_TEXT $region The member region (null: not known)
  * @param  ?LANGUAGE_NAME $language The member's language (null: auto detect)
  * @param  ?ID_TEXT $theme The member's default theme (null: not known)
  * @param  ?BINARY $preview_posts Whether posts are previewed before they are made (null: calculate statistically)
@@ -473,12 +478,12 @@ function cns_get_member_fields(bool $mini_mode = true, string $special_type = ''
  * @param  BINARY $validated Whether the account has been validated
  * @param  ?TIME $probation_expiration_time When the member is on probation until (null: just finished probation / or effectively was never on it)
  * @param  ID_TEXT $is_perm_banned Whether the member is permanently banned
- * @param  array $adjusted_config_options A map of adjusted config options
  * @param  integer $parental_consent The parental consent status of the member
  * @set 0 1 2
+ * @param  array $adjusted_config_options A map of adjusted config options
  * @return array A pair: The form fields, Hidden fields (both Tempcode), Whether separate sections were used
  */
-function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', array $adjusted_config_options = [], int $parental_consent = 0) : array
+function cns_get_member_fields_settings(bool $mini_mode = true, string $special_type = '', ?int $member_id = null, string $username = '', string $email_address = '', ?int $primary_group = null, ?array $groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?string $timezone = null, ?string $region = null, ?string $language = null, ?string $theme = null, ?int $preview_posts = null, int $reveal_age = 1, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, ?int $probation_expiration_time = null, string $is_perm_banned = '0', int $parental_consent = 0, array $adjusted_config_options = []) : array
 {
     require_code('form_templates');
     require_code('cns_members_action');
@@ -545,6 +550,7 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
 
     // Work out what options we need to present
     $doing_timezones = member_field_is_required($member_id, 'timezone_offset', null, null, $adjusted_config_options);
+    $doing_region = member_field_is_required($member_id, 'region', null, null, $adjusted_config_options);
     if (((multi_lang()) || ((isset($adjusted_config_options['enable_language_selection'])) && ($adjusted_config_options['enable_language_selection'])))) {
         $doing_langs = (get_option_with_overrides('enable_language_selection', $adjusted_config_options) == (($member_id === null) ? '2' : '1'));
     } else {
@@ -636,15 +642,34 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
     require_lang('config');
 
     // Timezones, if enabled
-    if ($doing_timezones) {
-        $can_edit_timezone = cns_can_edit_timezone($member_id);
-        if ($can_edit_timezone) {
-            $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER');
-        } else {
-            $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER_LOCKED');
-        }
+    if (cns_field_editable('timezone_offset', $special_type)) {
+        if ($doing_timezones) {
+            $can_edit_timezone = cns_can_edit_timezone($member_id);
+            if ($can_edit_timezone) {
+                $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER');
+            } else {
+                $tz_description = do_lang_tempcode('DESCRIPTION_TIMEZONE_MEMBER_LOCKED');
+            }
 
-        $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), $tz_description, 'timezone', $timezone, true, 10, null, (!$can_edit_timezone)));
+            $fields->attach(form_input_timezone(do_lang_tempcode('TIMEZONE'), $tz_description, 'timezone', $timezone, true, 10, null, (($member_id !== null) && (!$can_edit_timezone))));
+        }
+    }
+
+    // Region
+    if (cns_field_editable('region', $special_type)) {
+        if ($doing_region) {
+            require_code('locations');
+            require_lang('locations');
+
+            $can_edit_region = cns_can_edit_region($member_id);
+            if ($can_edit_region) {
+                $region_description = do_lang_tempcode('DESCRIPTION_REGION_MEMBER');
+            } else {
+                $region_description = do_lang_tempcode('DESCRIPTION_REGION_MEMBER_LOCKED');
+            }
+
+            $fields->attach(form_input_region(do_lang_tempcode('REGION'), $region_description, 'region', $region, true, (($member_id !== null) && (!$can_edit_region))));
+        }
     }
 
     // Language choice, if we have multiple languages on site
@@ -1004,6 +1029,7 @@ function _cpfs_internal_use_only() : array
  * @param  ?integer $dob_year Year of date of birth (null: don't change) (-1: unset)
  * @param  ?array $custom_fields A map of custom fields values, things specified are not  (field-id=>value) (null: don't change)
  * @param  ?ID_TEXT $timezone The member timezone (null: don't change)
+ * @param  ?ID_TEXT $region The member region (null: don't change)
  * @param  ?LANGUAGE_NAME $language The member's language (null: don't change)
  * @param  ?ID_TEXT $theme The member's default theme (null: don't change)
  * @param  ?SHORT_TEXT $title The member's title (blank: get from primary) (null: don't change)
@@ -1032,7 +1058,7 @@ function _cpfs_internal_use_only() : array
  * @param  ?TIME $join_time When the member joined (null: don't change)
  * @param  ?boolean $sensitive_change_alert Whether to send an alert to the member that their login information has changed, if applicable (null: use the value of $check_correctness)
  */
-function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $probation_expiration_time = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compat_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
+function cns_edit_member(int $member_id, ?string $username = null, ?string $password = null, ?string $email_address = null, ?int $primary_group = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, ?array $custom_fields = null, ?string $timezone = null, ?string $region = null, ?string $language = null, ?string $theme = null, ?string $title = null, ?string $photo_url = null, ?string $avatar_url = null, ?string $signature = null, ?int $preview_posts = null, ?int $reveal_age = null, ?int $views_signatures = null, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, ?int $auto_mark_read = null, ?int $sound_enabled = null, ?int $allow_emails = null, ?int $allow_emails_from_staff = null, ?int $highlighted_name = null, ?string $pt_allow = '*', ?string $pt_rules_text = '', ?int $validated = null, ?int $probation_expiration_time = null, ?string $is_perm_banned = null, bool $check_correctness = true, ?string $password_compat_scheme = null, ?string $salt = null, ?int $join_time = null, ?bool $sensitive_change_alert = null)
 {
     // Cannot edit a member pending deletion
     if ($GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme') == 'pending_deletion') {
@@ -1224,6 +1250,13 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     if ($can_edit_timezone) {
         if ($timezone !== null) {
             $update['m_timezone_offset'] = $timezone;
+        }
+    }
+
+    $can_edit_region = cns_can_edit_region($member_id);
+    if ($can_edit_region) {
+        if ($region !== null) {
+            $update['m_region'] = $region;
         }
     }
 
@@ -2863,6 +2896,29 @@ function cns_can_edit_timezone(?int $member_id) : bool
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
     if ($pc->get_option('lock_timezone') !== null) {
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Check if the region field can be edited.
+ *
+ * @param  ?MEMBER $member_id The member being edited (null: new member)
+ * @return boolean Whether the field can be edited after joining (if $member_id is null) or if it can be edited right now (if $member_id is not null)
+ */
+function cns_can_edit_region(?int $member_id) : bool
+{
+    // Other members (e.g. staff) can edit the field depending on permissions / privileges
+    if (($member_id !== null) && (get_member() != $member_id)) {
+        return true;
+    }
+
+    // Parental controls
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+    if ($pc->get_option('lock_region') !== null) {
         return false;
     }
 

@@ -161,6 +161,7 @@ function restricted_manually_enabled_backdoor() : int
     create_session($ret, 1); // Will restore from previous session if possible
 
     enforce_declarations($ret);
+    enforce_parental_control_fields($ret);
 
     return $ret;
 }
@@ -233,6 +234,7 @@ function handle_active_login(string $username)
 
         enforce_temporary_passwords($member_id);
         enforce_declarations($member_id);
+        enforce_parental_control_fields($member_id);
     } elseif ($login_array['failed_login'] === true) {
         $GLOBALS['SITE_DB']->query_insert('failedlogins', [
             'failed_account' => cms_mb_substr(post_param_string('username', false, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES | INPUT_FILTER_TRIMMED), 0, 80),

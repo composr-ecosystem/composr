@@ -75,6 +75,7 @@ class Hook_profiles_tabs_edit_settings
             $dob_month = null;
             $dob_year = null;
             $timezone = null;
+            $region = null;
             $theme = null;
             $preview_posts = null;
             $views_signatures = null;
@@ -141,7 +142,10 @@ class Hook_profiles_tabs_edit_settings
             $mailing_list_style = null;
 
             if (!fractional_edit()) {
+                require_code('locations');
+
                 $timezone = post_param_string('timezone', get_site_timezone());
+                $region = post_param_region('region', '');
                 $theme_old = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id_of, 'm_theme');
                 $theme = post_param_string('theme', null);
 
@@ -230,6 +234,7 @@ class Hook_profiles_tabs_edit_settings
                 $dob_year, // dob_year
                 $actual_custom_fields, // custom_fields
                 $timezone, // timezone
+                $region, // region
                 post_param_string('language', fractional_edit() ? STRING_MAGIC_NULL : null), // language
                 $theme, // theme
                 null, // title
@@ -389,6 +394,7 @@ class Hook_profiles_tabs_edit_settings
             $myrow['m_dob_month'],
             $myrow['m_dob_year'],
             get_users_timezone($member_id_of),
+            $myrow['m_region'],
             $myrow['m_language'],
             $myrow['m_theme'],
             $myrow['m_preview_posts'],
@@ -406,7 +412,8 @@ class Hook_profiles_tabs_edit_settings
             get_translated_text($myrow['m_pt_rules_text'], $GLOBALS['FORUM_DB']),
             $myrow['m_validated'],
             $myrow['m_probation_expiration_time'],
-            $myrow['m_is_perm_banned']
+            $myrow['m_is_perm_banned'],
+            $myrow['m_parental_consent'],
         );
 
         // Awards?

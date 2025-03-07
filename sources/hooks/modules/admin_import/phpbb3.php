@@ -435,6 +435,7 @@ class Hook_import_phpbb3
                     $bday_year, // dob_year
                     $custom_fields, // custom_fields
                     strval($row['user_timezone']), // timezone
+                    '', // TODO: region
                     $language, // language
                     '', // theme
                     $title, // title

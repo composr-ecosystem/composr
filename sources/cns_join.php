@@ -87,7 +87,7 @@ function cns_join_form(object $url, bool $captcha_if_enabled = true, bool $intro
     }
 
     url_default_parameters__enable();
-    list($fields, $_hidden, $added_section) = cns_get_member_fields(true, '', null, '', '', null, $groups, null, null, null, null, null, null, null, 0, 1, 1, null, null, null, 1, null, 1, 1, 0, '*', '', 1, null, '0', $adjusted_config_options);
+    list($fields, $_hidden, $added_section) = cns_get_member_fields(true, '', null, '', '', null, $groups, null, null, null, null, null, null, null, null, 0, 1, 1, null, null, null, 1, null, 1, 1, 0, '*', '', 1, null, '0', 0, $adjusted_config_options);
     url_default_parameters__disable();
     $hidden->attach($_hidden);
 
@@ -243,6 +243,16 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         $timezone = get_users_timezone();
     }
 
+    require_code('locations');
+    $region = post_param_region('region', '');
+    if ($region == '') {
+        if (member_field_is_required(null, 'region', null, null, $adjusted_config_options)) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'region'));
+        }
+
+        $region = get_region();
+    }
+
     $language = post_param_string('language', user_lang());
 
     if (get_option_with_overrides('member_email_receipt_configurability', $adjusted_config_options) == '0') {
@@ -348,6 +358,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
             $dob_year, // dob_year
             $actual_custom_fields, // custom_fields
             $timezone, // timezone
+            $region, // Region
             $language, // language
             '', // theme
             '', // title
@@ -386,7 +397,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
 
     // Run parental consent checks and notification when necessary
     $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
-    $parental_consent_info = $pc->run('parental_consent', $age, null, ['member_id' => $member_id]);
+    $parental_consent_info = $pc->run('parental_consent', $age, $region, ['member_id' => $member_id]);
 
     // Send confirm mail
     if ($email_validation) {
@@ -463,7 +474,7 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));
         }
-        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT', strval(intval(get_option('parental_consent_age')))));
+        $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT'));
     } elseif ($staff_validation) {
         if ($email_validation) {
             $message->attach(do_lang_tempcode('CNS_WAITING_CONFIRM_MAIL'));

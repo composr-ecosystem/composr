@@ -34,6 +34,9 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             return null;
         }
 
+        require_code('cns_parental_controls');
+        $pc = load_parental_control_settings();
+
         return [
             'label' => 'cns:ACCOUNT_FORUMS',
 
@@ -42,11 +45,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
             'cookies' => [
             ],
 
-            'positive' => [
-                ((get_option('is_on_parental_consent') == '0') || (get_option('dobs') == '0')) ? null : [
-                    'heading' => do_lang('CHILD_PROTECTION'),
-                    'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_PARENTAL_CONSENT', escape_html(get_option('parental_consent_age'))),
-                ],
+            'positive' => array_merge([
                 [
                     'heading' => do_lang('COOKIES'),
                     'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_COOKIES'),
@@ -55,9 +54,9 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'heading' => do_lang('INFORMATION_DISCLOSURE'),
                     'explanation' => do_lang_tempcode('PRIVACY_EXPLANATION_NON_DISCLOSURE'),
                 ],
-            ],
+            ], $pc->generate_privacy_policy_positive('root'), $pc->generate_privacy_policy_positive('parental_consent')),
 
-            'general' => [
+            'general' => array_merge([
                 [
                     'heading' => do_lang('INFORMATION_DISCLOSURE'),
                     'action' => do_lang_tempcode('PRIVACY_ACTION_PROFILE_DISCLOSURE'),
@@ -68,7 +67,7 @@ class Hook_privacy_core_cns extends Hook_privacy_base
                     'action' => do_lang_tempcode('PRIVACY_ACTION_PRIVATE_TOPICS'),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_PRIVATE_TOPICS'),
                 ],
-            ],
+            ], $pc->generate_privacy_policy_general('root'), $pc->generate_privacy_policy_general('parental_consent')),
 
             'database_records' => [
                 'f_moderator_logs' => [

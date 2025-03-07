@@ -443,6 +443,7 @@ class Hook_import_smf2
                     intval($bday_year), // dob_year
                     $custom_fields, // custom_fields
                     ($row['time_offset'] == 0) ? '' : strval($row['time_offset']), // timezone
+                    '', // TODO: region
                     $language, // language
                     '', // theme
                     $title, // title

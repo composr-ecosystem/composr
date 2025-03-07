@@ -3,32 +3,38 @@
 
 	<!-- COPPA compliant: US specific, 13 and under -->
 	<control name="parental_consent" age_threshold="13" regions="US">
-		Under the Children's Online Privacy Protection Act (COPPA), we require parental consent for users under the age of 13.
+		<mail>Under the Children's Online Privacy Protection Act (COPPA), we require parental consent for users under the age of 13.</mail>
+		<privacy_policy>This is governed by the Children's Online Privacy Protection Act (COPPA).</privacy_policy>
 	</control>
 
 	<!-- GDPR compliant: EU specific, 16 and under -->
 	<control name="parental_consent" age_threshold="16" regions="AL,AD,AT,BY,BE,BA,BG,HR,CY,CZ,DK,DD,EE,FO,FI,FR,DE,GI,GR,GG,HU,IS,IE,IM,IT,JE,LV,LI,LT,LU,MK,MT,FX,MD,MC,ME,NL,NO,PL,PT,RO,RU,SM,RS,CS,SK,SI,ES,SJ,SE,CH,UA,SU,GB,VA,AX,XK">
-		Under the General Data Protection Regulation (GDPR), we require parental consent for users under the age of 16.
+		<mail>Under the General Data Protection Regulation (GDPR), we require parental consent for users under the age of 16.</mail>
+		<privacy_policy>This is governed by the General Data Protection Regulation (GDPR).</privacy_policy>
 	</control>
 	
 	<!-- PIPEDA compliant: Canada specific, 13 or under -->
 	<control name="parental_consent" age_threshold="13" regions="CA">
-		Under the Personal Information Protection and Electronic Documents Act (PIPEDA) consent is required for users under 13.
+		<mail>Under the Personal Information Protection and Electronic Documents Act (PIPEDA) consent is required for users under 13.</mail>
+		<privacy_policy>This is governed by the Personal Information Protection and Electronic Documents Act (PIPEDA).</privacy_policy>
 	</control>
 	
 	<!-- Australia: 15 or under -->
 	<control name="parental_consent" age_threshold="15" regions="AU">
-		Under Australian law consent is required for users under 15.
+		<mail>Under Australian law consent is required for users under 15.</mail>
+		<privacy_policy>This is a general guideline in Australia as different jurisdictions enforce different age requirements.</privacy_policy>
 	</control>
 
 	<!-- LGPD compliant: Brazil specific, 16 or under -->
 	<control name="parental_consent" age_threshold="16" regions="BR">
-		Under the Brazilian General Data Protection Law (LGPD), we require parental consent for users under the age of 16.
+		<mail>Under the Brazilian General Data Protection Law (LGPD), we require parental consent for users under the age of 16.</mail>
+		<privacy_policy>This is governed by the Brazilian General Data Protection Law (LGPD).</privacy_policy>
 	</control>
 
 	<!-- APPI compliant: Japan specific, 18 or under -->
 	<control name="parental_consent" age_threshold="18" regions="JP">
-		Under the Act on the Protection of Personal Information (APPI) consent is required for users under 18.
+		<mail>Under the Act on the Protection of Personal Information (APPI) consent is required for users under 18.</mail>
+		<privacy_policy>This is governed by the Act on the Protection of Personal Information (APPI).</privacy_policy>
 	</control>
 
 	<!-- Default -->

@@ -3842,6 +3842,7 @@ class Hook_import_cms_merge
                         $row['m_dob_year'], // dob_year
                         $custom_fields, // custom_fields
                         $timezone, // timezone
+                        $row['m_region'], // region
                         $row['m_language'], // language
                         $row['m_theme'], // theme
                         $row['m_title'], // title

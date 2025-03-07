@@ -1191,6 +1191,7 @@ class Module_cms_booking_bookings extends Standard_crud_module
                     null, // dob_year
                     [], // custom_fields
                     null, // timezone
+                    null, // Region
                     null, // language
                     '', // theme
                     '', // title

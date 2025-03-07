@@ -92,6 +92,7 @@ class Hook_task_import_wordpress
                                 null, // dob_year
                                 [], // custom_fields
                                 null, // timezone
+                                '', // TODO: region
                                 '', // language
                                 '', // theme
                                 '', // title

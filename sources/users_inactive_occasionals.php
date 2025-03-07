@@ -175,6 +175,20 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
         $SESSION_IS_NEW = true;
 
         $big_change = true;
+
+        if (!is_guest($member_id)) {
+            require_code('locations');
+
+            // Compare IP geolocation to set region and warn if there is a mismatch (we do not want to nag users so we only do this on new sessions)
+            $geo = geolocate_ip($ip_address);
+            if ($geo !== null) {
+                $region = get_region();
+                if (!cms_empty_safe($region) && (!is_location_within($region, [$geo]))) {
+                    require_lang('locations');
+                    attach_message(do_lang_tempcode('GEOLOCATION_REGION_MISMATCH', comcode_escape($geo)), 'warn');
+                }
+            }
+        }
     } else {
         $new_session = $restored_session;
         $prior_session_row = $SESSION_CACHE[$new_session];

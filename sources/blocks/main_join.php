@@ -46,7 +46,7 @@ class Block_main_join
 
         $info['parameters'] = ['subject', 'path', 'to', 'captcha', 'dobs', 'member_email_receipt_configurability', 'staff_email_receipt_configurability', 'enable_timezones', 'enable_language_selection', 'guid'];
         // ^ You can also pass in field_<id> to make a CPF onto the join form or not.
-        // Also you can set is_on_invites, spam_check_level, email_confirm_join, require_new_member_validation, is_on_parental_consent, valid_email_domains, one_per_email_address
+        // Also you can set is_on_invites, spam_check_level, email_confirm_join, require_new_member_validation, valid_email_domains, one_per_email_address
 
         return $info;
     }

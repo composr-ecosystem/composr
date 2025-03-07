@@ -395,6 +395,7 @@ class Hook_import_vb3
                     $bday_year, // dob_year
                     $custom_fields, // custom_fields
                     strval($row['timezoneoffset']), // timezone
+                    '', // TODO: region
                     $language, // language
                     '', // theme
                     $title, // title

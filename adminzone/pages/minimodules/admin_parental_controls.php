@@ -61,6 +61,10 @@ if ($type == 'save') {
     require_code('cns_parental_controls');
     load_parental_control_settings(true);
 
+    // Clear Privacy Policy cache because it generates Parental Controls information
+    require_code('caches');
+    delete_cache_entry('main_privacy_policy_auto');
+
     attach_message(do_lang_tempcode('SUCCESS'));
 }
 

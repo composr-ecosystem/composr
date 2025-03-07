@@ -128,6 +128,7 @@ function do_work()
             intval(date('Y')), // dob_year
             [], // custom_fields
             null, // timezone
+            null, // Region
             '', // language
             '', // theme
             '', // title

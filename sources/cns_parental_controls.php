@@ -18,6 +18,14 @@
  * @package    core_cns
  */
 
+/*
+    Each control could/should have the following private functions in the Parental_controls_loader class:
+    - pcv__* (optional): A validation function to validate the XML for this specific control (global parameters are already checked)
+    - pcc__* (required): The execution function to process the control (base age and region filters have already been applied)
+    - pcppp__* (optional but recommended): Generate 'positive' Privacy Policy entries for this control based on the configuration
+    - pcppg__* (optional but recommended): Generate 'general' Privacy Policy entries for this control based on the configuration
+*/
+
 function init__cns_parental_controls()
 {
     require_lang('cns');
@@ -41,7 +49,6 @@ function load_parental_control_settings(bool $show_errors = false) : object
 
 /**
  * Parental control settings loader.
- * NB: Each control should have a private function pcv__name for validation, and pcc__name for execution.
  *
  * @package core_cns
  */
@@ -118,6 +125,24 @@ class Parental_controls_loader
     }
 
     /**
+     * Find out whether the parental control configuration has defined a given control.
+     *
+     * @param  ID_TEXT $name The name of the control to check
+     * @return boolean Whether this control has been defined at least once in the parental controls configuration
+     */
+    public function has_control(string $name) : bool
+    {
+        foreach ($this->controls as $guid => $control) {
+            $c_name = (string)$control['name'];
+            if ($c_name === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get an option value.
      *
      * @param  string $name The name of the option
@@ -139,6 +164,8 @@ class Parental_controls_loader
      */
     public function run(string $name, int $age, ?string $region = null, array $params = []) : ?array
     {
+        require_code('locations');
+
         $f_name = filter_naughty_harsh($name, true);
 
         $matched_region = false;
@@ -169,7 +196,7 @@ class Parental_controls_loader
                 }
 
                 // The provided region does not match any of the given regions, so skip
-                if (!in_array($region, $c_regions)) {
+                if (!is_location_within($region, $c_regions)) {
                     continue;
                 }
 
@@ -194,6 +221,46 @@ class Parental_controls_loader
     }
 
     /**
+     * Generate 'positive' items for the automatic Privacy Policy with the given control name.
+     *
+     * @param  ID_TEXT $name The name of the control for which to generate info
+     * @return ?array Array of privacy policy maps
+     */
+    public function generate_privacy_policy_positive(string $name) : array
+    {
+        if (!method_exists($this, 'pcppp__' . $name)) {
+            return [];
+        }
+
+        $value = call_user_func([$this, 'pcppp__' . $name]);
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return [];
+    }
+
+    /**
+     * Generate 'general' items for the automatic Privacy Policy with the given control name.
+     *
+     * @param  ID_TEXT $name The name of the control for which to generate info
+     * @return ?array Array of privacy policy maps
+     */
+    public function generate_privacy_policy_general(string $name) : array
+    {
+        if (!method_exists($this, 'pcppg__' . $name)) {
+            return [];
+        }
+
+        $value = call_user_func([$this, 'pcppg__' . $name]);
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return [];
+    }
+
+    /**
      * Run parental consent control.
      * If $params contains a member_id, we will also check their consent status and send a consent e-mail if they did not yet receive one.
      *
@@ -205,7 +272,7 @@ class Parental_controls_loader
      */
     private function pcc__parental_consent(string $guid, int $age, ?string $region, array $params)
     {
-        $body_content = (string)$this->controls[$guid];
+        $body_content = (string)$this->controls[$guid]->mail;
         $ret = ['extra_text' => trim($body_content)];
 
         // Not checking on specific member, so we automatically assume they are subject to restriction
@@ -280,6 +347,119 @@ class Parental_controls_loader
         // Update the member settings to indicate we sent the notification
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_parental_consent' => 1], ['id' => $member_id], '', 1);
         unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]);
+
+        return $ret;
+    }
+
+    /**
+     * Return a positive Privacy Policy entry for the parental_consent configuration.
+     *
+     * @return ?array Array of privacy policy maps
+     */
+    private function pcppp__parental_consent() : array
+    {
+        if (!$this->has_control('parental_consent')) {
+            return [];
+        }
+
+        require_code('comcode');
+        require_code('locations');
+        require_lang('cns');
+
+        $ret = [
+            [
+                'heading' => do_lang('PRIVACY_PARENTAL_CONSENT'),
+                'explanation' => do_lang_tempcode('DESCRIPTION_PRIVACY_PARENTAL_CONSENT'),
+            ]
+        ];
+
+        foreach ($this->controls as $guid => $control) {
+            $c_name = (string)$control['name'];
+            $c_age_threshold = (int)$control['age_threshold'];
+            $_body_content = (string)$this->controls[$guid]->privacy_policy; // NB: cannot use $control
+            $body_content = comcode_to_tempcode($_body_content, null, true);
+
+            $_c_regions = (string)$control['regions'];
+            $c_regions = [];
+            if (trim($_c_regions) != '') {
+                $c_regions = explode(',', trim($_c_regions));
+            }
+
+            if ($c_name != 'parental_consent') {
+                continue;
+            }
+
+            if (count($c_regions) == 0) {
+                $ret[] = [
+                    'heading' => do_lang('PRIVACY_PARENTAL_CONSENT'),
+                    'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_CONSENT__DEFAULT', escape_html(strval($c_age_threshold)), $body_content),
+                ];
+            } else {
+                // Get human-readable locations from regions
+                $locations = [];
+                foreach ($c_regions as $region) {
+                    $location = '';
+                    $region_bits = explode('-', $region, 2);
+                    $country_name = find_country_name_from_iso($region_bits[0]);
+                    if ($country_name === null) {
+                        continue;
+                    }
+                    $location = $country_name;
+
+                    if (array_key_exists(1, $region_bits)) {
+                        $region_name = find_region_name_from_iso($region);
+                        if ($region_name !== null) {
+                            $location .= ' >> ' . $region_name;
+                        }
+                    }
+
+                    $locations[] = $location;
+                }
+
+                $ret[] = [
+                    'heading' => do_lang('PRIVACY_PARENTAL_CONSENT'),
+                    'explanation' => do_lang_tempcode('PRIVACY_PARENTAL_CONSENT__REGIONAL', escape_html(strval($c_age_threshold)), escape_html(implode(', ', $locations)), $body_content),
+                ];
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Generate general 'general' Privacy Policy information.
+     *
+     * @return ?array Array of privacy policy maps
+     */
+    private function pcppg__root() : array
+    {
+        require_lang('cns');
+
+        $ret = [];
+
+        if ($this->get_option('require_dob') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_DOB_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
+
+        if ($this->get_option('require_timezone') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_TIMEZONE_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
+
+        if ($this->get_option('require_region') !== null) {
+            $ret[] = [
+                'heading' => do_lang('PARENTAL_CONTROLS'),
+                'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_REGION_ACTION'),
+                'reason' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REASON'),
+            ];
+        }
 
         return $ret;
     }

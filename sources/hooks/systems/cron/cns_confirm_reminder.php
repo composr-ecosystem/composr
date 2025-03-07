@@ -45,6 +45,7 @@ class Hook_cron_cns_confirm_reminder
         }
 
         require_code('temporal');
+        require_code('cns_parental_controls');
 
         // Calculate on low priority
         if ($calculate_num_queued === null) {
@@ -59,9 +60,12 @@ class Hook_cron_cns_confirm_reminder
             $query = 'SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members WHERE ' . db_string_not_equal_to('m_validated_email_confirm_code', '') . ' AND m_join_time>' . strval($last_run - self::SECS_REMIND_AFTER) . ' AND m_join_time<=' . strval($last_run);
             $this->rows = $GLOBALS['FORUM_DB']->query($query);
 
+            $pc = load_parental_control_settings();
+
             foreach ($this->rows as $i => $row) {
-                $parental_consent = (get_option('is_on_parental_consent') == '1') && ($row['m_dob_year'] !== null) && (intval(floor(utctime_to_usertime(time() - cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year'])) / 31536000.0)) < intval(get_option('parental_consent_age')));
-                if (!$parental_consent) {
+                $age_time = cms_mktime(0, 0, 0, $row['m_dob_month'], $row['m_dob_day'], $row['m_dob_year']);
+                $parental_consent = $pc->run('parental_consent', to_epoch_interval_index(time(), 'years', $age_time), $row['m_region'], ['member_id' => $row['id']]);
+                if ($parental_consent === null) {
                     unset($this->rows[$i]);
                 }
             }

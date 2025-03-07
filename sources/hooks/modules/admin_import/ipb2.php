@@ -685,6 +685,7 @@ class Hook_import_ipb2
                     $row['bday_year'], // dob_year
                     $custom_fields, // custom_fields
                     strval($row['time_offset']), // timezone
+                    '', // TODO: region
                     $language, // language
                     '', // theme
                     $row['title'], // title

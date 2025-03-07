@@ -172,13 +172,18 @@ function create_usa_state_selection_list(array $selected_states = []) : object
 }
 
 /**
- * Find the active region for the current user.
+ * Find the active region.
  * Might return the country if a specific region could not be found.
  *
+ * @param  ?MEMBER The member to fetch (null: current member)
  * @return ?string The active region (null: none found, unfiltered)
  */
-function get_region() : ?string
+function get_region(?int $member_id = null) : ?string
 {
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
     $region = get_param_string('keep_region', null);
     if ($region !== null) {
         if ($region == '') {
@@ -187,9 +192,9 @@ function get_region() : ?string
         return $region;
     }
 
-    if (!is_guest()) {
-        $region = get_cms_cpf('region'); // TODO: implement
-        if ((!empty($region)) && (strpos($region, '|') === false)) {
+    if (!is_guest($member_id)) {
+        $region = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_region');
+        if (!cms_empty_safe($region)) {
             return $region;
         }
     }
@@ -198,12 +203,17 @@ function get_region() : ?string
 }
 
 /**
- * Find the active ISO country for the current user.
+ * Find the active ISO country.
  *
+ * @param  ?MEMBER The member to fetch (null: current member)
  * @return ?string The active region (null: none found, unfiltered)
  */
-function get_country() : ?string
+function get_country(?int $member_id = null) : ?string
 {
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
     $country = get_param_string('keep_country', null);
     if ($country !== null) {
         if ($country == '') {
@@ -212,14 +222,23 @@ function get_country() : ?string
         return $country;
     }
 
-    if (!is_guest()) {
-        $country = get_cms_cpf('country');
+    if (!is_guest($member_id)) {
+        $country = get_cms_cpf('country', $member_id);
         if ((!empty($country)) && (strpos($country, '|') === false)) {
             return $country;
         }
     }
 
-    $country = geolocate_ip();
+    if ($member_id === null) {
+        $ip = get_ip_address();
+    } else {
+        $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($member_id);
+        if ($ip === null) {
+            $ip = '127.0.0.1';
+        }
+    }
+
+    $country = geolocate_ip($ip);
     if ($country !== null) {
         return $country;
     }
@@ -577,11 +596,62 @@ function post_param_regions(string $stub, $default = false, int $filters = INPUT
 }
 
 /**
+ * Determine if a given country or region ISO code is within the given country/region ISO conditions.
+ * A country location passes if any country conditions match; it ignores region conditions.
+ * A region location passes if any country conditions are in the same country, or any region conditions match.
+ *
+ * @param  ?ID_TEXT $_location The country or region ISO code to check (null: use the region of the member)
+ * @param  array $conditions Array of country and region ISO codes which result in a pass for this check
+ * @return boolean Whether the location is within any of the given conditions
+ */
+function is_location_within(?string $_location, array $conditions) : bool
+{
+    if ($_location === null) {
+        $_location = get_region();
+    }
+    if ($_location === null) { // Failsafe; return false to reject access
+        return false;
+    }
+
+    $location = cms_strtoupper_ascii($_location);
+    $location_parts = explode('-', $location, 2);
+
+    foreach ($conditions as $_condition) {
+        $condition = cms_strtoupper_ascii($_condition);
+        $condition_parts = explode('-', $condition, 2);
+
+        // Location is a region
+        if (array_key_exists(1, $location_parts)) {
+            if (array_key_exists(1, $condition_parts)) {
+                if ($condition == $location) {
+                    return true;
+                }
+            } else {
+                if ($condition_parts[0] == $location_parts[0]) {
+                    return true;
+                }
+            }
+        }
+
+        // Condition is a country (and location is also a country)
+        if (!array_key_exists(1, $condition_parts)) {
+            if ($location == $condition_parts[0]) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/**
  * Get SQL to add to wider SQL query, for region filtering.
+ * If the provided region is a region, it will match against any content specifying said region or the full country.
+ * If the provided region is a country, it will only match against country-wide content in the same country (it will not match region-specific content).
  *
  * @param  string $content_type The content type
  * @param  string $field_name_to_join Field name for content ID in table being connected to
- * @param  ?string $region Region to show for (null: auto-detect)
+ * @param  ?string $region Region or country code to show for (null: auto-detect)
  * @return string SQL
  */
 function sql_region_filter(string $content_type, string $field_name_to_join, ?string $region = null) : string
@@ -592,11 +662,24 @@ function sql_region_filter(string $content_type, string $field_name_to_join, ?st
     if ($region === null) {
         return '';
     }
+
+    $region_parts = explode('-', $region, 2);
+
     $ret = ' AND (';
     $ret .= 'NOT EXISTS(SELECT * FROM ' . get_table_prefix() . 'content_regions cr WHERE ' . db_cast($field_name_to_join, 'CHAR') . '=cr.content_id AND ' . db_string_equal_to('content_type', $content_type) . ')';
+
+    // Exact region match
     $ret .= ' OR ';
     $ret .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'content_regions cr WHERE ' . db_cast($field_name_to_join, 'CHAR') . '=cr.content_id AND ' . db_string_equal_to('cr.region', $region) . ' AND ' . db_string_equal_to('content_type', $content_type) . ')';
+
+    // Provided region is actually a region, so also match against any country-wide content
+    if (array_key_exists(1, $region_parts)) {
+        $ret .= ' OR ';
+        $ret .= 'EXISTS(SELECT * FROM ' . get_table_prefix() . 'content_regions cr WHERE ' . db_cast($field_name_to_join, 'CHAR') . '=cr.content_id AND ' . db_string_equal_to('cr.region', $region_parts[0]) . ' AND ' . db_string_equal_to('content_type', $content_type) . ')';
+    }
+
     $ret .= ')';
+
     return $ret;
 }
 

@@ -502,6 +502,7 @@ class Module_cms_news extends Standard_crud_module
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
+            require_lang('locations');
             $fields2->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
         }
 

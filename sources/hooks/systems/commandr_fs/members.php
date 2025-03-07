@@ -211,6 +211,7 @@ class Hook_commandr_fs_members
                 null, // dob_year
                 [], // custom_fields
                 null, // timezone
+                '', // region
                 '', // language
                 '', // theme
                 '', // title
