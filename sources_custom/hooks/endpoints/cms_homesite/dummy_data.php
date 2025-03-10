@@ -32,7 +32,8 @@ class Hook_endpoint_cms_homesite_dummy_data
         }
 
         return [
-            'authorization' => ['maintenance_password'],
+            // 'authorization' => ['maintenance_password'], TODO: does not work
+            'authorization' => false,
         ];
     }
 
