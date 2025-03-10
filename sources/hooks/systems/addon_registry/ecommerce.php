@@ -1169,66 +1169,11 @@ class Hook_addon_registry_ecommerce
 
         require_code('form_templates');
 
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'placeholder_a',
-                'LABEL' => lorem_word(),
-                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_LINE', [
-                    '_GUID' => '02789c9af25cbc971e86bfcc0ad322d5',
-                    'PLACEHOLDER' => null,
-                    'MAXLENGTH' => strval(16),
-                    'TABINDEX' => placeholder_number(),
-                    'REQUIRED' => false,
-                    'NAME' => 'placeholder_a',
-                    'DEFAULT' => '',
-                    'TYPE' => 'text',
-                    'PATTERN' => null,
-                    'SIZE' => strval(16),
-                    'AUTOCOMPLETE' => null,
-                ]),
-            ],
-        ];
-        $filters_row_b = [
-            [
-                'PARAM' => 'placeholder_b',
-                'LABEL' => lorem_word(),
-                'FIELD' => do_lorem_template('FORM_SCREEN_INPUT_DATE', [
-                    '_GUID' => '5ace58dd0f540f70fb3bd440fb02a430',
-                    'REQUIRED' => false,
-                    'TABINDEX' => placeholder_number(),
-                    'NAME' => 'placeholder_b',
-                    'TYPE' => 'datetime',
-
-                    'YEAR' => '',
-                    'MONTH' => '',
-                    'DAY' => '',
-                    'HOUR' => '',
-                    'MINUTE' => '',
-
-                    'MIN_DATE_DAY' => '',
-                    'MIN_DATE_MONTH' => '',
-                    'MIN_DATE_YEAR' => '',
-                    'MAX_DATE_DAY' => '',
-                    'MAX_DATE_MONTH' => '',
-                    'MAX_DATE_YEAR' => '',
-
-                    'AUTOCOMPLETE' => null,
-                    'READ_ONLY' => strval(0)
-                ]),
-            ],
-        ];
-
-        pop_field_encapsulation();
-
         return lorem_globalise(do_lorem_template('ECOM_SALES_SCREEN', [
             'TITLE' => lorem_screen_title(),
             'CONTENT' => $content,
             'PAGINATION' => placeholder_pagination(),
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => $filters_row_b,
-            'URL' => placeholder_url(),
+            'FILTERCODE_BOX' => placeholder_form(),
         ]), null, '', true);
     }
 

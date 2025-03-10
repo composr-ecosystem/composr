@@ -419,8 +419,8 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
 {
     global $CONFIG_OPTIONS_CACHE;
 
-    // We shouldn't be attempting to save the same value to the same config option more than a couple times
-    check_for_infinite_loop('set_option', [$name, $value, $will_be_formally_set], 2);
+    // We shouldn't be attempting to save the same value to the same config option many times
+    check_for_infinite_loop('set_option', [$name, $value, $will_be_formally_set], 25);
 
     if ($ob === null) {
         require_code('hooks/systems/config/' . filter_naughty_harsh($name));

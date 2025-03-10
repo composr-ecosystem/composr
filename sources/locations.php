@@ -19,7 +19,7 @@
  */
 
 /**
- * Standard code module initialisation function.
+ * Standard locations code initialisation function.
  *
  * @ignore
  */
@@ -175,21 +175,25 @@ function create_usa_state_selection_list(array $selected_states = []) : object
  * Find the active region.
  * Might return the country if a specific region could not be found.
  *
- * @param  ?MEMBER The member to fetch (null: current member)
+ * @param  ?MEMBER $member_id The member to fetch (null: current member)
  * @return ?string The active region (null: none found, unfiltered)
  */
 function get_region(?int $member_id = null) : ?string
 {
-    if ($member_id === null) {
-        $member_id = get_member();
-    }
-
     $region = get_param_string('keep_region', null);
     if ($region !== null) {
         if ($region == '') {
             return null;
         }
         return $region;
+    }
+
+    if (running_script('install')) {
+        return get_country();
+    }
+
+    if ($member_id === null) {
+        $member_id = get_member();
     }
 
     if (!is_guest($member_id)) {
@@ -205,15 +209,11 @@ function get_region(?int $member_id = null) : ?string
 /**
  * Find the active ISO country.
  *
- * @param  ?MEMBER The member to fetch (null: current member)
+ * @param  ?MEMBER $member_id The member to fetch (null: current member)
  * @return ?string The active region (null: none found, unfiltered)
  */
 function get_country(?int $member_id = null) : ?string
 {
-    if ($member_id === null) {
-        $member_id = get_member();
-    }
-
     $country = get_param_string('keep_country', null);
     if ($country !== null) {
         if ($country == '') {
@@ -222,7 +222,17 @@ function get_country(?int $member_id = null) : ?string
         return $country;
     }
 
-    if (!is_guest($member_id)) {
+    if (running_script('install')) {
+        $ip = get_ip_address();
+        $country = geolocate_ip($ip);
+        return $country;
+    }
+
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    if (($member_id !== null) && !is_guest($member_id)) {
         $country = get_cms_cpf('country', $member_id);
         if ((!empty($country)) && (strpos($country, '|') === false)) {
             return $country;
@@ -319,7 +329,7 @@ function form_input_region($pretty_name, $description, string $stub, ?string $de
     $form_content = new Tempcode();
     $form_content->attach($country_input);
     $form_content->attach($region_input);
-    return _form_input($stub, $pretty_name, $description, $form_content, true, false, $field_tabindex);
+    return _form_input($stub, $pretty_name, $description, $form_content, $required, false, $field_tabindex);
 }
 
 /**
@@ -361,7 +371,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
     $country_input = do_template('FORM_SCREEN_INPUT_LIST', [
         '_GUID' => '68441865957e5f07b44c27e7eb0a2ab8',
         'TABINDEX' => strval(get_form_field_tabindex()),
-        'REQUIRED' => true,
+        'REQUIRED' => $required,
         'NAME' => $stub . '_country',
         'CONTENT' => $country_list,
         'INLINE_LIST' => false,
@@ -369,7 +379,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
         'SIZE' => strval($input_size),
         'AUTOCOMPLETE' => null,
         'READ_ONLY' => (($read_only) ? '1' : '0'),
-        'ON_CHANGE' => 'country-region',
+        'ON_CHANGE' => 'js-onchange-country-region',
     ]);
 
     // Input for region
@@ -382,7 +392,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
     $region_input = do_template('FORM_SCREEN_INPUT_LIST', [
         '_GUID' => '3cc8c1f83c0c56dfa810ce97c2fe65af',
         'TABINDEX' => strval(get_form_field_tabindex()),
-        'REQUIRED' => true,
+        'REQUIRED' => $required,
         'NAME' => $stub . '_region',
         'CONTENT' => $region_list,
         'INLINE_LIST' => false,
@@ -403,7 +413,7 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The ISO region code (null: not provided and was not required)
  */
-function post_param_region(string $stub, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
+function post_param_region(string $stub, $default, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
 {
     require_lang('locations');
 
@@ -418,7 +428,7 @@ function post_param_region(string $stub, $default = false, int $filters = INPUT_
     }
 
     // Integrity check; make sure the region code is valid
-    if (($default !== null) && (find_region_name_from_iso($region) === null)) {
+    if (($region !== null) && ($region != '') && (find_region_name_from_iso($region) === null)) {
         warn_exit(do_lang_tempcode('NOT_VALID_REGION', escape_html($region)));
     }
 
@@ -467,7 +477,7 @@ function form_input_region_multi($pretty_name, $description, string $name, array
         'TITLE' => do_lang_tempcode('SELECT'),
         'IMG' => 'buttons/proceed',
         'HIDDEN' => new Tempcode(),
-        'JS_BTN' => 'region-multi',
+        'JS_BTN' => 'js-btn-region-multi',
         'NAME' => preg_replace('#\[\]$#', '', $name) . '_select_btn',
     ]);
     */
@@ -540,7 +550,7 @@ function form_input_region_multi($pretty_name, $description, string $name, array
  * @param  integer $filters A bitmask of INPUT_FILTER_* filters
  * @return ?string The ISO region / country codes separated by a new line (null: not provided and was not required)
  */
-function post_param_regions(string $stub, $default = false, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
+function post_param_regions(string $stub, $default, int $filters = INPUT_FILTER_DEFAULT_POST) : ?string
 {
     require_lang('locations');
 

@@ -114,13 +114,10 @@ _meta_tree
 /themes/default/images_custom/EN/
 /themes/admin/images_custom/icons_monochrome_sprite.svg
 /themes/admin/images_custom/icons_sprite.svg
-/data_custom/keys/*.key
-/data_custom/keys/telemetry-site.key
-/data_custom/keys/telemetry-site.pub
-/data_custom/keys/telemetry-site-sign.key
-/data_custom/keys/telemetry-site-sign.pub
+/data_custom/keys/*
+!/data_custom/keys/.htaccess
+!/data_custom/keys/index.html
 /data_custom/telemetry_challenge.txt
-/data_custom/keys/*.ini
 /_compiled/*
 !/_compiled/.htaccess
 !/_compiled/index.html

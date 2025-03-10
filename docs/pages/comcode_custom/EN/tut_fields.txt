@@ -345,10 +345,10 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. A
 | Will match against [tt]IP address[/tt] criteria for anonymising if 'May contain personal information' is ticked/checked. [i]Highly recommended for all IP address fields which could contain IP addresses belonging to visitors.[/i]
 |-
 ! Back-end UI
-| TODO
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__ip_address.png[/media]
 |-
 ! Front-end UI
-| TODO
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__ip_address.png[/media]
 |}
 
 [title="3"]ip_address_multi[/title]
@@ -358,7 +358,7 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. A
 | Multiple IP addresses
 |-
 ! Storage format (for programmer reference)
-| Text separated by linebreaks (no character limit) (linked through translate table)
+| Text separated by linebreaks (no character limit)
 |-
 ! Special default values
 | [i]None[/i]
@@ -373,10 +373,10 @@ Note that you are only allowed one [tt]posting_field[/tt] field per catalogue. A
 | Will match against [tt]IP address[/tt] criteria for anonymising if 'May contain personal information' is ticked/checked. [i]Highly recommended for all IP address fields which could contain IP addresses belonging to visitors.[/i]
 |-
 ! Back-end UI
-| TODO
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_backend__ip_address_multi.png[/media]
 |-
 ! Front-end UI
-| TODO
+| [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__ip_address_multi.png[/media]
 |}
 
 [title="2"]Numbers[/title]
@@ -458,15 +458,6 @@ NB: When adding there is no UI if 'AUTO_INCREMENT' was used.
 
 [i]Or:[/i]
 [tt]CURRENCY[/tt] -- input a currency (input uses the ISO code, display uses the ISO code)
-
-[i]Or:[/i]
-[tt]REGION[/tt] -- input a region (input uses the region name, display uses the ISO code; also see the [tt]region[/tt] field type)
-
-[i]Or:[/i]
-[tt]COUNTRY[/tt] -- input a country (input uses the country name, display uses the ISO code; also see the [tt]country[/tt] field type)
-
-[i]Or:[/i]
-[tt]USA_STATE[/tt] -- input a USA state (input uses the state name, display uses the ISO code; also see the [tt]state[/tt] field type)
 
 [i]Or:[/i]
 A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if the non-bundled Nested CPF Spreadsheet Lists addon is installed.
@@ -555,6 +546,8 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 
 [title="3"]state[/title]
 
+This field requires input of a raw ISO code. Ideally, you should use the 'region' field type instead as it is more intuitive for users.
+
 {| 15em wide
 ! Title
 | A state within a country
@@ -569,7 +562,7 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 | [i]None[/i]
 |-
 ! Special field validation behaviour
-| [i]None[/i]
+| If using American English, will ensure the typed ISO code is a valid U.S. state. Otherwise, it will ensure it is a valid region ISO code.
 |-
 ! Privacy (managing personal data) behaviour
 | Will match against [tt]Other[/tt] (additional anonymise fields) criteria if 'May contain personal information' is ticked/checked.
@@ -611,12 +604,14 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 
 [title="3"]region[/title]
 
+A 'region' is a way to define a country and province/state. The field has two dropdowns, one for country and one for region. When a country is selected, the region dropdown will be populated (via AJAX / JavaScript) with its regions.
+
 {| 15em wide
 ! Title
 | A region
 |-
 ! Storage format (for programmer reference)
-| Up to 255 characters of text
+| Up to 255 characters of text (stores the ISO code of the country/region)
 |-
 ! Special default values
 | [i]None[/i]
@@ -637,8 +632,6 @@ A pathname to a [tt].csv[/tt] spreadsheet file (relative to base directory), if 
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600"]data_custom/images/docs/tut_fields/core_fields_frontend__region.png[/media]
 |}
 
-By default a 'region' is the same as a 'country', but it may be overridden by addons to represent something more appropriate for a particular kind of website.
-
 [title="3"]tick[/title]
 
 {| 15em wide
@@ -658,7 +651,7 @@ By default a 'region' is the same as a 'country', but it may be overridden by ad
 | [i]None[/i]
 |-
 ! Privacy (managing personal data) behaviour
-| Will be unticked/unchecked if entry owner requests if 'May contain personal information' is ticked/checked.
+| Will be unticked (unchecked) if entry owner requests if 'May contain personal information' is ticked/checked.
 |-
 ! Back-end UI
 | [media framed="1" wysiwyg_editable="1" thumb="0" width="600" description="If set as required it will not actually show as required as it is not possible for it to not have a value"]data_custom/images/docs/tut_fields/core_fields_backend__tick__required.png[/media]
@@ -1527,7 +1520,7 @@ Generally the fields system is built on top of the lower level fields API within
 
 [title="3"]Extending the set of fields[/title]
 
-Programmers may add new field types by writing new [tt]systems/fields[/tt] hook code files. Programming is beyond the scope of this tutorial, but it is relatively easy for a programmer to see how the existing hooks were coded (all existing fields are hook-based too).
+Programmers may add new field types by writing new [tt]systems/fields[/tt] hook code files and referring to existing field hooks to see how they are written.
 
 [concepts
  1_key="Front-end"   1_value="The regular website"

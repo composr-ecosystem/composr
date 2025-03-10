@@ -187,6 +187,7 @@ class Hook_fields_member_multi
                 $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($_value);
                 if ($member_id === null) {
                     attach_message(do_lang_tempcode('javascript:NOT_USERNAME', escape_html($_value)), 'warn');
+                    $i++;
                     continue; // Skip invalid members
                 }
                 if ($value != '') {

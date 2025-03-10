@@ -2853,7 +2853,7 @@ function cns_can_edit_birthday(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_dob') !== null) {
+    if ($pc->get_attribute('lock_dob') !== null) {
         if ($member_id === null) {
             return false;
         }
@@ -2895,7 +2895,7 @@ function cns_can_edit_timezone(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_timezone') !== null) {
+    if ($pc->get_attribute('lock_timezone') !== null) {
         return false;
     }
 
@@ -2918,7 +2918,7 @@ function cns_can_edit_region(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_region') !== null) {
+    if ($pc->get_attribute('lock_region') !== null) {
         return false;
     }
 

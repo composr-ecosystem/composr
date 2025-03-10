@@ -527,6 +527,7 @@ class Hook_addon_registry_core_configuration
             'TITLE' => lorem_screen_title(),
             'DESCRIPTION' => lorem_paragraph_html(),
             'REVISIONS' => lorem_paragraph_html(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 

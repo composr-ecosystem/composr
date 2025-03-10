@@ -62,19 +62,18 @@ class Hook_config_telemetry
      */
     public function postsave_handler(string $new_value)
     {
-        // If disabling telemetry, destroy the site public and private key pairs
+        // If disabling telemetry, destroy the site keys
         if ($new_value == '0') {
-            @unlink(get_file_base() . '/data_custom/keys/telemetry-site.pub');
-            @unlink(get_file_base() . '/data_custom/keys/telemetry-site.key');
-            @unlink(get_file_base() . '/data_custom/keys/telemetry-site-sign.pub');
-            @unlink(get_file_base() . '/data_custom/keys/telemetry-site-sign.key');
+            @unlink(get_file_base() . '/data_custom/keys/telemetry-site.json');
+
+            require_lang('privacy');
 
             attach_message(do_lang_tempcode('TELEMETRY_DATA_STILL_EXISTS'), 'notice');
             return;
         }
 
         // We need to make sure we are registered with the telemetry service.
-        require_code('encryption');
+        require_code('telemetry');
         $success = register_site_telemetry();
         if ($success === false) {
             require_lang('privacy');

@@ -427,6 +427,7 @@ class Hook_ecommerce_tax_taxjar
                 'CONTENT' => $tjs,
                 'INLINE_LIST' => false,
                 'SIZE' => strval(5),
+                'READ_ONLY' => false,
             ]);
             $field_set->attach(_form_input($set_name . '_tj', do_lang_tempcode('TAX_TJ'), do_lang_tempcode('DESCRIPTION_TAX_TJ'), $input, $required, false, $tabindex));
         }

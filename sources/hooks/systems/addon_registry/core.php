@@ -95,6 +95,8 @@ class Hook_addon_registry_core
         return [
             'tut_do',
             'tut_drinking',
+            'tut_endpoints',
+            'tut_foss',
             'tut_metadata',
             'tut_sql',
             'tut_url_schemes',
@@ -677,7 +679,6 @@ class Hook_addon_registry_core
             'data/installed.php',
             'data/keys/.htaccess',
             'data/keys/index.html',
-            'data/keys/telemetry.pub',
             'data/maintenance_status.csv',
             'data/modules/index.html',
             'data/page_link_redirect.php',

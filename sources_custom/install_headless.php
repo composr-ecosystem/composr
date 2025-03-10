@@ -109,7 +109,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'cns_table_prefix' => $table_prefix,
         'maintenance_password' => '',
         'maintenance_password_confirm' => '',
-        'send_error_emails_developers' => '1', // TODO
+        'telemetry' => '1',
         'admin_username' => 'admin',
         'cns_admin_password' => '',
         'cns_admin_password_confirm' => '',
@@ -127,7 +127,7 @@ function _do_install_to($database, $username, $password, $table_prefix, $safe_mo
         'db_forums_host' => get_db_site_host(),
         'db_forums_user' => $username_forums,
         'db_forums_password' => $password_forums,
-        'multi_lang_content' => '0',
+        'value__multi_lang_content' => '0',
         'self_learning_cache' => '0',
         'confirm' => '1',
     ];

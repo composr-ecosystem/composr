@@ -306,6 +306,7 @@ class Hook_addon_registry_core_addon_management
             'INSTALL_FILES' => $install_files,
             'UNINSTALL_FILES' => $uninstall_files,
             'WARNINGS' => lorem_phrase(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -359,6 +360,7 @@ class Hook_addon_registry_core_addon_management
             'COPYRIGHT_ATTRIBUTION' => lorem_phrase(),
             'LICENCE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -377,6 +379,7 @@ class Hook_addon_registry_core_addon_management
             'NAME' => lorem_word(),
             'WARNINGS' => lorem_phrase(),
             'FILES' => placeholder_list_item(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 

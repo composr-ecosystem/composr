@@ -307,6 +307,7 @@ class Hook_addon_registry_core_abstract_components
     public function tpl_preview__button_screen() : object
     {
         return lorem_globalise(do_lorem_template('BUTTON_SCREEN', [
+            'NAME' => null,
             'IMMEDIATE' => true,
             'URL' => placeholder_url(),
             'TITLE' => lorem_word(),

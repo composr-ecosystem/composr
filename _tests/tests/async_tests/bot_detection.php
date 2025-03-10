@@ -71,6 +71,8 @@ class bot_detection_test_set extends cms_test_case
         ksort($BOT_MAP_CACHE);
 
         require_code('diff');
-        $this->assertTrue($BOT_MAP_CACHE == $file_bots, diff_simple_text(implode("\n", $BOT_MAP_CACHE), implode("\n", $file_bots)));
+        $ok = ($BOT_MAP_CACHE == $file_bots);
+        $this->assertTrue($ok, 'Bot list /text/bots.txt not in sync');
+        echo '<p>' . diff_simple_text(implode("\n", $BOT_MAP_CACHE), implode("\n", $file_bots)) . '</p>';
     }
 }

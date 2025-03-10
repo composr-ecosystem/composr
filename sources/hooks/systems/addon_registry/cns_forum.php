@@ -1127,6 +1127,7 @@ class Hook_addon_registry_cns_forum
         $buttons = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
+                'NAME' => null,
                 'REL' => lorem_word(),
                 'URL' => placeholder_url(),
                 'IMG' => 'buttons/proceed',
@@ -1584,6 +1585,7 @@ class Hook_addon_registry_cns_forum
         $buttons = new Tempcode();
         foreach (placeholder_array() as $k => $v) {
             $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
+                'NAME' => null,
                 'REL' => lorem_word(),
                 'URL' => placeholder_url(),
                 'IMG' => 'buttons/proceed',
@@ -1897,6 +1899,7 @@ class Hook_addon_registry_cns_forum
             $buttons = new Tempcode();
             foreach (placeholder_array(1) as $_k => $_v) {
                 $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
+                    'NAME' => null,
                     'REL' => lorem_word(),
                     'IMMEDIATE' => null,
                     'URL' => placeholder_url(),
@@ -2024,6 +2027,7 @@ class Hook_addon_registry_cns_forum
         $buttons = new Tempcode();
         foreach (placeholder_array(1) as $k => $v) {
             $buttons->attach(do_lorem_template('BUTTON_SCREEN', [
+                'NAME' => null,
                 'REL' => lorem_word(),
                 'IMMEDIATE' => '',
                 'URL' => placeholder_url(),

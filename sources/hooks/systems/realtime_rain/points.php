@@ -159,7 +159,7 @@ class Hook_realtime_rain_points
 
                     // These are for showing connections between drops. They are not discriminated, it's just three slots to give an ID code that may be seen as a commonality with other drops.
                     'FROM_ID' => 'member_' . strval($member_id),
-                    'TO_ID' => (($receiving_member !== null) ? 'member_' . strval($receiving_member) : null),
+                    'TO_ID' => (($receiving_member !== null) ? ('member_' . strval($receiving_member)) : null),
                     'GROUP_ID' => null,
                 ];
             }

@@ -99,7 +99,7 @@ class Hook_addon_registry_chat
      */
     public function get_description() : string
     {
-        return "Add basic real-time chat rooms and Instant Messaging on your site which runs natively in the software (no special message broker software required).";
+        return "Add basic real-time chatrooms and Instant Messaging on your site which runs natively in the software (no special message broker software required).";
     }
 
     /**

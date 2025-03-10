@@ -527,6 +527,7 @@ class Hook_addon_registry_galleries
             'CONTENT' => $orphaned_content,
             'INLINE_LIST' => true,
             'SIZE' => '9',
+            'READ_ONLY' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,

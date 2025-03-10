@@ -408,6 +408,11 @@ function get_theme_option(string $name, ?string $default = null, ?string $theme 
  */
 function get_option(string $name, bool $missing_ok = false) : ?string
 {
+    // TODO: forced on temporarily due to a bug; see tracker issue #6166
+    if (($name == 'single_public_zone') && (get_option('url_scheme') == 'RAW')) {
+        return '1';
+    }
+
     global $CONFIG_OPTIONS_CACHE, $CONFIG_OPTIONS_FULLY_LOADED, $SMART_CACHE;
 
     require_code('lang');
@@ -509,6 +514,8 @@ function get_option(string $name, bool $missing_ok = false) : ?string
  */
 function get_value(string $name, ?string $default = null, bool $elective_or_lengthy = false, bool $env_also = false) : ?string
 {
+    //check_for_infinite_loop('get_value', [$name, $elective_or_lengthy, $env_also], 100);
+
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
         if (!array_key_exists($name, $VALUE_OPTIONS_ELECTIVE_CACHE)) {

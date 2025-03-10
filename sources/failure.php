@@ -1303,7 +1303,7 @@ function relay_error_notification(string $text, bool $developers = true, string 
         (strpos($error_message, 'telemetry: ') === false)
     ) {
         // Send the error securely to the core developers (telemetry) using an encrypted raw fsock request
-        require_code('encryption');
+        require_code('telemetry');
 
         if (is_encryption_enabled_telemetry()) {
             require_code('version');

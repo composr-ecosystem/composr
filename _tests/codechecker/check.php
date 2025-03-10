@@ -660,7 +660,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 break;
 
             case 'FOREACH_map':
-                $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
+                $passes = ensure_type(['array', 'object-RecursiveIteratorIterator'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
                     infer_expression_type_to_variable_type('array', $c[1]);
                 }
@@ -686,7 +686,7 @@ function check_command($command, $depth, $function_guard = '', $nogo_parameters 
                 break;
 
             case 'FOREACH_list':
-                $passes = ensure_type(['array'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
+                $passes = ensure_type(['array', 'object-RecursiveIteratorIterator'], check_expression($c[1], false, false, $function_guard), $c_pos, 'Foreach must take array');
                 if ($passes) {
                     infer_expression_type_to_variable_type('array', $c[1]);
                 }

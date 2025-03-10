@@ -821,6 +821,7 @@ class Hook_addon_registry_core_form_interfaces
             'templates/FORM_SCREEN_INPUT_LINE_MULTI.tpl' => 'form_screen_2',
             'templates/FORM_SCREEN_INPUT_TEXT_MULTI.tpl' => 'form_screen_2',
             'templates/FORM_SCREEN_INPUT_USERNAME_MULTI.tpl' => 'form_screen_2',
+            'templates/FORM_SCREEN_INPUT_GROUP.tpl' => 'form_screen_2',
             'templates/FORM_SCREEN_INPUT_TEXT.tpl' => 'form_screen_1',
             'templates/FORM_SCREEN_INPUT_HUGE_COMCODE.tpl' => 'form_screen_1',
             'templates/FORM_SCREEN_INPUT_HUGE.tpl' => 'form_screen_1',
@@ -1514,6 +1515,7 @@ class Hook_addon_registry_core_form_interfaces
             'CONTENT' => $list,
             'INLINE_LIST' => false,
             'SIZE' => '9',
+            'READ_ONLY' => false,
         ]);
         $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,
@@ -1711,6 +1713,25 @@ class Hook_addon_registry_core_form_interfaces
             'REQUIRED' => true,
             'SKIP_LABEL' => true,
             'NAME' => placeholder_random_id(),
+            'PRETTY_NAME' => lorem_word(),
+            'DESCRIPTION' => lorem_sentence_html(),
+            'DESCRIPTION_SIDE' => '',
+            'INPUT' => $input,
+            'COMCODE' => '',
+        ]));
+
+        $name = placeholder_random_id();
+        $input = do_lorem_template('FORM_SCREEN_INPUT_GROUP', [
+            'TABINDEX' => placeholder_number(),
+            'NEEDS_MATCH' => true,
+            'REQUIRED' => '',
+            'NAME' => $name,
+            'DEFAULT' => '',
+        ]);
+        $fields->attach(do_lorem_template('FORM_SCREEN_FIELD', [
+            'REQUIRED' => true,
+            'SKIP_LABEL' => false,
+            'NAME' => $name,
             'PRETTY_NAME' => lorem_word(),
             'DESCRIPTION' => lorem_sentence_html(),
             'DESCRIPTION_SIDE' => '',

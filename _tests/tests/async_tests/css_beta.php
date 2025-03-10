@@ -61,7 +61,6 @@ class css_beta_test_set extends cms_test_case
                 $files = get_directory_contents($dir);
                 foreach ($files as $e) {
                     if (in_array($e, [ // Exceptions
-                        'confluence.css',
                         'mediaelementplayer.css',
                         'widget_select2.css',
                         'widget_color.css',

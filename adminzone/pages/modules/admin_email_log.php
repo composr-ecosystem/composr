@@ -493,7 +493,7 @@ class Module_admin_email_log
         $post_url = build_url(['page' => '_SELF', 'type' => '_edit', 'id' => $id], '_SELF');
 
         require_code('form_templates');
-        list($warning_details, $ping_url) = handle_conflict_resolution($id);
+        list($warning_details, $ping_url) = handle_conflict_resolution(strval($id));
 
         return do_template('FORM_SCREEN', [
             '_GUID' => '84c9b97944b6cf799ac1abb5044d426a',

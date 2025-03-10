@@ -24,7 +24,7 @@ Some further information about zones is covered in the [page="_SEARCH:tut_subcom
 
 [media width="150" description="This is a detailed annotated diagram that explains Composr site structure" float="right"]data_custom/images/docs/tut_structure/structure_main.png[/media]
 There are a few different types of Composr 'page':
- - [b]Comcode pages[/b] -- these are textual pages, written in Comcode (described in another tutorial)
+ - [b]Comcode pages[/b] -- these are textual pages, written in Comcode (described in [page="_SEARCH:tut_comcode_pages"]Adding standalone pages of content (via Comcode)[/page])
  - [b]Modules[/b] -- these are formal code-based pages
  - [b]HTML pages[/b] -- these are full static pages written in HTML, and rarely used except for caching purposes (generally we should use Comcode pages with the Comcode [tt]html[/tt] tag instead)
  - [b]Mini-modules[/b] -- these are like modules, except much easier to write; the developers do not use them for core Composr code, as they do not have the same 'API' around them that we need to maintain our clean architecture. But most novice Composr developers may wish to start off using mini-modules as they can simply echo or return out what to show on the page.
@@ -328,7 +328,7 @@ We don't use the Sitemap for the breadcrumb generation because it is generated b
 
 URLs form another kind of website structure.
 
-URLs are not primarily discussed in this tutorial, but are covered in these tutorials:
+URLs are are covered in these tutorials:
  - [page="_SEARCH:sup_how_internet_works"]How the Internet actually works[/page] (web technology in general)
  - [page="_SEARCH:tut_seo"]Improving your search engine ranking[/page] (monikers)
  - [page="_SEARCH:tut_url_schemes"]URL Schemes in Composr[/page] (short URLs)
@@ -339,11 +339,13 @@ There are a number of different schemes for generating URL structures.
 
 [title="4"]The Repository[/title]
 
-The Repository is not primarily discussed in this tutorial, but does have its own structure. The repository is a directory/file view of a Composr website. It is a kind of mix of the Sitemap structure, and a Unix directory structure.
+The Repository has its own structure. The repository is a directory/file view of a Composr website. It is a kind of mix of the Sitemap structure, and a Unix directory structure.
+
+See [page="_SEARCH:tut_repository"]The Composr Enterprise Repository[/page] for more information.
 
 [title="4"]Disk structure, and the database[/title]
 
-There is also the structure of your files on disk. The structure of the pages is described under "Pages" above, and the structure of the other Composr files is outside the scope of this tutorial. There is no on-disk representation for most Composr content, as it is stored in the database, using a relational database schema (the actual tree structure is generated out from this flat database structure).
+There is also the structure of your files on disk. The structure of the pages is described under "Pages" above, and you may wish to consult the [page="_SEARCH:codebook"]Code Book, contents and introduction[/page] for more information on Composr's structure. There is no on-disk representation for most Composr content, as it is stored in the database, using a relational database schema (the actual tree structure is generated out from this flat database structure).
 
 [title="3]The Sitemap editor[/title]
 

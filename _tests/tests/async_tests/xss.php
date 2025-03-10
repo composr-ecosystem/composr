@@ -112,6 +112,8 @@ class xss_test_set extends cms_test_case
         global $PRIVILEGE_CACHE;
         $PRIVILEGE_CACHE[get_member()]['unfiltered_input'][''][''][''] = false;
 
+        clear_infinite_loop_iterations('has_privilege');
+
         $_POST['foo'] = '_config.php';
         $this->assertTrue(strpos(post_param_string('foo'), '_config.php') === false);
 

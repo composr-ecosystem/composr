@@ -209,8 +209,8 @@ function set_privilege(int $group_id, string $permission, bool $value, ?string $
     $db->query_delete('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $permission_module, 'category_name' => $category_name], '', 1);
     $db->query_insert('group_privileges', ['privilege' => $permission, 'group_id' => $group_id, 'the_page' => $page, 'module_the_name' => $permission_module, 'category_name' => $category_name, 'the_value' => $value ? 1 : 0]);
 
-    global $PRIVILEGE_CACHE;
-    $PRIVILEGE_CACHE = [];
+    require_code('permissions');
+    clear_permissions_runtime_cache();
 }
 
 /**
@@ -224,6 +224,9 @@ function rename_privilege(string $old, string $new)
     $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_name' => $new], ['the_name' => $old], '', 1);
     $GLOBALS['SITE_DB']->query_update('group_privileges', ['privilege' => $new], ['privilege' => $old], '', 1);
     $GLOBALS['SITE_DB']->query_update('member_privileges', ['privilege' => $new], ['privilege' => $old], '', 1);
+
+    require_code('permissions');
+    clear_permissions_runtime_cache();
 }
 
 /**
@@ -247,4 +250,7 @@ function delete_privilege($privileges)
 
     $GLOBALS['SITE_DB']->query($privilege_list_query);
     $GLOBALS['SITE_DB']->query($group_privileges_query);
+
+    require_code('permissions');
+    clear_permissions_runtime_cache();
 }

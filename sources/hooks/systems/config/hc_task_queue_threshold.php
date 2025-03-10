@@ -37,6 +37,7 @@ class Hook_config_hc_task_queue_threshold
             'group' => 'PERFORMANCE',
             'explanation' => 'CONFIG_OPTION_hc_task_queue_threshold',
             'shared_hosting_restricted' => '0',
+            'order_in_category_group' => 13,
             'list_options' => '',
             'required' => true,
             'public' => false,

@@ -469,6 +469,7 @@ class Module_cms_quiz extends Standard_crud_module
             $myrow['q_reattempt_hours'],
             $myrow['q_type'],
             $myrow['q_validated'],
+            $myrow['q_validation_time'],
             $text,
             $myrow['q_points_for_passing'],
             $myrow['q_newsletter_id'],

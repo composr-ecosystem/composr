@@ -1013,7 +1013,7 @@ function do_site()
     }
 
     // Pace.js progress bar
-    if (get_theme_option('enable_pace')) {
+    if (get_theme_option('enable_pace') == '1') {
         require_css('pace');
         require_javascript('pace');
     }
@@ -1182,7 +1182,7 @@ function do_site()
         }
 
         // Send very basic software details to homesite if enabled
-        require_code('encryption');
+        require_code('telemetry');
         if ((is_encryption_enabled_telemetry()) && (!is_local_machine()) && (get_option('telemetry') == '2') && (get_value_newer_than('last_call_home', time() - (60 * 60 * 24)) === null)) {
             require_code('version2');
             $count_members = $GLOBALS['FORUM_DRIVER']->get_num_members();
@@ -1206,7 +1206,7 @@ function do_site()
                     cms_error_log(brand_name() . ' telemetry: WARNING Could not forward site statistics to the developers. ' . $error_message . (($response === null) ? '' : escape_html($response)));
 
                     // Maybe something happened with the keys, or the base URL changed? Try re-registering in the background.
-                    cms_register_shutdown_function_safe(function() {
+                    cms_register_shutdown_function_safe(function () {
                         register_site_telemetry();
                     });
                 }
@@ -1226,6 +1226,8 @@ function do_site()
                     (get_value_newer_than('cron_currently_running', time() - (60 * 60), true) !== '1') && // Don't run if scheduled tasks are running now unless it's been over an hour
                     (get_value_newer_than('last_cron', time() - 60) === null) // Don't run if scheduled tasks ran in the last 60 seconds
                 ) {
+                    ob_flush(); // Send the rest of the data in the buffer if we have any
+
                     require_code('cron');
                     cron_run();
                 }

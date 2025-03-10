@@ -33,8 +33,6 @@ The good news is that most webhosting control panels come with high quality file
 7) Proceed to the file manager
 8) Unzip the ZIP file.
 
-If you are a very advanced user you can avoid steps 4-8 by directly transferring the ZIP from one server to another and unzipping from the shell. This is beyond the scope of this tutorial, however.
-
 [title="2"]File permissions[/title]
 
 Once files are transferred, you need to replicate the correct file permissions so that Composr can continue to function. File permissions are rarely transferred when actual files are transferred.

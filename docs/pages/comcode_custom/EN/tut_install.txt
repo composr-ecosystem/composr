@@ -120,6 +120,11 @@ Hopefully, at this point you'll receive this [url="success message" rel="lightbo
 [/surround]
 
 [surround]
+[media width="150" description="Step 5: Installation overwrite warning" float="right"]data_custom/images/docs/tut_install/install_step5_overwrite.png[/media]
+If you are attempting to install Composr in a directory or database where Composr was already detected as installed, you will get this warning. Proceeding will result in the immediate and permanent destruction of the previous Composr installation. Be careful, and do not use the installer to upgrade Composr (use [tt]upgrader.php[/tt] instead).
+[/surround]
+
+[surround]
 The installer will proceed through additional steps as follows:
  - Step 5:
   - Extract files (Quick installer only)
@@ -132,7 +137,7 @@ The installer will proceed through additional steps as follows:
  - Step 7:
   - Install critical modules: admin_version (contains a lot of core database tables), admin_addons (so we can install addons), admin_permissions (so addons can install permissions)
  - Step 8:
-  - Install addons, modules, and blocks.
+  - Install addons, modules, and blocks in order according to dependencies.
   - This step can take a few minutes. To help prevent server time-outs, the installer will try stopping after about every 5 seconds and refreshing.
   - Note that the installer will only install addons which have an addon_registry hook, and modules / blocks which belong to any of those addons. If you have any addons, modules, or blocks you are developing which are not in / do not have an addon_registry hook, they will not be installed automatically by the installer. This is because the installer needs to know the dependency structure of the addons, modules, and blocks it installs for a stable installation. You can manually install the rest of your in-development addons, modules, and blocks later.
  - Step 9:

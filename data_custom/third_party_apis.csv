@@ -4,7 +4,6 @@ Bing Geocoding,geocoding_bing,https://docs.microsoft.com/en-us/bingmaps/rest-ser
 Bing Translator,bing_translator,https://azure.microsoft.com/en-us/services/cognitive-services/translator-text-api/,Maintain,Yes,Apr 10th 2020,3,_api_translation,Translation,
 CCBill,gateway_ccbill,https://ccbill.com/cs/MG.php,Maintain,Yes,Apr 10th 2020,N/A,N/A,N/A,
 Clickatell,sms,https://www.clickatell.com/products/sms-api/,No action,Yes,N/A,N/A,N/A,N/A,"The XML API is deprecated, we should switch to the REST API. No sponsor so no action."
-Confluence,confluence,https://developer.atlassian.com/server/confluence/confluence-server-rest-api/,Maintain,No,Apr 11th 2020,N/A,_api_confluence,Confluence,
 currencyconverterapi.com,currency,https://free.currencyconverterapi.com/,Maintain,Yes,Apr 10th 2020,7,_api_currency,Currency conversions,
 GCM,composr_mobile_sdk_notifications,https://firebase.google.com/docs/cloud-messaging/,No action,No,N/A,N/A,N/A,N/A,"Broken, needs migrating to Firebase Cloud Messaging. No sponsor so no action."
 Google Analytics Embed,google_analytics,https://developers.google.com/analytics/,Maintain,Yes,Apr 10th 2020,1,N/A,N/A,

@@ -488,7 +488,7 @@ Speed can be approximately doubled if an "[b]opcode cache[/b]" is installed as a
 
 Opcode caching configuration sometimes lines up with persistent caching configuration, as Opcode cache backends often will also work as persistent cache backends.
 
-Only one opcode cache can be used, and they often need to be manually compiled against the PHP version on the server and then installed as an extension. Such system administration is beyond the scope of this tutorial.
+Only one opcode cache can be used, and they often need to be manually compiled against the PHP version on the server and then installed as an extension. You may need to consult your webhost for more information on how to do that.
 
 [title="4"]PHP version[/title]
 
@@ -1061,13 +1061,13 @@ MySQL has a number of great features for diagnosing performance issues.
 
 MySQL has a "slow query log" feature, which logs slow-running queries to a file.
 
-You enable it through the MySQL configuration (including at run-time). Documenting how is simple but beyond the scope of this tutorial.
+You enable it through the MySQL configuration (including at run-time). You can read up on how to do that on [url="https://dev.mysql.com/doc/refman/8.0/en/slow-query-log.html"]MySQL's Documentation (slow query log)[/url].
 
 [title="5"]General log[/title]
 
 To get an idea what kind of queries are running, you can enable the general log. Maybe queries aren't slow per-se, but you may (for example) have too many queries and need to see where the workload is.
 
-You enable it through the MySQL configuration (including at run-time). Documenting how is simple but beyond the scope of this tutorial.
+You enable it through the MySQL configuration (including at run-time). You can read up on how to do that on [url="https://dev.mysql.com/doc/refman/8.0/en/query-log.html"]MySQL's Documentation (query log)[/url].
 
 [title="5"]Process list[/title]
 
@@ -1097,7 +1097,7 @@ MySQL also maintains some simple global counts of problematic queries as statuse
 SHOW GLOBAL STATUS LIKE 'Created_tmp%';
 [/code]
 
-Documenting all the things you can query is beyond the scope of this tutorial. Check the MySQL documentation and/or look at what tables and fields there are.
+Check the MySQL documentation and/or look at what tables and fields there are if you would like to learn more.
 
 [title="4"]Composr's page stats[/title]
 

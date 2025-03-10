@@ -255,7 +255,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     $this_ratchet = get_ratchet_cost($row['m_pass_hash_salted']);
                     if ($this_ratchet !== null) {
                         $current_ratchet = get_option('crypt_ratchet');
-                        if ($current_ratchet != $this_ratchet) {
+                        if (intval($current_ratchet) != $this_ratchet) {
                             $needs_rehash = true;
                         }
                     }

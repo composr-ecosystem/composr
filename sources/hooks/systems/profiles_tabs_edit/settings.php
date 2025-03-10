@@ -413,7 +413,7 @@ class Hook_profiles_tabs_edit_settings
             $myrow['m_validated'],
             $myrow['m_probation_expiration_time'],
             $myrow['m_is_perm_banned'],
-            $myrow['m_parental_consent'],
+            $myrow['m_parental_consent']
         );
 
         // Awards?

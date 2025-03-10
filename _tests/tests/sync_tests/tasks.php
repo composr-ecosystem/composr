@@ -214,8 +214,8 @@ class tasks_test_set extends cms_test_case
         $ok = ($last_rows_before == $last_rows_after);
         $this->assertTrue($ok, 'Our test events changed during the export/import cycle');
         if ((!$ok) && ($this->debug)) {
-            $this->dump($last_rows_before, 'BEFORE');
-            $this->dump($last_rows_after, 'AFTER');
+            require_code('diff');
+            echo "\n" . diff_simple_text(json_encode($last_rows_before, JSON_PRETTY_PRINT), json_encode($last_rows_after, JSON_PRETTY_PRINT));
         }
 
         foreach ($_last_rows_after as $row) {

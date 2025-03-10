@@ -25,6 +25,10 @@ class Hook_task_compile_api
      */
     public function run() : ?array
     {
+        if (!addon_installed('composr_tutorials')) {
+            return null;
+        }
+
         disable_php_memory_limit();
         $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL); // Can be very, very slow
 

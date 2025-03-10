@@ -213,7 +213,7 @@ As you can see, that's complex, so unless you have a spam problem here that your
 [media_set]
 [media width="150" description="Initially there is no poll, so the poll block displays like this" float="right"]data_custom/images/docs/tut_feedback/feedback_no_poll.png[/media]
 [media width="150" description="Adding a poll" float="right"]data_custom/images/docs/tut_feedback/feedback_add_poll.png[/media]
-[media width="150" description="The poll block, once a poll is chosen" float="right"]data_custom/images/docs/tut_feedback/feedback_poll.png[/media]
+[media width="150" description="The poll block, once a poll is chosen" float="right"]data_custom/images/docs/tut_feedback/feedback_poll_page.png[/media]
 [/media_set]
 {!polls:DOC_POLLS}
 Polls are managed from Admin Zone > Content > Polls.

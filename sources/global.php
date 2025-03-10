@@ -1315,9 +1315,7 @@ function list_untouchable_third_party_files() : array
         'mobiquo/smartbanner/appbanner.js',
         'mobiquo/tapatalkdetect.js',
         'sources_custom/browser_detect.php',
-        'sources_custom/curl.php',
         'sources_custom/geshi.php',
-        'sources_custom/sugar_crm_lib.php',
         'sources/firephp.php',
         //'sources/jsmin.php', We maintain this now
         //'sources/lang_stemmer_EN.php', We maintain this now
@@ -1327,7 +1325,6 @@ function list_untouchable_third_party_files() : array
         '_tests/codechecker/pom.xml',
         '_tests/libs/mf_parse.php',
         'themes/default/css_custom/columns.css',
-        'themes/default/css_custom/confluence.css',
         'themes/default/css_custom/flip.css',
         'themes/default/css_custom/google_search.css',
         'themes/default/css/skitter.css',
@@ -1340,8 +1337,6 @@ function list_untouchable_third_party_files() : array
         'themes/default/css/toastify.css',
         'themes/default/javascript/charts.js',
         'themes/default/javascript_custom/columns.js',
-        'themes/default/javascript_custom/confluence2.js',
-        'themes/default/javascript_custom/confluence.js',
         'themes/default/javascript_custom/jquery_flip.js',
         'themes/default/javascript/skitter.js',
         'themes/default/javascript_custom/sortable_tables.js',

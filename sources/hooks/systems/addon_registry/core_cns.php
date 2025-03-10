@@ -98,6 +98,7 @@ class Hook_addon_registry_core_cns
             'tut_users',
             'tut_httpauth',
             'tut_emoticons',
+            'tut_parental_controls',
         ];
     }
 

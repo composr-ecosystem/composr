@@ -339,6 +339,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'BACK_URL' => placeholder_url(),
             'PREVIEW' => lorem_phrase(),
             'FIELDS' => lorem_phrase(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -932,7 +933,6 @@ class Hook_addon_registry_core_abstract_interfaces
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERCODE_BOX' => placeholder_form(),
-            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -1016,7 +1016,6 @@ class Hook_addon_registry_core_abstract_interfaces
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERCODE_BOX' => placeholder_form(),
-            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 

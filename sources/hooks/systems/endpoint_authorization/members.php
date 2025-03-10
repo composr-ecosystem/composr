@@ -55,7 +55,9 @@ class Hook_endpoint_authorization_members
         // Try device/cookie authorization (the endpoint script would have already transferred POSTed cookie info into the COOKIE variables of PHP by now)
         if ($member === null) {
             $login_array = $GLOBALS['FORUM_DRIVER']->authorise_cookie_login();
-            $member = $login_array['id'];
+            if ($login_array !== null) {
+                $member = $login_array['id'];
+            }
         }
 
         // Try session authorization

@@ -262,6 +262,7 @@ class Hook_addon_registry_community_billboard
             'CONTENT' => $out,
             'INLINE_LIST' => true,
             'SIZE' => '9',
+            'READ_ONLY' => false,
         ]);
         $fields = do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,

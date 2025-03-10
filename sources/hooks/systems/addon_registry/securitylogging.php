@@ -298,8 +298,9 @@ class Hook_addon_registry_securitylogging
         ]);
         return lorem_globalise(do_lorem_template('LOOKUP_SCREEN', [
             'TITLE' => lorem_screen_title(),
-            'ALERTS' => lorem_phrase(),
-            'STATS' => lorem_phrase(),
+            'ALERTS' => placeholder_table(),
+            'STATS' => placeholder_table(),
+            'ACTIONLOG' => placeholder_table(),
             'IP_LIST' => $group,
             'IP_BANNED' => lorem_phrase(),
             'SUBMITTER_BANNED' => lorem_phrase(),

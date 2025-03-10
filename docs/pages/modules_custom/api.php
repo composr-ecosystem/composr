@@ -517,7 +517,7 @@ class Module_api
 
         $rows = new Tempcode();
         foreach ($classes as $class) {
-            $class_link = hyperlink(build_url(['page' => 'api', 'type' => $class['c_name']], get_module_zone('api')), $class['c_name'], false, true);
+            $class_link = hyperlink(build_url(['page' => '_SELF', 'type' => $class['c_name']], '_SELF'), $class['c_name'], false, true);
             $rows->attach(results_entry([$class_link], false));
         }
 
@@ -604,7 +604,7 @@ class Module_api
 
         $rows = new Tempcode();
         foreach ($functions as $function) {
-            $function_link = hyperlink(build_url(['page' => 'api', 'type' => $class, 'id' => $function['f_name']], get_module_zone('api')), $function['f_name'], false, true);
+            $function_link = hyperlink(build_url(['page' => '_SELF', 'type' => $class, 'id' => $function['f_name']], '_SELF'), $function['f_name'], false, true);
             $rows->attach(results_entry([$function_link], false));
         }
 

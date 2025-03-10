@@ -136,7 +136,7 @@ class Hook_content_meta_aware_wiki_post extends Hook_CMA
             if (array_key_exists('page_id', $row)) {
                 $wiki_page_title = $GLOBALS['SITE_DB']->query_select_value_if_there('wiki_pages', 'title', ['id' => $row['page_id']]);
                 if ($wiki_page_title !== null) {
-                    $ret = do_lang('wiki:WIKI_POST_ON', $wiki_page_title);
+                    $ret = do_lang('wiki:WIKI_POST_ON', get_translated_text($wiki_page_title));
                 } else {
                     $ret = do_lang('wiki:WIKI_POST_ON', ltrim($ret, '#'));
                 }

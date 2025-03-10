@@ -783,7 +783,7 @@
 
     $cms.templates.formScreenInputList = function formScreenInputList(params, container) {
         var selectEl = document.getElementById(params.name);
-        
+
         var imageSources;
 
         if (params.inlineList) {
@@ -806,7 +806,7 @@
         if (window.jQuery && (window.jQuery.fn.select2 != null) && (selectEl.options.length > 20)/*only for long lists*/ && (!$dom.html(selectEl.options[1]).match(/^\d+$/)/*not for lists of numbers*/)) {
             selectEl.classList.remove('form-control');
             window.jQuery(selectEl).select2(select2Options);
-            
+
             if (selectEl.classList.contains('js-onchange-country-region')) {
                 $(selectEl).on('select2:select', function (e) {
                     loadRegionList(e.target);
@@ -837,7 +837,7 @@
 
         function loadRegionList(input) {
             var regionId = input.id.substring(0, (input.id.length - 8)) + '_region';
-    
+
             if (input.form) {
                 if (input.form.elements[regionId] !== undefined) {
                     $dom.html(input.form.elements[regionId], '<option value="">{!LOADING;^}</option>');

@@ -53,6 +53,7 @@ class Hook_endpoint_cms_homesite_telemetry
     public function run(?string $type, ?string $id) : array
     {
         require_code('cms_homesite');
+        require_code('telemetry');
 
         switch ($type) {
             // Relay an error message
@@ -80,7 +81,6 @@ class Hook_endpoint_cms_homesite_telemetry
                 $sign_public_key = $site[0]['sign_public_key'];
 
                 // Decrypt our message
-                require_code('encryption');
                 $_data = decrypt_data_site_telemetry($data['nonce'], $data['encrypted_data'], $public_key, $sign_public_key, floatval($data['version']));
                 $decrypted_data = @unserialize($_data);
                 if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('error_message', $decrypted_data)) {
@@ -200,13 +200,8 @@ class Hook_endpoint_cms_homesite_telemetry
 
             // Get the software public key, where ID is the version
             case 'key':
-                require_code('global3');
-                $file = cms_file_get_contents_safe(get_file_base() . '/data_custom/keys/telemetry-' . strval($id) . '.pub');
-                if ($file === false) {
-                    http_response_code(404);
-                    return ['success' => false, 'error_details' => 'A public key for the specified version was not found.'];
-                }
-                return ['success' => true, 'key' => $file];
+                list($public_key) = get_software_keys_telemetry(floatval($id));
+                return ['success' => true, 'key' => $public_key];
 
             // Register a site in the telemetry service
             case 'register':
@@ -224,7 +219,6 @@ class Hook_endpoint_cms_homesite_telemetry
                 }
 
                 // Decrypt our message using the software keys
-                require_code('encryption');
                 $_data = decrypt_data_telemetry($data['nonce'], $data['encrypted_data'], $data['encrypted_session_key'], floatval($data['version']));
                 $decrypted_data = @unserialize($_data);
                 if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data) || !array_key_exists('website_name', $decrypted_data) || !array_key_exists('public_key', $decrypted_data) || !array_key_exists('sign_public_key', $decrypted_data) || !array_key_exists('challenge', $decrypted_data)) {
@@ -306,7 +300,6 @@ class Hook_endpoint_cms_homesite_telemetry
                 $sign_public_key = $site[0]['sign_public_key'];
 
                 // Decrypt our message (this is just to validate that the request actually came from the site specified)
-                require_code('encryption');
                 $_data = decrypt_data_site_telemetry($data['nonce'], $data['encrypted_data'], $public_key, $sign_public_key, floatval($data['version']));
                 $decrypted_data = @unserialize($_data);
                 if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('website_url', $decrypted_data)) {

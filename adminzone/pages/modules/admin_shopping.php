@@ -366,8 +366,6 @@ class Module_admin_shopping
             $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '1d670698a7e9ddf12c0b2b9347bd4522', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
-        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-
         $filtercode_box = do_block('main_content_filtering', [
             'param' => implode(',', $filtercode),
             'table' => 'shopping_orders',
@@ -381,7 +379,6 @@ class Module_admin_shopping
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
 

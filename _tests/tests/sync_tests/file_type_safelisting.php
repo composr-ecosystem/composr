@@ -214,7 +214,7 @@ class file_type_safelisting_test_set extends cms_test_case
                     continue;
                 }
 
-                $this->assertTrue(isset($known_file_types[$ext]), 'Unrecognised file type, ' . $path . '/' . $ext);
+                $this->assertTrue(isset($known_file_types[$ext]), 'Unrecognised file type, ' . $path . ' (' . $ext . ')');
             }
         }
     }

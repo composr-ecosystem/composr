@@ -170,6 +170,8 @@ function load_php_metadetails()
         'php_user_filter' => true,
 
         'Directory' => true,
+
+        'IsoCodesFactory' => true,
     ];
 
     // Special funcs (these may have been defined with stubs, but this says to mark them as requiring guards anyway)...

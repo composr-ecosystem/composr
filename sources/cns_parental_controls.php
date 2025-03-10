@@ -18,6 +18,8 @@
  * @package    core_cns
  */
 
+/*EXTRA FUNCTIONS: simplexml_.**/
+
 /*
     Each control could/should have the following private functions in the Parental_controls_loader class:
     - pcv__* (required): A validation function to validate the XML for this specific control (global parameters are already checked) and to return parsed data
@@ -26,6 +28,11 @@
     - pcppg__* (optional but recommended): Generate 'general' Privacy Policy entries for this control based on the configuration
 */
 
+/**
+ * Standard initialisation for parental controls code.
+ *
+ * @ignore
+ */
 function init__cns_parental_controls()
 {
     require_lang('cns');
@@ -35,7 +42,7 @@ function init__cns_parental_controls()
  * Initialise the parental control settings (or simply return the class if already initialised).
  *
  * @param  boolean $show_errors Whether to attach validation errors as messages
- * @return Parental_controls_loader The parental control class
+ * @return object The parental control class
  */
 function load_parental_control_settings(bool $show_errors = false) : object
 {
@@ -190,12 +197,12 @@ class Parental_controls_loader
     }
 
     /**
-     * Get an option value.
+     * Get an attribute value on the main parental_controls tag.
      *
      * @param  string $name The name of the option
      * @return ?string The value of the option (null: option not found)
      */
-    public function get_option(string $name) : ?string
+    public function get_attribute(string $name) : ?string
     {
         return isset($this->options[$name]) ? $this->options[$name] : null;
     }
@@ -271,7 +278,7 @@ class Parental_controls_loader
      * Generate 'positive' items for the automatic Privacy Policy with the given control name.
      *
      * @param  ID_TEXT $name The name of the control for which to generate info
-     * @return ?array Array of privacy policy maps
+     * @return array Array of privacy policy maps
      */
     public function generate_privacy_policy_positive(string $name) : array
     {
@@ -291,7 +298,7 @@ class Parental_controls_loader
      * Generate 'general' items for the automatic Privacy Policy with the given control name.
      *
      * @param  ID_TEXT $name The name of the control for which to generate info
-     * @return ?array Array of privacy policy maps
+     * @return array Array of privacy policy maps
      */
     public function generate_privacy_policy_general(string $name) : array
     {
@@ -310,7 +317,7 @@ class Parental_controls_loader
     /**
      * Generate general 'general' Privacy Policy information.
      *
-     * @return ?array Array of privacy policy maps
+     * @return array Array of privacy policy maps
      */
     private function pcppg__root() : array
     {
@@ -318,7 +325,7 @@ class Parental_controls_loader
 
         $ret = [];
 
-        if ($this->get_option('require_dob') !== null) {
+        if ($this->get_attribute('require_dob') !== null) {
             $ret[] = [
                 'heading' => do_lang('PARENTAL_CONTROLS'),
                 'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_DOB_ACTION'),
@@ -326,7 +333,7 @@ class Parental_controls_loader
             ];
         }
 
-        if ($this->get_option('require_timezone') !== null) {
+        if ($this->get_attribute('require_timezone') !== null) {
             $ret[] = [
                 'heading' => do_lang('PARENTAL_CONTROLS'),
                 'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_TIMEZONE_ACTION'),
@@ -334,7 +341,7 @@ class Parental_controls_loader
             ];
         }
 
-        if ($this->get_option('require_region') !== null) {
+        if ($this->get_attribute('require_region') !== null) {
             $ret[] = [
                 'heading' => do_lang('PARENTAL_CONTROLS'),
                 'action' => do_lang_tempcode('PRIVACY_PARENTAL_CONTROLS__REQUIRE_REGION_ACTION'),
@@ -422,7 +429,7 @@ class Parental_controls_loader
             null, // show in posts
             null, // show in post previews
             null, // special start
-            true, // show on join form
+            true // show on join form
         );
         $actual_custom_fields = cns_read_in_custom_fields($custom_fields);
         $fields_done = [];
@@ -468,7 +475,7 @@ class Parental_controls_loader
     /**
      * Return a positive Privacy Policy entry for the parental_consent configuration.
      *
-     * @return ?array Array of privacy policy maps
+     * @return array Array of privacy policy maps
      */
     private function pcppp__parental_consent() : array
     {
@@ -603,7 +610,7 @@ class Parental_controls_loader
     /**
      * Return a positive Privacy Policy entry for the lockout configuration.
      *
-     * @return ?array Array of privacy policy maps
+     * @return array Array of privacy policy maps
      */
     private function pcppp__lockout() : array
     {

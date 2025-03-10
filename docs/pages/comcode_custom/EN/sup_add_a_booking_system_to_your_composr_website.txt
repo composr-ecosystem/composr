@@ -60,7 +60,7 @@ There are effectively 4 different types of forms within the booking module which
 
 [title="3"]Adding and editing bookables form[/title]
 
-[media width="150" description="Add bookable form" float="right"]data_custom/images/docs/sup_add_a_booking_system_to_your_composr_website/1fc0bd5af2a80d643b83038ccf3d6b9e.jpg[/media]
+[media width="150" description="Add bookable form" float="right"]data_custom/images/docs/sup_add_a_booking_system_to_your_composr_website/1fc0bd5af2a80d643b83038ccf3d6b9e.png[/media]
 The Add bookable form is where you will need to start as this form is where you will specify what it is your site visitors can book. For example a hotel might have bookables set as Room 1, Room 2, Room 3, etc. a venue might have time slots so the bookables might be 09:00-10:00, 10:00-11:00, 12:00-13:00, etc.
 
 The first box is the title of the bookable. For a hotel this might be things like summer season or might be set by Month. The second box is a description of the bookable. It is important to fill in this box so it's easy to remember if you come back to edit the region in the future or if someone else might be editing the bookable region and will need to understand what it is.

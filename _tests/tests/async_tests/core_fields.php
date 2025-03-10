@@ -39,6 +39,11 @@ class core_fields_test_set extends cms_test_case
                 $types = [$field => ''];
             }
 
+            $type_default_override = [
+                'country' => 'GB',
+                'region' => 'US-OH',
+            ];
+
             foreach (array_keys($types) as $type) {
                 $field = [
                     'id' => 1,

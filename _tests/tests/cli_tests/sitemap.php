@@ -44,8 +44,6 @@ class sitemap_test_set extends cms_test_case
 
         require_code('sitemap');
 
-        set_option('confluence_subdomain', ''); // Gathering sitemap for Confluence too slow
-
         $page_link = '';
         $callback = null;
         $valid_node_types = null;
@@ -198,7 +196,7 @@ class sitemap_test_set extends cms_test_case
                     } else {
                         if (strpos($test[0], '_CUSTOM') === false) {
                             $has_help_defined = isset($link[4]);
-                            $this->assertTrue($has_help_defined, 'No help defined for ' . $link[3]->evaluate() . ' (' . $link[2][2] . ':' . $link[2][0] . ')');
+                            $this->assertTrue($has_help_defined, 'No help defined in page grouping hook for ' . $link[3]->evaluate() . ' (' . $link[2][2] . ':' . $link[2][0] . ')');
                         }
                     }
                 }

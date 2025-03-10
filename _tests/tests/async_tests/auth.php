@@ -95,6 +95,10 @@ class auth_test_set extends cms_test_case
         require_code('files');
         $http_result = cms_http_request(static_evaluate_tempcode(build_url(['page' => '', 'keep_su' => 'Guest'], 'adminzone', [], false, false, true)), ['trigger_error' => false]);
         $this->assertTrue($http_result->message == '401', 'Expected 401 HTTP status when accessing the Admin Zone as Guest SU, but got ' . $http_result->message);
+
+        if ($this->debug) {
+            $this->dump($http_result, 'HTTP result');
+        }
     }
 
     public function testCannotStealSession()

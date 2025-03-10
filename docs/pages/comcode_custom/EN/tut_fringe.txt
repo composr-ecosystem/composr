@@ -61,7 +61,7 @@ Unfortunately iOS has deep caching for the webclip icons, which you cannot clear
 Fonts have always been a tricky area in computing, as the actual font typeface is a copyrighted works, and hence cannot be distributed without a licence. This problem extends to the Internet, where there is a stronger need for common fonts than there ever was. It is important to remember that not all viewers to a website will be using Microsoft Windows, and therefore they will not all have the set of default Windows fonts.
 
 Fortunately there are three things that improve on this situation:
-1) there are certain common fonts and 'font families' that are available for almost all web browsers to use. However, it is beyond the scope of this tutorial which fonts these actually are and there is a degree of ambiguity as to whether a font is 'common enough' for usage (see http://web.mit.edu/jmorzins/www/fonts.html for more information).
+1) there are certain common fonts and 'font families' that are available for almost all web browsers to use (see [url="Safe web fonts"]https://web.mit.edu/jmorzins/www/fonts.html[/url] for more information).
 2) CSS (the technology used to stylise web documents) supports a fall-back mechanism for the specification of what font to use.
 3) [url="Google Web Fonts"]http://www.google.com/webfonts[/url] provides a compatibility layer to smooth over external font support in different web browsers, and access to free fonts. It is very easy to integrate via a change to the [tt]HTML_HEAD.tpl[/tt] template and the CSS. Also, [url="TypeKit"]https://typekit.com/[/url].
 
@@ -178,6 +178,7 @@ You may also wish to have a presence on question and answer sites, such as:
 [title="2"]See also[/title]
 
  - https://www.fastmail.help/hc/en-us/articles/1500000278382-Email-standards
+ - [url="Safe web fonts"]https://web.mit.edu/jmorzins/www/fonts.html[/url]
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_metadata"]Metadata[/page]
  - [page="_SEARCH:tut_browsers"]Browser version requirements[/page]

@@ -62,7 +62,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
                 if (($dob_option === null) || ($dob_option == '0')) {
                     break;
                 }
-                if ($pc->get_option('require_dob') !== null) {
+                if ($pc->get_attribute('require_dob') !== null) {
                     return true;
                 }
                 break;
@@ -74,7 +74,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
                     break;
                 }
 
-                if ($pc->get_option('require_timezone') !== null) {
+                if ($pc->get_attribute('require_timezone') !== null) {
                     return true;
                 }
 
@@ -85,7 +85,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
                 break;
 
             case 'region':
-                if ($pc->get_option('require_region') !== null) {
+                if ($pc->get_attribute('require_region') !== null) {
                     return true;
                 }
                 break;
@@ -221,6 +221,9 @@ function cns_make_member(string $username, string $password, string $email_addre
     }
     if ($region === null) {
         $region = get_region();
+    }
+    if ($region === null) { // Cannot be null, so set to blank if it is still null (will force the member to fill it in later if necessary).
+        $region = '';
     }
     if ($language === null) {
         $language = user_lang();
@@ -367,6 +370,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         'm_cache_num_posts' => 0,
         'm_cache_warnings' => 0,
         'm_max_email_attach_size_mb' => 5,
+        'm_parental_consent' => 0,
     ];
     $map += insert_lang_comcode('m_signature', $signature, 4, $GLOBALS['FORUM_DB']);
     $map += insert_lang_comcode('m_pt_rules_text', $pt_rules_text, 4, $GLOBALS['FORUM_DB']);

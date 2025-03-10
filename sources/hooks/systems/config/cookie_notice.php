@@ -37,6 +37,7 @@ class Hook_config_cookie_notice
             'group' => 'GENERAL',
             'explanation' => 'CONFIG_OPTION_cookie_notice',
             'shared_hosting_restricted' => '0',
+            'order_in_category_group' => 3,
             'list_options' => '',
             'required' => true,
             'public' => true,

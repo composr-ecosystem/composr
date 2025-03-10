@@ -77,4 +77,4 @@ Here are some of the many ways you can use site messages:
  - [page="_SEARCH:tut_adv_news"]Advanced news[/page]
  - [page="_SEARCH:tut_configuration"]Basic configuration and getting started[/page]
 
-{$SET,tutorial_tags,news_shared,news,site_messaging,Collaboration,Maintenance,News,novice}{$SET,tutorial_add_date,May 2024}{$SET,tutorial_summary,How to pin messages at the top of site pages for critical information communication.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,news_shared,news,site_messaging,syndication,syndication_blocks,Collaboration,Maintenance,News,novice}{$SET,tutorial_add_date,May 2024}{$SET,tutorial_summary,How to pin messages at the top of site pages for critical information communication.}[block]main_tutorial_rating[/block]

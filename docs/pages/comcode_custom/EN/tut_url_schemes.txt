@@ -98,7 +98,7 @@ A good first step is to add some gibberish at the very top of [tt].htaccess[/tt]
 If you did get an error (500 Internal Server Error), then take the gibberish back out. Try now removing the [tt]<IfModule mod_rewrite.c>[/tt] line and the [tt]</IfModule>[/tt] line further down.
 If you then get a 500 Internal Server Error again then the [tt]mod_rewrite[/tt] module is not set up in Apache. This will need resolving at the main Apache configuration level.
 
-If you're still stuck (i.e. you've determined [tt].htaccess[/tt] is being read, and [tt]mod_rewrite[/tt] is set up), but rewrite rules still don't work, it's a bit of a mystery. You may need to talk to your web host, a developer, or Apache expert.
+If you're still stuck (i.e. you've determined [tt].htaccess[/tt] is being read, and [tt]mod_rewrite[/tt] is set up), but rewrite rules still don't work, it's a bit of a mystery. You may need to talk to your webhost, a developer, or Apache expert.
 
 [title="2"]Enabling a URL Scheme retroactively[/title]
 

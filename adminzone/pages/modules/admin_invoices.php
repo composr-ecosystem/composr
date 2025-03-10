@@ -447,8 +447,6 @@ class Module_admin_invoices
 
         $results_table = results_table(do_lang('INVOICES'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort');
 
-        $url = build_url(['page' => '_SELF', 'type' => 'view'], '_SELF');
-
         $filtercode_box = do_block('main_content_filtering', [
             'param' => implode(',', $filtercode),
             'table' => 'ecom_invoices',
@@ -462,7 +460,6 @@ class Module_admin_invoices
             'TEXT' => '',
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
 

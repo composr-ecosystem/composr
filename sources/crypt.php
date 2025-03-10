@@ -126,6 +126,7 @@ function calculate_reasonable_ratchet(float $target_time = 0.1, int $minimum_cos
  */
 function get_ratchet_cost(string $hash) : ?int
 {
+    $matches = [];
     if (preg_match('/^\$2[ayb]?\$(\d{2})\$/', $hash, $matches)) {
         return intval($matches[1]);
     }

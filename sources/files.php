@@ -618,6 +618,10 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         // Testing platform
         'codechecker.ini' => '_tests/codechecker',
         'checker.ini' => '_tests/codechecker', // LEGACY
+
+        // Telemetry (we do not ignore 'data/keys' as it contains the public software key)
+        'telemetry.json' => 'data_custom/keys',
+        'telemetry-site.json' => 'data_custom/keys',
     ];
 
     $ignore_extensions = [ // Case insensitive, define in lower case
@@ -654,10 +658,6 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         'clpprj' => '.*', // Code Lobster
         'csprj' => '.*', // Code Lobster
         'geany' => '', // Geany
-
-        // Telemetry keys generated from release build (only the ones in data/keys should be included in the build)
-        'key' => 'data_custom/keys',
-        'pub' => 'data_custom/keys',
     ];
 
     $ignore_filename_and_dir_name_patterns = [ // Case insensitive

@@ -90,7 +90,7 @@ If you turn on the "Permissions" configuration option (Admin Zone > Setup > Conf
 
 [title="3"]Who may avoid banners[/title]
 
-Any usergroup with the "Avoid banners" privilege will not see banners. Super-administrators always have this privilege (just like every other privilege). But you can enable the "Show banners to admins" configuration option (Admin Zone > Setup > Configuration > Feature options) to bypass this behaviour so admins see banners. This option is enabled by default.
+Any usergroup with the "Avoid banners" privilege will not see banners. Super-administrators always have this privilege (just like every other privilege). But you can enable the "Show banners to admins" configuration option (Admin Zone > Setup > Configuration > Feature options > Banners) to bypass this behaviour so admins see banners. This option is enabled by default.
 
 [title="2"]Geocoding[/title]
 

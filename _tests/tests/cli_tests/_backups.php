@@ -106,7 +106,6 @@ $SITE_INFO[\'db_site\'] = \'' . $database . '\';
 $SITE_INFO[\'db_site_user\'] = \'' . $username . '\';
 $SITE_INFO[\'db_site_password\'] = \'' . $password . '\';
 $SITE_INFO[\'table_prefix\'] = \'' . $table_prefix . '\';
-$SITE_INFO[\'multi_lang_content\'] = \'' . addslashes($SITE_INFO['multi_lang_content']) . '\';
         ') . "\n";
         cms_file_put_contents_safe($config_path, $config_php, FILE_WRITE_FAILURE_CRITICAL);
 

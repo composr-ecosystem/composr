@@ -59,7 +59,7 @@ class broken_includes_test_set extends cms_test_case
                 }
 
                 $okay = file_exists(get_file_base() . '/sources/' . $dependency . '.php') || file_exists(get_file_base() . '/sources_custom/' . $dependency . '.php');
-                $this->assertTrue($okay, 'Could not find target of require_code, ' . $dependency);
+                $this->assertTrue($okay, 'Could not find target of require_code, ' . $dependency . ', in ' . $path);
             }
         }
     }

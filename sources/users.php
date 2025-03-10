@@ -456,21 +456,25 @@ function enforce_parental_controls(int $member_id)
     $dob_day = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
     $dob_month = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
     $dob_year = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
-    $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
 
-    // Check / enforce age lockout
-    $lockout_info = $pc->run('lockout', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
-    if ($lockout_info !== null) {
-        warn_exit($lockout_info['message']);
-    }
+    // Can only check parental controls if date of birth was filled in
+    if (($dob_day !== null) && ($dob_month !== null) && ($dob_year !== null)) {
+        $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
 
-    // Check / enforce parental consent
-    $consent_info = $pc->run('parental_consent', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
-    if ($consent_info !== null) {
-        require_lang('cns');
-        require_code('crypt');
-        $staff_address = obfuscate_email_address(get_option('staff_address'));
-        warn_exit(do_lang_tempcode('LOCKED_OUT_PARENTAL_CONSENT', protect_from_escaping($staff_address)));
+        // Check / enforce age lockout
+        $lockout_info = $pc->run('lockout', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+        if ($lockout_info !== null) {
+            warn_exit($lockout_info['message']);
+        }
+
+        // Check / enforce parental consent
+        $consent_info = $pc->run('parental_consent', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+        if ($consent_info !== null) {
+            require_lang('cns');
+            require_code('crypt');
+            $staff_address = obfuscate_email_address(get_option('staff_address'));
+            warn_exit(do_lang_tempcode('LOCKED_OUT_PARENTAL_CONSENT', protect_from_escaping($staff_address)));
+        }
     }
 
     // No additional enforcement if using an external connection, such as Commandr or WebDAV
@@ -487,10 +491,9 @@ function enforce_parental_controls(int $member_id)
 
     $redirect_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, '#tab--edit');
 
-    // Check region geo-location enforcement
-    require_code('cns_parental_controls');
-    $pc = load_parental_control_settings();
-    if ($pc->get_option('enforce_region') !== null) {
+    // Check region geo-location enforcement but only if a region was filled in
+    $region = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_region');
+    if (($pc->get_attribute('enforce_region') !== null) && (!cms_empty_safe($region))) {
         require_code('locations');
         $geo = geolocate_ip(get_ip_address());
         if ($geo !== null) {
@@ -503,12 +506,10 @@ function enforce_parental_controls(int $member_id)
         }
     }
 
-    $dob = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
     $timezone = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_timezone_offset');
-    $region = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_region'); // NB: we don't use get_region because we want to explicitly check the setting
 
     // Optimisation: don't proceed if the member already populated all the fields we will be checking
-    if (!cms_empty_safe($dob) && !cms_empty_safe($timezone) && !cms_empty_safe($region)) {
+    if (!cms_empty_safe($dob_year) && !cms_empty_safe($timezone) && !cms_empty_safe($region)) {
         return;
     }
 
@@ -519,8 +520,8 @@ function enforce_parental_controls(int $member_id)
     $special_type = get_member_special_type($member_id);
 
     // DOB
-    if (member_field_is_required($member_id, 'dob', $dob, null) && cns_field_editable('dob', $special_type)) {
-        if ((cms_empty_safe($dob)) && (has_privilege(get_member(), 'bypass_dob_if_already_empty'))) {
+    if (member_field_is_required($member_id, 'dob', $dob_year, null) && cns_field_editable('dob', $special_type)) {
+        if ((cms_empty_safe($dob_year)) && (has_privilege(get_member(), 'bypass_dob_if_already_empty'))) {
             require_code('site2');
             require_lang('locations');
             redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_DOB'), false, 'warn');

@@ -16,4 +16,3 @@ $SITE_INFO['db_forums_host'] = 'localhost';
 $SITE_INFO['db_forums_user'] = '{DB_SITE_USER}';
 $SITE_INFO['db_forums_password'] = '{DB_SITE_PASSWORD}';
 $SITE_INFO['self_learning_cache'] = '1';
-$SITE_INFO['multi_lang_content'] = '0';

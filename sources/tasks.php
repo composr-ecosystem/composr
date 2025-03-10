@@ -93,7 +93,8 @@ function execute_task_background(array $task_row)
     disable_php_memory_limit();
     $old_limit = cms_disable_time_limit();
 
-    $result = false;
+    $task_result = false;
+    $result_details = null;
     $ob = null;
 
     $hook = $task_row['t_hook'];
@@ -105,11 +106,23 @@ function execute_task_background(array $task_row)
         require_code('hooks/systems/tasks/' . filter_naughty_harsh($hook));
         $ob = object_factory('Hook_task_' . filter_naughty_harsh($hook));
         $mim_before = get_mass_import_mode();
-        $result = call_user_func_array([$ob, 'run'], $args);
+        $temp_result = call_user_func_array([$ob, 'run'], $args);
         set_mass_import_mode($mim_before);
+
+        // We have to get creative to ensure type strictness
+        if ($temp_result === null) {
+            $task_result = true;
+            $result_details = null;
+        } elseif (!is_array($temp_result)) {
+            $task_result = false;
+            $result_details = null;
+        } else {
+            $task_result = true;
+            $result_details = $temp_result;
+        }
     }
 
-    if ($result === false) {
+    if ($task_result === false) {
         task_log(null, 'Finished task ' . $hook . ' with errors');
     } else {
         task_log(null, 'Finished task ' . $hook);
@@ -118,19 +131,22 @@ function execute_task_background(array $task_row)
 
     // Send notification
     if ($task_row['t_send_notification'] == 1) {
-        dispatch_task_notification($task_row['t_title'], $requester, $result, $task_row);
+        dispatch_task_notification($task_row['t_title'], $requester, (($task_result === false) ? false : $result_details), $task_row);
     }
 
-    if (is_array($result)) {
-        list($mime_type, $content_result) = $result;
+    // Unlink temporary files
+    if (($result_details !== null) && is_array($result_details)) {
+        list($mime_type, $content_result) = $result_details;
         if (is_array($content_result)) {
             @unlink($content_result[1]);
             sync_file($content_result[1]);
         }
     }
 
-    if ($result !== false) { // Effectively leave errored tasks locked in the queue so we do not get a bunch of failed messages
-        $GLOBALS['SITE_DB']->query_delete('task_queue', [
+    if ($task_result === false) {
+      // the task was unsuccessful, do not delete from the task queue
+    } else {
+      $GLOBALS['SITE_DB']->query_delete('task_queue', [
             'id' => $task_row['id'],
         ], '', 1);
     }

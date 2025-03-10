@@ -20,7 +20,7 @@ You can freely download Composr CMS and build whatever website you wish to build
 
 This is to say, however, that you are not free from the social and legal responsibilities and consequences. While we might not stop you from building a site selling illegal products, your local government might, and you could get arrested or fined for doing so. As another example, if you build an adult website, there are often some legal rules you must follow (such as age verification) to be in compliance and avoid getting penalised.
 
-With that being said, if there are ways you believe Composr CMS can be improved to better meet the legal requirements and needs in your area, please let us know by [page="site:report-issue"]making a feature request on the tracker[/page] or making a merge request on our [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] if you want to implement it yourself (please do keep in mind our [page="docs:codebook"]Coding Standards[/page] if you elect to implement it yourself and publish your implementation).
+With that being said, if there are ways you believe Composr CMS can be improved to better meet the legal requirements and needs in your area, please let us know by [page="site:report-issue"]making a feature request on the tracker[/page] or making a merge request on our [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] if you want to implement it yourself (please do keep in mind our [page="_SEARCH:codebook"]Coding Standards[/page] if you elect to implement it yourself and publish your implementation).
 
 [title="2"]2. The Freedom to View and Modify the Source Code[/title]
 The second pillar of FOSS is that users have the right to view the source code of the software in full and unobstructed, and they can modify it to their liking.
@@ -29,7 +29,7 @@ The full source code of Composr CMS can be viewed on the [url="Composr Gitlab Re
 
 The developers of Composr CMS take this pillar even further; we not-only allow you to modify the program to your liking, but we encourage it.
 
-The Composr ecosystem is designed around the idea of "code overrides", which are files you can place in special [tt]*_custom[/tt] folders (or as a hook in [tt]sources_custom/hooks/systems/contentious_overrides[/tt]) to modify the behaviour of Composr without modifying the original code. This makes upgrading much easier without losing the changes you made. And it makes sharing your modifications (e.g. as addons) much easier as well. The developers wrote the [page="docs:codebook"]Codebook[/page] extensively detailing how you can develop with Composr CMS.
+The Composr ecosystem is designed around the idea of "code overrides", which are files you can place in special [tt]*_custom[/tt] folders (or as a hook in [tt]sources_custom/hooks/systems/contentious_overrides[/tt]) to modify the behaviour of Composr without modifying the original code. This makes upgrading much easier without losing the changes you made. And it makes sharing your modifications (e.g. as addons) much easier as well. The developers wrote the [page="_SEARCH:codebook"]Codebook[/page] extensively detailing how you can develop with Composr CMS.
 
 Additionally, Composr CMS employs "miniblocks" and "minimodules" which are PHP files that do not necessarily conform to Composr's API standards and simply echo out (or return) the content to display. This makes migration or getting started with Composr development easier.
 
@@ -64,7 +64,7 @@ FOSS, given its open nature, is great for learning how to code or begin building
 There are some common myths about FOSS that are important to address. Here are a few of them:
 [list]
 [*][b]FOSS is completely free[/b]
-FOSS is free as-in freedom. This means you can do what you want with it with little to no restrictions. But that doesn't mean you won't need to budget for developers, web hosting, or other teams as necessary to make what you want happen (unless you have the skills, resources, and time to do all of it yourself). The software itself is free, but it is often provided with no warranties of any kind. You are fully responsible for anything that happens as a result of your use of the software. And you are responsible for getting / hiring your own support for it.
+FOSS is free as-in freedom. This means you can do what you want with it with little to no restrictions. But that doesn't mean you won't need to budget for developers, webhosting, or other teams as necessary to make what you want happen (unless you have the skills, resources, and time to do all of it yourself). The software itself is free, but it is often provided with no warranties of any kind. You are fully responsible for anything that happens as a result of your use of the software. And you are responsible for getting / hiring your own support for it.
 Not to mention, FOSS cannot progress without the contributions of the community. So wherever you use FOSS, consider making a contribution of some sort towards that software or community. This can be in the form of a financial donation, code contributions, reporting issues or suggestions, or helping others in the community.
 [*][b]FOSS is outdated[/b]
 Some FOSS projects have unfortunately fallen out of maintenance; this is an unfortunate commonality where developers do not get the appreciation or the community support necessary to keep the project going. But that doesn't mean all (or even most) FOSS is like that. Many are still being maintained.
@@ -98,7 +98,6 @@ This is probably the biggest myth of them all. FOSS help businesses, not hurt th
  - [url="Open Source Initiative"]https://opensource.org[/url]
  - [url="Open Source Resources / FAQ"]https://opensource.com/resources[/url]
  - [url="The Free Software Definition (Wikipedia)"]https://en.wikipedia.org/wiki/The_Free_Software_Definition[/url]
- - [url="Free and open-source software (Wikipedia)"]https://en.wikipedia.org/wiki/Free_and_open-source_software[/url]
  - [url="Code.gov - America's Home for Open Source Projects from the Federal Government"]https://code.gov[/url]
 
 {$SET,tutorial_tags,core,Internet Technology,Introduction,novice}{$SET,tutorial_add_date,Dec 2024}{$SET,tutorial_summary,Free and Open Source software\, like Composr CMS\, follow the principles of the freedom to use\, modify\, and distribute.}[block]main_tutorial_rating[/block]

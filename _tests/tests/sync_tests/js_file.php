@@ -276,6 +276,7 @@ class js_file_test_set extends cms_test_case
                 'js-key-to-delete',
                 'js-change-update-chooser',
                 'js-mouseover-show-permission-setting',
+                'pace', // Auto-injected
             ])) {
                 continue;
             }
