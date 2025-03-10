@@ -208,7 +208,6 @@ class Hook_addon_registry_cns_forum
             'sources/hooks/systems/commandr_fs/forum_groupings.php',
             'sources/hooks/systems/commandr_fs/forums.php',
             'sources/hooks/systems/commandr_scheduled/publish_post.php',
-            'sources/hooks/systems/commandr_scheduled/publish_topic.php',
             'sources/hooks/systems/config/delete_time_limit.php',
             'sources/hooks/systems/config/delete_trashed_pts.php',
             'sources/hooks/systems/config/edit_time_limit.php',

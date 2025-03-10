@@ -198,16 +198,51 @@ The sub-sections of this section briefly cover the main social issues you are li
 
 [title="3"]Child protection[/title]
 
-There are laws in various jurisdictions that provide special protection for children active on websites:
- - The US has a law, [concept]COPPA[/concept] that you need to comply with if your (US) website targets children under 13 for membership, or if you know that members of your website are under 13. More information on this law is available here from the COPPA website (see 'see also').
- - The EU [concept]GDPR[/concept] requires protection for children under 13/14/15/16 (the actual age varies by EU country). 
+There are laws in various jurisdictions that provide special protection for children active on websites. These laws typically address issues like parental consent for data collection and online activity, data security, and the type of content accessible to children. Here's a breakdown of some key jurisdictions and their regulations as of the time of this writing:
 
-For simplicity and historical reasons, we refer to any international child consent provisions as "parental consent" in the administration, and keep the language in the user UI vague.
+ - United States: Children's Online Privacy Protection Act (COPPA)
+  - COPPA applies to websites and online services directed to children under 13 or that knowingly collect personal information from children under 13.
+  - Requires verifiable parental consent before collecting, using, or disclosing personal information from children.
+  - Mandates a clear privacy policy outlining data collection practices.
+  - Requires reasonable data security measures.
+  - Gives parents the right to review their child's information, request deletion, and refuse further collection.
+  - The Federal Trade Commission (FTC) enforces COPPA.
+ - European Union: General Data Protection Regulation (GDPR)
+  - While GDPR isn't solely focused on children, it has specific provisions for protecting their data.
+  - The age of digital consent varies by EU member state, ranging from 13 to 16. Below this age, parental consent is required for processing personal data. For simplicity, sites generally default to 16 as the age of consent for members in the EU.
+  - GDPR mandates a high standard of data protection for all individuals, including children.
+  - Requires clear and plain language in privacy policies.
+  - Grants individuals rights like access, rectification, erasure ("right to be forgotten"), and data portability.
+  - Stricter requirements for data security and breach notification.
+  - United Kingdom: UK GDPR and Data Protection Act 2018
+   - After leaving the EU, the UK adopted its own version of the GDPR, referred to as UK GDPR.
+   - The age of digital consent remains at 13, requiring parental consent for processing the data of those under 13.
+   - It mirrors the principles and requirements of the EU GDPR with similar standards of personal data protection.
+ - Canada: Personal Information Protection and Electronic Documents Act (PIPEDA)
+  - PIPEDA is Canada's federal private-sector privacy law.
+  - While not specifically focused on children, it requires organizations to obtain meaningful consent for the collection, use, and disclosure of personal information.
+  - For children under the age of 13, organizations are expected to seek parental consent. The actual age is not explicitly defined.
+  - Emphasises the need for open and transparent privacy practices.
+ - Australia: Privacy Act 1988
+  - Requires organizations to handle personal information responsibly, including that of children.
+  - While there is no specific age for digital consent, parental or guardian consent is needed for collecting personal information from a child. Usually it is defined as 15 or under.
+  - Organizations must have a clear and accessible privacy policy.
+ - Brazil: Lei Geral de Proteção de Dados (LGPD)
+  - Brazil's data protection law, similar to GDPR.
+  - Parental consent is required for processing personal data of children under 16.
+  - Strict requirements for data security, transparency, and individual rights.
+ - Japan: Act on the Protection of Personal Information (APPI)
+  - APPI requires parental consent for personal information collected on minors.
+  - The definition of a minor in Japan is anyone under the age of 18.
 
-If parental consent support is configured in [concept]Conversr[/concept], then when visitors try to join they will be added as not validated if they are too young, with a notice to send in a parental consent form to you via mail or fax.
-In addition to Composr's parental consent support, you should also add your real-world contact details to your privacy policy, along with thorough details about what Custom Profile Fields may be filled in, how the information is used, how it is disclosed (if at all), and specification of various parent rights (which are listed on the COPPA or GDPR website).
+Composr supports all of these laws through its [page="_SEARCH:tut_parental_controls"]Parental Controls and Child Safety[/page] configuration. Use of Composr's parental control system can aid greatly in compliance.
 
-In order to enable parental consent you need to turn on "Parental consent required", and configure your fax number and postal address.
+[box="Disclaimer"]
+[surround]
+[media float="right" thumb="0" framed="0"]data_custom/images/docs/remember.png[/media]
+Legal requirements are always changing. This is general information, not legal advice. It's crucial to seek legal counsel if you have specific questions about your website's compliance with these laws.
+[/surround]
+[/box]
 
 Young members (or even older members) are often naive, as they have less experience of the world and often have lived relatively sheltered lives. Therefore you should actively protect these members from:
  - inappropriate exposure of materials by other members (such as pornography or other sexual content)
@@ -269,14 +304,22 @@ You should develop a policy about how you handle feedback. This is of particular
  1_key="Privacy policy"   1_value="A standard term applied to the document that lays out a website's privacy policy; some laws specifically refer to a privacy policy and require a separate document for it"
  2_key="COPPA"            2_value="Children's Online Privacy Protection Act; a US law that affects websites that have child members"
  3_key="GDPR"             3_value="General Data Protection Regulation; an EU privacy law that puts many responsibilities on you"
- 4_key="Parental consent" 4_value="Composr's generic term for the settings and configuration governing children's ability to access your website and the regulations thereof"
+ 4_key="Parental controls" 4_value="Composr's generic term for the settings and configuration governing children's ability to access your website and the regulations thereof"
 ]Concepts[/concepts]
 
 [title="2"]See also[/title]
 
+ - [page="_SEARCH:tut_parental_controls"]Parental Controls and Child Safety[/page]
  - [page="_SEARCH:tut_staff_advice"]Advice for choosing and managing staff[/page]
- - [url="Children's Online Privacy Protection Act (wikipedia)"]https://en.wikipedia.org/wiki/Children's_Online_Privacy_Protection_Act[/url]
  - [page="_SEARCH:tut_do"]Dos and Do-nots of a (Composr) website[/page]
  - [page="_SEARCH:tut_newsletter"]Running a newsletter[/page]
+ - [url="Children's Online Privacy Protection Act (wikipedia)"]https://en.wikipedia.org/wiki/Children's_Online_Privacy_Protection_Act[/url]
+ - [url="FTC's COPPA website"]https://www.ftc.gov/business-guidance/privacy-security/childrens-privacy[/url]
+ - [url="GDPR website"]https://gdpr-info.eu[/url]
+ - [url="ICO's Guide to UK GDPR"]https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/[/url]
+ - [url="PIPEDA website"]https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/[/url]
+ - [url="Australian Privacy Act"]https://www.oaic.gov.au/privacy/privacy-act/[/url]
+ - [url="LGPD website (English translation)"]https://iapp.org/resources/article/a-comparison-of-the-brazilian-lgpd-and-the-eu-gdpr/[/url]
+ - [url="APPI official information"]https://www.ppc.go.jp/en/legal/act/[/url]
 
 {$SET,tutorial_tags,Advice & Guidance,novice,core_privacy,content_privacy}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Guidance on the legal and social issues that webmasters need to understood.}[block]main_tutorial_rating[/block]

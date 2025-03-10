@@ -235,7 +235,7 @@ class Module_warnings extends Standard_crud_module
         list($warning_details, $ping_url) = handle_conflict_resolution(strval($member_id));
         if ($ping_url !== null) {
             $this->add_text->attach(do_template('HANDLE_CONFLICT_RESOLUTION', [
-                '_GUID' => 'TODO',
+                '_GUID' => 'b43dee43e4275908b2a4763dd2e58f27',
                 'PING_URL' => $ping_url,
             ]));
         }

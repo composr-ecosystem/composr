@@ -73,19 +73,7 @@ class Hook_block_ui_renderers_banners
 
         if (($parameter == 'region') && (in_array($block, ['main_banner_wave']))) { // region list
             require_code('locations');
-            $continents_and_countries = find_continents_and_countries();
-
-            $list_groups = new Tempcode();
-            $list_groups->attach(form_input_list_entry('', false));
-            foreach ($continents_and_countries as $continent => $countries) {
-                $list = new Tempcode();
-                foreach ($countries as $country_code => $country_name) {
-                    $list->attach(form_input_list_entry($country_code, $country_code == $default, $country_name));
-                }
-                $list_groups->attach(form_input_list_group($continent, $list));
-            }
-
-            return form_input_list(titleify($parameter), escape_html($description), $parameter, $list_groups, null, false, false);
+            return form_input_region(titleify($parameter), escape_html($description), $parameter, $default);
         }
 
         return null;

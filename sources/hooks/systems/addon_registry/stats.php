@@ -130,9 +130,6 @@ class Hook_addon_registry_stats
     {
         return [
             'adminzone/pages/modules/admin_stats.php',
-            'data/modules/admin_stats/.htaccess',
-            'data/modules/admin_stats/IP_Country.txt',
-            'data/modules/admin_stats/index.html',
             'data/tracked_redirect.php',
             'lang/EN/stats.ini',
             'sources/blocks/main_staff_stats_graph.php',
@@ -173,7 +170,6 @@ class Hook_addon_registry_stats
             'sources/hooks/systems/symbols/SET_TRACKING_CODE.php',
             'sources/hooks/systems/symbols/SPLIT_TEST.php',
             'sources/hooks/systems/symbols/STATS_TRACK_URL.php',
-            'sources/hooks/systems/tasks/install_geolocation_data.php',
             'sources/stats.php',
             'sources_custom/hooks/modules/admin_stats/.htaccess',
             'sources_custom/hooks/modules/admin_stats/index.html',

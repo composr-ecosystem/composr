@@ -51,6 +51,7 @@ class members_test_set extends cms_test_case
             1980, // dob_year
             [], // custom_fields
             null, // timezone
+            null, // region
             '', // language
             '', // theme
             '', // title

@@ -69,39 +69,35 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             return;
         }
 
-        if (addon_installed('stats')) {
-            if (get_db_type() == 'xml') { // Too much data
-                $ok = false;
-            } else {
-                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-                $ok = ($test !== null);
-            }
+        require_code('locations');
 
-            if ($ok) {
-                require_code('locations');
+        if (get_db_type() == 'xml') { // Too much data
+            $ok = false;
+        } else {
+            $test = has_geolocation_data();
+            $ok = ($test !== null);
+        }
 
-                $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
-                $members = $GLOBALS['FORUM_DRIVER']->member_group_query($admin_groups);
-                foreach ($members as $member) {
-                    $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
-                    $username = $GLOBALS['FORUM_DRIVER']->mrow_username($member);
+        if ($ok) {
+            $admin_groups = $GLOBALS['FORUM_DRIVER']->get_super_admin_groups();
+            $members = $GLOBALS['FORUM_DRIVER']->member_group_query($admin_groups);
+            foreach ($members as $member) {
+                $id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($member);
+                $username = $GLOBALS['FORUM_DRIVER']->mrow_username($member);
 
-                    $countries = [];
-                    $rows = $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT ip'], ['member_id' => $id], 'AND date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
-                    foreach ($rows as $row) {
-                        $country = geolocate_ip($row['ip']);
-                        if ($country !== null) {
-                            $countries[] = '[tt]' . $country . '[/tt]';
-                        }
+                $countries = [];
+                $rows = $GLOBALS['SITE_DB']->query_select('stats', ['DISTINCT ip'], ['member_id' => $id], 'AND date_and_time>' . strval(time() - 60 * 60 * 24 * 7));
+                foreach ($rows as $row) {
+                    $country = geolocate_ip($row['ip']);
+                    if ($country !== null) {
+                        $countries[] = '[tt]' . $country . '[/tt]';
                     }
-
-                    $this->assertTrue(count(array_unique($countries)) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . '). The account may have been compromised.');
                 }
-            } else {
-                $this->stateCheckSkipped('Geolocation data not installed so cannot do admin country checks');
+
+                $this->assertTrue(count(array_unique($countries)) <= 1, 'Admin account "' . $username . '" appears to have logged in from multiple countries (' . implode(', ', $countries) . '). The account may have been compromised.');
             }
         } else {
-            $this->stateCheckSkipped('Could not find geolocation history without the stats addon being installed');
+            $this->stateCheckSkipped('Geolocation data not installed so cannot do admin country checks');
         }
     }
 

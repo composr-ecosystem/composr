@@ -884,7 +884,8 @@ class Module_cms_galleries extends Standard_crud_module
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields->attach(form_input_regions($regions));
+            require_lang('locations');
+            $fields->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
         }
 
         require_code('syndication');
@@ -916,7 +917,8 @@ class Module_cms_galleries extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('image', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'image', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];
@@ -1039,7 +1041,8 @@ class Module_cms_galleries extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('image', null);
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', ''));
 
         $id = add_image($title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions, $watermark);
 
@@ -1164,7 +1167,8 @@ class Module_cms_galleries extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('image', strval($id));
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', STRING_MAGIC_NULL));
 
         edit_image($id, $title, $cat, $description, $url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true, $watermark);
 
@@ -1478,7 +1482,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'c09d066b272c40ef91f058c40b5c27d0', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('ADVANCED')]));
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields->attach(form_input_regions($regions));
+            require_lang('locations');
+            $fields->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
         }
         $fields->attach(form_input_upload_multi_source(do_lang_tempcode('CLOSED_CAPTIONS'), do_lang_tempcode('DESCRIPTION_CLOSED_CAPTIONS'), $hidden, 'closed_captions_url', null, false, $closed_captions_url, false, 'vtt', null));
 
@@ -1511,7 +1516,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('video', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'video', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];
@@ -1634,7 +1640,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('video', null);
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', ''));
 
         $id = add_video($title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, $closed_captions_url, $metadata['submitter'], $metadata['add_time'], $metadata['edit_time'], $metadata['views'], null, '', '', $regions);
 
@@ -1751,7 +1758,8 @@ class Module_cms_galleries_alt extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('video', strval($id));
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', STRING_MAGIC_NULL));
 
         edit_video($id, $title, $cat, $description, $url, $thumb_url, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $video_length, $video_width, $video_height, post_param_string('meta_keywords', ''), post_param_string('meta_description', ''), $closed_captions_url, $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
@@ -2012,7 +2020,8 @@ class Module_cms_galleries_cat extends Standard_crud_module
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('gallery', ($name == '') ? null : $name));
+            $_id = (($name != '') ? $name : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'gallery', ($name == '') ? null : $name));
         }
 
         return [$fields, $hidden];
@@ -2208,12 +2217,16 @@ class Module_cms_galleries_cat extends Standard_crud_module
     /**
      * Standard crud_module delete possibility checker.
      *
-     * @param  ID_TEXT $id The category being potentially deleted
+     * @param  ?ID_TEXT $id The category being potentially deleted (null: we are creating a new category)
      * @return boolean Whether it may be deleted
      */
-    public function may_delete_this(string $id) : bool
+    public function may_delete_this(?string $id) : bool
     {
-        return $id != 'root';
+        if ($id === null) {
+            return parent::may_delete_this($id);
+        }
+
+        return (($id != 'root') && (parent::may_delete_this($id) === true));
     }
 
     /**

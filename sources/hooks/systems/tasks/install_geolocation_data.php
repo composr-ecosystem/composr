@@ -15,7 +15,7 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    stats
+ * @package    core_locations
  */
 
 /**
@@ -30,10 +30,6 @@ class Hook_task_install_geolocation_data
      */
     public function run() : ?array
     {
-        if (!addon_installed('stats')) {
-            return null;
-        }
-
         push_query_limiting(false);
 
         $GLOBALS['SITE_DB']->query_delete('ip_country');
@@ -42,7 +38,7 @@ class Hook_task_install_geolocation_data
 
         require_code('files');
 
-        $path = get_file_base() . '/data/modules/admin_stats/IP_Country.txt';
+        $path = get_file_base() . '/data/locations/IP_Country.txt';
         $file_charset = null;
         $file = @cms_fopen_text_read($path, $file_charset, true);
         if ($file === false) {
@@ -84,6 +80,9 @@ class Hook_task_install_geolocation_data
         if (!empty($to_insert['begin_num'])) { // Final batch, if there is one
             $GLOBALS['SITE_DB']->query_insert('ip_country', $to_insert);
         }
+
+        // This is to indicate the data has been fully installed
+        $GLOBALS['SITE_DB']->query_insert('ip_country', ['begin_num' => 0, 'end_num' => 0, 'country' => '00']);
 
         return null;
     }

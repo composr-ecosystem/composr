@@ -592,6 +592,13 @@ class Module_cms_calendar extends Standard_crud_module
             $fields2->attach(form_input_username(do_lang_tempcode('MEMBER_CALENDAR'), do_lang_tempcode('DESCRIPTION_MEMBER_CALENDAR'), 'member_calendar', $_member_calendar, !has_privilege(get_member(), 'add_public_events')));
         }
 
+        // Regions
+        if (get_option('filter_regions') == '1') {
+            require_code('locations');
+            require_lang('locations');
+            $fields2->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
+        }
+
         if ((get_option('enable_timezones') !== '0') || (get_option('filter_regions') == '1')) {
             $fields2->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => 'fd78d3298730d0cb157b20f1b3dd6ae1', 'SECTION_HIDDEN' => true, 'TITLE' => do_lang_tempcode('TIMEZONE')]));
         }
@@ -608,11 +615,6 @@ class Module_cms_calendar extends Standard_crud_module
             */
             $hidden->attach(form_input_hidden('timezone', get_site_timezone()));
             $hidden->attach(form_input_hidden('do_timezone_conv', '0'));
-        }
-
-        if (get_option('filter_regions') == '1') {
-            require_code('locations');
-            $fields2->attach(form_input_regions($regions));
         }
 
         // Recurrence
@@ -651,8 +653,8 @@ class Module_cms_calendar extends Standard_crud_module
                     unset($usergroup_list[db_get_first_id()]);
                 }
                 $t_usergroup_list = new Tempcode();
-                foreach ($usergroup_list as $id => $name) {
-                    $t_usergroup_list->attach(form_input_list_entry(strval($id), false, $name));
+                foreach ($usergroup_list as $_id => $name) {
+                    $t_usergroup_list->attach(form_input_list_entry(strval($_id), false, $name));
                 }
                 $fields2->attach(form_input_all_and_not(do_lang_tempcode('SIGN_UP_REMINDER_GROUPS'), do_lang_tempcode('DESCRIPTION_SIGN_UP_REMINDER_GROUPS'), 'sign_up_reminder_groups', $t_usergroup_list));
             }
@@ -681,7 +683,8 @@ class Module_cms_calendar extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields2->attach(content_review_get_fields('event', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields2->attach(content_review_get_fields($this->may_delete_this($_id), 'event', ($id === null) ? null : strval($id)));
         }
 
         // Relay control parameters
@@ -916,6 +919,7 @@ class Module_cms_calendar extends Standard_crud_module
     public function add_actualisation() : array
     {
         require_code('temporal2');
+        require_code('locations');
 
         list($type, $recurrence, $recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar) = $this->get_event_parameters();
 
@@ -932,7 +936,7 @@ class Module_cms_calendar extends Standard_crud_module
         $conflicts = detect_conflicts(get_member(), null, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $start_monthly_spec_type, $end_hour, $end_minute, $recurrence, $recurrences, $type, $member_calendar, DETECT_CONFLICT_SCOPE_ALL);
         $_description = ($conflicts === null) ? paragraph(do_lang_tempcode('SUBMIT_THANKYOU')) : $conflicts;
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        $regions = explode("\n", post_param_regions('regions', ''));
 
         $id = add_calendar_event($type, $recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['submitter'], $metadata['views'], $metadata['add_time'], $metadata['edit_time'], null, '', '', $regions);
 
@@ -1095,6 +1099,7 @@ class Module_cms_calendar extends Standard_crud_module
     public function edit_actualisation(string $_id) : object
     {
         require_code('temporal2');
+        require_code('locations');
 
         $id = intval($_id);
 
@@ -1249,7 +1254,7 @@ class Module_cms_calendar extends Standard_crud_module
             $_description = do_lang_tempcode('SUCCESS');
         }
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        $regions = explode("\n", post_param_regions('regions', STRING_MAGIC_NULL));
 
         edit_calendar_event($id, $type, $recurrence, $recurrences, $seg_recurrences, $title, $content, $priority, $start_year, $start_month, $start_day, $start_monthly_spec_type, $start_hour, $start_minute, $end_year, $end_month, $end_day, $end_monthly_spec_type, $end_hour, $end_minute, $timezone, $do_timezone_conv, $member_calendar, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $metadata['edit_time'], $metadata['add_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
@@ -1548,7 +1553,8 @@ class Module_cms_calendar_cat extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('calendar_type', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'calendar_type', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];

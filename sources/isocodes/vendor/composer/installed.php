@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => '__root__',
+        'pretty_version' => '11.x-dev',
+        'version' => '11.9999999.9999999.9999999-dev',
+        'reference' => '9efa798903c0e7efe8e9adffecb657ccfec8dd27',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => '11.x-dev',
+            'version' => '11.9999999.9999999.9999999-dev',
+            'reference' => '9efa798903c0e7efe8e9adffecb657ccfec8dd27',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sokil/php-isocodes' => array(
+            'pretty_version' => '4.2.1',
+            'version' => '4.2.1.0',
+            'reference' => '6f2b7fb168840983c74804e7f5cb59cfc427bbbd',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sokil/php-isocodes',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sokil/php-isocodes-db-only' => array(
+            'pretty_version' => '4.0.7',
+            'version' => '4.0.7.0',
+            'reference' => '4b8978dea994de6b03fe892108248a914e42b3a5',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../sokil/php-isocodes-db-only',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

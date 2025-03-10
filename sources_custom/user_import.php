@@ -105,6 +105,7 @@ function do_user_import()
                 $custom_fields[$cpf_ids[$local_key]] = $row[$remote_index];
             }
         }
+        $region = isset($USER_IMPORT_WANTED['m_region']) ? $row[$USER_IMPORT_WANTED['m_region']] : '';
         $language = isset($USER_IMPORT_WANTED['m_language']) ? $row[$USER_IMPORT_WANTED['m_language']] : null;
         $photo_url = isset($USER_IMPORT_WANTED['m_photo_url']) ? $row[$USER_IMPORT_WANTED['m_photo_url']] : '';
         $reveal_age = isset($USER_IMPORT_WANTED['m_reveal_age']) ? $row[$USER_IMPORT_WANTED['m_reveal_age']] : 0;
@@ -133,6 +134,7 @@ function do_user_import()
                     $dob_year, // dob_year
                     $custom_fields, // custom_fields
                     null, // timezone
+                    $region, // Region
                     $language, // language
                     '', // theme
                     '', // title
@@ -177,6 +179,7 @@ function do_user_import()
                 $dob_year, // dob_year
                 $custom_fields, // custom_fields
                 null, // timezone
+                $region, // region
                 $language, // language
                 null, // theme
                 null, // title

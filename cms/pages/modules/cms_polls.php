@@ -325,7 +325,8 @@ class Module_cms_polls extends Standard_crud_module
         $fields->attach($feedback_fields);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('poll', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'poll', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, new Tempcode()];

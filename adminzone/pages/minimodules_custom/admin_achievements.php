@@ -88,31 +88,6 @@ if ($type == 'save') {
     $xml = $prev_xml;
 }
 
-// Support revisions tracking for achievements
-$revision_loaded = null;
-if (addon_installed('actionlog')) {
-    require_code('revisions_engine_files');
-    $revision_engine = new RevisionEngineFiles();
-    $directory = 'data_custom/xml_config';
-    $revisions = $revision_engine->ui_revisions_controller($directory, 'achievements', 'xml', 'EDIT_ACHIEVEMENTS', $xml, $revision_loaded);
-    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
-        return $revisions;
-    }
-
-    // Log a revision if we are about to save
-    if ($type == 'save') {
-        $revision_engine->add_revision(
-            dirname($full_path),
-            'achievements',
-            'xml',
-            $prev_xml,
-            filemtime($full_path)
-        );
-    }
-} else {
-    $revisions = new Tempcode();
-}
-
 // Save actualisation
 if ($type == 'save') {
     require_code('input_filter_2');
@@ -125,14 +100,43 @@ if ($type == 'save') {
 
     log_it('EDIT_ACHIEVEMENTS');
 
+    // Clear cache for everyone before we parse the new XML
+    require_code('caches');
+    delete_cache_entry('achievements_member');
+    delete_cache_entry('achievements_xml');
+
     // This will display validation errors and run cleanup operations
     require_code('achievements');
     $ob = load_achievements(true);
     $ob->cleanup();
 
-    // Clear cache for everyone
-    require_code('caches');
-    delete_cache_entry('achievements');
+    attach_message(do_lang_tempcode('SUCCESS'));
+}
+
+// Support revisions tracking for achievements
+$revision_loaded = null;
+if (addon_installed('actionlog')) {
+    require_code('revisions_engine_files');
+    $revision_engine = new RevisionEngineFiles();
+    $directory = 'data_custom/xml_config';
+
+    // Log a revision if we are about to save
+    if ($type == 'save') {
+        $revision_engine->add_revision(
+            dirname($full_path),
+            'achievements',
+            'xml',
+            $prev_xml,
+            filemtime($full_path)
+        );
+    }
+
+    $revisions = $revision_engine->ui_revisions_controller($directory, 'achievements', 'xml', 'EDIT_ACHIEVEMENTS', $xml, $revision_loaded);
+    if ((get_param_integer('diffing', 0) == 1) && (!$revisions->is_empty())) {
+        return $revisions;
+    }
+} else {
+    $revisions = new Tempcode();
 }
 
 $description = do_lang_tempcode('DESCRIPTION_EDIT_ACHIEVEMENTS');

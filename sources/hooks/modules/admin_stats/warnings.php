@@ -106,6 +106,7 @@ class Hook_admin_stats_warnings extends CMSStatsProvider
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
         require_code('temporal');
+        require_code('locations');
 
         $server_timezone = get_server_timezone();
 

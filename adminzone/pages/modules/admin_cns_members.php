@@ -383,6 +383,9 @@ class Module_admin_cns_members
         $custom_fields = cns_get_all_custom_fields_match(cns_get_all_default_groups(true));
         $actual_custom_fields = cns_read_in_custom_fields($custom_fields);
 
+        require_code('locations');
+        $region = post_param_region('region', '');
+
         $timezone = post_param_string('timezone', get_site_timezone());
         $language = post_param_string('language', get_site_default_lang());
         $theme = post_param_string('theme', '');
@@ -449,6 +452,7 @@ class Module_admin_cns_members
             $dob_year, // dob_year
             $actual_custom_fields, // custom_fields
             $timezone, // timezone
+            $region, // Region
             $language, // language
             $theme, // theme
             '', // title

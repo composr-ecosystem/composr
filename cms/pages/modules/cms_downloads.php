@@ -527,7 +527,8 @@ class Module_cms_downloads extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('download', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'download', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden];
@@ -1051,7 +1052,8 @@ class Module_cms_downloads_cat extends Standard_crud_module
         $fields->attach(seo_get_fields($this->seo_type, ($id === null) ? null : strval($id), false));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('download_category', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'download_category', ($id === null) ? null : strval($id)));
         }
 
         // Permissions

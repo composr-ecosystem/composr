@@ -316,6 +316,7 @@ function get_member(bool $quick_only = false) : int
     if ($member_id !== null) {
         enforce_temporary_passwords($member_id);
         enforce_declarations($member_id);
+        enforce_parental_controls($member_id);
 
         if (get_forum_type() == 'cns') {
             $GLOBALS['FORUM_DRIVER']->cns_flood_control($member_id);
@@ -374,6 +375,11 @@ function enforce_temporary_passwords(int $member_id)
  */
 function enforce_declarations(int $member_id)
 {
+    // No enforcement if we are checking a member other than ourselves
+    if ($member_id != get_member()) {
+        return;
+    }
+
     // Enforcement is supported when not using Conversr, but Conversr must still be installed
     if (!addon_installed('core_cns')) {
         return;
@@ -395,7 +401,7 @@ function enforce_declarations(int $member_id)
     }
 
     // Bail to prevent infinite loops if the member is either on the join page (might be reviewing the rules) or on their own member profile (might be deleting their account)
-    if ((get_page_name() == 'join') || ((get_page_name() == 'members') && (get_param_string('id', '') == '') && (get_param_string('type', 'browse') == 'view'))) {
+    if ((get_page_name() == 'join') || ((get_page_name() == 'members') && ((get_param_string('id', '') == '') || (get_param_string('id', '') == strval($member_id))) && (get_param_string('type', 'browse') == 'view'))) {
         return;
     }
 
@@ -411,6 +417,133 @@ function enforce_declarations(int $member_id)
 
     require_code('users_active_actions');
     _enforce_declarations($member_id);
+}
+
+/**
+ * Enforce parental control policies that could affect a member's ability to access the site. Also enforce required fields for parental controls.
+ *
+ * @param  MEMBER $member_id The member to check
+ */
+function enforce_parental_controls(int $member_id)
+{
+    // No enforcement if we are checking a member other than ourselves
+    if ($member_id != get_member()) {
+        return;
+    }
+
+    // Enforcement is supported when not using Conversr, but Conversr must still be installed
+    if (!addon_installed('core_cns')) {
+        return;
+    }
+
+    // Cannot enforce on guests
+    if ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id()) {
+        return;
+    }
+
+    // If we are SUed into another member, do not enforce
+    if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_string('keep_su', null) !== null)) {
+        return;
+    }
+
+    // Load in parental controls and member data for checking
+    require_code('cns_parental_controls');
+    require_code('locations');
+    require_code('temporal');
+
+    $pc = load_parental_control_settings();
+
+    $dob_day = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_day');
+    $dob_month = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_month');
+    $dob_year = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
+    $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
+
+    // Check / enforce age lockout
+    $lockout_info = $pc->run('lockout', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+    if ($lockout_info !== null) {
+        warn_exit($lockout_info['message']);
+    }
+
+    // Check / enforce parental consent
+    $consent_info = $pc->run('parental_consent', $age, get_region(), ['member_id' => $member_id]); // Will automatically delete the session
+    if ($consent_info !== null) {
+        require_lang('cns');
+        require_code('crypt');
+        $staff_address = obfuscate_email_address(get_option('staff_address'));
+        warn_exit(do_lang_tempcode('LOCKED_OUT_PARENTAL_CONSENT', protect_from_escaping($staff_address)));
+    }
+
+    // No additional enforcement if using an external connection, such as Commandr or WebDAV
+    if (!running_script('index')) {
+        return;
+    }
+
+    // Bail to prevent infinite loops if the member is on their own member profile (might be filling in those fields)
+    if (((get_page_name() == 'members') && ((get_param_string('id', '') == '') || (get_param_string('id', '') == strval($member_id))) && (get_param_string('type', 'browse') == 'view'))) {
+        return;
+    }
+
+    require_code('urls');
+
+    $redirect_url = build_url(['page' => 'members', 'type' => 'view'], get_module_zone('members'), [], false, false, false, '#tab--edit');
+
+    // Check region geo-location enforcement
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+    if ($pc->get_option('enforce_region') !== null) {
+        require_code('locations');
+        $geo = geolocate_ip(get_ip_address());
+        if ($geo !== null) {
+            $region = get_region();
+            if (!cms_empty_safe($region) && (!is_location_within($region, [$geo]))) {
+                require_code('site2');
+                require_lang('locations');
+                redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_REGION_GEO', escape_html($geo)), false, 'warn');
+            }
+        }
+    }
+
+    $dob = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_dob_year');
+    $timezone = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_timezone_offset');
+    $region = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_region'); // NB: we don't use get_region because we want to explicitly check the setting
+
+    // Optimisation: don't proceed if the member already populated all the fields we will be checking
+    if (!cms_empty_safe($dob) && !cms_empty_safe($timezone) && !cms_empty_safe($region)) {
+        return;
+    }
+
+    require_code('cns_members_action');
+    require_code('cns_field_editability');
+    require_lang('cns');
+
+    $special_type = get_member_special_type($member_id);
+
+    // DOB
+    if (member_field_is_required($member_id, 'dob', $dob, null) && cns_field_editable('dob', $special_type)) {
+        if ((cms_empty_safe($dob)) && (has_privilege(get_member(), 'bypass_dob_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
+            redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_DOB'), false, 'warn');
+        }
+    }
+
+    // Time zone
+    if (member_field_is_required($member_id, 'timezone_offset', $timezone, null) && cns_field_editable('timezone_offset', $special_type)) {
+        if ((cms_empty_safe($timezone)) && (has_privilege(get_member(), 'bypass_timezone_offset_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
+            redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_TIMEZONE'), false, 'warn');
+        }
+    }
+
+    // Region
+    if (member_field_is_required($member_id, 'region', $region, null) && cns_field_editable('region', $special_type)) {
+        if ((cms_empty_safe($region)) && (has_privilege(get_member(), 'bypass_region_if_already_empty'))) {
+            require_code('site2');
+            require_lang('locations');
+            redirect_exit($redirect_url, null, do_lang_tempcode('PARENTAL_CONTROLS_ENFORCE_REGION'), false, 'warn');
+        }
+    }
 }
 
 /**

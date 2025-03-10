@@ -36,7 +36,10 @@ class Hook_logs_health_check
         }
 
         return [
-            'health_check.log' => ['days_to_keep' => (get_option('days_to_keep__health_check_log') == '') ? null : intval(get_option('days_to_keep__health_check_log'))],
+            'health_check.log' => [
+                'description' => 'health_check:DESCRIPTION_HEALTH_CHECK_LOG',
+                'days_to_keep' => (get_option('days_to_keep__health_check_log') == '') ? null : intval(get_option('days_to_keep__health_check_log'))
+            ],
         ];
     }
 }

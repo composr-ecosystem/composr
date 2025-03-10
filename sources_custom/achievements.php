@@ -28,12 +28,18 @@ function init__achievements()
  */
 function load_achievements(bool $show_errors = false) : object
 {
+    static $achievements_loader = [];
+
     $error_msg = new Tempcode();
     if (!addon_installed__messaged('achievements', $error_msg)) {
         warn_exit($error_msg);
     }
 
-    return new Achievements_loader($show_errors);
+    if (!isset($achievements_loader[$show_errors])) {
+        $achievements_loader[$show_errors] = new Achievements_loader($show_errors);
+    }
+
+    return $achievements_loader[$show_errors];
 }
 
 /**
@@ -48,37 +54,57 @@ class Achievements_loader
     private $xml_valid = false; // A more strict version of $cleanup_okay; will be false if any issues in the XML were present
     private $achievements = []; // Full XML achievement structure
     private $achievement_progress = []; // Cached calculated achievement progress
-
-    // Used during parsing
-    private $tag_stack;
-    private $attribute_stack;
-    private $text_so_far;
-
-    private $show_errors;
+    private $show_errors = false; // Whether to show validation errors
 
     /**
      * Upon construction of the class, parse and validate the XML file.
      *
-     * @param  boolean $show_errors Whether to attach validation errors as messages (false: attach a single generic error for regular members)
+     * @param  boolean $show_errors Whether to attach validation errors as messages (false: attach a single generic error for regular members) (true: also bypasses cache)
      */
     public function __construct(bool $show_errors = false)
     {
         $this->show_errors = $show_errors;
 
+        $xml_path = get_custom_file_base() . '/data_custom/xml_config/achievements.xml';
+
         if (!addon_installed('achievements')) {
             return;
         }
 
-        if (!is_file(get_custom_file_base() . '/data_custom/xml_config/achievements.xml')) {
+        if (!is_file($xml_path)) {
             return;
         }
 
         require_code('global3');
 
+        $cache_id = [];
+        if (support_smart_decaching(true)) {
+            $cache_id['custom'] = filemtime($xml_path);
+        }
+
+        // Try cache first but only if not requesting errors
+        if ($show_errors === false) {
+            require_code('caches');
+            $cache = get_cache_entry('achievements_xml', md5(serialize($cache_id)), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
+            if ($cache !== null) {
+                $this->achievements = $cache;
+
+                // With cache, we automatically assume all is well
+                if (count($this->achievements) == 0) {
+                    $this->cleanup_okay = false;
+                } else {
+                    $this->cleanup_okay = false;
+                }
+                $this->xml_valid = true;
+
+                return;
+            }
+        }
+
         $hash_check = [];
 
         // Begin parsing the XML file
-        $contents = cms_file_get_contents_safe(get_custom_file_base() . '/data_custom/xml_config/achievements.xml');
+        $contents = cms_file_get_contents_safe($xml_path);
         $ob = simplexml_load_string($contents);
         if ($ob === false) {
             warn_exit(do_lang_tempcode('ACHIEVEMENTS_INVALID_XML'));
@@ -263,6 +289,12 @@ class Achievements_loader
         if (count($this->achievements) == 0) {
             $this->cleanup_okay = false;
         }
+
+        // Save to cache, but only if the XML was valid
+        if ($this->is_xml_valid()) {
+            require_code('caches2');
+            set_cache_entry('achievements_xml', (60 * 60), md5(serialize($cache_id)), $this->achievements, CACHE_AGAINST_NOTHING_SPECIAL);
+        }
     }
 
     /**
@@ -286,7 +318,7 @@ class Achievements_loader
     }
 
     /**
-     * Run cleanup operations to delete unnecessary database reacords.
+     * Run cleanup operations to delete unnecessary database records.
      * This should be executed when saving new achievements configuration.
      */
     public function cleanup()

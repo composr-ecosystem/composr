@@ -437,6 +437,8 @@ function _generic_exit($text, string $template, ?bool $support_match_key_message
     if (($EXITING >= 1) || (!function_exists('get_member')) || (!function_exists('get_screen_title')) || (!function_exists('do_lang')) || (running_script('upgrader')) || (!class_exists('Tempcode')) || ($MICRO_BOOTUP) || ($BOOTSTRAPPING)) {
         if (($EXITING == 2) && (!$BOOTSTRAPPING) && (function_exists('may_see_stack_traces')) && (may_see_stack_traces()) && ($GLOBALS['HAS_SET_ERROR_HANDLER'])) {
             die_html_trace($text_eval);
+        } elseif (($EXITING < 2)) { // Probably just did not fully load the software yet
+            critical_error('PASSON', $text_eval);
         } else { // Failed even in die_html_trace
             critical_error('EMERGENCY', $text_eval);
         }

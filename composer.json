@@ -17,6 +17,7 @@
         "ext-mysqli": "*",
         "ext-ftp": "*",
         "ext-sodium": "*",
-        "ext-enchant": "*"
+        "ext-enchant": "*",
+        "ext-gettext": "*"
     }
 }

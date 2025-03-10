@@ -400,6 +400,7 @@ class Hook_import_mybb
                     $bday_year, // dob_year
                     $custom_fields, // custom_fields
                     strval($row['timezone']), // timezone
+                    '', // TODO: region
                     $language, // language
                     '', // theme
                     $title, // title

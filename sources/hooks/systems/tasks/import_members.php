@@ -277,6 +277,7 @@ class Hook_task_import_members
                 $is_perm_banned = '0';
             }
             $reveal_age = array_key_exists('Reveal age', $line) ? ((cms_strtoupper_ascii($line['Reveal age']) == 'YES' || $line['Reveal age'] == '1' || cms_strtoupper_ascii($line['Reveal age']) == 'Y' || cms_strtoupper_ascii($line['Reveal age']) == 'ON') ? 1 : 0) : 0;
+            $region = array_key_exists('Region', $line) ? $line['Region'] : '';
             $language = array_key_exists('Language', $line) ? $line['Language'] : '';
             $allow_emails = array_key_exists('Accept member e-mails', $line) ? ((cms_strtoupper_ascii($line['Accept member e-mails']) == 'YES' || $line['Accept member e-mails'] == '1' || cms_strtoupper_ascii($line['Accept member e-mails']) == 'Y' || cms_strtoupper_ascii($line['Accept member e-mails']) == 'ON') ? 1 : 0) : 0;
             $allow_emails_from_staff = array_key_exists('Opt-in', $line) ? ((cms_strtoupper_ascii($line['Opt-in']) == 'YES' || $line['Opt-in'] == '1' || cms_strtoupper_ascii($line['Opt-in']) == 'Y' || cms_strtoupper_ascii($line['Opt-in']) == 'ON') ? 1 : 0) : 0;
@@ -388,6 +389,7 @@ class Hook_task_import_members
                     $dob_year, // dob_year
                     $custom_fields, // custom_fields
                     null, // timezone
+                    $region, // Region
                     $language, // language
                     '', // theme
                     '', // title
@@ -443,6 +445,7 @@ class Hook_task_import_members
                     $dob_year, // dob_year
                     $custom_fields, // custom_fields
                     null, // timezone
+                    $region, // region
                     $language, // language
                     null, // theme
                     null, // title

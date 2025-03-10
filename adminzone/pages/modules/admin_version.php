@@ -96,6 +96,7 @@ class Module_admin_version
             'ft_index_commonality',
             'cpages_fulltext_index',
             'daily_visits',
+            'ip_country',
         ];
         $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
 
@@ -348,6 +349,21 @@ class Module_admin_version
                 'r_time' => 'TIME',
             ]);
             $GLOBALS['SITE_DB']->create_index('messages_to_render', 'forsession', ['r_session_id']);
+        }
+
+        // Migrated from stats to core_locations
+        if (($upgrade_from === null) || ($upgrade_from < 23)) {
+            if (!$GLOBALS['SITE_DB']->table_exists('ip_country')) {
+                $GLOBALS['SITE_DB']->create_table('ip_country', [
+                    'id' => '*AUTO',
+                    'begin_num' => 'UINTEGER',
+                    'end_num' => 'UINTEGER',
+                    'country' => 'SHORT_TEXT',
+                ]);
+
+                $GLOBALS['SITE_DB']->create_index('ip_country', 'begin_num', ['begin_num']);
+                $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
+            }
         }
 
         // A lot of core upgrade is also here. When absolutely necessary it is put in upgrade.php.

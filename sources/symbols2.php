@@ -653,7 +653,10 @@ function ecv2_COMMA_LIST_SET(string $lang, array $escaped, array $param) : strin
  */
 function ecv2_PARENTAL_CONSENT_REQUIRED(string $lang, array $escaped, array $param) : string
 {
-    $value = ((get_option('is_on_parental_consent') == '1') && (get_option('dobs') == '1')) ? '1' : '0';
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+
+    $value = ($pc->has_control('parental_consent') ? '1' : '0');
 
     if ($GLOBALS['XSS_DETECT']) {
         ocp_mark_as_escaped($value);

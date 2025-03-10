@@ -36,7 +36,10 @@ class Hook_logs_ecommerce
         }
 
         return [
-            'ecommerce.log' => ['days_to_keep' => (get_option('days_to_keep__ecommerce_log') == '') ? null : intval(get_option('days_to_keep__ecommerce_log'))],
+            'ecommerce.log' => [
+                'description' => 'ecommerce:DESCRIPTION_ECOMMERCE_LOG',
+                'days_to_keep' => (get_option('days_to_keep__ecommerce_log') == '') ? null : intval(get_option('days_to_keep__ecommerce_log'))
+            ],
         ];
     }
 }

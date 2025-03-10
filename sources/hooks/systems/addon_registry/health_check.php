@@ -195,6 +195,7 @@ class Hook_addon_registry_health_check
             'sources/hooks/systems/config/hc_requests_per_second_threshold.php',
             'sources/hooks/systems/config/hc_requests_window_size.php',
             'sources/hooks/systems/config/hc_scan_page_links.php',
+            'sources/hooks/systems/config/hc_task_queue_threshold.php',
             'sources/hooks/systems/config/hc_transfer_latency_threshold.php',
             'sources/hooks/systems/config/hc_transfer_speed_threshold.php',
             'sources/hooks/systems/config/hc_uptime_threshold.php',

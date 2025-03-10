@@ -71,7 +71,6 @@ class Module_admin_stats extends Standard_crud_module
             'stats_known_tracking',
             'stats_known_links',
             'usersonline_track',
-            'ip_country',
         ];
         $GLOBALS['SITE_DB']->drop_table_if_exists($tables);
     }
@@ -107,27 +106,6 @@ class Module_admin_stats extends Standard_crud_module
                 'peak' => 'INTEGER',
             ]);
             $GLOBALS['SITE_DB']->create_index('usersonline_track', 'peak_track', ['peak']);
-
-            $GLOBALS['SITE_DB']->create_table('ip_country', [
-                'id' => '*AUTO',
-                'begin_num' => 'UINTEGER',
-                'end_num' => 'UINTEGER',
-                'country' => 'SHORT_TEXT',
-            ]);
-
-            require_lang('stats');
-            require_code('crypt');
-            $secure_ref = get_secure_random_string();
-            $id = $GLOBALS['SITE_DB']->query_insert('task_queue', [
-                't_title' => do_lang('INSTALL_GEOLOCATION_DATA'),
-                't_hook' => 'install_geolocation_data',
-                't_args' => serialize([]),
-                't_member_id' => $GLOBALS['FORUM_DRIVER']->get_guest_id(),
-                't_secure_ref' => $secure_ref, // Used like a temporary password to initiate the task
-                't_send_notification' => 0,
-                't_locked' => 0,
-                't_add_time' => time(),
-            ], true);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 8)) { // LEGACY
@@ -241,9 +219,6 @@ class Module_admin_stats extends Standard_crud_module
             $GLOBALS['SITE_DB']->create_index('stats_known_links', 'l_url', ['l_url']);
 
             $GLOBALS['SITE_DB']->create_index('stats', 'session_id', ['session_id']);
-
-            $GLOBALS['SITE_DB']->create_index('ip_country', 'begin_num', ['begin_num']);
-            $GLOBALS['SITE_DB']->create_index('ip_country', 'end_num', ['end_num']);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from == 10)) { // LEGACY: 11.beta1
@@ -291,15 +266,6 @@ class Module_admin_stats extends Standard_crud_module
         $ret = [
             'browse' => ['MODULE_TRANS_NAME_admin_stats', 'menu/adminzone/audit/statistics/statistics'],
         ];
-
-        static $has_geolocation_data = null;
-        if ($has_geolocation_data === null) {
-            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-            $has_geolocation_data = ($test !== null);
-        }
-        if (!$has_geolocation_data) {
-            $ret['install_data'] = ['INSTALL_GEOLOCATION_DATA', 'menu/adminzone/audit/statistics/geolocate'];
-        }
 
         $ret['edit'] = ['EDIT_KPI', 'admin/edit'];
 
@@ -421,8 +387,6 @@ class Module_admin_stats extends Standard_crud_module
 
         if ($type == 'browse') {
             return $this->browse();
-        } elseif ($type == 'install_data') {
-            return $this->install_geolocation_data();
         } elseif ($type == 'category') {
             cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
             disable_php_memory_limit();
@@ -451,23 +415,6 @@ class Module_admin_stats extends Standard_crud_module
     public function browse() : object
     {
         return $this->do_next_manager($this->title, comcode_lang_string('DOC_STATISTICS'));
-    }
-
-    /**
-     * Install geolocation data.
-     *
-     * @return Tempcode The UI, showing the result of the installation
-     */
-    public function install_geolocation_data() : object
-    {
-        if (post_param_integer('confirm', 0) == 0) {
-            $preview = do_lang_tempcode('INSTALL_GEOLOCATION_DATA');
-            $url = get_self_url(false, false);
-            return do_template('CONFIRM_SCREEN', ['_GUID' => '153e04d683281ead45497b424307aabf', 'TITLE' => $this->title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
-        }
-
-        require_code('tasks');
-        return call_user_func_array__long_task(do_lang('INSTALL_GEOLOCATION_DATA'), $this->title, 'install_geolocation_data');
     }
 
     /**
@@ -911,13 +858,6 @@ class Module_admin_stats extends Standard_crud_module
         $category_actions = [];
         $kpi_actions = [];
         $redirect_actions = [];
-
-        $test = $GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'id');
-        if ($test === null) {
-            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('INSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
-        } else {
-            $install_actions[] = ['menu/adminzone/audit/statistics/geolocate', ['_SELF', ['type' => 'install_data'], '_SELF'], do_lang_tempcode('REINSTALL_GEOLOCATION_DATA'), 'DOC_INSTALL_GEOLOCATION_DATA'];
-        }
 
         $hooks = find_all_hook_obs('modules', 'admin_stats_redirects', 'Hook_admin_stats_redirects_');
         foreach ($hooks as $ob) {

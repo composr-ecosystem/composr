@@ -13,16 +13,18 @@ Please print this message out and ask if your parent or guardian can sign and da
 
 {FAX@}{+END}
 
+{EXTRA_TEXT}
+
 ------------------------------ CUT HERE ------------------------------
 
-
-Permission to participate at {$SITE_NAME@}, with these details...
+I hereby authorise permission for my child to participate on {$SITE_NAME@}, with these details...
 {+START,LOOP,FIELDS_DONE}
 {LABEL@}: [html]{VALUE}[/html]
 {+END}
 
 Tick (check) all:
 
+[ ] I DECLARE THAT I AM A LEGAL PARENT OR GUARDIAN OF THE CHILD ABOVE AND CAN LEGALLY MAKE DECISIONS ON THEIR BEHALF.
 [ ] I HAVE REVIEWED THE INFORMATION PROVIDED BY MY CHILD AND HEREBY GRANT PERMISSION TO {$SITE_NAME@} TO STORE THIS INFORMATION.
 [ ] I UNDERSTAND THIS INFORMATION CAN BE CHANGED AT ANY TIME BY ENTERING A PASSWORD.
 [ ] I UNDERSTAND THAT I MAY REQUEST FOR THIS INFORMATION TO BE REMOVED FROM {$SITE_NAME@} AT ANY TIME.
@@ -40,8 +42,6 @@ Parent or Guardian
 
 Date: __________________
 
-
 ------------------------------ CUT HERE ------------------------------
 
-
-Once a member of staff has received the above form your account will be activated.
+Once a member of staff has received and validated the above form, your account will be activated.

@@ -1124,7 +1124,7 @@ class Module_cms_comcode_pages
 
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
-            $fields2->attach(content_review_get_fields('comcode_page', ($page_link == '') ? null : $page_link));
+            $fields2->attach(content_review_get_fields(false, 'comcode_page', ($page_link == '') ? null : $page_link));
         }
 
         require_code('permissions2');

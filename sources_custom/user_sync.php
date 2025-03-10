@@ -175,6 +175,7 @@ function user_sync__inbound($since = null)
             $dob_day = $user_data['dob_day'];
             $dob_month = $user_data['dob_month'];
             $dob_year = $user_data['dob_year'];
+            $region = $user_data['region'];
             $language = $user_data['language'];
             $photo_url = $user_data['photo_url'];
             $reveal_age = $user_data['reveal_age'];
@@ -240,6 +241,7 @@ function user_sync__inbound($since = null)
                     $dob_year, // dob_year
                     $custom_fields, // custom_fields
                     null, // timezone
+                    '', // region
                     $language, // language
                     '', // theme
                     '', // title
@@ -297,6 +299,7 @@ function user_sync__inbound($since = null)
                     $dob_year, // dob_year
                     $custom_fields, // custom_fields
                     null, // timezone
+                    null, // region
                     $language, // language
                     '', // theme
                     '', // title
@@ -489,6 +492,8 @@ function user_sync_get_field_default($field_name)
             return null;
         case 'dob_year':
             return null;
+        case 'region':
+            return '';
         case 'language':
             return null;
         case 'photo_url':
@@ -696,6 +701,7 @@ function user_sync_find_native_fields()
         'is_perm_banned',
         'reveal_age',
         'photo_url',
+        'region',
         'language',
         'allow_emails',
         'allow_emails_from_staff',

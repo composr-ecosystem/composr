@@ -161,6 +161,11 @@ function uninstall_cns()
         'bypass_email_address_if_already_empty',
         'bypass_dob',
         'bypass_dob_if_already_empty',
+        'bypass_timezone_offset',
+        'bypass_timezone_offset_if_already_empty',
+        'bypass_region',
+        'bypass_region_if_already_empty',
+
         'appear_under_birthdays',
 
         'exceed_post_edit_time_limit',
@@ -413,6 +418,7 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_sound_enabled', 'BINARY', 0);
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_password_change_code_time', '?TIME');
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_login_key_hash', 'SHORT_TEXT');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_region', 'ID_TEXT');
 
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_is_perm_banned', 'ID_TEXT');
 
@@ -550,6 +556,7 @@ function install_cns(?float $upgrade_from = null)
             'm_timezone_offset' => 'SHORT_TEXT',
             'm_language' => 'ID_TEXT',
             'm_theme' => 'ID_TEXT', // Blank means default
+            'm_region' => 'ID_TEXT', // Blank means not set, and member will be required to fill it in later if necessary
 
             // Rich data
             'm_title' => 'SHORT_TEXT', // Blank means use title
@@ -577,6 +584,7 @@ function install_cns(?float $upgrade_from = null)
             'm_validated_email_confirm_code' => 'SHORT_TEXT',
             'm_probation_expiration_time' => '?TIME',
             'm_is_perm_banned' => 'ID_TEXT',
+            'm_parental_consent' => 'SHORT_INTEGER', // 0 = Not obtained and not notified, 1 = Not obtained but notified, 2 = obtained
 
             // Auto-generated values
             'm_ip_address' => 'IP',
@@ -943,6 +951,7 @@ function install_cns(?float $upgrade_from = null)
             null, // dob_year
             [], // custom_fields
             null, // timezone
+            '', // region
             '', // language
             '', // theme
             '', // title
@@ -980,6 +989,7 @@ function install_cns(?float $upgrade_from = null)
             null, // dob_year
             [], // custom_fields
             null, // timezone
+            null, // region
             '', // language
             '', // theme
             '', // title
@@ -1017,6 +1027,7 @@ function install_cns(?float $upgrade_from = null)
             null, // dob_year
             [], // custom_fields
             null, // timezone
+            null, // region
             '', // language
             '', // theme
             '', // title
@@ -1089,6 +1100,10 @@ function install_cns(?float $upgrade_from = null)
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {
         add_privilege('FORUMS_AND_MEMBERS', 'appear_under_birthdays', true);
+        add_privilege('FORUMS_AND_MEMBERS', 'bypass_timezone_offset');
+        add_privilege('FORUMS_AND_MEMBERS', 'bypass_timezone_offset_if_already_empty');
+        add_privilege('FORUMS_AND_MEMBERS', 'bypass_region');
+        add_privilege('FORUMS_AND_MEMBERS', 'bypass_region_if_already_empty');
 
         $GLOBALS['FORUM_DB']->create_index('f_forums', 'club_search', ['f_description']);
 
@@ -1617,8 +1632,11 @@ function install_cns(?float $upgrade_from = null)
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
         delete_privilege('may_report_post'); // Combined into the enhanced report_content addon
 
-        rename_config_option('is_on_coppa', 'is_on_parental_consent');
-        rename_config_option('coppa_age', 'parental_consent_age');
+        // Replaced by new parental controls system
+        require_code('config2');
+        delete_config_option('is_on_coppa');
+        delete_config_option('coppa_age');
+        $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_parental_consent', 'SHORT_INTEGER', 0);
 
         // Migrate old publication time code to our new validation time
         $GLOBALS['FORUM_DB']->add_table_field('f_topics', 't_validation_time', '?TIME');
@@ -1781,14 +1799,15 @@ function install_cns(?float $upgrade_from = null)
                 }
                 $start += 250;
             } while (array_key_exists(0, $rows));
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_probation');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_ip');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
-            $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
+
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_probation');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_ip');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
+        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {

@@ -3493,7 +3493,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_complex_uploader
         CONFIG_OPTION_cookie_notice
         CONFIG_OPTION_website_activity_store_time
-        PARENTAL_CONSENT_AGE
         PRIVILEGE_avoid_captcha
         WEBSITE_ACTIVITY_STORE_TIME
         MEMBER_SEARCH
@@ -3676,7 +3675,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_is_on_comcode_page_cache
         CONFIG_OPTION_is_on_comcode_page_children
         CONFIG_OPTION_is_on_comments
-        CONFIG_OPTION_is_on_parental_consent
         CNS_WAITING_CONFIRM_MAIL_PARENTAL_CONSENT
         PARENTAL_CONSENT_JOIN_SUBJECT
         INCORRECT_CAPTCHA_QUESTION_ANSWER
@@ -7910,8 +7908,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         USE_MSN
         USE_MULTI_DB
         USE_ON_ZONES
-        USE_PERSISTENT
-        USE_PERSISTENT_TEXT
+        USE_PERSISTENT_DATABASE
+        USE_PERSISTENT_DATABASE_TEXT
         USE_TOPICS
         USE_TRUE_FROM
         USING_SU
@@ -8564,7 +8562,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_TEMPLATE
         REPLY_TO
         SKIP_TICKET_CREATION
-        CONFIG_OPTION_parental_consent_age
         UPGRADER_NEW_ADDON_EXTRACTED
         UPGRADER_INTEGRITY_SCAN_2
         UPGRADER_SAFE_MODE_UPGRADE_ADDONS

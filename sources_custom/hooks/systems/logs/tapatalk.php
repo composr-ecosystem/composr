@@ -31,7 +31,10 @@ class Hook_logs_tapatalk
         }
 
         return [
-            'tapatalk.log' => ['days_to_keep' => (get_option('days_to_keep__tapatalk_log') == '') ? null : intval(get_option('days_to_keep__tapatalk_log'))],
+            'tapatalk.log' => [
+                'description' => 'tapatalk:DESCRIPTION_TAPATALK_LOG',
+                'days_to_keep' => (get_option('days_to_keep__tapatalk_log') == '') ? null : intval(get_option('days_to_keep__tapatalk_log'))
+            ],
         ];
     }
 }

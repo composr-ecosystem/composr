@@ -48,6 +48,7 @@ class Block_main_hero_slider
             'interval',
             'check',
             'blank_if_empty',
+            'sort',
         ];
 
         return $info;
@@ -71,6 +72,7 @@ class Block_main_hero_slider
             isset($map['interval']) ? $map['interval'] : '',
             isset($map['check']) ? !empty($map['check']) : true,
             isset($map['gallery_name']) ? $map['gallery_name'] : '',
+            isset($map['sort']) ? $map['sort'] : 'recent ASC',
         ]
 PHP;
         $info['ttl'] = 60;
@@ -107,6 +109,7 @@ PHP;
         $show_scroll_down = !empty($map['show_scroll_down']);
         $interval = isset($map['interval']) ? strval(intval($map['interval']) * 1000) : null;
         $check_perms = isset($map['check']) ? !empty($map['check']) : true;
+        $sort = !empty($map['sort']) ? $map['sort'] : 'recent ASC';
 
         // Check if the gallery exists
         $gallery_name = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $gallery_name]);
@@ -135,7 +138,7 @@ PHP;
             null,
             $extra_where,
             '',
-            'recent ASC',
+            $sort,
             0,
             100, /*reasonable limit*/
             '',

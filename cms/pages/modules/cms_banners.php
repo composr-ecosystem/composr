@@ -396,7 +396,8 @@ class Module_cms_banners extends Standard_crud_module
         $fields->attach(metadata_get_fields('banner', $name));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('banner', $name));
+            $_id = (($name != '') ? $name : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'banner', $name));
         }
 
         // Permissions
@@ -864,7 +865,7 @@ class Module_cms_banners_cat extends Standard_crud_module
         $fields->attach(metadata_get_fields('banner_type', ($id === null) ? null : $id));
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('banner_type', ($id === null) ? null : $id));
+            $fields->attach(content_review_get_fields($this->may_delete_this($id), 'banner_type', ($id === null) ? null : $id));
         }
 
         // Select of banners within compatible types

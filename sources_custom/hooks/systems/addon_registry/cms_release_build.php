@@ -16,7 +16,7 @@
 /**
  * Hook class.
  */
-class Hook_addon_registry_cms_release_build // TODO: renamed; do we need upgrade code?
+class Hook_addon_registry_cms_release_build
 {
     /**
      * Get a list of file permissions to set.

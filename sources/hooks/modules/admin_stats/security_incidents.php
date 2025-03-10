@@ -54,6 +54,7 @@ class Hook_admin_stats_security_incidents extends CMSStatsProvider
             return null;
         }
 
+        require_code('locations');
         require_lang('security');
 
         $ret = [];

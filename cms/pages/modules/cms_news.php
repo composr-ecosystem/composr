@@ -502,7 +502,8 @@ class Module_cms_news extends Standard_crud_module
 
         if (get_option('filter_regions') == '1') {
             require_code('locations');
-            $fields2->attach(form_input_regions($regions));
+            require_lang('locations');
+            $fields2->attach(form_input_region_multi(do_lang_tempcode('REGIONS'), do_lang_tempcode('DESCRIPTION_REGIONS'), 'regions', $regions, 0));
         }
 
         $hidden = new Tempcode();
@@ -534,7 +535,8 @@ class Module_cms_news extends Standard_crud_module
         }
 
         if (addon_installed('content_reviews')) {
-            $fields2->attach(content_review_get_fields('news', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields2->attach(content_review_get_fields($this->may_delete_this($_id), 'news', ($id === null) ? null : strval($id)));
         }
 
         return [$fields, $hidden, null, null, null, null, $fields2, $posting_form_tabindex];
@@ -655,7 +657,8 @@ class Module_cms_news extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('news', null);
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', ''));
 
         $id = add_news($title, $news, $author, $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, $metadata['add_time'], $metadata['submitter'], $metadata['views'], null, null, $image, '', '', $regions);
 
@@ -790,7 +793,8 @@ class Module_cms_news extends Standard_crud_module
 
         $metadata = actual_metadata_get_fields('news', strval($id));
 
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        require_code('locations');
+        $regions = explode("\n", post_param_regions('regions', STRING_MAGIC_NULL));
 
         edit_news($id, $title, post_param_string('news', STRING_MAGIC_NULL), post_param_string('author', STRING_MAGIC_NULL), $validated, $allow_rating, $allow_comments, $allow_trackbacks, $notes, $news_article, $main_news_category, $news_category, post_param_string('meta_keywords', STRING_MAGIC_NULL), post_param_string('meta_description', STRING_MAGIC_NULL), $image, $metadata['add_time'], $metadata['edit_time'], $metadata['views'], $metadata['submitter'], $regions, true);
 
@@ -1063,7 +1067,8 @@ class Module_cms_news_cat extends Standard_crud_module
         $fields->attach(metadata_get_fields('news_category', ($id === null) ? null : strval($id)), false);
 
         if (addon_installed('content_reviews')) {
-            $fields->attach(content_review_get_fields('news_category', ($id === null) ? null : strval($id)));
+            $_id = (($id !== null) ? strval($id) : null);
+            $fields->attach(content_review_get_fields($this->may_delete_this($_id), 'news_category', ($id === null) ? null : strval($id)));
         }
 
         // Permissions

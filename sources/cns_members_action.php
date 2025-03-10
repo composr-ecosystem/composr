@@ -46,7 +46,59 @@ function get_option_with_overrides(string $option_name, ?array $overrides) : ?st
  */
 function member_field_is_required(?int $member_id, string $field_class, $current_value = null, ?int $editing_member = null, array $adjusted_config_options = []) : bool
 {
-    if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) == '0') || ((get_option_with_overrides('dobs', $adjusted_config_options) == '1') && ($member_id === null)))) {
+    // Check parental controls; this takes priority over everything else for legal reasons (even bypass privileges do not override this)
+    $requires_pc = [
+        'dob',
+        'timezone_offset',
+        'region',
+    ];
+    if (in_array($field_class, $requires_pc)) {
+        require_code('cns_parental_controls');
+        $pc = load_parental_control_settings();
+
+        switch ($field_class) {
+            case 'dob':
+                $dob_option = get_option_with_overrides('dobs', $adjusted_config_options);
+                if (($dob_option === null) || ($dob_option == '0')) {
+                    break;
+                }
+                if ($pc->get_option('require_dob') !== null) {
+                    return true;
+                }
+                break;
+
+            case 'timezone_offset':
+                $tz_option = get_option_with_overrides('enable_timezones', $adjusted_config_options);
+
+                if (($tz_option === null) || ($tz_option == '0')) {
+                    break;
+                }
+
+                if ($pc->get_option('require_timezone') !== null) {
+                    return true;
+                }
+
+                // Special case: '1' means do not present on join form
+                if (($tz_option == '1') && ($member_id === null)) {
+                    return false;
+                }
+                break;
+
+            case 'region':
+                if ($pc->get_option('require_region') !== null) {
+                    return true;
+                }
+                break;
+        }
+    }
+
+    // Region is not required if we are not filtering site content by region
+    if (($field_class == 'region') && (get_option('filter_regions') == '0')) {
+        return false;
+    }
+
+    // DOB is NOT required if disabled, or not enabled for the join form
+    if (($field_class == 'dob') && ((get_option_with_overrides('dobs', $adjusted_config_options) !== '1') || ((get_option_with_overrides('dobs', $adjusted_config_options) === '1') && ($member_id === null)))) {
         return false;
     }
 
@@ -63,7 +115,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
     // Existing member, allow blank to persist if such a privilege
     if ($member_id !== null) {
         if ($current_value === null) {
-            $current_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, ($field_class == 'dob') ? ('m_' . $field_class . '_day') : ('m_' . $field_class));
+            $current_value = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, ($field_class == 'dob') ? ('m_' . $field_class . '_year') : ('m_' . $field_class));
         }
 
         if (is_string($current_value)) {
@@ -90,6 +142,7 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ?integer $dob_year Year of date of birth (null: unknown)
  * @param  array $custom_fields A map of custom field values (fieldID=>value)
  * @param  ?ID_TEXT $timezone The member timezone, should not be blank (null: auto-detect)
+ * @param  ?ID_TEXT $region The member's region (null: auto-detect) (blank: leave empty, and require member to fill this in later if necessary)
  * @param  ?LANGUAGE_NAME $language The member's language (null: auto detect) (blank: site default)
  * @param  ID_TEXT $theme The member's default theme (blank: default)
  * @param  SHORT_TEXT $title The member's title (blank: get from primary)
@@ -125,11 +178,12 @@ function member_field_is_required(?int $member_id, string $field_class, $current
  * @param  ?AUTO_LINK $id Force an ID (null: don't force an ID)
  * @return AUTO_LINK The ID of the new member
  */
-function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $probation_expiration_time = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compat_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
+function cns_make_member(string $username, string $password, string $email_address = '', ?int $primary_group = null, ?array $secondary_groups = null, ?int $dob_day = null, ?int $dob_month = null, ?int $dob_year = null, array $custom_fields = [], ?string $timezone = null, ?string $region = null, ?string $language = null, string $theme = '', string $title = '', string $photo_url = '', ?string $avatar_url = null, string $signature = '', ?int $preview_posts = null, int $reveal_age = 0, int $views_signatures = 1, ?int $auto_monitor_contrib_content = null, ?int $smart_topic_notification = null, ?int $mailing_list_style = null, int $auto_mark_read = 1, ?int $sound_enabled = null, int $allow_emails = 1, int $allow_emails_from_staff = 1, int $highlighted_name = 0, string $pt_allow = '*', string $pt_rules_text = '', int $validated = 1, string $validated_email_confirm_code = '', ?int $probation_expiration_time = null, string $is_perm_banned = '0', bool $check_correctness = true, ?string $ip_address = null, ?string $password_compat_scheme = null, string $salt = '', ?int $join_time = null, ?int $last_visit_time = null, ?int $last_submit_time = null, int $profile_views = 0, int $total_sessions = 0, ?int $id = null) : int
 {
     require_code('form_templates');
     require_code('cns_members');
     require_code('cns_groups');
+    require_code('locations');
 
     if ($password_compat_scheme === null) {
         if (get_value('disable_password_hashing') === '1' || $password == ''/*Makes debugging easier or allows basic testing to work on PHP installs with broken OpenSSL*/) {
@@ -164,6 +218,9 @@ function cns_make_member(string $username, string $password, string $email_addre
 
     if ($timezone === null) {
         $timezone = get_site_timezone();
+    }
+    if ($region === null) {
+        $region = get_region();
     }
     if ($language === null) {
         $language = user_lang();
@@ -279,6 +336,7 @@ function cns_make_member(string $username, string $password, string $email_addre
         'm_dob_month' => $dob_month,
         'm_dob_year' => $dob_year,
         'm_timezone_offset' => $timezone,
+        'm_region' => $region,
         'm_language' => $language,
         'm_theme' => $theme,
         'm_title' => $title,

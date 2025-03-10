@@ -137,6 +137,9 @@ class Hook_cron_content_reviews
                         $filename = $object_fs->convert_id_to_filename($content_type, $content_id);
                         if ($filename !== null) {
                             $subpath = $object_fs->search($content_type, $content_id, true);
+
+                            // TODO: We need some sort of privilege checking in case the owner or privileges changed
+                            // $privileges = $object_fs->get_resource_privileges(null, $content_type, $content_id);
                             $object_fs->resource_delete($content_type, $filename, dirname($subpath));
                         }
                     }

@@ -1625,16 +1625,6 @@ class CMSStatsDatePivot extends CMSStatsFilter
 }
 
 /**
- * Find whether geolocation data is installed.
- *
- * @return boolean Whether it is
- */
-function has_geolocation_data() : bool
-{
-    return ($GLOBALS['SITE_DB']->query_select_value_if_there('ip_country', 'begin_num') !== null);
-}
-
-/**
  * Log a stats event.
  *
  * @param  string $event The event

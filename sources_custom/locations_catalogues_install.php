@@ -21,6 +21,9 @@ function init__locations_catalogues_install()
 
 function install_location_data()
 {
+    // TODO: #6162
+    warn_exit('Currently, location catalogues are disabled as the new locations library broke compatibility with this addon. See tracker issue 6162.');
+
     require_code('files');
     require_code('locations');
     require_code('files_spreadsheets_read');

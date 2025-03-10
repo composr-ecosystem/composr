@@ -131,6 +131,8 @@ class Hook_page_groupings_core
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['social', 'menu/social/members', $GLOBALS['FORUM_DRIVER']->member_profile_url($member_id, true), do_lang_tempcode('MY_PROFILE')],
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['site_meta', 'menu/site_meta/user_actions/join', $GLOBALS['FORUM_DRIVER']->join_url(), do_lang_tempcode('_JOIN')],
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['social', 'menu/social/users_online', $GLOBALS['FORUM_DRIVER']->users_online_url(), do_lang_tempcode('USERS_ONLINE')],
+
+            ['setup', 'spare/popular', ['admin_parental_controls', [], get_page_zone('admin_parental_controls', false, 'adminzone', 'minimodules')], do_lang_tempcode('cns:EDIT_PARENTAL_CONTROLS')],
         ];
     }
 }

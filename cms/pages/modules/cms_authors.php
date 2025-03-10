@@ -287,7 +287,7 @@ class Module_cms_authors
 
         if (addon_installed('content_reviews')) {
             require_code('content_reviews2');
-            $specialisation2->attach(content_review_get_fields('author', $author));
+            $specialisation2->attach(content_review_get_fields($may_delete, 'author', $author));
         }
 
         if ($may_delete) {
@@ -501,7 +501,7 @@ class Module_cms_authors
             $preview = do_lang_tempcode('CONFIRM_MERGE_AUTHORS', escape_html($from), escape_html($to));
 
             return do_template('CONFIRM_SCREEN', [
-                '_GUID' => 'TODO',
+                '_GUID' => 'adbc2162d9b558cea92d3843be7d3401',
                 'TITLE' => $this->title,
                 'PREVIEW' => $preview,
                 'URL' => get_self_url(false, false, ['confirm' => 1]),

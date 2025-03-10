@@ -544,7 +544,7 @@ function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day,
 
 /**
  * Convert an epoch timestamp to an epoch interval index.
- * In other words, this will return the number of *full* $intervals from $epoch to $timestamp.
+ * In other words, this will return the number of *full* $intervals from $epoch to $timestamp. This function is handy for accurately calculating date durations; put the "from" as $epoch, and "to" as $timestamp.
  * Note that when using Unix epoch, weeks start on a Thursday given that is when epoch starts. Set $epoch to 345600 to start on a Monday, or 259200 for Sunday.
  *
  * @param  TIME $timestamp The timestamp which we want to convert to an interval index
@@ -559,6 +559,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
 
     $index = 0;
     switch ($interval) {
+        // Consistent calculations; just use arithmetic
         case 'minutes':
             $index = intval(floor(floatval($corrected_timestamp) / 60.0));
             break;
@@ -571,6 +572,8 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
         case 'weeks':
             $index = intval(floor(floatval($corrected_timestamp) / (60.0 * 60.0 * 24.0 * 7.0)));
             break;
+
+        // Not consistent; we need to consider more factors than just arithmetic
         case 'months':
             list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
             list($end_year, $end_month, $end_day, $end_hour, $end_minute, $end_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $timestamp)));
@@ -610,6 +613,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
                 $index--;
             }
             break;
+
         default: // Should never happen
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('4c161875f90b5be7bd0adc59a2756a20')));
     }
@@ -631,6 +635,7 @@ function to_epoch_interval_index(int $timestamp, string $interval, int $epoch = 
 function from_epoch_interval_index(int $index, string $interval, int $epoch = 0) : int
 {
     switch ($interval) {
+        // Consistent; just use arithmetic
         case 'minutes':
             $timestamp = intval(floor(floatval($index) * 60.0)) + $epoch;
             break;
@@ -643,6 +648,8 @@ function from_epoch_interval_index(int $index, string $interval, int $epoch = 0)
         case 'weeks':
             $timestamp = intval(floor(floatval($index) * (60.0 * 60.0 * 24.0 * 7.0))) + $epoch;
             break;
+
+        // Not consistent; we need to consider more than just arithmetic
         case 'months':
             list($start_year, $start_month, $start_day, $start_hour, $start_minute, $start_second) = array_map('intval', explode('-', cms_date('Y-m-d-G-i-s', $epoch)));
 
@@ -692,6 +699,7 @@ function from_epoch_interval_index(int $index, string $interval, int $epoch = 0)
 
             $timestamp = cms_mktime($start_hour, $start_minute, $start_second, $start_month, $start_day, ($start_year + $index));
             break;
+
         default: // Should never happen
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5bd3c836a6dd509491fea68e58593f4c')));
     }

@@ -36,12 +36,7 @@ Be aware that hits coming from the web server itself will be filtered from the s
 [/surround]
 
 [title="3"]Installing {$IS_MAINTAINED,ip_geocoding,geo-location data}[/title]
-
-[surround]
-[media width="150" description="The message shown when installing geolocation data" float="right"]data_custom/images/docs/tut_statistics/statistics_installing_geolocation_data.png[/media]
-[media width="150" description="The menu link to install geolocation data" float="right"]data_custom/images/docs/tut_statistics/statistics_install_geolocation_data_link.png[/media]
-{!stats:DOC_INSTALL_GEOLOCATION_DATA} That said, the separate install is usually automatic because the Composr installer creates a background task for it. If that has not happened somehow then you can go to Admin Zone > Audit > Site statistics > Install geolocation data, which will reschedule a task. If you don't see this option, you do have geolocation data installed already
-[/surround]
+The install and update of geolocation data is usually automatic because the Composr installer creates a background task for it (also, the [tt]core_locations[/tt] addon creates a background task on every update to ensure the data gets updated in the database).
 
 Once the geo-location data is installed, all the extra statistics can be used.
 

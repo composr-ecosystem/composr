@@ -17,6 +17,8 @@
 	<a id="log_{_loop_key%}"></a>
 
 	<h2>{_loop_key*}</h2>
+	
+	<p>{DESCRIPTION}</p>
 
 	{+START,IF_PASSED,LOG}
 		{+START,IF_NON_EMPTY,{LOG}}
