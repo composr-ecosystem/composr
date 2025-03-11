@@ -112,9 +112,17 @@ class Parental_controls_loader
         require_code('global4');
 
         // Begin parsing the XML file
+        $ob = false;
+        $contents = null;
+
         $contents = cms_file_get_contents_safe($this->xml_path);
-        $ob = simplexml_load_string($contents);
-        if ($ob === false) {
+        $ob = @simplexml_load_string($contents); // NB: Try/catch does not work
+        if (!$ob) {
+            // Remove the custom file to prevent site lock-out
+            @unlink($full_path_custom . '.bak');
+            @copy($full_path_custom, $full_path_custom . '.bak');
+            @unlink($full_path_custom);
+
             if ($show_errors) {
                 warn_exit(do_lang_tempcode('PARENTAL_CONTROLS_INVALID_XML'));
             } else { // Critical, so we must do an internal error at the very least

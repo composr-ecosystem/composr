@@ -45,7 +45,7 @@ if ($type == 'save') {
     $xml = $prev_xml;
 }
 
-// Save actualisation
+// Save actualisation part 1
 if ($type == 'save') {
     require_code('input_filter_2');
     if (get_value('disable_modsecurity_workaround') !== '1') {
@@ -56,17 +56,6 @@ if ($type == 'save') {
     cms_file_put_contents_safe($full_path_custom, $xml, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE | FILE_WRITE_BOM);
 
     log_it('EDIT_PARENTAL_CONTROLS');
-
-    // Clear caches first before we parse the XML
-    require_code('caches');
-    delete_cache_entry('main_privacy_policy_auto');
-    delete_cache_entry('cns_parental_controls');
-
-    // This will display validation errors and parse the new XML into the cache
-    require_code('cns_parental_controls');
-    load_parental_control_settings(true);
-
-    attach_message(do_lang_tempcode('SUCCESS'));
 }
 
 // Support revisions tracking for achievements
@@ -76,7 +65,7 @@ if (addon_installed('actionlog')) {
     $revision_engine = new RevisionEngineFiles();
     $directory = 'data_custom/xml_config';
 
-    // Log a revision if we are about to save
+    // Log a revision if we are saving
     if ($type == 'save') {
         $revision_engine->add_revision(
             dirname($full_path_custom),
@@ -93,6 +82,20 @@ if (addon_installed('actionlog')) {
     }
 } else {
     $revisions = new Tempcode();
+}
+
+// Save actualisation part 2 (must be done after the revisions system was loaded)
+if ($type == 'save') {
+    // Clear caches first before we parse the XML
+    require_code('caches');
+    delete_cache_entry('main_privacy_policy_auto');
+    delete_cache_entry('cns_parental_controls');
+
+    // This will display validation errors and parse the new XML into the cache
+    require_code('cns_parental_controls');
+    load_parental_control_settings(true);
+
+    attach_message(do_lang_tempcode('SUCCESS'));
 }
 
 $description = do_lang_tempcode('DESCRIPTION_EDIT_PARENTAL_CONTROLS');
