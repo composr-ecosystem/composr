@@ -1120,18 +1120,9 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $update['m_password_change_code'] = '';
         $update['m_password_change_code_time'] = null;
         switch ($password_compat_scheme) {
-            case 'plain':
-                $salt = '';
-                $update['m_pass_salt'] = '';
-                $password_hashed = $password;
-                break;
-
-            case 'md5':
-                $salt = ''; // We don't support salting on software md5
-                $update['m_pass_salt'] = '';
-                $password_hashed = md5($password);
-                break;
-
+            case '': // Old v10 bcrypt
+            case 'plain': // Do not allow; force to bcrypt for security
+            case 'md5': // Do not allow; force to bcrypt for security
             case 'bcrypt':
             case 'bcrypt_temporary':
             case 'bcrypt_expired':
