@@ -333,6 +333,8 @@ Composr defines the following field types:
  - [tt]MINIID_TEXT[/tt], a very short piece of text (about 50 length maximum)
  - [tt]ID_TEXT[/tt], a short piece of text (about 100 length maximum)
  - [tt]IP[/tt], an IP address in string form
+ - [tt]TOKEN[/tt], a short, volatile string which could identify or authorise a user (about 100 length maximum)
+ - [tt]SERIAL[/tt], serialised data (alias of [tt]LONG_TEXT[/tt] but tells the privacy system to search within for private data)
  - [tt]LANGUAGE_NAME[/tt], a language identifier (e.g. EN)
  - [tt]EMAIL[/tt], an e-mail address
  - [tt]URLPATH[/tt], a URL or file path
@@ -345,7 +347,7 @@ The field types (apart from the AUTO and various string types) may have a "?" pu
 Note that Composr also comes with a database integrity scan (for MySQL). In order for this to work efficiently and accurately, some guidelines on field names must be followed depending on the field type used. This allows the integrity scan to correctly match database field types to Composr field types. Namely, the name of the field should contain the following phrase depending on the field type:
  - [tt]All types except INTEGER and UINTEGER[/tt]: Should not start with 'count_', end with '_count', or contain '_count_'.
  - [tt]AUTO[/tt]: Should always be named 'id'.
- - [tt]AUTO_LINK[/tt]: Should end with '_id' and not contain any of the phrases used for MEMBER or GROUP types.
+ - [tt]AUTO_LINK[/tt]: Should end with '_id' and not contain any of the phrases used for MEMBER or GROUP types (if you need to use those phrases, you should be using those types instead).
  - [tt]INTEGER[/tt], [tt]UINTEGER[/tt], [tt]SHORT_INTEGER[/tt]: Should not contain 'author', '_id', or any phrases used for the MEMBER, GROUP, or TIME types.
  - [tt]MEMBER[/tt]: Should contain 'member', 'user', 'submitter', or 'owner' in the name, but should not contain 'author' ('author', or rather 'author_id', is an AUTO_LINK to an author by the addon of the same name).
  - [tt]GROUP[/tt]: Should contain 'group' in the name (but not 'grouping' as this is used by the forums).
@@ -355,6 +357,7 @@ Note that Composr also comes with a database integrity scan (for MySQL). In orde
  - [tt]MINIID_TEXT[/tt]: Should not contain any phrases used by the IP type.
  - [tt]IP[/tt]: Should contain 'ip_address' (and not simply 'ip').
  - [tt]URLPATH[/tt]: Should contain 'url'. Note that fields that support page-links should not be type URLPATH; use SHORT_TEXT instead and use 'link' in the name.
+ - [tt]TOKEN[/tt]: should contain 'token' in the name.
 
 Composr minimises its use of database features, in order to increase portability. We intentionally do not use the following database features:
  - stored procedures
