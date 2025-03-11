@@ -34,7 +34,8 @@ class news_test_set extends cms_test_case
     {
         edit_news($this->news_id, 'Politics', 'teheyehehj ', 'rolly', 1, 1, 1, 1, 'yedd', 'test article 22222222', 2, null, '', '', '');
 
-        $this->assertTrue('Politics' == get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', ['id' => $this->news_id])));
+        $translated = get_translated_text($GLOBALS['SITE_DB']->query_select_value('news', 'title', ['id' => $this->news_id]));
+        $this->assertTrue('Politics' == $translated, 'Translated title did not come out Politics, instead was ' . $translated);
     }
 
     public function tearDown()

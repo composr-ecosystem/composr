@@ -102,6 +102,7 @@ class overused_globals_test_set extends cms_test_case
             '_CREATED_FILES',
             '_MODIFIED_FILES',
             'METADATA',
+            'PROBED_FORUM_CONFIG',
         ];
 
         foreach ($found_globals as $global => $count) {

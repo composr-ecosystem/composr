@@ -533,7 +533,7 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
     global $IN_MINIKERNEL_VERSION, $VALUE_OPTIONS_CACHE, $SMART_CACHE;
 
     if ($IN_MINIKERNEL_VERSION) {
-        return $default;
+        return $GLOBALS['SITE_DB']->query_select_value_if_there('values', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
     }
 
     if (($VALUE_OPTIONS_CACHE !== null) && (array_key_exists($name, $VALUE_OPTIONS_CACHE))) {

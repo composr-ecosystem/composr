@@ -132,6 +132,8 @@ END;
 
     $results = '';
 
+    $prefix = preg_replace('#[^\w]#', '', $settings['db_prefix']);
+
     // Check if multi_lang_content is enabled (it is by default)
     $multi_lang_content = true;
     $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'values WHERE the_name=\'multi_lang_content\' AND the_value=\'0\'');
@@ -140,7 +142,6 @@ END;
     }
 
     // Check database
-    $prefix = preg_replace('#[^\w]#', '', $settings['db_prefix']);
     if (file_exists($FILE_BASE . '/sources/hooks/systems/addon_registry/calendar_events.php')) {
         if ($multi_lang_content) {
             $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'calendar_events e LEFT JOIN ' . $prefix . 'translate t on e.e_content=t.id WHERE e_type=1 ORDER BY e.id');
