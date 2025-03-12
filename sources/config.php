@@ -29,6 +29,7 @@ function init__config()
     $CONFIG_OPTIONS_FULLY_LOADED = false;
     $VALUES_FULLY_LOADED = false;
 
+    // $VALUE_OPTIONS_CACHE and $VALUE_OPTIONS_ELECTIVE_CACHE: unset key means unknown value; null value means we know explicitly it is not set
     global $VALUE_OPTIONS_CACHE, $VALUE_OPTIONS_ELECTIVE_CACHE, $IN_MINIKERNEL_VERSION;
     if (!$IN_MINIKERNEL_VERSION) {
         if (multi_lang_content()) {
@@ -46,20 +47,25 @@ function init__config()
         }
 
         if ($PERSISTENT_CACHE === null) {
+            // Load values from the smart cache if we can
             $VALUE_OPTIONS_CACHE = [];
             if ($SMART_CACHE !== null) {
                 $test = $SMART_CACHE->get('VALUE_OPTIONS');
-                if ($test !== null) {
-                    $or_list = '1=0';
-                    foreach ($test as $key => $_) {
-                        $or_list .= ' OR ' . db_string_equal_to('the_name', $key);
-                    }
-                    $_value_options = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'values WHERE ' . $or_list);
-                    $VALUE_OPTIONS_CACHE = list_to_map('the_name', $_value_options);
-                    foreach ($test as $key => $_) {
-                        if (!isset($VALUE_OPTIONS_CACHE[$key])) {
-                            $VALUE_OPTIONS_CACHE[$key] = null;
+                if (is_array($test) && (count($test) > 0)) {
+                    // Actually, this will cause issues as different pages may have different records of the values
+                    //$VALUE_OPTIONS_CACHE = list_to_map('the_name', $test);
+
+                    if (count($test) >= 25) { // Safety limit to prevent long SQL queries
+                        $_value_options = $GLOBALS['SITE_DB']->query_select('values', ['*']);
+                        $VALUE_OPTIONS_CACHE = list_to_map('the_name', $_value_options);
+                    } else {
+                        $end = [];
+                        foreach ($test as $key => $value) {
+                            $end[] = '\'' . db_escape_string($key) . '\'';
                         }
+
+                        $_value_options = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'values WHERE the_name IN (' . implode(',', $end) . ')');
+                        $VALUE_OPTIONS_CACHE = list_to_map('the_name', $_value_options);
                     }
                 }
             }
@@ -163,7 +169,7 @@ function load_config_options()
 }
 
 /**
- * Load all value options.
+ * Load all value options (persistent cache).
  */
 function load_value_options()
 {
@@ -516,26 +522,29 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
 {
     //check_for_infinite_loop('get_value', [$name, $elective_or_lengthy, $env_also], 100);
 
+    // Elective / lengthy values have quick logic as we only load them on request
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
         if (!array_key_exists($name, $VALUE_OPTIONS_ELECTIVE_CACHE)) {
             if (!isset($GLOBALS['SITE_DB'])) {
-                return null;
+                return $default;
             }
             $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
-            if ($VALUE_OPTIONS_ELECTIVE_CACHE[$name] === null) {
-                $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $default;
-            }
+        }
+        if ($VALUE_OPTIONS_ELECTIVE_CACHE[$name] === null) {
+            return $default;
         }
         return $VALUE_OPTIONS_ELECTIVE_CACHE[$name];
     }
 
-    global $IN_MINIKERNEL_VERSION, $VALUE_OPTIONS_CACHE, $SMART_CACHE;
+    global $IN_MINIKERNEL_VERSION, $VALUE_OPTIONS_CACHE, $SMART_CACHE, $VALUES_FULLY_LOADED;
 
-    if ($IN_MINIKERNEL_VERSION) {
-        return $GLOBALS['SITE_DB']->query_select_value_if_there('values', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
+    // If not in minikernel, load up the value cache
+    if ((!$IN_MINIKERNEL_VERSION) && (!$VALUES_FULLY_LOADED)) {
+        load_value_options();
     }
 
+    // First, check if the value already exists in cache and return it if so
     if (($VALUE_OPTIONS_CACHE !== null) && (array_key_exists($name, $VALUE_OPTIONS_CACHE))) {
         if ($VALUE_OPTIONS_CACHE[$name] === null) {
             return $default;
@@ -543,17 +552,13 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
         return $VALUE_OPTIONS_CACHE[$name]['the_value'];
     }
 
-    if ($SMART_CACHE !== null) {
-        $SMART_CACHE->append('VALUE_OPTIONS', $name, null); // Mark that we will need this in future, even if just null
+    // It's not in the cache; try grabbing it from the database (and add to smart cache)
+    $value = _get_value($name);
+    if ($value !== null) {
+        return $value;
     }
 
-    global $VALUES_FULLY_LOADED;
-    if (!$VALUES_FULLY_LOADED) {
-        load_value_options();
-        $ret = get_value($name, $default, $env_also);
-        return $ret;
-    }
-
+    // Still no value, so check environment if applicable
     if ($env_also) {
         $value = getenv($name);
         if (($value !== false) && ($value != '')) {
@@ -561,7 +566,42 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
         }
     }
 
+    // We have nothing; return default
     return $default;
+}
+
+/**
+ * Retrieve a value from the database directly (and store it in the smart cache).
+ * You should use get_value or get_value_newer_than instead.
+ *
+ * @param  ID_TEXT $name The name of the value to get
+ * @param  string $end Additional WHERE query
+ * @return ?string The value (null: not found, or database error if running installer or upgrader)
+ * @ignore
+ */
+function _get_value(string $name, string $end = '') : ?string
+{
+    global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
+
+    $value = $GLOBALS['SITE_DB']->query_select('values', ['the_value', 'date_and_time'], ['the_name' => $name], $end, 1, 0, running_script('install') || running_script('upgrader'));
+    if ($VALUE_OPTIONS_CACHE !== null) {
+        if ((is_array($value)) && array_key_exists(0, $value)) {
+            $VALUE_OPTIONS_CACHE[$name] = $value[0];
+        } else {
+            $VALUE_OPTIONS_CACHE[$name] = null;
+        }
+    }
+    if ((is_array($value)) && array_key_exists(0, $value)) {
+        if ($SMART_CACHE !== null) {
+            $SMART_CACHE->append('VALUE_OPTIONS', $name, $value[0]);
+        }
+        return $value[0]['the_value'];
+    }
+
+    if ($SMART_CACHE !== null) {
+        $SMART_CACHE->append('VALUE_OPTIONS', $name, null);
+    }
+    return null;
 }
 
 /**
@@ -578,10 +618,16 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
         return $GLOBALS['SITE_DB']->query_value_if_there('SELECT the_value FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'values_elective WHERE date_and_time>' . strval($cutoff) . ' AND ' . db_string_equal_to('the_name', $name));
     }
 
-    global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
+    global $VALUE_OPTIONS_CACHE, $SMART_CACHE, $IN_MINIKERNEL_VERSION, $VALUES_FULLY_LOADED;
 
     $cutoff -= mt_rand(0, 200); // Bit of scattering to stop locking issues if lots of requests hit this at once in the middle of a hit burst (whole table is read each page requests, and mysql will lock the table on set_value - causes horrible out-of-control buildups)
 
+    // If not in minikernel, load up the value cache
+    if ((!$IN_MINIKERNEL_VERSION) && (!$VALUES_FULLY_LOADED)) {
+        load_value_options();
+    }
+
+    // Try cache first
     if (isset($VALUE_OPTIONS_CACHE[$name])) {
         if ($VALUE_OPTIONS_CACHE[$name]['date_and_time'] > $cutoff) {
             return $VALUE_OPTIONS_CACHE[$name]['the_value'];
@@ -589,15 +635,10 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
         return null;
     }
 
-    if ($SMART_CACHE !== null) {
-        $SMART_CACHE->append('VALUE_OPTIONS', $name); // Mark that we will need this in future, even if just null
-    }
-
-    global $VALUES_FULLY_LOADED;
-    if (!$VALUES_FULLY_LOADED) {
-        load_value_options();
-        $ret = get_value_newer_than($name, $cutoff);
-        return $ret;
+    // Try the database
+    $value = _get_value($name, ' AND date_and_time>' . strval($cutoff));
+    if ($value !== null) {
+        return $value;
     }
 
     return null;
@@ -626,13 +667,19 @@ function set_value(string $name, ?string $value, bool $elective_or_lengthy = fal
         return $value;
     }
 
-    global $VALUE_OPTIONS_CACHE;
+    global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
     if ($value === null) {
         unset($VALUE_OPTIONS_CACHE[$name]);
+        if ($SMART_CACHE !== null) {
+            $SMART_CACHE->remove('VALUE_OPTIONS', $name);
+        }
         $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $name], '', 1);
     } else {
         $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
         $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
+        if ($SMART_CACHE !== null) {
+            $SMART_CACHE->append('VALUE_OPTIONS', $name, $VALUE_OPTIONS_CACHE[$name]);
+        }
         $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
     }
 
@@ -662,8 +709,11 @@ function delete_value(string $name, bool $elective_or_lengthy = false)
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('VALUES');
     }
-    global $VALUE_OPTIONS_CACHE;
+    global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
     unset($VALUE_OPTIONS_CACHE[$name]);
+    if ($SMART_CACHE !== null) {
+        $SMART_CACHE->remove('VALUE_OPTIONS', $name);
+    }
 }
 
 /**
@@ -676,13 +726,17 @@ function delete_values(array $values)
     if (empty($values)) {
         return;
     }
-    global $VALUE_OPTIONS_CACHE;
-    $sql = 'DELETE FROM ' . get_table_prefix() . 'values WHERE 1=0';
+
+    global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
+    $end = [];
     foreach ($values as $name) {
-        $sql .= ' OR ' . db_string_equal_to('the_name', $name);
+        $end[] = '\'' . db_escape_string($name) . '\'';
         unset($VALUE_OPTIONS_CACHE[$name]);
+        if ($SMART_CACHE !== null) {
+            $SMART_CACHE->remove('VALUE_OPTIONS', $name);
+        }
     }
-    $GLOBALS['SITE_DB']->query($sql);
+    $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'values WHERE the_name IN (' . implode(',', $end) . ')');
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('VALUES');
     }
