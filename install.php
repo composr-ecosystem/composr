@@ -573,7 +573,7 @@ function step_2() : object
     global $FILE_ARRAY;
     if (@is_array($FILE_ARRAY)) {
         $licence = file_array_get('docs/' . filter_naughty($_POST['default_lang']) . '/LICENSE.md');
-        if ($licence === null) {
+        if ($licence == '') {
             $licence = file_array_get('docs/LICENSE.md');
         }
         $licence = unixify_line_format(handle_string_bom($licence));
