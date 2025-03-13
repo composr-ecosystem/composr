@@ -59,37 +59,39 @@ Telemetry data, particularly relayed errors, can be sensitive in nature as they 
 
 Encryption is done using cryptographic keys located both in [tt]data/keys[/tt] and [tt]data_custom/keys[/tt]. These are generated using PHP's [tt]libsodium[/tt] library. Keys specifically for telemetry will be prefixed [tt]telemetry-*[/tt].
 
-There are several keys used in telemetry:
+There are several keys used in telemetry (encoded in JSON files):
 [list]
-[*][tt]data/keys/telemetry.pub[/tt]
+[*][tt]data/keys/telemetry.json[/tt]
 This is the public key for the software distributed to anyone who downloads it. It is specific to the major.minor version of Composr you download. While the public key is freely distributed and available, the private key is not and is only located on the homesite.
 
 This key is used to encrypt anything sent to the telemetry service. The homesite will then decrypt the data using the relevant version's private key. This verifies the data was sent from a site running Composr and verifies its version number.
 
 The core developers can invalidate these keys at any time simply by deleting the private key off of the homesite and releasing a new minor version with a new public key should they suspect a severe security breach with the telemetry system.
 
-[*][tt]data_custom/keys/telemetry-site.key[/tt], [tt]data_custom/keys/telemetry-site.pub[/tt], [tt]data_custom/keys/telemetry-site-sign.key[/tt], and [tt]data_custom/keys/telemetry-site-sign.pub[/tt]
-These are the public and private key-pairs specific for your site. They are generated when you enable telemetry and are destroyed when you disable it. The sign ones are used to sign and verify that data sent from your site actually came from your site. The non-sign ones are used to encrypt telemetry data sent by your site.
+[*][tt]data_custom/keys/telemetry-site.json[/tt]
+These are the keys specific for your site. They are generated when you enable telemetry and are destroyed when you disable it. The public and private key under the encryption section are used for encrypting data. And the public and private keys under the signature section are used to sign the data (to verify the data actually came from your site).
 
-When you enable telemetry, your public key and public sign key is sent to the homesite (encrypted by the software key), and the homesite remembers it for when your site sends encrypted telemetry data. That way, it can decrypt your data.
+When you enable telemetry, your public encryption key and public signature key is sent to the homesite (encrypted by the software public key), and the homesite remembers it for when your site sends encrypted telemetry data. That way, it can decrypt your data.
 [/list]
 
 Let's run through the process:
 [list="1"]
 [*][b]Enabling telemetry[/b]
- - When you enable telemetry, your site will generate [tt]data_custom/keys/telemetry-site.key[/tt], [tt]data_custom/keys/telemetry-site.pub[/tt], [tt]data_custom/keys/telemetry-site-sign.key[/tt], and [tt]data_custom/keys/telemetry-site-sign.pub[/tt] keys. It will also generate a random "challenge" string and save it to [tt]data_custom/telemetry_challenge.txt[/tt].
- - Then, it will inform the homesite telemetry service that you enabled telemetry by sending the public ([tt].pub[/tt]) keys and the challenge to the homesite, encrypted by the software public key ([tt]data/keys/telemetry.pub[/tt]).
- - The homesite then decrypts the payload. The homesite will verify the authenticity of the registration request (to prevent malicious actors from registering sites on their behalf) by calling your site's [tt]data/installed.php[/tt] script, which will return the contents of [tt]data_custom/telemetry_challenge.txt[/tt] and then delete the file. It will then compare the returned challenge with the challenge that was sent in your payload. If they do not match, the registration request is rejected.
- - The homesite then stores your public keys. Note your private keys ([tt].key[/tt]) remain private on your server, cannot be accessed, and are not transmitted (so even the homesite does not know them).
+ - When you enable telemetry, your site will generate site keys under [tt]data_custom/keys/telemetry-site.json[/tt]. It will also generate a random "challenge" string and save it to [tt]data_custom/telemetry_challenge.txt[/tt].
+ - Then, it will inform the homesite telemetry service that you enabled telemetry by sending the public encryption and public signature keys, and the challenge string, to the homesite, encrypted by the software public key ([tt]data/keys/telemetry.json[/tt]).
+ - The homesite then decrypts the payload using the private software key which only the homesite knows. The homesite will verify the authenticity of the registration request (to prevent malicious actors from registering other people's sites on their behalf) by calling your site's [tt]data/installed.php[/tt] script, which will return the contents of [tt]data_custom/telemetry_challenge.txt[/tt] and then delete the file. It will then compare the returned challenge with the challenge that was sent in your payload. If they do not match, the registration request is rejected.
+ - The homesite then stores your public keys. Note your private keys remain private on your server and are not transmitted (so even the homesite does not know them).
 [*][b]Sending telemetry data[/b]
- - When your site sends telemetry data, it will first encrypt the data using a key-pair of your site's private key ([tt]data_custom/keys/telemetry-site.key[/tt]) and the software's public key ([tt]data/keys/telemetry.pub[/tt]).
- - Then, your site will sign the data with the private sign key ([tt]data_custom/keys/telemetry-site-sign.key[/tt]).
+ - When your site sends telemetry data, it will first encrypt the data using a key-pair of your site's private key and the software's public key.
+ - Then, your site will sign the data with the site's private signature key.
  - This payload is then sent to the homesite.
  - The homesite locates your stored public keys according to your base URL.
  - Then, it verifies the signature of the payload using your public sign key.
- - If it's valid, it will then use a key-pair of your public key and the software's private key (according to the version you are running) to decrypt the payload and read/process the data.
+ - If it's valid, it will then use a key-pair of your site's public key and the software's private key (according to the version you are running) to decrypt the payload and read/process the data.
 [*]Number 2 also happens when you go to Admin Zone > Audit > Telemetry status (but just for some arbitrary data) to prove to the homesite you are who you say you are when you request to see your status.
 [/list]
+
+Normally, keys under [tt]data/keys[/tt] and [tt]data_custom/keys[/tt] cannot publicly be accessed if your site is properly configured to process [tt].htaccess[/tt] files (for for IIS, you process [tt]web.config[/tt]). There is a health check to warn you if the keys can be accessed.
 
 [concepts
  1_key="telemetry"     1_value="The optional service by which Composr sites send data (e.g. errors) to the homesite for improving the software"
