@@ -331,7 +331,7 @@ function enable_content_translation()
                         if ($dry_run) {
                             fwrite($dry_run_file, 'Insert into translate for ' . $field['m_name'] . ': ' . json_encode($insert_map) . "\n");
                         } else {
-                            if (($lang_id === null) || ($locked === false)) {
+                            if (($lang_id === null) || ($lock === false)) {
                                 $lang_id = $db->query_insert('translate', $insert_map, true);
                             } else {
                                 $db->query_insert('translate', ['id' => $lang_id] + $insert_map);
@@ -404,6 +404,8 @@ function enable_content_translation()
  */
 function _update_base_config_for_content_translation(bool $new_setting)
 {
+    // We use values now
+    /*
     $config_path = get_file_base() . '/_config.php';
     $config_file = cms_file_get_contents_safe($config_path, FILE_READ_LOCK);
     $has = '$SITE_INFO[\'multi_lang_content\'] = \'' . ($new_setting ? '0' : '1') . '\';';
@@ -416,4 +418,7 @@ function _update_base_config_for_content_translation(bool $new_setting)
     }
     require_code('files');
     cms_file_put_contents_safe($config_path, $config_file, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    */
+
+    set_value('multi_lang_content', ($new_setting) ? '1' : '0');
 }

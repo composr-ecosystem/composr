@@ -42,7 +42,7 @@ class Hook_addon_registry_newsletter
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 05328962ddb6af2dd96ca55238295be7
+        return '11.0.2'; // addon_version_auto_update f069d058f76c49143a34925ab62bb6d0
     }
 
     /**
@@ -341,6 +341,7 @@ class Hook_addon_registry_newsletter
             'PREVIEW' => $preview,
             'FIELDS' => new Tempcode(),
             'TITLE' => lorem_screen_title(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -360,6 +361,8 @@ class Hook_addon_registry_newsletter
             'NEWSLETTER_TITLE' => lorem_phrase(),
             'NID' => placeholder_numeric_id(),
             'BUTTON_ONLY' => false,
+            'EXTRA_FIELDS' => placeholder_fields(),
+            'EXTRA_HIDDEN' => new Tempcode(),
         ]), null, '', true);
     }
 

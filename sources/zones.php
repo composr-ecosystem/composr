@@ -1021,8 +1021,8 @@ function get_hook_ob(string $type, string $subtype, string $hook, string $classn
 function find_all_hooks(string $type, string $subtype, bool $check_custom = true) : array
 {
     global $HOOKS_CACHE, $FILE_ARRAY;
-    if (isset($HOOKS_CACHE[$type . '/' . $subtype])) {
-        return $HOOKS_CACHE[$type . '/' . $subtype];
+    if (isset($HOOKS_CACHE[$type . '/' . $subtype][$check_custom])) {
+        return $HOOKS_CACHE[$type . '/' . $subtype][$check_custom];
     }
 
     $out = [];
@@ -1087,7 +1087,10 @@ function find_all_hooks(string $type, string $subtype, bool $check_custom = true
     }
 
     if (!isset($GLOBALS['DOING_USERS_INIT'])) {
-        $HOOKS_CACHE[$type . '/' . $subtype] = $out;
+        if (!isset($HOOKS_CACHE[$type . '/' . $subtype])) {
+            $HOOKS_CACHE[$type . '/' . $subtype] = [];
+        }
+        $HOOKS_CACHE[$type . '/' . $subtype][$check_custom] = $out;
 
         if (($doing_custom_scan) && (!running_script('install'))) {
             if (function_exists('persistent_cache_set')) {

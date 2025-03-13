@@ -42,7 +42,7 @@ class Hook_addon_registry_robots_txt
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update b44912d7fe9d757af6acdfdc46960811
+        return '11.0.1'; // addon_version_auto_update bd76c1cfd27aa19e5482d33bc38be2e3
     }
 
     /**

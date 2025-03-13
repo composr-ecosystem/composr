@@ -37,6 +37,7 @@ class Hook_config_enable_pace
             'group' => 'DISPLAY_ELEMENTS',
             'explanation' => 'CONFIG_OPTION_enable_pace',
             'shared_hosting_restricted' => '0',
+            'order_in_category_group' => 6,
             'list_options' => '',
             'theme_override' => true,
             'required' => true,

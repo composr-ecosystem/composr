@@ -692,14 +692,14 @@ function database_specific() : bool
 
     $done_something = false;
 
-    // LEGACY: [MUST STAY] (11.beta2) login keys should be stored as hashes just like passwords
+    // Login keys should be stored as hashes just like passwords
     if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1723865750)) {
         $GLOBALS['FORUM_DB']->alter_table_field('f_members', 'm_login_key', 'SHORT_TEXT', 'm_login_key_hash');
 
         $done_something = true;
     }
 
-    // LEGACY: 11 beta7. Remove in final release.
+    // LEGACY: 11 beta7. Remove prior to release.
     if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1739479687)) {
         $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_validation_time', '?TIME');
 
@@ -714,13 +714,13 @@ function database_specific() : bool
             $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true, ['e_content' => 'LONG_TRANS__COMCODE']);
 
             foreach ($rows as $row) {
-                $content = get_translated_text($row['e_content']);
+                $e_content = get_translated_text($row['e_content']);
                 $matches = [];
-                if (preg_match('/run_scheduled_action publish_topic "(\d+)"/', $content, $matches) != 0) {
+                if (preg_match('/run_scheduled_action publish_topic "(\d+)"/', $e_content, $matches) != 0) {
                     $topic_id = $matches[1];
 
                     // Get the time of publication
-                    $_time = get_schedule_code_event_time('publish_topic', $topic_id);
+                    $_time = get_schedule_code_event_time('publish_topic', strval($topic_id));
                     if ($_time !== null) {
                         list($minute, $hour, $month, $day, $year) = $_time;
                         $time = cms_mktime($hour, $minute, 0, $month, $day, $year);
@@ -730,7 +730,7 @@ function database_specific() : bool
                     }
 
                     // Un-schedule the event from the calendar
-                    unschedule_code('publish_topic', $topic_id);
+                    unschedule_code('publish_topic', strval($topic_id));
                 }
             }
         }
@@ -738,7 +738,7 @@ function database_specific() : bool
         $done_something = true;
     }
 
-    // LEGACY: 11 beta7. Remove in final release.
+    // LEGACY: 11 beta7. Remove prior to release.
     if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1740769698)) {
         $GLOBALS['FORUM_DB']->add_table_field('f_members', 'm_region', 'ID_TEXT');
 
@@ -753,6 +753,14 @@ function database_specific() : bool
         add_privilege('FORUMS_AND_MEMBERS', 'bypass_region_if_already_empty');
 
         $done_something = true;
+    }
+
+    // LEGACY: 11 beta7. Remove prior to release.
+    if ((is_numeric($upgrade_from)) && (intval($upgrade_from) < 1741632531)) {
+        // Migrate _config.php multi_lang_content to a value
+        global $SITE_INFO;
+        $multi_lang_content = (((isset($SITE_INFO['multi_lang_content'])) && ($SITE_INFO['multi_lang_content'] == '0')) ? '0' : '1');
+        set_value('multi_lang_content', $multi_lang_content);
     }
 
     return $done_something;

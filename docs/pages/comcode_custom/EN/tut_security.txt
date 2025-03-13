@@ -20,8 +20,8 @@ Passwords:
  - Visual representation of password quality
  - Password complexity rules
  - Password expiry and prevention of re-use
- - Password hashing with configurable ratchet (even if hackers steal the database they won't have actual passwords; controlled via "Cryptographic ratchet" configuration option)
- - Configurable cryptographic complexity ratchet to protect against brute-force techniques to convert hashes back into passwords
+ - Password hashing with configurable ratchet and extra salting
+ - Configurable cryptographic complexity ratchet to protect against brute-force techniques to convert hashes back into passwords (controlled via "Cryptographic ratchet" configuration option)
  - Temporary passwords, so that staff may set up accounts without needing to know the final password that will be used
 
 Login restrictions:
@@ -55,14 +55,14 @@ Framework security:
   - disabling of common attack vectors by default such as 'UNION' database queries (only enabling them when necessary)
   - automatic input sanitisation in standardised input-access APIs
  - Configurable levels of HTML filtering, to prevent XSS attacks (Cross-Site-Scripting attacks), including full CSP implementation
- - Development mode with strict typing and XSS detection
+ - Development mode with strict PHP typing and XSS detection
  - Our Code Quality Checker tool has the ability to scan for security hotspots in the code (areas that need careful quality reviews)
  - "Kid-gloves modes" that automatically impose restrictions and filters on third-party code unless the programmers of them explicitly declare that they understand key security issues
  - Prevention of attacks carried out by the upload of malicious files, via various forms of automatic filtering. Per-directory disabling of PHP code as an extra level of security (Apache-only)
  - Prevention of access-control-bypass on downloads
   - via manual downloading with privileged access (e.g. a staff account)
   - via URL (require a [tt]keep_session[/tt] to tie a download attempt to a member for privilege checking)
-  - via obfuscated filenames (so they cannot easily be found directly)
+  - via obfuscated filenames (so they cannot easily be found directly on the filesystem)
  - Prevention of directory listing attacks in deep directories, via empty [tt]index.html[/tt] files
  - Disabling of common insecure PHP features such as "allow URL fopen"
  - Automatic enabling of a number of Suhosin features designed to improve security, and coding standards that allow our code to work with them. Suhosin is an unofficial extension to PHP that adds extra security constraints
@@ -74,9 +74,9 @@ Other features:
  - Privileges and access permissions to restrict privileged functionality
  - Validation process for content submission (via the [tt]validation[/tt] addon)
  - {$IS_MAINTAINED,rootkit_detector,Rootkit detector system} (manually generate security signatures representing the state of the website, to compare to previous ones)
- - Many spam-prevention systems (outside the scope of this tutorial)
+ - Many spam-prevention systems (see [page="_SEARCH:tut_antispam"]Anti-spam settings[/page])
  - Automatic download of new web application firewall rules (for emergency patching)
- - Many moderation systems such as warnings, probations, and bans (outside the scope of this tutorial)
+ - Many moderation systems such as warnings, probations, and bans (see [page="_SEARCH:tut_censor"]Dealing with annoying users[/page])
 
 We are always coming up with new ideas for security. If you want us to keep going further then you can consider sponsoring new ideas posted on our [url="development tracker"]https://composr.app/tracker/tag_view_page.php?tag_id=47[/url].
 
@@ -641,8 +641,6 @@ To solve this problem, simply remove execute permission for the [tt]_config.php[
 It may seem an obvious solution, to not use an executable file to store configuration information. However this file contains critical data, and therefore if it was a file that would be downloaded if accessed instead of executed, this critical data would be exposed; the usual advice is to put the file outside of a downloadable location, or to restrict download, but this is tenuous due to differing web environments Composr must accommodate: in trying to increase security, there would be a big likelihood we could incidentally decrease it.
 
 [title="3"]Maintenance password[/title]
-
-This was formerly called the "master password" in Composr version 10.
 
 For added security you can remove the:
 [code="PHP"]

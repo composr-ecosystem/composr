@@ -164,15 +164,51 @@ function _general_db_init()
  */
 function multi_lang_content() : bool
 {
+    static $getting_multi_lang_content = false;
+
     global $HAS_MULTI_LANG_CONTENT;
+
     if ($HAS_MULTI_LANG_CONTENT === null) {
-        global $SITE_INFO;
-        $ret = isset($SITE_INFO['multi_lang_content']) ? ($SITE_INFO['multi_lang_content'] === '1') : true; // For legacy reasons
-        if (!isset($SITE_INFO)) {
-            return $ret;
+        // Running installer: prioritise POST
+        if (running_script('install')) {
+            $HAS_MULTI_LANG_CONTENT = (post_param_string('value__multi_lang_content', '0') == '1'); // We default to disabled in the installer
+            return $HAS_MULTI_LANG_CONTENT;
         }
+
+        // Too early; default to SITE_INFO or true
+        if (!function_exists('get_value')) {
+            // LEGACY: removed in 11 beta7 but we still need to support it (for the upgrader) if a value has not been set
+            global $SITE_INFO;
+            if (running_script('upgrader') && isset($SITE_INFO['multi_lang_content'])) {
+                return ($SITE_INFO['multi_lang_content'] != '0');
+            }
+
+            return true;
+        }
+
+        // We are already trying to get the value; default to true
+        if ($getting_multi_lang_content) {
+            return true;
+        }
+
+        $getting_multi_lang_content = true;
+        $value = get_value('multi_lang_content', null);
+        $getting_multi_lang_content = false;
+
+        if ($value === null) {
+            // LEGACY: removed in 11 beta7 but we still need to support it (for the upgrader) if a value has not been set
+            global $SITE_INFO;
+            if (running_script('upgrader') && isset($SITE_INFO['multi_lang_content'])) {
+                return ($SITE_INFO['multi_lang_content'] != '0');
+            }
+
+            return true; // Default to true, but since we did not actually get a value, do not consider this final / put into the cache
+        }
+
+        $ret = ($value !== '0');
         $HAS_MULTI_LANG_CONTENT = $ret;
     }
+
     return $HAS_MULTI_LANG_CONTENT;
 }
 

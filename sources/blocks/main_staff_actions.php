@@ -145,7 +145,7 @@ PHP;
         list($sortable, $sort_order) = $test;
         if (((cms_strtoupper_ascii($sort_order) != 'ASC') && (cms_strtoupper_ascii($sort_order) != 'DESC')) || (!array_key_exists($sortable, $sortables))) {
             log_hack_attack_and_exit('ORDERBY_HACK');
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('1516250525cd5c6da342f8a459575a51')));
+            return do_template('RED_ALERT', ['_GUID' => 'aab7559b9806537a985dd2310123d5ea', 'TEXT' => do_lang_tempcode('INTERNAL_ERROR', escape_html('e847133fd264525e864923dfb5830504'))]);
         }
         inform_non_canonical_parameter('sa_sort');
 

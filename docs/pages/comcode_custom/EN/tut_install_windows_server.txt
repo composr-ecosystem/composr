@@ -76,7 +76,7 @@ Things can get tricky on Windows shared hosting. Let's assume you have found wha
 2) Using a webhosting control panel interface.
 If you can't do either of these things, then my best advice is to find new hosting! You don't want to have to ask the webhost to do it for you every time you change something, that's going to be a PITA.
 
-It's outside the scope of this tutorial to discuss how to ensure file permissions are secure on shared hosting, but we do touch on it in the [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page] tutorial. Really this is up to the webhost to get right.
+For information on how to ensure file permissions are secure on shared hosting, see the [page="_SEARCH:tut_webhosting"]Webhosting for Composr[/page] tutorial. However, it is mostly the webhost's responsibility to get this correct.
 
 [title="2"]File extraction[/title]
 
@@ -86,7 +86,7 @@ You can download Composr's manual installer direct to the server, and extract it
 
 [title="2"]Create databases[/title]
 
-Create databases in MySQL / SQL Server. How to do this is outside the scope of this tutorial.
+Create databases in MySQL / SQL Server. You can check out the relevant MySQL / SQL tutorials online for instructions on how to do this. You may also need to refer to your webhost or software documentation.
 
 [title="2"]Composr Installation[/title]
 

@@ -57,7 +57,6 @@ class Module_admin_privacy
             'browse' => ['PRIVACY', 'menu/pages/privacy_policy'],
             'telemetry' => ['PRIVACY', 'menu/pages/privacy_policy'], // TODO: change icon
         ];
-
     }
 
     public $title;
@@ -381,7 +380,7 @@ class Module_admin_privacy
             return warn_screen($this->title, do_lang_tempcode('TELEMETRY_DISABLED'), false);
         }
 
-        require_code('encryption');
+        require_code('telemetry');
 
         if (!is_encryption_enabled_telemetry()) {
             return warn_screen($this->title, do_lang_tempcode('TELEMETRY_NOT_AVAILABLE'), false);

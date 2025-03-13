@@ -156,7 +156,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Core</strong>: No<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
-            <td>Add basic real-time chat rooms and Instant Messaging on your site which runs natively in the software (no special message broker software required).</td>
+            <td>Add basic real-time chatrooms and Instant Messaging on your site which runs natively in the software (no special message broker software required).</td>
             <td><a href="https://composr.app/docs11/tut-chat.htm">Running chatrooms (features and advice)</a></td>
             <td>instant message</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=chat&amp;status_id=10">Link</a></td>

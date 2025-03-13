@@ -114,6 +114,8 @@ PHP;
                     'URL' => get_self_url(),
                     'MSG' => $msg,
                     'BUTTON_ONLY' => $button_only,
+                    'EXTRA_FIELDS' => new Tempcode(),
+                    'EXTRA_HIDDEN' => new Tempcode(),
                 ]);
             }
 

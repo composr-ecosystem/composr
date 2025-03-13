@@ -37,6 +37,7 @@ class Hook_config_validate_new_comcode_pages
             'group' => '_COMCODE',
             'explanation' => 'CONFIG_OPTION_validate_new_comcode_pages',
             'shared_hosting_restricted' => '0',
+            'order_in_category_group' => 5,
             'list_options' => '',
             'required' => true,
             'public' => false,
@@ -51,6 +52,10 @@ class Hook_config_validate_new_comcode_pages
      */
     public function get_default() : ?string
     {
+        if (!addon_installed('validation')) {
+            return null;
+        }
+
         return '1';
     }
 }

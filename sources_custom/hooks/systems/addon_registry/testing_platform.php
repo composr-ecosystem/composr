@@ -37,7 +37,7 @@ class Hook_addon_registry_testing_platform
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update d2bd9984c5f7288b35b05fe347a1c211
+        return '11.0.2'; // addon_version_auto_update 0f4cd22ec5dee7604ccb278418ea0b27
     }
 
     /**
@@ -743,7 +743,6 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/cqc__explicit_fail.php',
             '_tests/tests/async_tests/csrf_tags.php',
             '_tests/tests/async_tests/css_beta.php',
-            '_tests/tests/async_tests/curl_wrapper.php',
             '_tests/tests/async_tests/database_misc.php',
             '_tests/tests/async_tests/database_query_parameterised.php',
             '_tests/tests/async_tests/database_relations.php',
@@ -854,7 +853,6 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/strip_tags.php',
             '_tests/tests/async_tests/suphp.php',
             '_tests/tests/async_tests/tar.php',
-            '_tests/tests/async_tests/telemetry.php',
             '_tests/tests/async_tests/tempcode.php',
             '_tests/tests/async_tests/tempcode_errors.php',
             '_tests/tests/async_tests/tempcode_mistakes.php',
@@ -924,7 +922,6 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/sync_tests/__lang_spelling_epic.php',
             '_tests/tests/sync_tests/__special_links.php',
             '_tests/tests/sync_tests/_api_cloudinary.php',
-            '_tests/tests/sync_tests/_api_confluence.php',
             '_tests/tests/sync_tests/_api_ecommerce_shipping.php',
             '_tests/tests/sync_tests/_api_ecommerce_tax.php',
             '_tests/tests/sync_tests/_api_translation.php',
@@ -994,6 +991,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/sync_tests/static_caching.php',
             '_tests/tests/sync_tests/stats.php',
             '_tests/tests/sync_tests/tasks.php',
+            '_tests/tests/sync_tests/telemetry.php',
             '_tests/tests/sync_tests/template_no_unused.php',
             '_tests/tests/sync_tests/template_parameter_consistency.php',
             '_tests/tests/sync_tests/ua_detection.php',

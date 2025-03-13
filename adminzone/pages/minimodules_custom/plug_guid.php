@@ -49,12 +49,19 @@ guid_scan_init();
 
 if ($limit_file == '') {
     require_code('files2');
-    $files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
-    $files[] = 'install.php';
+    $_files = get_directory_contents(get_file_base(), '', 0, true, true, ['php']);
+    foreach ($_files as $file) {
+        $files[$file] = filemtime(get_file_base() . '/' . $file);
+    }
+    $files['install.php'] = filemtime(get_file_base() . '/install.php');
 } else {
-    $files = [$limit_file];
+    $files[$limit_file] = filemtime(get_file_base() . '/' . $limit_file);
 }
-foreach ($files as $i => $path) {
+
+// Older files get priority over their GUID in duplication situations, so scan oldest first
+asort($files, SORT_NUMERIC);
+
+foreach ($files as $path => $m_time) {
     $scan = guid_scan($path);
     if ($scan === null) {
         continue; // Was skipped

@@ -544,8 +544,10 @@ function check_country_configuration(string $tax_service, array $supported_count
         if ($currency != 'USD') {
             warn_exit(do_lang_tempcode('CURRENCY_NOT_USD'), false, true);
         }
-        global $USA_STATE_LIST;
-        if (!array_key_exists($business_state, $USA_STATE_LIST)) {
+
+        require_code('locations');
+
+        if (find_region_name_from_iso('US-' . $business_state) === null) {
             warn_exit(do_lang_tempcode('USA_STATE_INVALID'), false, true);
         }
     }

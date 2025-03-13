@@ -989,7 +989,7 @@ function install_cns(?float $upgrade_from = null)
             null, // dob_year
             [], // custom_fields
             null, // timezone
-            null, // region
+            '', // region
             '', // language
             '', // theme
             '', // title
@@ -1027,7 +1027,7 @@ function install_cns(?float $upgrade_from = null)
             null, // dob_year
             [], // custom_fields
             null, // timezone
-            null, // region
+            '', // region
             '', // language
             '', // theme
             '', // title
@@ -1649,13 +1649,13 @@ function install_cns(?float $upgrade_from = null)
             $rows = $GLOBALS['SITE_DB']->query($sql, null, 0, false, true, ['e_content' => 'LONG_TRANS__COMCODE']);
 
             foreach ($rows as $row) {
-                $content = get_translated_text($row['e_content']);
+                $e_content = get_translated_text($row['e_content']);
                 $matches = [];
-                if (preg_match('/run_scheduled_action publish_topic "(\d+)"/', $content, $matches) != 0) {
+                if (preg_match('/run_scheduled_action publish_topic "(\d+)"/', $e_content, $matches) != 0) {
                     $topic_id = $matches[1];
 
                     // Get the time of publication
-                    $_time = get_schedule_code_event_time('publish_topic', $topic_id);
+                    $_time = get_schedule_code_event_time('publish_topic', strval($topic_id));
                     if ($_time !== null) {
                         list($minute, $hour, $month, $day, $year) = $_time;
                         $time = cms_mktime($hour, $minute, 0, $month, $day, $year);
@@ -1665,7 +1665,7 @@ function install_cns(?float $upgrade_from = null)
                     }
 
                     // Un-schedule the event from the calendar
-                    unschedule_code('publish_topic', $topic_id);
+                    unschedule_code('publish_topic', strval($topic_id));
                 }
             }
         }

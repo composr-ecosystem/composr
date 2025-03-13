@@ -606,7 +606,6 @@ class Module_admin_errorlog
             '_GUID' => '5e2911f8e43aec63f5a45f2a8fc375cd',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
-            'URL' => null,
             'WARNING_DETAILS' => $warning_details,
             'PING_URL' => $ping_url,
         ]);

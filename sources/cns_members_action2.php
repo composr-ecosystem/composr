@@ -1120,18 +1120,9 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
         $update['m_password_change_code'] = '';
         $update['m_password_change_code_time'] = null;
         switch ($password_compat_scheme) {
-            case 'plain':
-                $salt = '';
-                $update['m_pass_salt'] = '';
-                $password_hashed = $password;
-                break;
-
-            case 'md5':
-                $salt = ''; // We don't support salting on software md5
-                $update['m_pass_salt'] = '';
-                $password_hashed = md5($password);
-                break;
-
+            case '': // Old v10 bcrypt
+            case 'plain': // Do not allow; force to bcrypt for security
+            case 'md5': // Do not allow; force to bcrypt for security
             case 'bcrypt':
             case 'bcrypt_temporary':
             case 'bcrypt_expired':
@@ -2853,7 +2844,7 @@ function cns_can_edit_birthday(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_dob') !== null) {
+    if ($pc->get_attribute('lock_dob') !== null) {
         if ($member_id === null) {
             return false;
         }
@@ -2895,7 +2886,7 @@ function cns_can_edit_timezone(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_timezone') !== null) {
+    if ($pc->get_attribute('lock_timezone') !== null) {
         return false;
     }
 
@@ -2918,7 +2909,7 @@ function cns_can_edit_region(?int $member_id) : bool
     // Parental controls
     require_code('cns_parental_controls');
     $pc = load_parental_control_settings();
-    if ($pc->get_option('lock_region') !== null) {
+    if ($pc->get_attribute('lock_region') !== null) {
         return false;
     }
 

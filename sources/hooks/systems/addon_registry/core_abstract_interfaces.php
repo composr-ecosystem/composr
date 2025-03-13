@@ -42,7 +42,7 @@ class Hook_addon_registry_core_abstract_interfaces
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update ffe9c38a085f86da1d48790b0cc1fb8f
+        return '11.0.2'; // addon_version_auto_update 98cbfc515dec9a1bae9466045c2c29bd
     }
 
     /**
@@ -339,6 +339,7 @@ class Hook_addon_registry_core_abstract_interfaces
             'BACK_URL' => placeholder_url(),
             'PREVIEW' => lorem_phrase(),
             'FIELDS' => lorem_phrase(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -932,7 +933,6 @@ class Hook_addon_registry_core_abstract_interfaces
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERCODE_BOX' => placeholder_form(),
-            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -1016,7 +1016,6 @@ class Hook_addon_registry_core_abstract_interfaces
             'RESULTS_TABLE' => $results_table,
             'FORM' => placeholder_button(),
             'FILTERCODE_BOX' => placeholder_form(),
-            'URL' => placeholder_url(),
         ]), null, '', true);
     }
 

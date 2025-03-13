@@ -10,7 +10,7 @@ If something goes wrong with Composr/MySQL/the-server that leaves your database 
 
 [surround]
 [media width="150" description="phpMyAdmin as found in the Plesk webhosting control panel" float="right"]data_custom/images/docs/tut_sql/sql_plesk.png[/media]
-MySQL is designed as a lightweight database system, not as a full database management system (DBMS). As a result, and as a result of you not being likely to be sitting in front of the server, you will need a tool to perform database management remotely. Most webhosts provide control panel systems to do account management, and these almost always include the 'phpMyAdmin' tool. It is beyond the scope of this tutorial to explain how to enter it, but it is usually linked to on the configuration page for a MySQL database. On Plesk the link is sometimes re-titled as 'WebAdmin'.
+MySQL is designed as a lightweight database system, not as a full database management system (DBMS). As a result, and as a result of you not being likely to be sitting in front of the server, you will need a tool to perform database management remotely. Most webhosts provide control panel systems to do account management, and these almost always include the 'phpMyAdmin' tool. Check with your webhost for more information on how to access these tools. On Plesk the link is sometimes re-titled as 'WebAdmin'.
 
 phpMyAdmin is powerful web application for managing databases and database contents.
 
@@ -68,7 +68,7 @@ A query is a command, or a question, sent to a database in a special language ca
 To run a query, you need to click the 'SQL' tab once you have chosen a database to view/edit. You then type in the query. In phpMyAdmin, it is often easier to use the interface to make changes, rather than working out what query to type. Occasionally the developers might suggest a query that could help solve a problem, as it is easier for us to give the query, than to explain all the mouse-clicks required. The screen-shots shown an example for executing a query to delete an item of news.
 [/surround]
 
-SQL is beyond the scope of this tutorial, but basic queries fit one of the following structures...
+For a good introduction to SQL, consider reading this [url="https://www.w3schools.com/sql/"]W3Schools SQL tutorial[/url]. These are the most basic SQL queries:
 
 [code="SQL"]INSERT INTO <table-name> (<field-name>,...) VALUES (<field-value>,...)[/code]
 [code="SQL"]UPDATE <table-name> SET <field-name>=<field_value>, ... WHERE <key-field>=<key-value>[/code]
@@ -107,5 +107,6 @@ Composr has been designed to be able to work with many different databases, not 
  - [page="_SEARCH:tut_framework"]The Composr programming framework[/page]
  - [page="_SEARCH:tut_programming"]Introduction to programming[/page]
  - [page="_SEARCH:tut_disaster"]Disaster recovery[/page]
+ - [url="https://www.w3schools.com/sql/"]W3Schools SQL tutorial[/url]
 
 {$SET,tutorial_tags,Maintenance,Development,core,core_database_drivers,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,A primer on databases, and how SQL is used to connect to them - as well as practical advice on using phpMyAdmin.}[block]main_tutorial_rating[/block]

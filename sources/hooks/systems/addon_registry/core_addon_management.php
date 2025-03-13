@@ -42,7 +42,7 @@ class Hook_addon_registry_core_addon_management
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update ee0fb4581fcca487d7c10dbb6ff8ac7a
+        return '11.0.2'; // addon_version_auto_update 03b750b438e1f23fd39902b31d22c35f
     }
 
     /**
@@ -306,6 +306,7 @@ class Hook_addon_registry_core_addon_management
             'INSTALL_FILES' => $install_files,
             'UNINSTALL_FILES' => $uninstall_files,
             'WARNINGS' => lorem_phrase(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -359,6 +360,7 @@ class Hook_addon_registry_core_addon_management
             'COPYRIGHT_ATTRIBUTION' => lorem_phrase(),
             'LICENCE' => lorem_phrase(),
             'DESCRIPTION' => lorem_paragraph_html(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 
@@ -377,6 +379,7 @@ class Hook_addon_registry_core_addon_management
             'NAME' => lorem_word(),
             'WARNINGS' => lorem_phrase(),
             'FILES' => placeholder_list_item(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 

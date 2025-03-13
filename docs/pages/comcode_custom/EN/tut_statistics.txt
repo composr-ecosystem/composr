@@ -573,4 +573,4 @@ You can also do a blank search to just see miscellaneous logged hits, which will
  - [page="_SEARCH:sup_google_analytics"]Analytics and split testing, using Google Analytics[/page]
  - http://www.razorsocial.com/social-media-analytics-tools/
 
-{$SET,tutorial_tags,Analytics,stats_block,stats,realtime_rain,Administration,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Find out about the different kinds of statistics/analytics that you can use to analyse your visitors.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Analytics,stats_block,stats,realtime_rain,core_locations,Administration,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Find out about the different kinds of statistics/analytics that you can use to analyse your visitors.}[block]main_tutorial_rating[/block]

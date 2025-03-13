@@ -42,7 +42,7 @@ class Hook_addon_registry_core_rich_media
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update f00a5595cdcf366241c3120c1093d1fe
+        return '11.0.2'; // addon_version_auto_update 6b115192bfc17b76e257fe3389666dc2
     }
 
     /**

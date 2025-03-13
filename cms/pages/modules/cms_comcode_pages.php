@@ -1029,9 +1029,9 @@ class Module_cms_comcode_pages
 
         if (addon_installed('validation')) {
             $_validated = get_param_integer('validated', 0);
-            if ($validated == 0) {
+            if ($validated === false) {
                 if ($_validated == 1) {
-                    $validated = 1;
+                    $validated = true;
                     attach_message(do_lang_tempcode('WILL_BE_VALIDATED_WHEN_SAVING'), 'notice');
                 }
             }

@@ -22,15 +22,11 @@ class us_english_test_set extends cms_test_case
     {
         // Test British English
         set_option('yeehaw', '0');
-        require_code('caches3');
-        erase_cached_language();
         $this->clear_caches();
         $this->assertTrue(do_lang('COLOUR') == 'Colour', 'Failed with ' . do_lang('COLOUR') . ', expected British English');
 
         // Test US English
         set_option('yeehaw', '1');
-        require_code('caches3');
-        erase_cached_language();
         $this->clear_caches();
         $this->assertTrue(do_lang('COLOUR') == 'Color', 'Failed with ' . do_lang('COLOUR') . ', expected US English');
     }
@@ -42,6 +38,10 @@ class us_english_test_set extends cms_test_case
 
         // Flush main caches
         require_code('caches3');
+        erase_persistent_cache();
+        erase_cached_language();
+
+        // Do it again
         erase_persistent_cache();
         erase_cached_language();
     }

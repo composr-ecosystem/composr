@@ -255,7 +255,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                     $this_ratchet = get_ratchet_cost($row['m_pass_hash_salted']);
                     if ($this_ratchet !== null) {
                         $current_ratchet = get_option('crypt_ratchet');
-                        if ($current_ratchet != $this_ratchet) {
+                        if (intval($current_ratchet) != $this_ratchet) {
                             $needs_rehash = true;
                         }
                     }
@@ -277,6 +277,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
+                    $needs_rehash = true; // Force re-hashing to bcrypt as-is the security standard
                     break;
 
                 case 'plain': // No hashing (extremely, horribly, terribly bad idea)
@@ -284,6 +285,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
                     }
+                    $needs_rehash = true; // Force re-hashing to bcrypt as-is the security standard
                     break;
 
                 /*
@@ -319,7 +321,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             }
         }
 
-        // v10 passwords need re-hashed for v11. Also, v11 passwords hashed with a different ratchet than configured need re-hashed.
+        // Re-hash to bcrypt if we need to
         if ($needs_rehash) {
             require_code('crypt');
 
@@ -329,7 +331,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
             $GLOBALS['FORUM_DB']->query_update('f_members', [
                 'm_pass_hash_salted' => $password_salted,
-                'm_password_compat_scheme' => (($password_compat_scheme == '') || ($password_compat_scheme == 'bcrypt')) ? 'bcrypt' : ('bcrypt_' . $password_compat_scheme),
+                'm_password_compat_scheme' => (in_array($password_compat_scheme, ['', 'bcrypt', 'md5', 'plain'])) ? 'bcrypt' : ('bcrypt_' . $password_compat_scheme),
                 'm_pass_salt' => $password_salt,
             ], ['id' => $member_id]);
 

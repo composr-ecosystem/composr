@@ -309,7 +309,6 @@ class Module_admin_broken_urls
             'TEXT' => do_lang_tempcode('PENDING_LINK_CHECK'),
             'RESULTS_TABLE' => $table,
             'FORM' => $form,
-            'URL' => null,
         ]);
     }
 

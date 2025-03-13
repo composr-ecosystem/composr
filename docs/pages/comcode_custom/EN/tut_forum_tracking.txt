@@ -38,7 +38,7 @@ Clicking on one of the listed links would take you straight to the first unread 
 
 [surround]
 [media_set]
-[media width="150" description="How the read/unread status of a topic works" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_topic_read_status.gif[/media]
+[media width="150" description="How the read/unread status of a topic works" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_topic_read_status.png[/media]
 [media width="150" description="The button to mark a topic as unread" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_mark_topic_unread_link.png[/media]
 [media width="150" description="The button to mark a topic as read" float="right"]data_custom/images/docs/tut_forum_tracking/forum_tracking_mark_forum_read_link.png[/media]
 [/media_set]
@@ -74,7 +74,7 @@ As well as automatic notifications, you can enable notifications for topics manu
 
 You can also mark whole forums for notifications, by clicking the "monitor" button in the forum view. Note that if you enable notifications in a forum it does not automatically enable for sub-forums of that forum (only topics directly under that forum).
 
-(You can set notifications for virtually any category of content, not just forum topics. This can all be configured within your member settings. That is outside the scope of this tutorial though.)
+(You can set notifications for virtually any category of content, not just forum topics. This can all be configured within your member settings. For more information, see the [page="_SEARCH:tut_notifications"]Notifications[/page] tutorial.)
 [/surround]
 
 [concepts

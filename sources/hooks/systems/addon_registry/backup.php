@@ -57,7 +57,7 @@ class Hook_addon_registry_backup
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 835af304f1dfb69820da249b914b5d3e
+        return '11.0.2'; // addon_version_auto_update 64d02cdaf95978b90b1749f1eb13f0ad
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_password_censor
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 58237d68bd25d3f16b638667fabdea4c
+        return '11.0.2'; // addon_version_auto_update 0782de8e700e2dfb0a7b2de6ee5f0394
     }
 
     /**

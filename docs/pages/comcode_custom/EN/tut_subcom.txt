@@ -127,7 +127,7 @@ To change the logo image for a zone, add a theme image named [tt]<zone-name>-log
 
 [title="2"]Multi-Site-Networks (advanced)[/title]
 
-For some sites, it is advantageous to be able to create a whole website for each subcommunity, each with its own settings, yet sharing a single member database and forums. This is possible using a Composr configuration known as a 'multi-site-network' and essentially involves separate Composr installs that are tied together by sharing a forum database. Composr provides special features for multi-site-network sites, and there is separate tutorial on them: as they involve separate installs, most of the features described in this tutorial are not necessary.
+For some sites, it is advantageous to be able to create a whole website for each subcommunity, each with its own settings, yet sharing a single member database and forums. This is possible using a Composr configuration known as a 'multi-site-network' and essentially involves separate Composr installs that are tied together by sharing a forum database. Composr provides special features for multi-site-network sites explained in [page="_SEARCH:tut_msn"]Advanced techniques for multi-site-networks[/page].
 
 Advantages to using a multi-site network:
  - Full control

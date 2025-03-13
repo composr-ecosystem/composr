@@ -37,6 +37,7 @@ class Hook_config_telemetry_may_feature
             'group' => 'GENERAL',
             'explanation' => 'CONFIG_OPTION_telemetry_may_feature',
             'shared_hosting_restricted' => '1',
+            'list_options' => '',
             'order_in_category_group' => 2,
             'required' => true,
             'public' => false,
@@ -62,7 +63,7 @@ class Hook_config_telemetry_may_feature
     public function postsave_handler(string $new_value)
     {
         // We need to update this setting with the homesite
-        require_code('encryption');
+        require_code('telemetry');
         $success = register_site_telemetry();
         if ($success === false) {
             require_lang('privacy');

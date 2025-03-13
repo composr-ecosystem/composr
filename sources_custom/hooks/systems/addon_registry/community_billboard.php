@@ -37,7 +37,7 @@ class Hook_addon_registry_community_billboard
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 0f1b6e26b3099cd15e5eacca7723d624
+        return '11.0.1'; // addon_version_auto_update 95419fdd323796c0da952e3020dc364b
     }
 
     /**
@@ -262,6 +262,7 @@ class Hook_addon_registry_community_billboard
             'CONTENT' => $out,
             'INLINE_LIST' => true,
             'SIZE' => '9',
+            'READ_ONLY' => false,
         ]);
         $fields = do_lorem_template('FORM_SCREEN_FIELD', [
             'REQUIRED' => true,

@@ -70,7 +70,7 @@ For this, I am assuming that you are using [concept]Conversr[/concept]. If you a
 [*] Scroll to the bottom of the form and click 'Go'.
 [/list]
 
-You should now be able to log in to Composr using your new password.
+You should now be able to log in to Composr using your new password. Note that once you log in, your password will be re-hashed back to the bcrypt algorithm in the database for security.
 [/surround]
 
 [title="3"]Via the disk[/title]

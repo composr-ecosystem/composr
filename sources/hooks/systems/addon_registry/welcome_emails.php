@@ -42,7 +42,7 @@ class Hook_addon_registry_welcome_emails
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 056633ff547e8562de86ea11e8cad2d1
+        return '11.0.1'; // addon_version_auto_update 1bf3e83604aee109059640ac2130dbea
     }
 
     /**

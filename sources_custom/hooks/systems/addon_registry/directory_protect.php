@@ -37,7 +37,7 @@ class Hook_addon_registry_directory_protect
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 99d52c29cd65e92a6611cdde84a6de6d
+        return '11.0.2'; // addon_version_auto_update 937e012cebe0002ff4ffe112edd1e7ad
     }
 
     /**

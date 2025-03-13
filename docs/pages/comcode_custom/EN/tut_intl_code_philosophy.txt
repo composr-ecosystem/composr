@@ -11,7 +11,7 @@ There are many possible pitfalls we try and avoid, including:
 2) The way we compose strings from different parts may make assumptions about tense or gender (for example) that do not hold in some translations. We therefore have to try avoid situations where we are inserting a diverse possibility of different words inside stock sentences. The only viable solutions are to just to have many very similar long language strings, or to embed the inserted word within quotes to 'firewall' it from surrounding words (clunky/imperfect, but often necessary), or to use PHP code to dynamically make language adjustments. We use all these solutions as deemed appropriate.
 
 To solve some problems we have a PHP-based language string enhancement system. Each pack can optionally define a [tt]sources[_custom]/lang_filter_<lang>.php[/tt] file that performs appropriate substitutions.
-The bundled [tt]sources/lang_filter_EN.php[/tt] fixes a number of grammatical complexities in English, adds extra specificity to language strings, and implements an American-English variant. PHP programming is beyond the scope of this tutorial.
+The bundled [tt]sources/lang_filter_EN.php[/tt] fixes a number of grammatical complexities in English, adds extra specificity to language strings, and implements an American-English variant.
 
 [title="2"]Avoiding duplication[/title]
 

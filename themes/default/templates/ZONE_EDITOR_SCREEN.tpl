@@ -5,7 +5,12 @@
 <div data-view="ZoneEditorScreen" data-view-params="{+START,PARAMS_JSON,default_zone_page_name,preview_url}{_*}{+END}">
 	{TITLE}
 
+	{+START,IF_PASSED,PING_URL}
 	{+START,INCLUDE,HANDLE_CONFLICT_RESOLUTION}{+END}
+{+END}
+{+START,IF_PASSED,WARNING_DETAILS}
+	{WARNING_DETAILS}
+{+END}
 
 	{+START,IF_PASSED,WARNING_DETAILS}
 		{WARNING_DETAILS}

@@ -379,7 +379,6 @@ class Module_admin_karma
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
             'TEXT' => do_lang_tempcode('KARMA_LOG_HEAD'),
         ]);

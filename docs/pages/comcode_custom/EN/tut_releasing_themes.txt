@@ -12,7 +12,7 @@ If you've developed your own theme for Composr, and would like to share it with 
 [title="2"]How to make a theme pack[/title]
 
 [media width="150" description="Making a theme pack using the 'addon' facility" float="right"]data_custom/images/docs/tut_releasing_themes/releasing_themes_make.png[/media]
-Details on how to create a theme are outside the scope of this tutorial, and included in the [page="_SEARCH:tut_themes"]Themeing your site[/page] tutorial.
+If you want to learn how to make a theme, check out the [page="_SEARCH:tut_themes"]Themeing your site[/page] tutorial.
 
 To actually make a theme pack that is ready for release, you just need to export your theme as an addon (as in the screen-shot).
 

@@ -198,7 +198,6 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             // This search hook implements the fast custom index, which we use where possible...
 
             // Calculate our where clause (search)
-            $where_clause = '';
             $extra_join_clause = '';
             $sq = build_search_submitter_clauses('p_submitter', $author_id, $author);
             if ($sq === null) {
@@ -335,22 +334,22 @@ class Hook_search_comcode_pages extends FieldsSearchHook
             $all_pages = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['the_zone', 'the_page', 'string_index']);
             foreach ($all_pages as $row) {
                 $pages_found[$row['the_zone'] . ':' . $row['the_page']] = 1;
-            }
 
-            if (in_memory_search_match(['content' => $search_query], get_translated_text($row['string_index']))) {
-                $out[$out_i]['data'] = ['the_zone' => $row['the_zone'], 'the_page' => $row['the_page']] + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
-                if ($remapped_orderer == 'the_page') {
-                    $out[$out_i]['orderer'] = $row['the_page'];
-                } elseif ($remapped_orderer == 'the_zone') {
-                    $out[$out_i]['orderer'] = $row['the_zone'];
+                if (in_memory_search_match(['content' => $search_query], get_translated_text($row['string_index']))) {
+                    $out[$out_i]['data'] = ['the_zone' => $row['the_zone'], 'the_page' => $row['the_page']] + ['extra' => [$row['the_zone'], $row['the_page'], $max]];
+                    if ($remapped_orderer == 'the_page') {
+                        $out[$out_i]['orderer'] = $row['the_page'];
+                    } elseif ($remapped_orderer == 'the_zone') {
+                        $out[$out_i]['orderer'] = $row['the_zone'];
+                    }
+
+                    if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
+                        $out[$out_i]['restricted'] = true;
+                    }
+
+                    $out_i++;
+                    $GLOBALS['TOTAL_SEARCH_RESULTS']++;
                 }
-
-                if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
-                    $out[$out_i]['restricted'] = true;
-                }
-
-                $out_i++;
-                $GLOBALS['TOTAL_SEARCH_RESULTS']++;
             }
 
             // Now, look on disk for non-cached Comcode pages
@@ -408,7 +407,7 @@ class Hook_search_comcode_pages extends FieldsSearchHook
                                 $out[$out_i]['orderer'] = $zone;
                             }
 
-                            if (!has_page_access(get_member(), $row['the_page'], $row['the_zone'])) {
+                            if (!has_page_access(get_member(), $page, $zone)) {
                                 $out[$out_i]['restricted'] = true;
                             }
 

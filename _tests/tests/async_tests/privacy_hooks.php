@@ -381,6 +381,7 @@ class privacy_hooks_test_set extends cms_test_case
                     'tutorials_external' => ['t_url'],
                     'trackbacks' => ['trackback_url'],
                     'logged_mail_messages' => ['m_url'],
+                    'telemetry_sites' => ['website_url'],
                 ];
                 foreach ($relevant_fields_url as $name => $type) {
                     if ((isset($exceptions[$table])) && (in_array($name, $exceptions[$table]))) {

@@ -59,7 +59,11 @@ class extra_logging_test_set extends cms_test_case
         clearstatcache();
         $after = glob($glob_cmd);
 
-        $this->assertTrue(count($after) > count($before), 'Profiling files after = ' . integer_format(count($after)));
+        $this->assertTrue(count($after) > count($before), 'Failed to generate profiler files');
+
+        if ($this->debug) {
+            $this->dump($data, 'HTTP Request');
+        }
 
         foreach ($after as $path) {
             if (strpos($path, 'in-progress') === false) {

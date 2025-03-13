@@ -266,6 +266,7 @@ class Hook_addon_registry_themewizard
             'PREVIEW' => $preview,
             'FIELDS' => '',
             'TITLE' => lorem_screen_title(),
+            'PING_URL' => placeholder_url(),
         ]), null, '', true);
     }
 }

@@ -76,8 +76,9 @@ class Hook_endpoint_cms_homesite_user_stats
             return ['success' => false, 'error_details' => 'You may only report telemetry stats once per hour.'];
         }
 
+        require_code('telemetry');
+
         // Decrypt our message
-        require_code('encryption');
         $_data = decrypt_data_site_telemetry($data['nonce'], $data['encrypted_data'], $public_key, $sign_public_key, floatval($data['version']));
         $decrypted_data = @unserialize($_data);
         if (($decrypted_data === false) || !is_array($decrypted_data) || !array_key_exists('count_members', $decrypted_data) || !array_key_exists('count_daily_hits', $decrypted_data)) {

@@ -610,8 +610,6 @@ class Module_admin_ecommerce_reports
             $filtercode_box = null;
         }
 
-        $url = build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF');
-
         // Export button
         $form = new Tempcode();
         if (count($rows) > 0) {
@@ -625,7 +623,6 @@ class Module_admin_ecommerce_reports
             'TITLE' => $this->title,
             'CONTENT' => $sales_table,
             'PAGINATION' => $pagination,
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
     }
@@ -833,15 +830,12 @@ class Module_admin_ecommerce_reports
             'types' => implode(',', $filtercode_types),
         ]);
 
-        $url = build_url(['page' => '_SELF', 'type' => 'logs'], '_SELF');
-
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '04cd636d046a8b6667f5415929a84278',
             'TITLE' => $this->title,
             'TEXT' => do_lang_tempcode('TRANSACTION_LOGS_TEXT', escape_html(static_evaluate_tempcode(build_url(['page' => '_SELF', 'type' => 'sales'], '_SELF')))),
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
 
@@ -1259,8 +1253,6 @@ class Module_admin_ecommerce_reports
         $export_url = build_url(['page' => '_SELF', 'type' => 'export_subscriptions'], '_SELF', [], true);
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '38f0e331de0db2449c23378f9f41080e', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
 
-        $url = build_url(['page' => '_SELF', 'type' => 'view_subscriptions'], '_SELF');
-
         $filtercode_box = do_block('main_content_filtering', [
             'param' => implode(',', $filtercode),
             'table' => 'ecom_subscriptions',
@@ -1273,7 +1265,6 @@ class Module_admin_ecommerce_reports
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
 

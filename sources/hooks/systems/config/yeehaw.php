@@ -71,6 +71,15 @@ class Hook_config_yeehaw
      */
     public function presave_handler(string $new_value, string $old_value) : bool
     {
+        global $ALLOW_DOUBLE_DECACHE;
+        $ALLOW_DOUBLE_DECACHE = true;
+
+        require_code('caches3');
+
+        erase_persistent_cache();
+        erase_cached_language();
+
+        erase_persistent_cache();
         erase_cached_language();
 
         return true;

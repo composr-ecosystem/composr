@@ -1993,7 +1993,7 @@ function get_search_rows(?string $meta_type, string $id_field, string $search_qu
 
     // No possible results, because no title field?
     if ($only_titles) {
-        if (empty($trans_fields) || key($trans_fields) != '') {
+        if (empty($trans_fields) || key($trans_fields) == '') {
             return [];
         }
         if (key($trans_fields) == '!' && empty($raw_fields)) {

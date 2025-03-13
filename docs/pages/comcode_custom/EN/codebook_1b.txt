@@ -367,11 +367,7 @@ $table = results_table('Example', $start, 'example_start', $max, 'example_max', 
 return do_template('RESULTS_TABLE_SCREEN', [
     'TITLE' => $title,
     'TEXT' => '',
-    'RESULTS_TABLE' => $table,
-    'FILTERS_ROW_A' => null,
-    'FILTERS_ROW_B' => null,
-    'FILTERS_HIDDEN' => null,
-    'URL' => null,
+    'RESULTS_TABLE' => $results_table,
 ]);
 [/code]
 

@@ -55,7 +55,6 @@ class log_refs_test_set extends cms_test_case
                 'template_previews.log',
 
                 // For non-bundled addons
-                'sugarcrm.log',
                 'tapatalk.log',
             ])) {
                 continue;

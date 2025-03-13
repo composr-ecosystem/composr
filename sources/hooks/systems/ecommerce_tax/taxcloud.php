@@ -373,6 +373,7 @@ class Hook_ecommerce_tax_taxcloud
                 'CONTENT' => $tics,
                 'INLINE_LIST' => false,
                 'SIZE' => strval(5),
+                'READ_ONLY' => false,
             ]);
             $field_set->attach(_form_input($set_name . '_tic', do_lang_tempcode('TAX_TIC'), do_lang_tempcode('DESCRIPTION_TAX_TIC'), $input, $required, false, $tabindex));
         }

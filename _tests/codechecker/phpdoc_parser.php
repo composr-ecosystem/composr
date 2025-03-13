@@ -63,6 +63,9 @@ foreach ($files as $filename) {
     if (strpos($filename, '/diff/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
         continue;
     }
+    if (strpos($filename, '/isocodes/') !== false) { // Lots of complex code we want to ignore, even if doing custom files
+        continue;
+    }
 
     $TO_USE = $COMPOSR_PATH . '/' . $filename;
 

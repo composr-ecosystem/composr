@@ -87,12 +87,14 @@ function make_installers($skip_file_grab = false)
         fix_permissions($builds_path . '/builds/build/' . $version_branch . '/install.php');
 
         // Generate key pair
-        require_code('encryption');
+        require_code('telemetry');
         generate_telemetry_key_pair($version, (post_param_string('overwrite_key_pair', '') != ''));
 
-        // Copy new public key to our static "telemetry" file
-        @copy(get_file_base() . '/data_custom/keys/telemetry-' . float_to_raw_string($version, 2, true) . '.pub', get_file_base() . '/data/keys/telemetry.pub');
-        fix_permissions(get_file_base() . '/data/keys/telemetry.pub');
+        // Copy public key to our static "telemetry" file (but we cannot just copy the file as it also contains the private key)
+        require_code('files');
+        list($public_key) = get_software_keys_telemetry($version);
+        $to_json = ['public' => $public_key];
+        cms_file_put_contents_safe(get_file_base() . '/data/keys/telemetry.json', json_encode($to_json), FILE_WRITE_FIX_PERMISSIONS);
 
         if (post_param_string('skip_data_files', '') == '') {
             download_latest_data_files();
@@ -1225,7 +1227,6 @@ function _download_latest_data_no_banning()
 
         if ($url == 'https://www.gstatic.com/ipranges/goog.json') {
             $_data = @json_decode($__data, true);
-            var_dump($_data);
             if (is_array($_data)) {
                 $data .= "\n\n" . '# Google services (goog.json)' . "\n";
                 foreach ($_data['prefixes'] as $prefix_entry) {

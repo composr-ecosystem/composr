@@ -42,7 +42,7 @@ class Hook_addon_registry_core_privacy
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update e8616cc88b6e492486b1c759a5859bd9
+        return '11.0.2'; // addon_version_auto_update a421d780c7f23dd9db257d7f0bfee484
     }
 
     /**
@@ -94,6 +94,8 @@ class Hook_addon_registry_core_privacy
     {
         return [
             'tut_legal',
+            'tut_parental_controls',
+            'tut_telemetry',
         ];
     }
 
@@ -130,6 +132,7 @@ class Hook_addon_registry_core_privacy
     {
         return [
             'adminzone/pages/modules/admin_privacy.php',
+            'data/keys/telemetry.json',
             'lang/EN/privacy.ini',
             'pages/comcode/EN/privacy.txt',
             'sources/blocks/main_privacy_policy_auto.php',
@@ -167,7 +170,9 @@ class Hook_addon_registry_core_privacy
             'sources/hooks/systems/tasks/privacy_download.php',
             'sources/hooks/systems/tasks/privacy_purge.php',
             'sources/privacy.php',
+            'sources/telemetry.php',
             'sources_custom/hooks/systems/logs/.htaccess',
+            'sources_custom/hooks/systems/logs/index.html',
             'sources_custom/hooks/systems/privacy/.htaccess',
             'sources_custom/hooks/systems/privacy/index.html',
             'themes/default/images/icons/menu/pages/privacy_policy.svg',

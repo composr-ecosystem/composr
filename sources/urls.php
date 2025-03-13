@@ -415,6 +415,7 @@ function build_url(array $parameters, string $zone_name = '_SEARCH', array $skip
         if (($hash !== '') && ($hash[0] !== '#')) {
             $hash = '#' . $hash;
         }
+
         return make_string_tempcode(_build_url($parameters, $zone_name, $skip, $keep_all, $avoid_remap, true, $hash));
     }
 
@@ -1044,6 +1045,10 @@ function page_link_decode(string $page_link) : array
         $zone = '';
     } elseif ($zone === '_SELF') {
         $zone = get_zone_name();
+        global $FUCK;
+        if (isset($FUCK) && (strpos($page_link, '_SELF') !== false)) {
+            fatal_exit($zone);
+        }
     }
     if ((isset($bits[1])) && (strpos($bits[1], '=') === false)) {
         if ($bits[1] !== '') {

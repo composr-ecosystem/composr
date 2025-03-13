@@ -42,7 +42,7 @@ class Hook_addon_registry_health_check
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 729a50ed229c0db5da41568c9650b9f7
+        return '11.0.2'; // addon_version_auto_update c15db5dcaf21b87b6fe5cdf23e0680d6
     }
 
     /**

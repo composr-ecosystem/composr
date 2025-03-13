@@ -42,7 +42,7 @@ class Hook_addon_registry_core_abstract_components
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 14ba7a909423d2f8681f53a0aa230ca4
+        return '11.0.2'; // addon_version_auto_update 18415ef5ea032a3737a8bb2aa32a9b9b
     }
 
     /**
@@ -307,6 +307,7 @@ class Hook_addon_registry_core_abstract_components
     public function tpl_preview__button_screen() : object
     {
         return lorem_globalise(do_lorem_template('BUTTON_SCREEN', [
+            'NAME' => null,
             'IMMEDIATE' => true,
             'URL' => placeholder_url(),
             'TITLE' => lorem_word(),

@@ -424,14 +424,11 @@ class Module_admin_site_messaging
 
         $results_table = results_table(do_lang_tempcode('EDIT_SITE_MESSAGES'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('DOC_EDIT_SITE_MESSAGES')));
 
-        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => 'd1b97ca99391843a9b5972d3f23e9fee',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => new Tempcode(),
-            'URL' => $url,
         ]);
 
         require_code('templates_internalise_screen');

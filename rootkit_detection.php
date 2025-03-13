@@ -132,10 +132,17 @@ END;
 
     $results = '';
 
-    // Check database
     $prefix = preg_replace('#[^\w]#', '', $settings['db_prefix']);
+
+    // Check if multi_lang_content is enabled (it is by default)
+    $multi_lang_content = true;
+    $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'values WHERE the_name=\'multi_lang_content\' AND the_value=\'0\'');
+    if (($r !== false) && ((mysqli_fetch_assoc($r)) !== null)) {
+        $multi_lang_content = false;
+    }
+
+    // Check database
     if (file_exists($FILE_BASE . '/sources/hooks/systems/addon_registry/calendar_events.php')) {
-        $multi_lang_content = isset($SITE_INFO['multi_lang_content']) ? ($SITE_INFO['multi_lang_content'] == '1') : true;
         if ($multi_lang_content) {
             $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'calendar_events e LEFT JOIN ' . $prefix . 'translate t on e.e_content=t.id WHERE e_type=1 ORDER BY e.id');
             if ($r !== false) {

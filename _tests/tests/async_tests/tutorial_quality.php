@@ -280,8 +280,8 @@ class tutorial_quality_test_set extends cms_test_case
 
             $c = cms_file_get_contents_safe($path . '/' . $file, FILE_READ_LOCK | FILE_READ_BOM);
 
-            if (preg_match('/\b(scope of (?:this )?tutorial|tutorial\'?s? scope|(another|separate) tutorial)\b/i', $c)) {
-                $this->assertTrue(false, $file . ': The phrase \'beyond/outside the scope of this / another/separate tutorial\' (or similar) is not concise. Put a link to the correct tutorial there (and in \'See also\') so users know where to go.');
+            if (preg_match('/\b(scope of (?:this )?tutorial|tutorial\'?s? scope|(another|separate) tutorial|not covered in (?:this )?tutorial)\b/i', $c)) {
+                $this->assertTrue(false, $file . ': Provide links to relevant tutorials instead of saying something is not covered in / outside the scope of this tutorial.');
             }
         }
         closedir($dh);

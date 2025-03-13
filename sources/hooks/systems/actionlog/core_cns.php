@@ -349,6 +349,15 @@ class Hook_actionlog_core_cns extends Hook_actionlog
                     'VIEW_PROFILE' => '_SEARCH:members:view:{ID}',
                 ],
             ],
+            'EDIT_PARENTAL_CONTROLS' => [
+                'flags' => ACTIONLOG_FLAGS_NONE,
+                'cma_hook' => null,
+                'identifier_index' => null,
+                'written_context_index' => null,
+                'followup_page_links' => [
+                    'EDIT_PARENTAL_CONTROLS' => '_SEARCH:admin_parental_controls',
+                ],
+            ],
         ];
     }
 

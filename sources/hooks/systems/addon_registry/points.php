@@ -42,7 +42,7 @@ class Hook_addon_registry_points
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update a6a9ba58422c6c7d83e491ca35c49730
+        return '11.0.2'; // addon_version_auto_update 9efc270c38f638dbb885cc00735f4332
     }
 
     /**
@@ -350,7 +350,14 @@ class Hook_addon_registry_points
         require_code('form_templates');
 
         $form = new Tempcode();
-        $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'be2d6b899b75d8ad77d7de2e0da74cdb', 'IMMEDIATE' => false, 'URL' => placeholder_url(), 'TITLE' => do_lang_tempcode('ESCROW_TO'), 'IMG' => 'buttons/proceed', 'HIDDEN' => new Tempcode()]));
+        $form->attach(do_lorem_template('BUTTON_SCREEN', [
+            'NAME' => null,
+            'IMMEDIATE' => false,
+            'URL' => placeholder_url(),
+            'TITLE' => lorem_word(),
+            'IMG' => 'buttons/proceed',
+            'HIDDEN' => new Tempcode(),
+        ]));
 
         return lorem_globalise(do_lorem_template('ESCROW_TRANSACTIONS', [
             'MEMBER' => placeholder_numeric_id(),

@@ -42,7 +42,7 @@ class Hook_addon_registry_core_zone_editor
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 606ea76aaedb4ce9a6947ce03277c3f0
+        return '11.0.1'; // addon_version_auto_update 23d2b9520cb47c07a5be30f9852f804d
     }
 
     /**

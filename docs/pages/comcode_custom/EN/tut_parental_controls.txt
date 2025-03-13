@@ -1,4 +1,4 @@
-[title sub="Patrick Schmalstig"]Composr Tutorial: Parental Controls and Child Safety[/title]
+[title sub="Written by Patrick Schmalstig"]Composr Tutorial: Parental Controls and Child Safety[/title]
 
 If your site will allow users to join / create accounts, chances are that you will have to abide by regional laws and regulations surrounding child safety online. This may mean different things depending on the region (e.g. getting parental consent, restricting site access, restricting data collection, or imposing curfews). Furthermore, since laws dictate that compliance must be based on the region of the user and not the site, it is not merely enough to satisfy the requirements in your own jurisdiction.
 
@@ -167,4 +167,4 @@ In this example, members under the age of 13 in the U.S. states of Utah and Indi
  - [page="_SEARCH:tut_legal"]Legal and social responsibilities[/page]
  - [url="Children's Online Privacy Protection Act (wikipedia)"]https://en.wikipedia.org/wiki/Children's_Online_Privacy_Protection_Act[/url]
 
-{$SET,tutorial_tags,Advice & Guidance,Configuration,Members,regular,core_privacy,core_cns}{$SET,tutorial_add_date,Feb 2025}{$SET,tutorial_summary,How to comply with regional laws governing child safety and privacy.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Advice & Guidance,Configuration,Members,regular,core_privacy,core_cns,core_locations}{$SET,tutorial_add_date,Feb 2025}{$SET,tutorial_summary,How to comply with regional laws governing child safety and privacy.}[block]main_tutorial_rating[/block]

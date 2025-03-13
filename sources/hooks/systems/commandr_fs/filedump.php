@@ -286,6 +286,10 @@ class Hook_commandr_fs_filedump
      */
     public function get_file_size(array $meta_dir, string $meta_root_node, string $file_name, bool $force_calculate, object &$commandr_fs)
     {
+        if (!addon_installed('filedump')) {
+            return false;
+        }
+
         if ($force_calculate === false) {
             return -1;
         }

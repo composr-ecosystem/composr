@@ -185,7 +185,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
                 $region = get_region();
                 if (!cms_empty_safe($region) && (!is_location_within($region, [$geo]))) {
                     require_lang('locations');
-                    attach_message(do_lang_tempcode('GEOLOCATION_REGION_MISMATCH', comcode_escape($geo)), 'warn');
+                    attach_message(do_lang_tempcode('GEOLOCATION_REGION_MISMATCH', escape_html($geo)), 'warn');
                 }
             }
         }

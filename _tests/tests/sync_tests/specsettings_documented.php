@@ -110,7 +110,7 @@ class specsettings_documented_test_set extends cms_test_case
         for ($i = 0; $i < $num_matches; $i++) {
             $var = $matches[2][$i];
             if (
-                (/*Can't just flip so simply*/$var != 'multi_lang_content') &&
+                (/*LEGACY: removed from _config.php as it should not be readily editable*/$var != 'multi_lang_content') &&
                 (/*string replace array*/$var != 'reps') &&
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
                 (/*Testing Platform*/!in_array($var, ['ci_password', 'gitlab_personal_token'])) &&
@@ -122,10 +122,11 @@ class specsettings_documented_test_set extends cms_test_case
                 ($var != 'mysql_root_password') &&
 
                 (/*Custom domains*/strpos($var, 'ZONE_MAPPING') === false) &&
-                (/*Legacy password name*/$var != 'admin_password') &&
-                (/*Legacy password name*/$var != 'master_password') &&
+                (/*LEGACY: renamed*/$var != 'admin_password') &&
+                (/*LEGACY: renamed*/$var != 'master_password') &&
                 (/*XML dev environment*/strpos($var, '_chain') === false) &&
                 (/*LEGACY*/$var != 'board_prefix') &&
+                (/*LEGACY: renamed*/$var != 'use_persistent') &&
                 (/*forum-driver-specific*/!in_array($var, ['aef_table_prefix', 'bb_forum_number', 'ipb_table_prefix', 'mybb_table_prefix', 'phpbb_table_prefix', 'smf_table_prefix', 'stronghold_cookies', 'vb_table_prefix', 'vb_unique_id', 'vb_version', 'wowbb_table_prefix']))
             ) {
                 $found[$var] = true;

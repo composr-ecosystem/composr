@@ -62,6 +62,7 @@ class points_test_set extends cms_test_case
         require_code('cns_posts_action3');
         require_code('cns_topics_action');
         require_code('cns_topics_action2');
+        require_code('global4');
 
         $this->admin_user = $this->get_canonical_member_id('admin');
         $this->member_user = $this->get_canonical_member_id('test');
@@ -77,15 +78,15 @@ class points_test_set extends cms_test_case
         // Credit some points so each member is in the positive (necessary for the tests to succeed)
         $balance_admin = points_balance($this->admin_user);
         if ($balance_admin < 1000) {
-            $this->initial_credit_sender = points_credit_member($this->admin_user, 'Unit test: Points', (1000 - $balance_admin), 0, null);
+            $this->initial_credit_sender = points_credit_member($this->admin_user, 'Unit test: Points', (1000 - $balance_admin), 0, null, 0, 'unit_test', generate_guid());
         }
         $balance_test = points_balance($this->member_user);
         if ($balance_test < 1000) {
-            $this->initial_credit_recipient = points_credit_member($this->member_user, 'Unit test: Points', (1000 - $balance_test), 0, null);
+            $this->initial_credit_recipient = points_credit_member($this->member_user, 'Unit test: Points', (1000 - $balance_test), 0, null, 0, 'unit_test', generate_guid());
         }
 
         // Also credit some gift points to the admin so we can run our gift point tests
-        $this->gift_points_id = points_refund($this->get_canonical_member_id('guest'), $this->admin_user, 'Unit test: Points', 25, 25);
+        $this->gift_points_id = points_refund($this->get_canonical_member_id('guest'), $this->admin_user, 'Unit test: Points', 25, 25, 0, null, true, 'unit_test', generate_guid());
     }
 
     public function testSendGiftPointsAndReverse()
@@ -118,9 +119,9 @@ class points_test_set extends cms_test_case
         $initial_points_recipient = points_balance($this->member_user);
 
         if ($is_refund) {
-            $this->points_transact_record = points_refund($this->member_user, $this->admin_user, 'Points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null, null);
+            $this->points_transact_record = points_refund($this->member_user, $this->admin_user, 'Points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null, null, 'unit_test', generate_guid());
         } else {
-            $this->points_transact_record = points_transact($this->admin_user, $this->member_user, 'Points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null);
+            $this->points_transact_record = points_transact($this->admin_user, $this->member_user, 'Points unit test: ' . $test, $points_to_send, $use_gift_points, 0, null, 0, 'unit_test', generate_guid());
         }
 
         points_flush_runtime_cache();
@@ -269,7 +270,7 @@ class points_test_set extends cms_test_case
         $initial_points = points_balance($this->member_user);
 
         // Test user 2 giving 10 points to user 1 (use null for gift points to ensure the calculation is triggered and accounts for gift points being off)
-        $this->points_transact_record = points_transact($this->admin_user, $this->member_user, 'Unit test send points and reverse', $points_to_send, null, 0, null);
+        $this->points_transact_record = points_transact($this->admin_user, $this->member_user, 'Unit test send points and reverse', $points_to_send, null, 0, null, 0, 'unit_test', generate_guid());
         if ($this->points_transact_record === null) {
             $this->assertTrue(false, 'Send points and reverse: points_transact failed (returned null instead of an ID).');
             return;
@@ -348,7 +349,7 @@ class points_test_set extends cms_test_case
         points_flush_runtime_cache();
         $initial_points = points_balance($this->member_user);
 
-        $this->points_credit_member = points_credit_member($this->member_user, 'Points unit test: credit member', $points_to_credit, 0, null);
+        $this->points_credit_member = points_credit_member($this->member_user, 'Points unit test: credit member', $points_to_credit, 0, null, 0, 'unit_test', generate_guid());
         if ($this->points_credit_member === null) {
             $this->assertTrue(false, 'points_credit_member failed (returned null instead of an ID).');
             return;
@@ -378,7 +379,7 @@ class points_test_set extends cms_test_case
         points_flush_runtime_cache();
         $initial_points = points_balance($this->member_user);
 
-        $this->points_debit_member = points_debit_member($this->member_user, 'Points unit test: debit member', $points_to_debit, 0, 0, null);
+        $this->points_debit_member = points_debit_member($this->member_user, 'Points unit test: debit member', $points_to_debit, 0, 0, null, 0, 'unit_test', generate_guid());
         if ($this->points_debit_member === null) {
             $this->assertTrue(false, 'points_debit_member failed (returned null instead of an ID).');
             return;
@@ -414,7 +415,7 @@ class points_test_set extends cms_test_case
 
         $points_to_escrow = $initial_gift_points + 1;
 
-        $this->escrow = escrow_points($this->admin_user, $this->member_user, $points_to_escrow, 'Unit test: escrow with gift points', 'Unit test', null, '', '', false, null);
+        $this->escrow = escrow_points($this->admin_user, $this->member_user, $points_to_escrow, 'Unit test: escrow with gift points', generate_guid(), null, '', '', false, null);
         if ($this->escrow === null) {
             $this->assertTrue(false, 'escrow_points failed (returned null instead of an ID).');
             return;

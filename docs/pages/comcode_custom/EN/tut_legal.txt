@@ -36,25 +36,30 @@ Such laws include, but are not limited to:
 
 {!DOC_GDPR}
 
-To further meet GDPR, Composr has many additional provisions, including:
+To further meet GDPR (and other regulations), Composr has many additional provisions, including:
  - Logging of access to personal data in the action log
  - Automatic log purging, configurable per-log
  - Automatic scrubbing of old database records that contain personal data
- - Ability to configure customised legal declarations for new users
+ - Ability to configure customised legal declarations for new users (and they will get e-mailed a copy of their agreement)
+  - When the declarations are changed, Composr will force users to agree to the new declarations / rules before they may continue using your site (or they can delete their account)
  - Automatic creation of a default privacy page that reflects an audit of what Composr privacy-affecting features are enabled, stock text to get you started
+  - When this text changes, the staff checklist on the Admin Zone will remind you to send out an e-mail or make a news post explaining the privacy changes
+ - Parental controls with regional configuration (see [page="_SEARCH:tut_parental_controls"]Parental Controls and Child Safety[/page])
+ - Personal data searching, downloading, and purging, either by a staff member (via the Admin Zone > Tools > Privacy) or by the member (via their profile)
+ - A global e-mail unsubscribe endpoint ([tt]data/unsubscribe.php[/tt])
 
 To meet GDPR you also need to consider:
- - Web server logs also need to be purged. On Linux you can configure [tt]logrotate[/tt] to do this.
+ - Web server logs also need to be purged (Composr cannot do that for you). On Linux you can configure [tt]logrotate[/tt] to do this.
  - Backups:
-  - You must have an internal documented policy for how long you keep backups.
+  - You must have an internal documented policy for how long you keep backups, and you must adhere to it, permanently destroying all backup data beyond this time.
   - Backup access must be restricted, and encryption may be a good idea.
  - You may want to consider filesystem-level encryption, including of the database files, to prevent access to data if hardware is stolen.
- - You should use SSL for your website, and any web services you rely on.
- - You may need a webhost compliant with the 'EU-US privacy shield'.
+ - You should use SSL for your website, and any web services you rely on (this is a modern-day web requirement; browsers will show massive red warnings to visitors if you do not have SSL).
+ - That your webhost also complies and ideally has the 'EU-US privacy shield'.
 
 The extent of your precautions will likely depend on the nature of personal data you hold (GDPR says: "shall implement appropriate technical and organisational measures to ensure a level of security appropriate to the risk"). However, basic provisions are required for any website due to the storage of user IP addresses.
 
-There is a "Do Not Track" HTTP that many web browsers allow their users to enable. If you want to support the header, then you can do so using the [tt]{$DO_NOT_TRACK_REQUESTED}[/tt] symbol.
+There is a "Do Not Track" HTTP that many web browsers allow their users to enable. If you want to support the header, then you can do so using the [tt]{$DO_NOT_TRACK_REQUESTED}[/tt] symbol (Composr does not have implementation for it by default).
 
 To meet Californian law a privacy policy must:
  - State what you do with a "Do Not Track" HTTP header (Composr does nothing out of the box, mainly because we do not do cross-site tracking, and also because the standard is not well-adopted)
@@ -63,7 +68,7 @@ To meet Californian law a privacy policy must:
  - Provide at least 2 ways of contacting about privacy requests
  - Provide a dated list of amendments
  - Provide a 'Do Not Sell My Personal Information' link if you sell personal information
-The first four items are included with the default privacy policy. Note there are thresholds that specify what organisations have to apply with certain Californian privacy law, which is outside the scope of this tutorial.
+The first four items are included with the default privacy policy. Note there are thresholds that specify what organisations have to apply with certain privacy laws. This is a very complicated field as you must account for every governing region from where your site users come. It is best to consult a lawyer or legal firm for advice on this. Most sites do not need to worry too much about this unless they get large. And by then, you should have your own legal team / department for your organisation anyway.
 
 [title="3"]Management of Personal Data[/title]
 
@@ -133,6 +138,8 @@ Your website would, of course, also be party to legislation on all forms of busi
 [title="2"]Liability[/title]
 
 Unless you disclaim liability, you may be liable for problems caused directly or indirectly by you or your website. For example, if you allow users to get downloads into your database without having them screened for viruses, it is possible someone could try and hold you legally accountable if they were infected by a virus from software from your download database, unless you made it explicit that you disclaim responsibility for this.
+
+The "Corporate Terms of Service" rules template (found under [tt]data/modules/cms_comcode_pages/(lang)/rules_corporate.txt[/tt]) has an example if you wish to use it in your rules / Terms of Service.
 
 Please note that it is not usually possible to disclaim liability for everything that might affect you.
 

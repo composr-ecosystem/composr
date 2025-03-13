@@ -71,7 +71,7 @@ class Hook_page_groupings_core
             (addon_installed('actionlog') && get_option('store_revisions', true) === '1') ? ['audit', 'admin/revisions', ['admin_revisions', ['type' => 'browse'], get_module_zone('admin_revisions')], do_lang_tempcode('actionlog:REVISIONS'), 'actionlog:DOC_REVISIONS'] : null,
             (!addon_installed('content_reviews')) ? null : ['audit', 'menu/adminzone/audit/content_reviews', ['admin_content_reviews', ['type' => 'browse'], get_module_zone('admin_content_reviews')], do_lang_tempcode('content_reviews:CONTENT_REVIEWS'), 'content_reviews:DOC_CONTENT_REVIEWS'],
             addon_installed('securitylogging') ? ['audit', 'menu/adminzone/tools/users/investigate_user', ['admin_lookup', ['type' => 'browse'], get_module_zone('admin_lookup')], do_lang_tempcode('lookup:INVESTIGATE_USER'), 'lookup:INVESTIGATE_USER'] : null,
-            ['audit', 'menu/pages/privacy_policy', ['admin_privacy', ['type' => 'telemetry'], 'adminzone'], do_lang_tempcode('privacy:TELEMETRY_STATUS')],
+            ['audit', 'menu/pages/privacy_policy', ['admin_privacy', ['type' => 'telemetry'], 'adminzone'], do_lang_tempcode('privacy:TELEMETRY_STATUS'), 'privacy:DOC_TELEMETRY_STATUS'],
 
             ['style', 'menu/adminzone/style/themes/themes', ['admin_themes', ['type' => 'browse'], get_module_zone('admin_themes')], do_lang_tempcode('themes:THEMES'), 'themes:DOC_THEMES'],
             ['style', 'admin/tool', ['admin_svg_sprites', [], get_page_zone('admin_svg_sprites')], do_lang_tempcode('themes:SVG_SPRITES'), 'themes:DOC_SVG_SPRITES'],
@@ -132,7 +132,7 @@ class Hook_page_groupings_core
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['site_meta', 'menu/site_meta/user_actions/join', $GLOBALS['FORUM_DRIVER']->join_url(), do_lang_tempcode('_JOIN')],
             (get_forum_type() == 'cns' || get_forum_type() == 'none') ? null : ['social', 'menu/social/users_online', $GLOBALS['FORUM_DRIVER']->users_online_url(), do_lang_tempcode('USERS_ONLINE')],
 
-            ['setup', 'spare/popular', ['admin_parental_controls', [], get_page_zone('admin_parental_controls', false, 'adminzone', 'minimodules')], do_lang_tempcode('cns:EDIT_PARENTAL_CONTROLS')],
+            ['setup', 'spare/popular', ['admin_parental_controls', [], get_page_zone('admin_parental_controls', false, 'adminzone', 'minimodules')], do_lang_tempcode('cns:EDIT_PARENTAL_CONTROLS'), 'cns:DOC_PARENTAL_CONTROLS'],
         ];
     }
 }

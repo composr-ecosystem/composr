@@ -320,7 +320,7 @@ The following is a step by step process for scheduling the running of [tt]cron_b
 17) Double click the 'Daily' trigger from the list
 18) Tick (check) 'repeat task every' box and change the "1 Hour" to "5 Minutes"
 19) Change 'for a duration of' to 'Indefinitely'
-20) If you want to terminate hung PHP processes, tick 'Stop task if it runs for longer than', and set to 1 hour
+20) If you want to terminate hung PHP processes, tick (check) 'Stop task if it runs for longer than', and set to 1 hour
 19) Click 'OK'
 20) Click 'OK'
 This should have now added a schedule within Windows scheduler to run the [tt]cron_bridge.php[/tt] file every 5 minutes. 

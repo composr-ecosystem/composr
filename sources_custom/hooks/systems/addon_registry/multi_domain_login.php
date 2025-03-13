@@ -37,7 +37,7 @@ class Hook_addon_registry_multi_domain_login
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 6ab53c52c3670aafb2dd5c4fea59a22f
+        return '11.0.2'; // addon_version_auto_update 529b1063bad77078b1640465beb25456
     }
 
     /**

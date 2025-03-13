@@ -42,7 +42,7 @@ class Hook_addon_registry_core_cns
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 39484cc1431887985414aea13017b594
+        return '11.0.2'; // addon_version_auto_update 80800e1a24c20e99cec638ceb5b10066
     }
 
     /**
@@ -98,6 +98,7 @@ class Hook_addon_registry_core_cns
             'tut_users',
             'tut_httpauth',
             'tut_emoticons',
+            'tut_parental_controls',
         ];
     }
 

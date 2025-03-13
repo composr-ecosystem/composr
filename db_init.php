@@ -13,17 +13,11 @@
  * @package    helper_scripts
  */
 
-/**
- * Find if running as CLI (i.e. on the command prompt). This implies admin credentials (web users can't initiate a CLI call), and text output.
- *
- * @return boolean Whether running as CLI
- */
-function db_export_is_cli() : bool
-{
-    return (function_exists('php_sapi_name')) && (php_sapi_name() == 'cli') && (empty($_SERVER['REMOTE_ADDR']));
-}
-
-if (!db_export_is_cli()) {
+if (function_exists('php_sapi_name')) {
+    if ((php_sapi_name() != 'cli') || (!empty($_SERVER['REMOTE_ADDR']))) {
+        exit('This script must be called on the command line.');
+    }
+} else {
     exit('This script must be called on the command line.');
 }
 

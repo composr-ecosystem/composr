@@ -55,7 +55,7 @@ function init__version()
  */
 function cms_version_minor() : string
 {
-    return 'beta6';
+    return 'beta7';
 }
 
 /**
@@ -75,7 +75,7 @@ function cms_version_number() : float
  */
 function cms_version_time() : int
 {
-    return 1736208736;
+    return 1741827608;
 }
 
 // cms_version_time_major() was removed in v11. This was never used in v10 and was also not planned for any use in v11.
@@ -88,7 +88,7 @@ function cms_version_time() : int
  */
 function cms_version_time_db() : int
 {
-    return 1740769698;
+    return 1741827608;
 }
 
 /**

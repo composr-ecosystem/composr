@@ -30,14 +30,14 @@ This file only contains the code for the sales and code for viewing an individua
 /**
  * The UI to view sales.
  *
- * @param  string $filters Filtercode to use
+ * @param  string $_filters Filtercode to use
  * @param  boolean $show_username Whether to show the username (customer) column
  * @param  boolean $is_admin Whether the membwer viewing this table is an admin (activates Admin Zone links and the delete column)
  * @param  integer $max_default Default maximum number of records to show
  * @param  boolean $empty_ok Whether empty results are okay (instead of exiting with a no entries message)
  * @return ?array A tuple: The sales table, pagination, database rows, and Filtercode box (null: none)
  */
-function build_sales_table(string $filters = '', bool $show_username = false, bool $is_admin = false, int $max_default = 20, bool $empty_ok = false) : ?array
+function build_sales_table(string $_filters = '', bool $show_username = false, bool $is_admin = false, int $max_default = 20, bool $empty_ok = false) : ?array
 {
     require_code('templates_map_table');
     require_code('templates_results_table');
@@ -45,6 +45,8 @@ function build_sales_table(string $filters = '', bool $show_username = false, bo
     require_code('content');
     require_code('ecommerce');
     require_code('filtercode');
+
+    $filters = parse_filtercode($_filters);
 
     $max = get_param_integer('max_ecommerce_reports', $max_default);
     $start = get_param_integer('start_ecommerce_reports', 0);
@@ -79,7 +81,7 @@ function build_sales_table(string $filters = '', bool $show_username = false, bo
     // Build WHERE query from Filtercode
     $where = [];
     $end = '';
-    list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($filters), null, 'ecom_sales', 's');
+    list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], $filters, null, 'ecom_sales', 's');
 
     $rows = $GLOBALS['SITE_DB']->query_select('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', ['*', 's.id AS s_id', 't.id AS t_id'], $where, $end . ' ORDER BY date_and_time DESC', $max, $start);
     $max_rows = $GLOBALS['SITE_DB']->query_select_value('ecom_sales s LEFT JOIN ' . get_table_prefix() . 'ecom_transactions t ON t.id=s.txn_id', 'COUNT(*)', $where, $end);

@@ -575,7 +575,6 @@ class Module_admin_early_access extends Standard_crud_module
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
         ]);
 
         require_code('templates_internalise_screen');

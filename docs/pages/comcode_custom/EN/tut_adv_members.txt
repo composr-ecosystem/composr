@@ -351,7 +351,7 @@ If synching is not enabled, or group memberships come from LDAP, then the follow
 [title="2"]Forced password resets[/title]
 
 You can force a member to change their password upon next login (e.g. if you want to promote increased security for some reason), via this Commandr command:
-[code]
+[code="Commandr"]
 echo bcrypt_temporary > /database/f_members/401/m_password_compat_scheme
 [/code]
 (this assumes you are doing it for member ID [tt]401[/tt]).

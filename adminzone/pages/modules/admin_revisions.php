@@ -317,7 +317,7 @@ class Module_admin_revisions
 
         if ($confirm == 0) { // Solely necessary for conflict resolution
             require_code('form_templates');
-            list($warning_details, $ping_url) = handle_conflict_resolution(md5($revision_type . '_' . $id));
+            list($warning_details, $ping_url) = handle_conflict_resolution(md5($revision_type . '_' . strval($id)));
 
             $preview = do_lang_tempcode('CONFIRM_DELETE_REVISION');
 

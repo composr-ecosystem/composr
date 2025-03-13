@@ -292,6 +292,35 @@ class Self_learning_cache
     }
 
     /**
+     * Remove something from a list entry in the cache; the opposite of append.
+     * Be careful because this only removes from the current bucket.
+     *
+     * @param  ID_TEXT $key Cache key
+     * @param  mixed $value The value to remove; the same as what was used in append
+     * @return boolean Whether the value was removed (false: it did not exist from the start)
+     */
+    public function remove(string $key, $value) : bool
+    {
+        if (!array_key_exists($key, $this->data)) {
+            return false;
+        }
+
+        if (!array_key_exists($value, $this->data[$key])) {
+            return false;
+        }
+
+        if ($this->paused) {
+            return true;
+        }
+
+        unset($this->data[$key][$value]);
+
+        $this->save(false);
+
+        return true;
+    }
+
+    /**
      * Save the cache, after some change has happened.
      *
      * @param  boolean $do_immediately Immediately save the cache change (slow...)

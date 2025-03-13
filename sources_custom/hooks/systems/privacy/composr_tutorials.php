@@ -60,6 +60,22 @@ class Hook_privacy_composr_tutorials extends Hook_privacy_base
                     'removal_default_handle_method_member_override' => null,
                     'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
                 ],
+                'api_functions_fulltext_index' => [
+                    'timestamp_field' => 'i_add_time',
+                    'retention_days' => null,
+                    'retention_handle_method' => PRIVACY_METHOD__LEAVE,
+                    'owner_id_field' => 'i_submitter',
+                    'additional_member_id_fields' => [],
+                    'ip_address_fields' => [],
+                    'email_fields' => [],
+                    'username_fields' => [],
+                    'file_fields' => [],
+                    'additional_anonymise_fields' => [],
+                    'extra_where' => null,
+                    'removal_default_handle_method' => PRIVACY_METHOD__ANONYMISE,
+                    'removal_default_handle_method_member_override' => null,
+                    'allowed_handle_methods' => PRIVACY_METHOD__ANONYMISE | PRIVACY_METHOD__DELETE,
+                ]
             ],
         ];
     }

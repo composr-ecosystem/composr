@@ -808,10 +808,10 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
                 $filter_key = $table_join_code_here . '.' . $inner_filter_key;
                 if (($filter_val != '') && (preg_match('#^[\d|-]+$#', $filter_val) == 0)) {
                     $groups = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(false, false, true, [], null, true); // TODO: Optimise
-                    $_filter_val = $filter_val;
+                    $s_filter_val = $filter_val;
                     $filter_val = '';
                     foreach ($groups as $id => $name) {
-                        if ($name == $_filter_val) {
+                        if ($name == $s_filter_val) {
                             $filter_val = strval($id);
                             break;
                         }
@@ -821,8 +821,8 @@ function _default_conv_func(object $db, array $info, ?string $catalogue_name, ar
             case 'MEMBER':
                 $field_type = 'integer';
                 if (($filter_val != '') && (preg_match('#^[\d|-]+$#', $filter_val) == 0)) {
-                    $_filter_val = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_val);
-                    $filter_val = ($_filter_val === null) ? '' : strval($_filter_val);
+                    $i_filter_val = $GLOBALS['FORUM_DRIVER']->get_member_from_username($filter_val);
+                    $filter_val = ($i_filter_val === null) ? '' : strval($i_filter_val);
                 }
                 $filter_key = $table_join_code_here . '.' . $inner_filter_key;
                 break;

@@ -37,7 +37,7 @@ class Hook_addon_registry_composr_tutorials
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update b3475afb15f71fdfd9d2559faa849433
+        return '11.0.2'; // addon_version_auto_update 10ecc82cde71f7fc982afa25e5f44bda
     }
 
     /**
@@ -897,7 +897,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_feedback/feedback_comments.jpg',
             'data_custom/images/docs/tut_feedback/feedback_contact_block.png',
             'data_custom/images/docs/tut_feedback/feedback_no_poll.png',
-            'data_custom/images/docs/tut_feedback/feedback_poll.png',
             'data_custom/images/docs/tut_feedback/feedback_poll_page.png',
             'data_custom/images/docs/tut_feedback/feedback_topic_poll.png',
             'data_custom/images/docs/tut_feedback/feedback_topic_poll_results.png',
@@ -970,6 +969,8 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_fields/core_fields_frontend__float.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__guid.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__integer.png',
+            'data_custom/images/docs/tut_fields/core_fields_frontend__ip_address.png',
+            'data_custom/images/docs/tut_fields/core_fields_frontend__ip_address_multi.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__isbn.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__list.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__list__dropdown.png',
@@ -1008,6 +1009,8 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_fields/core_fields_frontend__upload_multi.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__url.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__url_multi.png',
+            'data_custom/images/docs/tut_fields/core_fields_frontend__username.png',
+            'data_custom/images/docs/tut_fields/core_fields_frontend__username_multi.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__video.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__video_multi.png',
             'data_custom/images/docs/tut_fields/core_fields_frontend__year_month.png',
@@ -1046,6 +1049,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_forums/forums_view.png',
             'data_custom/images/docs/tut_forums/forums_view_2.png',
             'data_custom/images/docs/tut_forums/index.html',
+            'data_custom/images/docs/tut_foss/index.html',
             'data_custom/images/docs/tut_foss/pillars_of_foss.png',
             'data_custom/images/docs/tut_framework/framework_api.png',
             'data_custom/images/docs/tut_framework/framework_code_editor_1.png',
@@ -1322,8 +1326,6 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_statistics/realtime_rain.png',
             'data_custom/images/docs/tut_statistics/side_stats.png',
             'data_custom/images/docs/tut_statistics/statistics_icons.png',
-            'data_custom/images/docs/tut_statistics/statistics_install_geolocation_data_link.png',
-            'data_custom/images/docs/tut_statistics/statistics_installing_geolocation_data.png',
             'data_custom/images/docs/tut_statistics/statistics_news_item_stats.png',
             'data_custom/images/docs/tut_statistics/statistics_page.png',
             'data_custom/images/docs/tut_structure/box.png',

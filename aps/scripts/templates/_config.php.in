@@ -14,5 +14,4 @@ $SITE_INFO['db_site_password'] = '@@DB_MAIN_PASSWORD@@';
 $SITE_INFO['user_cookie'] = '__Secure-cms_member_id';
 $SITE_INFO['pass_cookie'] = '__Secure-cms_member_hash';
 $SITE_INFO['self_learning_cache'] = '1';
-$SITE_INFO['multi_lang_content'] = '0';
 $SITE_INFO['session_cookie'] = '__Host-cms_session__@@session_cookie_suffix@@';

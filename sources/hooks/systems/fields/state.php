@@ -96,9 +96,10 @@ class Hook_fields_state
         if (get_option('business_country', true) === 'US') { // Some tax services may need exact states, and Americans are a bit pampered, so show an explicit list
             require_code('locations');
 
-            global $USA_STATE_LIST;
-            if (isset($USA_STATE_LIST[$ev])) {
-                $ev = $USA_STATE_LIST[$ev];
+            $state = find_region_name_from_iso('US-' . $ev);
+
+            if ($state !== null) {
+                $ev = $state;
             }
         }
 
@@ -161,9 +162,7 @@ class Hook_fields_state
         if (($value != '') && ($value != STRING_MAGIC_NULL) && (get_option('business_country', true) === 'US')) {
             require_code('locations');
 
-            global $USA_STATE_LIST;
-
-            if (!array_key_exists($value, $USA_STATE_LIST)) {
+            if (find_region_name_from_iso('US-' . $value) === null) {
                 warn_exit(do_lang_tempcode('locations:NOT_VALID_US_STATE', escape_html($value)));
             }
         }

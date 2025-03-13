@@ -37,7 +37,7 @@ class Hook_addon_registry_cms_homesite
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 550d33f8274dffccbb6cc900b5c6547f
+        return '11.0.2'; // addon_version_auto_update c278ecd3eea5422aa73198f2db2d4453
     }
 
     /**
@@ -188,7 +188,6 @@ This addon does not contain the homesite install code and the overall site and t
             'site/pages/comcode_custom/EN/maintenance_status.txt',
             'site/pages/minimodules_custom/report_issue.php',
             'site/pages/minimodules_custom/themeing_changes.php',
-            'site/pages/modules_custom/chat.php',
             'sources_custom/cms_homesite.php',
             'sources_custom/cms_homesite_make_upgrader.php',
             'sources_custom/cns_forumview.php',

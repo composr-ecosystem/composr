@@ -379,8 +379,6 @@ class Module_admin_points
             $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '29a25bc2a39049dab57ff6b1eeb1a413', 'IMMEDIATE' => false, 'URL' => $export_url, 'TITLE' => do_lang_tempcode('EXPORT'), 'IMG' => 'admin/export_spreadsheet', 'HIDDEN' => new Tempcode()]));
         }
 
-        $url = build_url(['page' => '_SELF', 'type' => 'browse'], '_SELF');
-
         $filtercode_box = do_block('main_content_filtering', [
             'param' => implode(',', $filtercode),
             'table' => 'points_ledger',
@@ -392,7 +390,6 @@ class Module_admin_points
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
             'FILTERCODE_BOX' => $filtercode_box,
             'TEXT' => do_lang_tempcode('POINTS_LEDGER_HEAD'),
         ]);

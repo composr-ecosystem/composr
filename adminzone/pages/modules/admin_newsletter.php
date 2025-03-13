@@ -1156,12 +1156,30 @@ class Module_admin_newsletter extends Standard_crud_module
 
             $weekly_desc = new Tempcode();
             $weekly_desc->attach(do_lang('PERIODIC_WEEKLY_ON'));
-            $weekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => 'b0c43b5f6883be80af5911a587fc85bf', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_weekly', 'CONTENT' => $week_days_weekly, 'INLINE_LIST' => '0', 'SIZE' => '9']));
+            $weekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', [
+                '_GUID' => 'b0c43b5f6883be80af5911a587fc85bf',
+                'TABINDEX' => strval(get_form_field_tabindex(null)),
+                'REQUIRED' => '0',
+                'NAME' => 'periodic_weekday_weekly',
+                'CONTENT' => $week_days_weekly,
+                'INLINE_LIST' => '0',
+                'SIZE' => '9',
+                'READ_ONLY' => false,
+            ]));
             $radios->attach(form_input_radio_entry('periodic_when', 'weekly', $frequency == 'weekly', $weekly_desc, null, ''));
 
             $biweekly_desc = new Tempcode();
             $biweekly_desc->attach(do_lang('PERIODIC_BIWEEKLY_ON'));
-            $biweekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => '533afb6cdf1da813dd55ae694b962151', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_weekday_biweekly', 'CONTENT' => $week_days_biweekly, 'INLINE_LIST' => '0', 'SIZE' => '9']));
+            $biweekly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', [
+                '_GUID' => '533afb6cdf1da813dd55ae694b962151',
+                'TABINDEX' => strval(get_form_field_tabindex(null)),
+                'REQUIRED' => '0',
+                'NAME' => 'periodic_weekday_biweekly',
+                'CONTENT' => $week_days_biweekly,
+                'INLINE_LIST' => '0',
+                'SIZE' => '9',
+                'READ_ONLY' => false,
+            ]));
             $radios->attach(form_input_radio_entry('periodic_when', 'biweekly', $frequency == 'biweekly', $biweekly_desc, null, ''));
 
             $month_days = new Tempcode();
@@ -1171,7 +1189,16 @@ class Module_admin_newsletter extends Standard_crud_module
             }
             $monthly_desc = new Tempcode();
             $monthly_desc->attach(do_lang('PERIODIC_MONTHLY_ON'));
-            $monthly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', ['_GUID' => '352012c3153342f5a954fcfa16c5503b', 'TABINDEX' => strval(get_form_field_tabindex(null)), 'REQUIRED' => '0', 'NAME' => 'periodic_monthly', 'CONTENT' => $month_days, 'INLINE_LIST' => '0', 'SIZE' => '9']));
+            $monthly_desc->attach(do_template('FORM_SCREEN_INPUT_LIST', [
+                '_GUID' => '352012c3153342f5a954fcfa16c5503b',
+                'TABINDEX' => strval(get_form_field_tabindex(null)),
+                'REQUIRED' => '0',
+                'NAME' => 'periodic_monthly',
+                'CONTENT' => $month_days,
+                'INLINE_LIST' => '0',
+                'SIZE' => '9',
+                'READ_ONLY' => false,
+            ]));
             $radios->attach(form_input_radio_entry('periodic_when', 'monthly', $frequency == 'monthly', $monthly_desc, null, ''));
             $fields->attach(form_input_radio(do_lang('PERIODIC_WHEN_CHOICE'), '', 'periodic_when', $radios, true));
 

@@ -37,7 +37,7 @@ class Hook_addon_registry_transifex
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 9123e7cbc82fc4ffa4c61e406650bb4e
+        return '11.0.2'; // addon_version_auto_update 851da60215a8fefbd3dfcaa34f8946da
     }
 
     /**

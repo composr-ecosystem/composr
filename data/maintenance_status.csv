@@ -139,10 +139,8 @@ two_factor,E-mail+IP two-factor authentication,Composr Core Development Team,,,N
 pop3,POP3 e-mail accounts,,,We allow configuration of using POP3 instead of IMAP for various inbox checking features but do not actively test it works (it relies on PHP's IMAP addon supporting POP3 well),No,
 openweathermap,OpenWeatherMap,Composr Core Development Team,,,Yes,async_tests/_api_weather automated test.
 composr_mobile_sdk_notifications,Composr Mobile SDK Android and iOS notifications handling,,,,Yes,
-sugarcrm,Sugar CRM integration,,,Not regularly tested. Could potentially break due to third-party changes.,Yes,SugarCRM Health Check
 cloudinary,Cloudinary integration,,,Not regularly tested. Could potentially break due to third-party changes.,Yes,sync_tests/_api_cloudinary automated test
 aws_ses,AWS SES notifications,,,Not regularly tested. Could potentially break due to third-party changes.,Yes,async_tests/aws_ses automated test
-confluence,Confluence integration,"PDStig, LLC",,Not regularly tested. Out-dated as Atlassian no longer supports self-hosted server instances.,Yes,sync_tests/_api_confluence automated test
 youtube,YouTube media,Composr Core Development Team,,Not regularly tested. Could potentially break due to third-party changes.,No,
 theme_upgrader,Theme Upgrader,,,There is code to upgrade themes built into the upgrader but it manually needs writing out for between-version upgrades.,No,
 theme_wizard,Theme Wizard,Composr Core Development Team,Composr Core Development Team,It is easy for the Theme Wizard to break if not tested after CSS changes.,No,

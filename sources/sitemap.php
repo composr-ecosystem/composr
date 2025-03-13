@@ -244,8 +244,8 @@ abstract class Hook_sitemap_base
                     return false;
                 }
 
-                // Prevent infinite redirect loops if we recursively hit the same zone:page:type more than twice
-                check_for_infinite_loop('Hook_sitemap_base::_request_page_details', [$zone, $page, $page_type], 2);
+                // Prevent infinite redirect loops if we recursively hit the same zone:page:type multiple times
+                check_for_infinite_loop('Hook_sitemap_base::_request_page_details (' . $page . ', ' . $zone . ')', [$zone, $page, $page_type], 10);
 
                 $details = $this->_request_page_details($details[1]['r_to_page'], $details[1]['r_to_zone'], $page_type);
             }
@@ -983,7 +983,11 @@ abstract class Hook_sitemap_content extends Hook_sitemap_base
 
         if ((($meta_gather & SITEMAP_GATHER_RATING) != 0) && ($cma_info['feedback_type_code'] !== null)) {
             $rating = $GLOBALS['SITE_DB']->query_select_value('rating', 'AVG(rating)', ['rating_for_type' => $cma_info['feedback_type_code'], 'rating_for_id' => $content_id]);
-            $struct['extra_meta']['rating'] = @intval(round($rating));
+            if ($rating !== null) {
+                $struct['extra_meta']['rating'] = @intval(round($rating));
+            } else {
+                $struct['extra_meta']['rating'] = 0;
+            }
         }
 
         if ((($meta_gather & SITEMAP_GATHER_NUM_COMMENTS) != 0) && ($cma_info['feedback_type_code'] !== null)) {

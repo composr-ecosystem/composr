@@ -156,8 +156,9 @@ class Hook_fields_ip_address_multi
                 return $editing ? STRING_MAGIC_NULL : '';
             }
             if (!cms_empty_safe($_value)) {
-                if (!is_valid_ip($value, $allow_wildcards)) {
+                if (!is_valid_ip($_value, $allow_wildcards)) {
                     attach_message(do_lang_tempcode('javascript:NOT_VALID_IP', escape_html($value)), 'warn');
+                    $i++;
                     continue; // Skip invalid IP addresses
                 }
                 if ($value != '') {

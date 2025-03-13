@@ -233,7 +233,6 @@ class Module_admin_banners
             '_GUID' => '82133b12ecdece7cd22f879c0c20ff44',
             'RESULTS_TABLE' => $table,
             'TITLE' => $this->title,
-            'URL' => null,
             'FILTERCODE_BOX' => $filtercode_box,
         ]);
 

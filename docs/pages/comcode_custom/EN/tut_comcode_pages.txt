@@ -165,7 +165,7 @@ You can optionally also select a template to use to help you get started. We wil
 Method 3: by manually adding a [tt]txt[/tt] file in the [tt]pages/comcode_custom/(language code)[/tt] directory of the zone you want to add the Comcode page.
 
 [box="A note about manually adding Comcode pages"]
-By default, when you add a new txt file for a Comcode page, the Comcode page will be validated and will go live. If you have the [tt]validation[/tt] addon installed and do not want new Comcode pages to go live by default, you can go to Admin Zone > Setup > Configuration > Content editing options > Comcode, and untick "Validate new Comcode pages". With this unticked, new Comcode pages manually created (or pulled from Git) will not be validated until you manually validate them.
+By default, when you add a new txt file for a Comcode page, the Comcode page will be validated and will go live. If you have the [tt]validation[/tt] addon installed and do not want new Comcode pages to go live by default, you can go to Admin Zone > Setup > Configuration > Content editing options > Comcode, and untick (uncheck) "Validate new Comcode pages". With this unticked (unchecked), new Comcode pages manually created (or pulled from Git) will not be validated until you manually validate them.
 
 Note that they will not show up in the list of content needing validated until the first time someone tries to load the page. They will also not show up under Content > Pages (Comcode pages) until the first time someone tries to load them.
 [/box]
@@ -191,7 +191,7 @@ You'll have a nice editor to use.
 [indent="20"]
 You'll pretty much type plain-text, with small diversions to indicate special formatting (most notably, the [tt]title[/tt] tag, which every page should include).
 
-It is beyond the scope of this tutorial to explain Comcode: see the [page="_SEARCH:tut_comcode"]Comcode and the attachment system[/page] tutorial for this.
+See the [page="_SEARCH:tut_comcode"]Comcode and the attachment system[/page] tutorial for an explanation of Comcode.
 [/indent]
 
 [title="2"]Deleting pages[/title]

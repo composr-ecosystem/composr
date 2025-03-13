@@ -143,7 +143,6 @@ class css_file_test_set extends cms_test_case
                         // Exceptions
                         $exceptions = [
                             'svg.css',
-                            'confluence.css',
                             'mediaelementplayer.css',
                         ];
                         if (in_array($e, $exceptions)) {
@@ -262,7 +261,6 @@ class css_file_test_set extends cms_test_case
                             'widget_color.css',
                             'widget_select2.css',
                             'widget_glide.css',
-                            'confluence.css',
                         ];
                         if (in_array($file, $exceptions)) {
                             continue;

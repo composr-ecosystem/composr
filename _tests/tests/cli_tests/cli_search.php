@@ -201,8 +201,8 @@ class cli_search_test_set extends cms_test_case
                     continue;
                 }
 
-                if (is_cli()) {
-                    var_dump($hook_results);
+                if ($this->debug) {
+                    $this->dump($hook_results, $hook);
                 }
 
                 // Result set count check

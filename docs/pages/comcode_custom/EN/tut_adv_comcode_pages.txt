@@ -122,8 +122,6 @@ Change the number '30' to whatever is appropriate for you.
 
 Blocks are styled via editing the templates and CSS associated. Typically templates are directly named after the block they are for. For example, the [tt]main_news[/tt] block uses a [tt]BLOCK_MAIN_NEWS.tpl[/tt] template. CSS can be targeted to the HTML within the template in a normal way.
 
-Writing HTML and CSS is outside the scope of this tutorial.
-
 [title="3"]Blocks vs Boxes[/title]
 
 A common point of confusion is the difference between blocks and boxes.

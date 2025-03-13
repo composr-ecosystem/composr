@@ -56,11 +56,12 @@ class leader_board_test_set extends cms_test_case
         require_code('leader_board');
         require_code('leader_board2');
 
-        // Award some points in case there are none
+        // Award some points in case there are none (we add a GUID in the meta just to stop the infinite loop check from triggering)
         require_code('points2');
+        require_code('global4');
         $members = $GLOBALS['FORUM_DRIVER']->get_next_members(null, 2);
-        $this->points_a = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[0]), 'leader-board test', 123, 0, null, 0, 'unit_test', '', 'leader_board', $epoch);
-        $this->points_b = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[1]), 'leader-board test', 456, 0, null, 0, 'unit_test', '', 'leader_board', $epoch);
+        $this->points_a = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[0]), 'leader-board test', 123, 0, null, 0, 'unit_test', generate_guid(), 'leader_board', $epoch);
+        $this->points_b = points_credit_member($GLOBALS['FORUM_DRIVER']->mrow_member_id($members[1]), 'leader-board test', 456, 0, null, 0, 'unit_test', generate_guid(), 'leader_board', $epoch);
         points_flush_runtime_cache();
 
         // Turn on voting power for this test

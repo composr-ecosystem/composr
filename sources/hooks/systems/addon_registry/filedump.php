@@ -57,7 +57,7 @@ class Hook_addon_registry_filedump
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 48459ab3091898ea8face68a696ee7fb
+        return '11.0.1'; // addon_version_auto_update 867bfd49c5e20bd394b34f92df33ab0d
     }
 
     /**

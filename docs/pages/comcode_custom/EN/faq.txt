@@ -1,5 +1,7 @@
 [title sub="Written by Chris Graham"]Composr FAQ[/title]
 
+[box="Outdated"]This FAQ is outdated and has not yet been revised for v11[/box]
+
 This page will answer frequently asked questions (FAQs) about Composr, including:
  - Basic background information
  - Solutions to common problems
@@ -119,9 +121,6 @@ As a very rough guide, expect 10% of your needs to require bespoke programming b
 [title="2"]About ocProducts / Services[/title]
 
 [title="3"]Who are ocProducts?[/title]
-
-[media thumb="0" framed="0"]data_custom/images/docs/faq/balanced_approach.png[/media]
-
 
 ocProducts is a business, founded by a group of people fanatic about enabling people to have great websites, for a lower investment than is typical in the web development industry today. We started Composr (originally named ocPortal) before even considering making a business of it -- we're really passionate about it, and we always have been. To the founders, the ocProducts business is a tool that allows us to keep doing it full time, now that we're older and have to keep money coming in.
 

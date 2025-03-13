@@ -71,8 +71,6 @@ class web_resources_test_set extends cms_test_case
             // Won't parse
             'modernizr.js',
             'plupload.js',
-            'confluence.js',
-            'confluence2.js',
             'masonry.js',
             'glide.js',
 
@@ -95,6 +93,7 @@ class web_resources_test_set extends cms_test_case
             '_polyfill_fetch.js',
             '_polyfill_web_animations.js',
             'toastify.js',
+            'pace.js',
 
             // Partial code that will give errors
             '_attachment_ui_defaults.js',
@@ -176,9 +175,9 @@ class web_resources_test_set extends cms_test_case
             'unslider.css',
             'skitter.css',
             'mediaelementplayer.css',
-            'confluence.css',
             'widget_glide.css',
             'toastify.css',
+            'pace.css',
         ];
 
         if (($this->only !== null) && (in_array($this->only, $exceptions))) {

@@ -90,6 +90,7 @@ class LangFilter_EN extends LangFilter
                 'centring' => 'centering',
 
                 'colour' => 'color',
+                'recolour' => 'recolor',
 
                 'criticise' => 'criticize',
                 'criticising' => 'criticizing',

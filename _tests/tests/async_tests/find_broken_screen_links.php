@@ -35,7 +35,6 @@ class find_broken_screen_links_test_set extends cms_test_case
                 'adminzone/pages/modules/admin.php',
                 'sources/users_active_actions.php',
                 'sources/notifications.php',
-                'sources_custom/confluence.php',
             ])) {
                 continue;
             }
@@ -54,8 +53,8 @@ class find_broken_screen_links_test_set extends cms_test_case
                 if ($is_module) {
                     $module_name = basename($path, '.php');
 
-                    $this->assertTrue($page != $module_name, 'Self-reference to a module can be _SELF in ' . $path);
-                    $this->assertTrue($page != $module_name || $zone == '_SELF', 'Self-zone-reference to a module can be _SELF in ' . $path);
+                    $this->assertTrue($page != $module_name, 'Self-reference to a page should be _SELF in ' . $path . ' (page ' . $page . ', zone ' . $zone . ', module ' . $module_name . ')');
+                    $this->assertTrue($page != $module_name || $zone == '_SELF', 'Self-zone-reference to a module should be _SELF in ' . $path . ' (page ' . $page . ', zone ' . $zone . ', module ' . $module_name . ')');
                 } else {
                     if ($path != 'sources_custom/workflows.php') { // Exception
                         $this->assertTrue($page != '_SELF', 'Should not use page self-references outside of a module in ' . $path);

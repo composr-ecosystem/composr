@@ -42,7 +42,7 @@ class Hook_addon_registry_debrand
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 7d56bc81e209386c9cb65f53b1a70bc5
+        return '11.0.1'; // addon_version_auto_update 1dc81a845d83d4cc8cea6bf338b74dc1
     }
 
     /**

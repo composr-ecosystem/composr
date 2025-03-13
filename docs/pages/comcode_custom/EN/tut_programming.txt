@@ -178,7 +178,7 @@ echo 'Hi';     // This is a single-line comment
 echo 'Hello!'; /* This is a possibly-line-spanning comment */
 [/code]
 
-There are also special 'phpDoc' comments which start with [tt]/**[/tt] and end with [tt]**/[/tt]. These are also multi-line, but they occur above a class or function definition to explain the class, function, or property below it.
+There are also special 'PHPDoc' comments which start with [tt]/**[/tt] and end with [tt]**/[/tt]. These are also multi-line, but they occur above a class or function definition to explain the class, function, or property below it.
 
 EXAMPLE:
 [code="PHP"]
@@ -383,7 +383,7 @@ function write(string $text = 'no parameters were given')
 This new program will send default text to the write function if no parameters are sent.
 
 We have built our own layer on top of PHP for type-checking and use the code quality checker to achieve the same error checking a compiler does for languages such as C++.
-In Composr, all functions should contain a header (phpDoc) that identifies them and defines their typing:
+In Composr, all functions should contain a header (PHPDoc) that identifies them and defines their typing:
 [code="PHP"]
 /**
  * Output a string.

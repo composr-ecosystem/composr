@@ -31,7 +31,7 @@ The [tt]helper_scripts[/tt] addon will be required, which is kept by default.
 
 [title="3"]On Linux[/title]
 
-On Linux a typical shell is brought up using SSH. Set up of SSH is beyond the scope of this tutorial. That said, on a Windows desktop you can use [url="PuTTY"]http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[/url] to access SSH, and on Linux and Mac an [tt]ssh[/tt] command is built-in.
+On Linux a typical shell is brought up using SSH. On a Windows desktop you can use [url="PuTTY"]http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html[/url] to access SSH, and on Linux and Mac an [tt]ssh[/tt] command is built-in.
 
 From the shell, [tt]cd[/tt] to the Composr base directory and run this command:
 [code="Bash"]

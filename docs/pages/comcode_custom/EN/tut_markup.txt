@@ -279,7 +279,7 @@ Composr itself provides the following protocols and languages...
 		</tr>
 		<tr>
 			<td>Chatcode</td>
-			<td>A sub-set of Comcode for use in chat rooms (e.g. to start new chat rooms automatically with people you mention).</td>
+			<td>A sub-set of Comcode for use in chatrooms (e.g. to start new chatrooms automatically with people you mention).</td>
 		</tr>
 		<tr>
 			<td>Dublin Core extensions</td>
@@ -795,7 +795,7 @@ There are other standard attributes, but only four, and they're used exceedingly
 
 Now that you've learnt all the XHTML elements, how to use them, and their attributes, you might think it's all over. This is not true; XHTML has a final surprise for you.
 
-As you might have guessed, you can't put any element inside another. There are rules. The basic rule is that of block-level and inline elements. Every XHTML element is either a block-level element, or an inline element (with a few exceptions, which are beyond the scope of this tutorial, but they don't behave particularly differently anyway.) Block-level elements may contain either other block-level elements or inline elements. However, inline elements may only contain other inline elements.
+As you might have guessed, you can't put any element inside another. There are rules. The basic rule is that of block-level and inline elements. Every XHTML element is either a block-level element, or an inline element (with a few exceptions). Block-level elements may contain either other block-level elements or inline elements. However, inline elements may only contain other inline elements.
 
 Examples of block elements: [tt]div[/tt], [tt]p[/tt], [tt]body[/tt], [tt]ul[/tt], [tt]li[/tt]
 
@@ -876,7 +876,7 @@ selector {
 [/code]
 The [i]selector[/i] defines which XHTML elements/classes/IDs the properties in the rule are applied to, the [i]property[/i] is the predefined name of the property, and the [i]property-value[/i] is the value assigned to the property (the allowed values vary from property to property). Note the spaces, colons and the semi-colon at the end of the property line.
 
-There are several types of selector defined by the CSS 1 standard, which we will cover here. There are also several new selectors defined by both CSS 2 and CSS 3, but they are beyond the scope of this tutorial.
+There are several types of selector defined by the CSS 1 standard, which we will cover here. There are also several new selectors defined by both CSS 2 and CSS 3. You can look online for more information about those, such as [url="CSS Selectors on Mozilla's site"]https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors[/url].
 
 The most basic selector is the [i]type selector[/i], and it selects all the XHTML tags in the markup of the specified name.
 [code="CSS"]
@@ -1126,7 +1126,7 @@ Percentage measurements are much better to use, however, as they allow dynamic r
 }
 [/code]
 
-There are other general property values, but they are beyond the scope of this tutorial.
+There are other general property values. You can view more about them and CSS in general at [url="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference"]Mozilla's CSS reference[/url].
 
 The final part of the CSS jigsaw is [i]inheritance[/i], or [i]cascade[/i]. This is one of the main features of CSS, and gives it power and flexibility. The basic principle is that properties applied to one tag are automatically applied to any descendant tags of that tag (with a few exceptions for sanity's sake). So, for example, if you had a rule that applied a red text colour to an element, that element's descendants would also have red text, unless they had rules applied to them to override this.
 
@@ -1281,6 +1281,8 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
  - http://www.skybound.ca/
  - http://www.layerstyles.org/builder.html
  - http://engineering.appfolio.com/2012/11/16/css-architecture/
+ - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors
+ - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference
 
 [title="3"]JavaScript tools/references[/title]
 

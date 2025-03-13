@@ -211,7 +211,6 @@ class Module_admin_version
                 'the_value' => 'LONG_TEXT',
                 'date_and_time' => 'TIME',
             ]);
-            set_value('call_home', strval(post_param_integer('advertise_on', 0)), true); // Relayed from installer
 
             $GLOBALS['SITE_DB']->create_table('tutorial_links', [
                 'the_name' => '*ID_TEXT',
@@ -1310,6 +1309,7 @@ class Module_admin_version
 
         if (($upgrade_from !== null) && ($upgrade_from < 23)) { // LEGACY: 11.beta7
             // Migrate old telemetry options
+            require_code('config2');
             $send_errors = get_option('send_error_emails_developers', true);
             $call_home = get_option('call_home', true);
             $telemetry = 0;
@@ -1320,10 +1320,17 @@ class Module_admin_version
                 }
             }
             set_option('telemetry', strval($telemetry));
+            delete_config_option('send_error_emails_developers');
+            delete_config_option('call_home');
 
             delete_value('implicit_usergroup_sync'); // In favor of the native system scheduler enable / disable system
 
             $GLOBALS['SITE_DB']->add_table_field('comcode_pages', 'p_validation_time', '?TIME');
+
+            // Migrate _config.php multi_lang_content to a value
+            global $SITE_INFO;
+            $multi_lang_content = (((isset($SITE_INFO['multi_lang_content'])) && ($SITE_INFO['multi_lang_content'] == '0')) ? '0' : '1');
+            set_value('multi_lang_content', $multi_lang_content);
         }
     }
 

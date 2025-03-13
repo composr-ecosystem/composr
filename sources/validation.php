@@ -64,9 +64,9 @@ function check_jump_to_not_validated(string $content_type, string $content_id, i
 /**
  * Schedule a piece of content for validation.
  *
- * @param ID_TEXT $content_type The content type to be validated
- * @param ID_TEXT $content_id The content ID to be validated
- * @param ?array $validation_time The UTC date components specifying when the content should be validated (null: remove the schedule)
+ * @param  ID_TEXT $content_type The content type to be validated
+ * @param  ID_TEXT $content_id The content ID to be validated
+ * @param  ?array $validation_time The UTC date components specifying when the content should be validated (null: remove the schedule)
  */
 function schedule_validation(string $content_type, string $content_id, ?array $validation_time = null)
 {

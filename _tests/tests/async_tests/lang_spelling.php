@@ -515,11 +515,16 @@ class lang_spelling_test_set extends cms_test_case
             'stack dump' => 'stack trace',
 
             // Terminology changed in v11
-            'master password' => 'maintenance password'
+            'master password' => 'maintenance password',
         ];
+
+        // Actually, it is grammatically correct to say "occurrence" if talking about a single instance (date/time) of a recurrence.
+        /*
         if (strpos($file, 'calendar') !== false) {
             $common_spelling_mistakes['occurrence'] = 'recurrence';
         }
+        */
+
         foreach ($common_spelling_mistakes as $from => $to) {
             if (stripos($string, $from) !== false) {
                 $ob->assertTrue(false, $from . ' should be ' . $to . ' in ' . $path . '.');

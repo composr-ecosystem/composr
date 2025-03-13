@@ -351,28 +351,8 @@ class Module_admin_telemetry
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
 
-        // Filter parameters
-        $filter_website = get_param_string('filter_website', '');
-        $filter_error_message = get_param_string('filter_error_message', '');
-        $filter_show_resolved = get_param_integer('filter_show_resolved', 0);
-        $filter_show_compiled = get_param_integer('filter_show_compiled', 1);
-        //$filter_from = post_param_date('filter_from', true);
-        //$filter_to = post_param_date('filter_to', true);
-
         // Build WHERE query with filters
         $where = 'WHERE 1=1';
-        if ($filter_website != '') {
-            $where .= ' AND s.website_name LIKE \'' . db_encode_like('%' . db_escape_string($filter_website) . '%') . '\'';
-        }
-        if ($filter_error_message != '') {
-            $where .= ' AND r.e_error_message LIKE \'' . db_encode_like('%' . db_escape_string($filter_error_message) . '%') . '\'';
-        }
-        if ($filter_show_resolved == 0) {
-            $where .= ' AND r.e_resolved=0';
-        }
-        if ($filter_show_compiled == 0) {
-            $where .= ' AND r.e_refs_compiled=0';
-        }
 
         // Query
         $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where);
@@ -455,40 +435,16 @@ class Module_admin_telemetry
 
         $results_table = results_table(do_lang_tempcode('CMS_SITE_ERRORS'), $start, 'start', $max, 'max', $max_rows, $header_row, $result_entries, $sortables, $sortable, $sort_order, 'sort', paragraph(do_lang_tempcode('DESCRIPTION_CMS_SITE_ERRORS')));
 
-        // Start building fields for the filter box
-        push_field_encapsulation(FIELD_ENCAPSULATION_RAW);
-
-        $filters_row_a = [
-            [
-                'PARAM' => 'filter_website',
-                'LABEL' => do_lang_tempcode('URL'),
-                'FIELD' => form_input_line(do_lang_tempcode('URL'), new Tempcode(), 'filter_website', $filter_website, false),
-            ],
-            [
-                'PARAM' => 'filter_error_message',
-                'LABEL' => do_lang_tempcode('ERROR_SUMMARY'),
-                'FIELD' => form_input_line(do_lang_tempcode('ERROR_SUMMARY'), new Tempcode(), 'filter_error_message', $filter_error_message, false),
-            ],
-        ];
-
         $form = new Tempcode();
         $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '318957ab73112a21637cd04627e2408d', 'IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('TELEMETRY_AUTORESOLVE'), 'IMG' => 'admin/delete2', 'HIDDEN' => new Tempcode()]));
-
-        $url = build_url(['page' => '_SELF', 'type' => 'errors'], '_SELF');
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '358ae22e7f23a3f68eac4aa1e24df85b',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'FILTERS_ROW_A' => $filters_row_a,
-            'FILTERS_ROW_B' => new Tempcode(),
-            'URL' => $url,
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);
@@ -703,19 +659,12 @@ class Module_admin_telemetry
         $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_error'], '_SELF');
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => 'b503c11f8637a0e7ad7ed5c67c5c8c62', 'IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('ADD'), 'IMG' => 'admin/add', 'HIDDEN' => new Tempcode()]));
 
-        $url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
-
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '2d1c505f5d7d49c53ca4dcb8febf14ab',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
-            'URL' => $url,
-            'FILTERS_ROW_B' => new Tempcode(),
-            'FILTERS_HIDDEN' => new Tempcode(),
         ]);
-
-        pop_field_encapsulation();
 
         require_code('templates_internalise_screen');
         return internalise_own_screen($tpl);

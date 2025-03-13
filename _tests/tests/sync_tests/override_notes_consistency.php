@@ -59,10 +59,10 @@ class override_notes_consistency_test_set extends cms_test_case
             $pos = strpos($c, 'NOTE TO PROGRAMMERS:');
             if (strpos($path, '_custom/') === false) {
                 $ok = ($pos !== false) && ($pos < 200);
-                $this->assertTrue($ok, 'Missing "NOTE TO PROGRAMMERS:" in ' . $path);
+                $this->assertTrue($ok, 'Bundled code must have a "NOTE TO PROGRAMMERS:" in ' . $path);
             } else {
                 $ok = ($pos === false) || ($pos > 200);
-                $this->assertTrue($ok, 'Undesirable "NOTE TO PROGRAMMERS:" in ' . $path);
+                $this->assertTrue($ok, 'Non-bundled code must not have a "NOTE TO PROGRAMMERS:" in ' . $path);
             }
         }
     }

@@ -435,7 +435,7 @@ class Module_admin_ecommerce extends Standard_crud_module
             $edit_url = build_url($url_map + ['id' => $r['id']], '_SELF');
 
             if (do_lang('_LENGTH_UNIT_' . $r['s_length_units'], null, null, null, null, false) !== null) {
-                $length_unit = do_lang_tempcode('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length']));
+                $length_unit = do_lang('_LENGTH_UNIT_' . $r['s_length_units'], integer_format($r['s_length']));
             } else {
                 $length_unit = integer_format($r['s_length']) . ' ' . '_LENGTH_UNIT_' . $r['s_length_units'];
             }
