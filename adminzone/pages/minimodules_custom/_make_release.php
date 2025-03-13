@@ -31,7 +31,7 @@ if (!addon_installed__messaged('cms_homesite', $error_msg)) {
     return $error_msg;
 }
 
-$title = get_screen_title('Publish new Composr release', false);
+$title = get_screen_title('Publish new ' . brand_name() . ' release', false);
 $title->evaluate_echo();
 
 set_mass_import_mode(); // We will be adding multiple categories of the same name
@@ -42,7 +42,7 @@ require_code('cms_homesite');
 
 // Version info / plan
 
-$version_dotted = get_param_string('version');
+$version_dotted = post_param_string('version');
 require_code('version2');
 $version_pretty = get_version_pretty__from_dotted(get_version_dotted__from_anything($version_dotted));
 
@@ -52,9 +52,9 @@ if (strpos($version_dotted, 'dev') !== false) {
 
 $is_substantial = is_substantial_release($version_dotted);
 
-$is_old_tree = get_param_integer('is_old_tree') == 1;
+$is_old_tree = post_param_integer('is_old_tree') == 1;
 
-$is_bleeding_edge = get_param_integer('is_bleeding_edge') == 1;
+$is_bleeding_edge = post_param_integer('is_bleeding_edge') == 1;
 if (!$is_bleeding_edge) {
     $bleeding1 = '';
     $bleeding2 = '';
@@ -63,28 +63,33 @@ if (!$is_bleeding_edge) {
     $bleeding2 = 'bleeding-edge, ';
 }
 
+$video_url = post_param_string('video_url', '', INPUT_FILTER_URL_GENERAL);
 $changes = post_param_string('changes', '');
 
-$descrip = get_param_string('descrip', '', INPUT_FILTER_GET_COMPLEX);
+if ($video_url != '') {
+    $changes = 'Check out the [b]release video[/b] at ' . $video_url . "\n\n" . $changes;
+}
 
-$needed = get_param_string('needed', '', INPUT_FILTER_GET_COMPLEX);
-$criteria = get_param_string('criteria', '', INPUT_FILTER_GET_COMPLEX);
-$justification = get_param_string('justification', '', INPUT_FILTER_GET_COMPLEX);
-$db_upgrade = get_param_integer('db_upgrade', 0) == 1;
+$descrip = post_param_string('descrip', '', INPUT_FILTER_GET_COMPLEX);
+
+$needed = post_param_string('needed', '', INPUT_FILTER_GET_COMPLEX);
+$criteria = post_param_string('criteria', '', INPUT_FILTER_GET_COMPLEX);
+$justification = post_param_string('justification', '', INPUT_FILTER_GET_COMPLEX);
+$db_upgrade = post_param_integer('db_upgrade', 0) == 1;
 
 $urls = [];
 
 // Bugs list
 
 if (!$is_bleeding_edge) {
-    $urls['Bugs'] = 'https://composr.app/tracker/search.php?project_id=1&product_version=' . urlencode($version_dotted);
+    $urls['Bugs'] = get_brand_base_url() . '/tracker/search.php?project_id=1&product_version=' . urlencode($version_dotted);
 }
 
 // Add downloads (assume uploaded already)
 
 require_code('downloads2');
-$releases_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Composr Releases']);
-// ^ Result must return, cms_homesite_install.php added the category
+$releases_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => brand_name() . ' Releases']);
+// ^ Result must return
 
 $release_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Version ' . strval(intval($version_dotted))]);
 if ($release_category_id === null) {
@@ -121,9 +126,9 @@ $db_upgrade_1 = '';
 if ($is_substantial) {
     $major_release = " As this is more than just a patch release it is crucial that you also choose to run a file integrity scan and a database upgrade.";
     $major_release_1 = "Please [b]make sure you take a backup before uploading your new files![/b]";
-    $news_title = 'Composr ' . $version_pretty . ' released!';
+    $news_title = brand_name() . ' ' . $version_pretty . ' released!';
 } else {
-    $news_title = 'Composr ' . $version_pretty . ' released';
+    $news_title = brand_name() . ' ' . $version_pretty . ' released';
     if ($db_upgrade) {
         $db_upgrade_1 = 'A database upgrade is required for this release. Be sure to run step 6 ("Do a database upgrade") in the upgrader after step 4 and, if applicable, step 5.';
     }
@@ -141,7 +146,7 @@ if (!$is_old_tree) {
 
 $all_downloads_to_add = [
     [
-        'name' => "Composr Version {$version_pretty} ({$bleeding2}quick)",
+        'name' => brand_name() . " Version {$version_pretty} ({$bleeding2}quick)",
         'description' => "This is version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
         'additional_details' => $additional_details,
@@ -150,7 +155,7 @@ $all_downloads_to_add = [
     ],
 
     [
-        'name' => "Composr Version {$version_pretty} ({$bleeding2}manual)",
+        'name' => brand_name() . " Version {$version_pretty} ({$bleeding2}manual)",
         'description' => "This is the manual installer (as opposed to the regular quick installer) for version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_manualextraction_installer-' . $version_dotted . '.zip',
         'additional_details' => '',
@@ -159,8 +164,8 @@ $all_downloads_to_add = [
     ],
 
     [
-        'name' => "Composr {$version_pretty}",
-        'description' => "This archive is designed for webhosting control panels that integrate Composr. It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of Composr. {$summary_line}\n\n---\n\n{$changes}",
+        'name' => brand_name() . " {$version_pretty}",
+        'description' => "This archive is designed for webhosting control panels that integrate " . brand_name() . ". It contains an SQL dump for a fresh install, and a config-file-template. It is kept up-to-date with the most significant releases of " . brand_name() . ". {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.tar.gz',
         'additional_details' => '',
         'category_id' => $installatron_category_id,
@@ -168,8 +173,8 @@ $all_downloads_to_add = [
     ],
 
     [
-        'name' => "Composr {$version_pretty}",
-        'description' => "This is an APS package of Composr. APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\nIt can be manually installed into Plesk using the Application Vault interface available to administrators. {$summary_line}\n\n---\n\n{$changes}",
+        'name' => brand_name() . " {$version_pretty}",
+        'description' => "This is an APS package of " . brand_name() . ". APS is a standardised package format potentially supported by multiple vendors, including Plesk. We will update this routinely when we release new versions, and update the APS catalog.\nIt can be manually installed into Plesk using the Application Vault interface available to administrators. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr-' . $version_dotted . '.app.zip',
         'additional_details' => '',
         'category_id' => $aps_category_id,
@@ -223,7 +228,7 @@ if (($additional_details != '') && (isset($all_downloads_to_add[0]['download_id'
         $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
         $last_version_description = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', $GLOBALS['SITE_DB']->translate_field_ref('description'), [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
         if ($last_version_id != $all_downloads_to_add[0]['download_id']) {
-            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the Composr news archive\" target=\"_blank\"]https://composr.app/site/news.htm[/url].\n\n---\n\n" . $last_version_description;
+            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . $last_version_description;
             $map = lang_remap_comcode('description', $last_version_description, $description);
             $map += lang_remap_comcode('additional_details', $last_version_str, '');
             $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version_id], '', 1);

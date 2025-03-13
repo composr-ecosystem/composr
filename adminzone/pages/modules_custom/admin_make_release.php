@@ -133,6 +133,10 @@ class Module_admin_make_release
 
         $previous_version = null;
         $previous_tag = shell_exec('git describe --tags');
+        if (!is_string($previous_tag)) {
+            return post_param_string('previous_version', $previous_version);
+        }
+
         $matches = [];
         if (preg_match('#^(.*)-\w+-\w+$#', $previous_tag, $matches) != 0) {
             $previous_version = $matches[1];
@@ -299,6 +303,9 @@ class Module_admin_make_release
         $web_service_url = post_param_string('web_service_url', ''); // LEGACY: remove when not using compo.sr anymore
         if ($previous_version !== null) {
             $_changes = shell_exec('git log --pretty=format:"%H :: %cn :: %s" HEAD...refs/tags/' . $previous_version);
+            if (!is_string($_changes)) { // No changes found
+                return '';
+            }
             $discovered_tracker_issues = []; // List of issues referenced on Git to pull from Mantis
             $__changes = [];
             $dig_deep = false;
@@ -483,6 +490,7 @@ class Module_admin_make_release
         // Release description and Changelog
         $changelog = $this->generate_changelog();
         $fields->attach(form_input_line(do_lang_tempcode('MAKE_RELEASE_STEP2_RELEASE_DESCRIPTION'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_RELEASE_DESCRIPTION'), 'descrip', $release_description, true));
+        $fields->attach(form_input_url(do_lang_tempcode('MAKE_RELEASE_STEP2_VIDEO_URL'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_VIDEO_URL'), 'video_url', null, false));
         $fields->attach(form_input_text_comcode(do_lang_tempcode('MAKE_RELEASE_STEP2_CHANGELOG'), do_lang_tempcode('DESCRIPTION_MAKE_RELEASE_STEP2_CHANGELOG'), 'changes', $changelog, true, null, true, '', null, true, 25));
 
         // Upgrade necessity, criteria, and justification
@@ -680,6 +688,8 @@ class Module_admin_make_release
         $descrip = post_param_string('descrip');
         $descrip = rtrim($descrip, '.');
 
+        $video_url = post_param_string('video_url', '', INPUT_FILTER_URL_GENERAL);
+
         require_code('version2');
 
         $new_version = get_version_dotted();
@@ -688,9 +698,9 @@ class Module_admin_make_release
         $is_bleeding_edge = (post_param_integer('bleeding_edge', 0) == 1);
         $is_old_tree = (post_param_integer('old_tree', 0) == 1);
         $is_substantial = is_substantial_release($new_version);
-        $db_upgrade = post_param_integer('db_upgrade', 0);
+        $db_upgrade = (post_param_integer('db_upgrade', 0) == 1);
 
-        $push_url = post_param_string('make_release_url') . '&version=' . urlencode($new_version) . '&is_bleeding_edge=' . ($is_bleeding_edge ? '1' : '0') . '&is_old_tree=' . ($is_old_tree ? '1' : '0') . '&descrip=' . urlencode($descrip) . '&needed=' . urlencode($needed) . '&criteria=' . urlencode($criteria) . '&justification=' . urlencode($justification) . '&db_upgrade=' . strval($db_upgrade);
+        $push_url = post_param_string('make_release_url');
 
         if (strpos(PHP_OS, 'Darwin') !== false) {
             $command_to_try = 'open';
@@ -721,6 +731,12 @@ class Module_admin_make_release
             'IS_OLD_TREE' => $is_old_tree,
             'COMMAND_TO_TRY' => $command_to_try,
             'PUSH_URL' => $push_url,
+            'DESCRIPTION' => $descrip,
+            'NEEDED' => $needed,
+            'CRITERIA' => $criteria,
+            'JUSTIFICATION' => $justification,
+            'DB_UPGRADE' => $db_upgrade,
+            'VIDEO_URL' => $video_url,
             'CHANGES' => post_param_string('changes', ''),
             'BRAND_DOMAIN' => cms_parse_url_safe(normalise_idn_url(get_brand_base_url()), PHP_URL_HOST),
             'TRACKER_URL' => post_param_string('tracker_url'),

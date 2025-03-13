@@ -32,7 +32,23 @@
 	</li>
 
 	{$,publishing the build 2}
-	<li>{!MAKE_RELEASE_STEP4_PUBLISH,{PUSH_URL*},{$INSERT_FORM_POST_SECURITY},{CHANGES*}}</li>
+	<li>
+		<form target="_blank" style="display: inline" action="{PUSH_URL*}" method="post">
+			{$INSERT_FORM_POST_SECURITY}
+
+			<input type="hidden" name="version" value="{NEW_VERSION_DOTTED*}" />
+			<input type="hidden" name="is_bleeding_edge" value="{IS_BLEEDING_EDGE*}" />
+			<input type="hidden" name="is_old_tree" value="{IS_OLD_TREE*}" />
+			<input type="hidden" name="descrip" value="{DESCRIPTION*}" />
+			<input type="hidden" name="needed" value="{NEEDED*}" />
+			<input type="hidden" name="criteria" value="{CRITERIA*}" />
+			<input type="hidden" name="justification" value="{JUSTIFICATION*}" />
+			<input type="hidden" name="db_upgrade" value="{DB_UPGRADE*}" />
+			<input type="hidden" name="video_url" value="{VIDEO_URL*}" />
+			<input type="hidden" name="changes" value="{CHANGES*}" />
+			<button class="btn btn-primary btn-scr" type="submit">{!MAKE_RELEASE_STEP4_PUBLISH}</button>
+		</form>
+	</li>
 	<li>{!MAKE_RELEASE_STEP4_TEST,{$BRAND_BASE_URL*}}</li>
 
 	{$,API}
