@@ -146,7 +146,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             </td>
             <td>An advanced data management tool. Create catalogues with your own fields (many field types to choose from). Define flat or tree-based categories for entries. Integrate into other content types to extend what data / fields are present on content entries. Use in conjunction with included blocks to generate web forms. Integrates into the privacy system for GDPR compliance.</td>
             <td><a href="https://composr.app/docs11/tut-catalogues.htm">Custom structured content (via catalogues)</a><br /><br /><a href="https://composr.app/docs11/tut-information.htm">Choosing how to publish</a><br /><br /><a href="https://composr.app/docs11/tut-fields.htm">Custom fields</a></td>
-            <td>catalogue<br /><br />database<br /><br />classified<br /><br />catalog<br /><br />directory<br /><br />schema<br /><br />field</td>
+            <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=catalogues&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -385,7 +385,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Core Composr code</td>
-            <td><a href="https://composr.app/docs11/tut-do.htm">Dos and Do-nots of a (Composr) website</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a><br /><br /><a href="https://composr.app/docs11/tut-metadata.htm">Metadata</a><br /><br /><a href="https://composr.app/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a><br /><br /><a href="https://composr.app/docs11/tut-url-schemes.htm">URL Schemes in Composr</a><br /><br /><a href="https://composr.app/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="https://composr.app/docs11/tut-selectcode.htm">Filtering using Selectcode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-filtercode.htm">Filtering using Filtercode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-keymap.htm">Composr keyboard shortcuts</a><br /><br /><a href="https://composr.app/docs11/tut-email.htm">Understanding and configuring e-mail</a><br /><br /><a href="https://composr.app/docs11/tut-disaster.htm">Disaster recovery</a><br /><br /><a href="https://composr.app/docs11/tut-antispam.htm">Anti-spam settings</a></td>
+            <td><a href="https://composr.app/docs11/tut-do.htm">Dos and Do-nots of a (Composr) website</a><br /><br /><a href="https://composr.app/docs11/tut-drinking.htm">Drinking from the feature pool</a><br /><br /><a href="https://composr.app/docs11/tut-endpoints.htm">Server-side public API</a><br /><br /><a href="https://composr.app/docs11/tut-foss.htm">The Pillars of Free and Open Source Software (FOSS)</a><br /><br /><a href="https://composr.app/docs11/tut-metadata.htm">Metadata</a><br /><br /><a href="https://composr.app/docs11/tut-sql.htm">Manually editing your database with phpMyAdmin</a><br /><br /><a href="https://composr.app/docs11/tut-url-schemes.htm">URL Schemes in Composr</a><br /><br /><a href="https://composr.app/docs11/tut-seo.htm">Improving your search engine ranking</a><br /><br /><a href="https://composr.app/docs11/tut-selectcode.htm">Filtering using Selectcode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-filtercode.htm">Filtering using Filtercode syntax</a><br /><br /><a href="https://composr.app/docs11/tut-keymap.htm">Composr keyboard shortcuts</a><br /><br /><a href="https://composr.app/docs11/tut-email.htm">Understanding and configuring e-mail</a><br /><br /><a href="https://composr.app/docs11/tut-disaster.htm">Disaster recovery</a><br /><br /><a href="https://composr.app/docs11/tut-antispam.htm">Anti-spam settings</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core&amp;status_id=10">Link</a></td>
         </tr>
@@ -469,7 +469,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>The Composr member/usergroup system.</td>
-            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-users.htm">People in their roles</a><br /><br /><a href="https://composr.app/docs11/tut-httpauth.htm">Integrating Composr into a network via HTTP authentication</a><br /><br /><a href="https://composr.app/docs11/tut-emoticons.htm">The Composr emoticon system</a></td>
+            <td><a href="https://composr.app/docs11/tut-members.htm">Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-adv-members.htm">Advanced Composr member system</a><br /><br /><a href="https://composr.app/docs11/tut-users.htm">People in their roles</a><br /><br /><a href="https://composr.app/docs11/tut-httpauth.htm">Integrating Composr into a network via HTTP authentication</a><br /><br /><a href="https://composr.app/docs11/tut-emoticons.htm">The Composr emoticon system</a><br /><br /><a href="https://composr.app/docs11/tut-parental-controls.htm">Parental Controls and Child Safety</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_cns&amp;status_id=10">Link</a></td>
         </tr>
@@ -596,6 +596,18 @@ This tutorial features an index of the Composr addons, with links to tutorials t
     
         <tr>
             <td>
+                <img class="right" src="https://composr.app/themes/default/images/icons/spare/world.svg" />Core Locations<br />(<kbd>core_locations</kbd>)<br /><br />
+                <strong>Core</strong>: Yes<br /><br />
+                <strong>Dependencies</strong>: <kbd>PHP gettext extension</kbd>
+            </td>
+            <td>Core code managing geocoding and locations.</td>
+            <td><a href="https://composr.app/docs11/tut-parental-controls.htm">Parental Controls and Child Safety</a><br /><br /><a href="https://composr.app/docs11/tut-statistics.htm">Statistics for your site (analytics)</a></td>
+            <td></td>
+            <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_locations&amp;status_id=10">Link</a></td>
+        </tr>
+    
+        <tr>
+            <td>
                 <img class="right" src="https://composr.app/themes/default/images/icons/admin/component.svg" />Core Mediaelement<br />(<kbd>core_mediaelement</kbd>)<br /><br />
                 <strong>Core</strong>: Yes<br /><br />
                 <strong>Dependencies</strong>: <em>None</em>
@@ -661,7 +673,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
                 <strong>Dependencies</strong>: <em>None</em>
             </td>
             <td>Privacy tools to ensure GDPR compliance: member and administrator level data purging and downloading, Privacy Policy generator, automatic log purging, telemetry with the homesite (relaying errors and statistics to the core developers, requesting the site to be featured).</td>
-            <td><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a></td>
+            <td><a href="https://composr.app/docs11/tut-legal.htm">Legal and social responsibilities</a><br /><br /><a href="https://composr.app/docs11/tut-parental-controls.htm">Parental Controls and Child Safety</a><br /><br /><a href="https://composr.app/docs11/tut-telemetry.htm">Relaying Errors and Statistics to Composr</a></td>
             <td></td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=core_privacy&amp;status_id=10">Link</a></td>
         </tr>
@@ -1286,7 +1298,7 @@ This tutorial features an index of the Composr addons, with links to tutorials t
             </td>
             <td>Automatically generate a new theme with your own colour schemes, using your choice of theme as a base. Uses the sophisticated chromagraphic equations built into the software.</td>
             <td><a href="https://composr.app/docs11/tut-themes.htm">Themeing your site</a><br /><br /><a href="https://composr.app/docs11/tut-designer-themes.htm">Designer themes, implementing a clean-room design</a></td>
-            <td>colour palette<br /><br />colour scheme</td>
+            <td>color palette<br /><br />color scheme</td>
             <td><a href="https://composr.app/tracker/search.php?project_id=1&amp;category=themewizard&amp;status_id=10">Link</a></td>
         </tr>
     
@@ -1387,6 +1399,6 @@ This tutorial features an index of the Composr addons, with links to tutorials t
         </tr>
     
 </table>
-[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="https://composr.app/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="https://composr.app/docs11/tut-endpoints.htm">Server-side public API</a></li><li><a href="https://composr.app/docs11/tut-foss.htm">The Pillars of Free and Open Source Software (FOSS)</a></li><li><a href="https://composr.app/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="https://composr.app/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="https://composr.app/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></li><li><a href="https://composr.app/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="https://composr.app/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="https://composr.app/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="https://composr.app/docs11/tut-telemetry.htm">Relaying Errors and Statistics to Composr</a></li><li><a href="https://composr.app/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
+[title="2"]Other tutorials[/title]<p>The following tutorials do not link into any specific addon:</p><ul><li><a href="https://composr.app/docs11/tut-cookies.htm">Introduction to Cookies and sessions (and JavaScript)</a></li><li><a href="https://composr.app/docs11/tut-javascript.htm">JavaScript Reference</a></li><li><a href="https://composr.app/docs11/tut-mobile-sdk.htm">Mobile apps via Composr Mobile SDK</a></li><li><a href="https://composr.app/docs11/tut-msn.htm">Advanced techniques for multi-site-networks</a></li><li><a href="https://composr.app/docs11/tut-programming.htm">Introduction to programming</a></li><li><a href="https://composr.app/docs11/tut-software-feedback.htm">Problem and feedback reports, and development policies</a></li><li><a href="https://composr.app/docs11/tut-staff-advice.htm">Advice for choosing and managing staff</a></li><li><a href="https://composr.app/docs11/tut-webapp.htm">Web-applications, Composr, and PHP</a></li></ul>[/semihtml]
 
 {$SET,tutorial_tags,Addon,Introduction,novice}{$SET,tutorial_add_date,Oct 2013}{$SET,tutorial_summary,An index showing what addons are available, and linking to relevant tutorials.}[block]main_tutorial_rating[/block]
