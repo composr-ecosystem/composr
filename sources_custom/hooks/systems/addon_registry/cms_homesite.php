@@ -178,8 +178,6 @@ This addon does not contain the homesite install code and the overall site and t
             'adminzone/pages/modules_custom/admin_telemetry.php',
             'cmscore.rdf',
             'data_custom/download_composr.php',
-            'data_custom/keys/.htaccess',
-            'data_custom/keys/index.html',
             'data_custom/redirect_release_notes.php',
             'lang_custom/EN/cms_homesite.ini',
             'pages/minimodules_custom/contact.php',

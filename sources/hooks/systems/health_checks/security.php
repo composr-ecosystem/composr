@@ -57,6 +57,7 @@ class Hook_health_check_security extends Hook_Health_Check
         $this->process_checks_section('testExposedBackups', 'Exposed backups', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testExposedExecuteTemp', 'Exposed execute_temp.php', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testExposedGitDirectory', 'Exposed .git directory', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
+        $this->process_checks_section('testExposedTelemetryKeys', 'Exposed telemetry/software keys', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
         $this->process_checks_section('testCAPTCHAMissing', 'Missing CAPTCHA on public website', $sections_to_run, $check_context, $manual_checks, $automatic_repair, $use_test_data_for_pass, $urls_or_page_links, $comcode_segments);
 
         return [$this->category_label, $this->results];
@@ -639,6 +640,34 @@ class Hook_health_check_security extends Hook_Health_Check
         $result = http_get_contents(get_base_url() . '/.git/config', ['trigger_error' => false]);
 
         $this->assertTrue(empty($result), 'The contents of the .git directory is exposed to web requests.');
+    }
+
+    /**
+     * Run a section of health checks.
+     *
+     * @param  integer $check_context The current state of the website (a CHECK_CONTEXT__* constant)
+     * @param  boolean $manual_checks Mention manual checks
+     * @param  boolean $automatic_repair Do automatic repairs where possible
+     * @param  ?boolean $use_test_data_for_pass Should test data be for a pass [if test data supported] (null: no test data)
+     * @param  ?array $urls_or_page_links List of URLs and/or page-links to operate on, if applicable (null: those configured)
+     * @param  ?array $comcode_segments Map of field names to Comcode segments to operate on, if applicable (null: N/A)
+     */
+    public function testExposedTelemetryKeys(int $check_context, bool $manual_checks = false, bool $automatic_repair = false, ?bool $use_test_data_for_pass = null, ?array $urls_or_page_links = null, ?array $comcode_segments = null)
+    {
+        if ($check_context == CHECK_CONTEXT__INSTALL) {
+            $this->log('Skipped; we are running from installer.');
+            return;
+        }
+        if ($check_context == CHECK_CONTEXT__SPECIFIC_PAGE_LINKS) {
+            $this->log('Skipped; running on specific page links.');
+            return;
+        }
+
+        $result = http_get_contents(get_base_url() . '/data/keys/telemetry.json', ['trigger_error' => false]);
+        $this->assertTrue(empty($result), 'Your software keys are publicly accessible on the web! You should deny access to data/keys.');
+
+        $result = http_get_contents(get_base_url() . '/data_custom/keys/telemetry-site.json', ['trigger_error' => false]);
+        $this->assertTrue(empty($result), 'Your site telemetry keys are publicly accessible on the web! You should deny access to data_custom/keys.');
     }
 
     /**
