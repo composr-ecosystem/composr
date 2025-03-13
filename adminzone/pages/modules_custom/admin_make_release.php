@@ -133,6 +133,10 @@ class Module_admin_make_release
 
         $previous_version = null;
         $previous_tag = shell_exec('git describe --tags');
+        if (!is_string($previous_tag)) {
+            return post_param_string('previous_version', $previous_version);
+        }
+
         $matches = [];
         if (preg_match('#^(.*)-\w+-\w+$#', $previous_tag, $matches) != 0) {
             $previous_version = $matches[1];
@@ -299,6 +303,9 @@ class Module_admin_make_release
         $web_service_url = post_param_string('web_service_url', ''); // LEGACY: remove when not using compo.sr anymore
         if ($previous_version !== null) {
             $_changes = shell_exec('git log --pretty=format:"%H :: %cn :: %s" HEAD...refs/tags/' . $previous_version);
+            if (!is_string($_changes)) { // No changes found
+                return '';
+            }
             $discovered_tracker_issues = []; // List of issues referenced on Git to pull from Mantis
             $__changes = [];
             $dig_deep = false;
