@@ -416,7 +416,6 @@ class Module_admin_telemetry
             'e_resolved=' . do_lang('RESOLVED'),
         ];
         $filtercode_types = [
-            'e_refs_compiled=list',
             'e_version=list',
         ];
 
@@ -480,6 +479,7 @@ class Module_admin_telemetry
             'param' => implode(',', $filtercode),
             'table' => 'telemetry_errors',
             'labels' => implode(',', $filtercode_labels),
+            'types' => implode(',', $filtercode_types),
         ]);
 
         $tpl = do_template('RESULTS_TABLE_SCREEN', [

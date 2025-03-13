@@ -258,9 +258,17 @@ function is_mail_bounced(string $email, ?string $host = null, ?int $port = null,
 
     if ($host === null) {
         $host = get_option('mail_server_host');
+    }
+    if ($port === null) {
         $port = intval(get_option('mail_server_port'));
+    }
+    if ($folder === null) {
         $folder = get_option('mail_folder');
+    }
+    if ($username === null) {
         $username = get_option('mail_username');
+    }
+    if ($password === null) {
         $password = get_option('mail_password');
     }
 
@@ -282,14 +290,14 @@ function is_mail_bounced(string $email, ?string $host = null, ?int $port = null,
  *
  * @param  string $host The server hostname
  * @param  integer $port The port
- * @param  string $type The protocol
+ * @param  string $type The protocol (null: use configured / autodetect)
  * @set imap imaps imaps_nocert pop3 pop3s pop3s_nocert
  * @param  string $folder The inbox identifier
  * @param  string $username The username
  * @param  string $password The password
  * @param  ?TIME $since Only find bounces since this date (null: 8 weeks ago). This is approximate, we will actually look from a bit further back to compensate for possible timezone differences
  */
-function update_bounce_storage(string $host, int $port, string $type, string $folder, string $username, string $password, ?int $since = null)
+function update_bounce_storage(string $host, int $port, ?string $type, string $folder, string $username, string $password, ?int $since = null)
 {
     if ($since === null) {
         $since = time() - 60 * 60 * 24 * 7 * 8;
@@ -365,7 +373,7 @@ function find_mail_bounces(string $host, int $port, string $type, string $folder
  *
  * @param  string $host The server hostname
  * @param  integer $port The port
- * @param  string $type The protocol
+ * @param  ?string $type The protocol (null: use configured / autodetect)
  * @set imap imaps imaps_nocert pop3 pop3s pop3s_nocert
  * @param  string $folder The inbox identifier
  * @param  string $username The username
@@ -376,7 +384,7 @@ function find_mail_bounces(string $host, int $port, string $type, string $folder
  *
  * @ignore
  */
-function _find_mail_bounces(string $host, int $port, string $type, string $folder, string $username, string $password, bool $bounces_only = true, ?int $since = null) : array
+function _find_mail_bounces(string $host, int $port, ?string $type, string $folder, string $username, string $password, bool $bounces_only = true, ?int $since = null) : array
 {
     if (addon_installed('imap')) {
         require_code('imap');
