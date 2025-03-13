@@ -37,7 +37,7 @@ class Hook_addon_registry_user_simple_spreadsheet_sync
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 49e83616f107062125c11c1020c61a3b
+        return '11.0.2'; // addon_version_auto_update a76b9cb065749a4b69420b321f770482
     }
 
     /**

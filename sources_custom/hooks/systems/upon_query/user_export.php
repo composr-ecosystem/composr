@@ -22,10 +22,6 @@ class Hook_upon_query_user_export
 
     public function run_pre($ob, $query, $max, $start, $fail_ok, $get_insert_id)
     {
-        if (!addon_installed('user_simple_spreadsheet_sync')) {
-            return;
-        }
-
         if ($query[0] == 'S') {
             return;
         }
@@ -64,6 +60,10 @@ class Hook_upon_query_user_export
         if (
         (preg_match('#^DELETE FROM ' . $prefix . 'f_members .*WHERE id=(\d+)#', $query, $matches) != 0)
         ) {
+            if (!addon_installed('user_simple_spreadsheet_sync')) {
+                return;
+            }
+
             require_code('user_export');
             do_user_export__single_ipc(intval($matches[1]), true);
             return;
@@ -118,6 +118,10 @@ class Hook_upon_query_user_export
         if (
         (preg_match('#^INSERT INTO ' . $prefix . 'f_members #', $query, $matches) != 0)
         ) {
+            if (!addon_installed('user_simple_spreadsheet_sync')) {
+                return;
+            }
+
             require_code('user_export');
             do_user_export__single_ipc($ret);
             return;
@@ -127,6 +131,10 @@ class Hook_upon_query_user_export
         if (
         (preg_match('#^INSERT INTO ' . $prefix . 'f_member_custom_fields .*\((\d+),#U', $query, $matches) != 0)
         ) {
+            if (!addon_installed('user_simple_spreadsheet_sync')) {
+                return;
+            }
+
             require_code('user_export');
             do_user_export__single_ipc(intval($matches[1]));
             return;
