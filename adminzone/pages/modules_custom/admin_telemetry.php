@@ -351,11 +351,21 @@ class Module_admin_telemetry
         $start = get_param_integer('start', 0);
         $max = get_param_integer('max', 50);
 
-        // Build WHERE query with filters
-        $where = 'WHERE 1=1';
+        // Prepare Filtercode
+        require_code('filtercode');
+        $active_filters = get_params_filtercode();
+
+        // By default, hide resolved errors
+        if ($active_filters == '') {
+            $active_filters = 'e_resolved=0';
+        }
+
+        // Build WHERE query from Filtercode
+        $end = '';
+        list($extra_join, $end) = filtercode_to_sql($GLOBALS['SITE_DB'], parse_filtercode($active_filters), null, 'telemetry_errors');
 
         // Query
-        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where);
+        $_max_rows = $GLOBALS['SITE_DB']->query('SELECT COUNT(*) as count_sites FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id WHERE 1=1' . $end);
         $max_rows = $_max_rows[0]['count_sites'];
         $sortables = [
             'website_name' => do_lang_tempcode('NAME'),
@@ -374,7 +384,7 @@ class Module_admin_telemetry
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('cb54eb251ad058d0935c226b42440407')));
         }
         $select = 'SELECT r.*,s.website_url AS website_url,s.website_name AS website_name';
-        $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id ' . $where . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
+        $rows = $GLOBALS['SITE_DB']->query($select . ' FROM ' . get_table_prefix() . 'telemetry_errors r LEFT JOIN ' . get_table_prefix() . 'telemetry_sites s ON r.e_site=s.id WHERE 1=1' . $end . ' ORDER BY ' . $sortable . ' ' . $sort_order, $max, $start);
 
         // Build results table
         $result_entries = new Tempcode();
@@ -382,6 +392,33 @@ class Module_admin_telemetry
         require_code('templates_results_table');
         require_code('templates_tooltip');
         require_code('temporal');
+
+        $filtercode = [
+            'website_name<website_name_op><website_name>',
+            'website_url<website_url_op><website_url>',
+            'e_error_message<e_error_message_op><e_error_message>',
+            'e_refs_compiled=<e_refs_compiled>',
+            'e_first_date_and_time<e_first_date_and_time_op><e_first_date_and_time>',
+            'e_last_date_and_time<e_last_date_and_time_op><e_last_date_and_time>',
+            'e_version=<e_version>',
+            'e_error_count<e_error_count_op><e_error_count>',
+            'e_resolved=<e_resolved>'
+        ];
+        $filtercode_labels = [
+            'website_name=' . do_lang('NAME'),
+            'website_url=' . do_lang('URL'),
+            'e_error_message=' . do_lang('ERROR_SUMMARY'),
+            'e_refs_compiled=' . do_lang('ERROR_REFS_COMPILED'),
+            'e_first_date_and_time=' . do_lang('FIRST_REPORTED'),
+            'e_last_date_and_time=' . do_lang('LAST_REPORTED'),
+            'e_version=' . do_lang('VERSION'),
+            'e_error_count=' . do_lang('TIMES_REPORTED'),
+            'e_resolved=' . do_lang('RESOLVED'),
+        ];
+        $filtercode_types = [
+            'e_refs_compiled=list',
+            'e_version=list',
+        ];
 
         $map = [
             do_lang_tempcode('IDENTIFIER'),
@@ -439,11 +476,18 @@ class Module_admin_telemetry
         $button_url = build_url(['page' => '_SELF', 'type' => 'ignore_errors'], '_SELF');
         $form->attach(do_template('BUTTON_SCREEN', ['_GUID' => '318957ab73112a21637cd04627e2408d', 'IMMEDIATE' => false, 'URL' => $button_url, 'TITLE' => do_lang_tempcode('TELEMETRY_AUTORESOLVE'), 'IMG' => 'admin/delete2', 'HIDDEN' => new Tempcode()]));
 
+        $filtercode_box = do_block('main_content_filtering', [
+            'param' => implode(',', $filtercode),
+            'table' => 'telemetry_errors',
+            'labels' => implode(',', $filtercode_labels),
+        ]);
+
         $tpl = do_template('RESULTS_TABLE_SCREEN', [
             '_GUID' => '358ae22e7f23a3f68eac4aa1e24df85b',
             'TITLE' => $this->title,
             'RESULTS_TABLE' => $results_table,
             'FORM' => $form,
+            'FILTERCODE_BOX' => $filtercode_box,
         ]);
 
         require_code('templates_internalise_screen');
@@ -507,6 +551,7 @@ class Module_admin_telemetry
             'VERSION' => $row['e_version'],
             'TIMES_REPORTED' => integer_format($row['e_error_count']),
             'RESOLVED' => $resolved ? do_lang('YES') : do_lang('NO'),
+            'TELEMETRY_IGNORE_NOTE' => get_translated_text($row['e_note']),
         ];
 
         $title = get_screen_title('CMS_SITE_ERROR', true, [integer_format($id)]);
