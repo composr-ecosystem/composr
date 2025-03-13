@@ -88,9 +88,19 @@ if (!$is_bleeding_edge) {
 // Add downloads (assume uploaded already)
 
 require_code('downloads2');
-$releases_category_id = $GLOBALS['SITE_DB']->query_select_value('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => brand_name() . ' Releases']);
-// ^ Result must return
+require_code('permissions2');
 
+// Get or create the base releases category
+$download_category = brand_name() . ' Releases';
+$releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);
+if ($releases_category_id === null) {
+    require_code('downloads2');
+    $releases_category_id = add_download_category($download_category, db_get_first_id(), $download_category);
+    set_global_category_access('downloads', $releases_category_id);
+    set_privilege_access('downloads', strval($releases_category_id), 'submit_midrange_content', false);
+}
+
+// Get or create the sub-category for this major/minor version
 $release_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Version ' . strval(intval($version_dotted))]);
 if ($release_category_id === null) {
     $release_category_id = add_download_category('Version ' . strval(intval($version_dotted)), $releases_category_id, '', '');
@@ -99,6 +109,7 @@ if ($release_category_id === null) {
 }
 // NB: We don't add addon categories. This is done in publish_addons_as_downloads.php
 
+// Get or create the Installatron category
 $installatron_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Installatron integration']);
 if ($installatron_category_id === null) {
     $installatron_category_id = add_download_category('Installatron integration', $releases_category_id, '', '');
@@ -106,6 +117,7 @@ if ($installatron_category_id === null) {
     set_privilege_access('downloads', strval($installatron_category_id), 'submit_midrange_content', false);
 }
 
+// Get or create the Microsoft category
 $microsoft_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Microsoft integration']);
 if ($microsoft_category_id === null) {
     $microsoft_category_id = add_download_category('Microsoft integration', $releases_category_id, '', '');
@@ -113,6 +125,7 @@ if ($microsoft_category_id === null) {
     set_privilege_access('downloads', strval($microsoft_category_id), 'submit_midrange_content', false);
 }
 
+// Get or create the APS category
 $aps_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $releases_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'APS integration']);
 if ($aps_category_id === null) {
     $aps_category_id = add_download_category('APS integration', $releases_category_id, '', '');
