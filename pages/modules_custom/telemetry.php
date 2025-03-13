@@ -119,7 +119,7 @@ class Module_telemetry
             'FIRST_REPORTED' => get_timezoned_date_time($error['e_first_date_and_time'], false),
             'LAST_REPORTED' => get_timezoned_date_time($error['e_last_date_and_time'], false),
             'TIMES_REPORTED' => integer_format($error['e_error_count']),
-            'NOTES' => get_translated_tempcode('relayed_errors', $error, 'e_note', null, $lang),
+            'NOTES' => get_translated_tempcode('telemetry_errors', $error, 'e_note', null, $lang),
         ];
 
         $text = do_lang_tempcode('DESCRIPTION_RELAYED_ERROR', protect_from_escaping($issue_tracker));
