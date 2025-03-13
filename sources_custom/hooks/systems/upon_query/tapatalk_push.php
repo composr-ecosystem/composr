@@ -20,14 +20,6 @@ class Hook_upon_query_tapatalk_push
 {
     public function run($ob, $query, $max, $start, $fail_ok, $get_insert_id, $ret)
     {
-        if (!addon_installed('cns_tapatalk')) {
-            return;
-        }
-
-        if (!addon_installed('cns_forum')) {
-            return;
-        }
-
         if (get_forum_type() != 'cns') {
             return;
         }
@@ -41,12 +33,26 @@ class Hook_upon_query_tapatalk_push
         }
 
         if ((strpos($query, 'INTO ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_posts ') !== false) && ($get_insert_id)) {
+            if (!addon_installed('cns_tapatalk')) {
+                return;
+            }
+            if (!addon_installed('cns_forum')) {
+                return;
+            }
+
             require_once get_file_base() . '/mobiquo/lib/TapatalkPush.php';
             $push = new TapatalkPush();
             cms_register_shutdown_function_safe([$push, 'do_push'], $ret);
         }
 
         if (strpos($query, 'INTO ' . get_table_prefix() . 'rating ') !== false) {
+            if (!addon_installed('cns_tapatalk')) {
+                return;
+            }
+            if (!addon_installed('cns_forum')) {
+                return;
+            }
+
             $matches = [];
             if (preg_match('#\(rating_for_type, rating_for_id,.*\) VALUES \(\'post\', \'(\d+)\',.*, 10\)#', $query, $matches) != 0) {
                 require_once get_file_base() . '/mobiquo/lib/TapatalkPush.php';

@@ -628,7 +628,10 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
     }
 
     // Try cache first
-    if (isset($VALUE_OPTIONS_CACHE[$name])) {
+    if (($VALUE_OPTIONS_CACHE !== null) && array_key_exists($name, $VALUE_OPTIONS_CACHE)) {
+        if ($VALUE_OPTIONS_CACHE[$name] === null) {
+            return null;
+        }
         if ($VALUE_OPTIONS_CACHE[$name]['date_and_time'] > $cutoff) {
             return $VALUE_OPTIONS_CACHE[$name]['the_value'];
         }

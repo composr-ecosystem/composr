@@ -301,6 +301,10 @@ class Self_learning_cache
      */
     public function remove(string $key, $value) : bool
     {
+        if ($this->data === null) {
+            return false;
+        }
+
         if (!array_key_exists($key, $this->data)) {
             return false;
         }
