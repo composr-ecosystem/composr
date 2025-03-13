@@ -42,7 +42,7 @@ class Hook_addon_registry_shopping
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 5edab7c296e03121ef96ea8acd3642a1
+        return '11.0.2'; // addon_version_auto_update 43a588c1355a4e01810741ef0b2c0852
     }
 
     /**

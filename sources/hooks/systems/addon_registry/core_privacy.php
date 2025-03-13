@@ -42,7 +42,7 @@ class Hook_addon_registry_core_privacy
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update e8616cc88b6e492486b1c759a5859bd9
+        return '11.0.2'; // addon_version_auto_update a421d780c7f23dd9db257d7f0bfee484
     }
 
     /**

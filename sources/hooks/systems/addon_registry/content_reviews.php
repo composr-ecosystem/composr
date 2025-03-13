@@ -42,7 +42,7 @@ class Hook_addon_registry_content_reviews
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4b1ffaf2fe950aa07460b5a67bcdc3ed
+        return '11.0.1'; // addon_version_auto_update b34b20a6111c12bbcb4f93858015259b
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_referrals
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 7c3b62ff23fa1097d78088a411acb214
+        return '11.0.2'; // addon_version_auto_update 93f620d39e375e610d93e3d14991b0be
     }
 
     /**

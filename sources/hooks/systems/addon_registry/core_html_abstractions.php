@@ -42,7 +42,7 @@ class Hook_addon_registry_core_html_abstractions
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 6a7d0298065872c222de64b08ad5d2c5
+        return '11.0.1'; // addon_version_auto_update dc7a0bebb3fd222294480d4085811aba
     }
 
     /**

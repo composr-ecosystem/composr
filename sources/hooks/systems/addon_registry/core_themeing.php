@@ -42,7 +42,7 @@ class Hook_addon_registry_core_themeing
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 8380c0b3acc52cd0c268b2f3ce621319
+        return '11.0.2'; // addon_version_auto_update 32c087db46475403a976d50f1654b1e9
     }
 
     /**

@@ -37,7 +37,7 @@ class Hook_addon_registry_idolisr
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 997b7fb478b0d475a54c5f34cfd893f3
+        return '11.0.2'; // addon_version_auto_update af0d8310ae4a1702841bd434d9a9f6dd
     }
 
     /**

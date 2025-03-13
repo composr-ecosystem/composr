@@ -37,7 +37,7 @@ class Hook_addon_registry_browser_detect
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 2d59344fdc92d42bb6e371e89f397c89
+        return '11.0.1'; // addon_version_auto_update 60625df408291b9b71d6e9e646260919
     }
 
     /**

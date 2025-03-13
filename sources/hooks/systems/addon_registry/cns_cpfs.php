@@ -57,7 +57,7 @@ class Hook_addon_registry_cns_cpfs
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 4fc0e8bf8fc8f6a63714fe91f4d1c916
+        return '11.0.1'; // addon_version_auto_update be3d1318ce1f6304a1eac365a6f43aca
     }
 
     /**

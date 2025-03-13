@@ -37,7 +37,7 @@ class Hook_addon_registry_composer
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update f4e2b61c559339443303e0b3815bb893
+        return '11.0.2'; // addon_version_auto_update c43f3b106cca9c9619340f9a84f678a2
     }
 
     /**

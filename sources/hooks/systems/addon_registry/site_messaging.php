@@ -42,7 +42,7 @@ class Hook_addon_registry_site_messaging
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 5d799123a750faac544629b97d40c468
+        return '11.0.2'; // addon_version_auto_update baceeb6465a18632606ffa497ae6b868
     }
 
     /**

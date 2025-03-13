@@ -59,7 +59,7 @@ class Hook_addon_registry_chat
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 137a5e26c734447fbfff27d261a7232e
+        return '11.0.2'; // addon_version_auto_update 272acf253a0708498344e774eeecafee
     }
 
     /**

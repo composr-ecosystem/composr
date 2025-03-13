@@ -45,7 +45,7 @@ class Hook_addon_registry_disastr
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update b6b08bb8b07309410b05aae80bceb5ac
+        return '11.0.1'; // addon_version_auto_update 0dbead524e214d19743b7c4fb5112fba
     }
 
     /**

@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_clubs
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 927f411a62ca1f2512b3b16eb0923198
+        return '11.0.1'; // addon_version_auto_update def7434c8f19b383e9ec99911176f032
     }
 
     /**
