@@ -45,12 +45,12 @@ require_code('cms_homesite');
 $version_pretty = get_latest_version_pretty();
 $type_wanted = get_param_string('type');
 
-$myrow = find_version_download_fast($version_pretty, $type_wanted);
+$myrow = find_version_download($version_pretty, $type_wanted);
 if ($myrow === null) {
     warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
 }
 
-$id = $myrow['d_id'];
+$id = $myrow['id'];
 
 $keep = symbol_tempcode('KEEP');
 $url = find_script('dload') . '?id=' . strval($id) . $keep->evaluate();

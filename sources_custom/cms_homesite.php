@@ -15,10 +15,6 @@
 
 /*EXTRA FUNCTIONS: shell_exec*/
 
-/*
-Use &test_mode=1 for using non-live test data.
-*/
-
 function init__cms_homesite()
 {
     define('LEAD_DEVELOPER_MEMBER_ID', 2);
@@ -27,39 +23,86 @@ function init__cms_homesite()
 // IDENTIFYING RELEASES
 // --------------------
 
-function get_latest_version_dotted()
+/**
+ * Get the latest available version of the software in the downloads system (in dotted form).
+ *
+ * @param  ?float $version_dotted Limit to the download category for this version (null: do not limit)
+ * @param  boolean $bleeding_edge Whether to include bleeding-edge releases
+ * @return ?string The latest version (null: none found)
+ */
+function get_latest_version_dotted(?float $version_dotted = null, bool $bleeding_edge = false) : ?string
 {
     static $version = null; // null means unset (uncached)
+
     if ($version === null) {
-        $_version = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'name', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => 'This is the latest version.']);
-        if ($_version === null) {
-            $version = '0.0'; // unknown
-        } else {
-            require_code('version2');
-            $__version = preg_replace('# \(.*#', '', $_version);
-            $version = get_version_dotted__from_anything($__version);
+        $download_rows = load_version_download_rows();
+
+        $latest_category_version = 0.0;
+        $latest_time = 0;
+        foreach ($download_rows as $cat_version => $types) {
+            // Skip categories whose version does not pertain to the one we specified, if applicable
+            if (($version_dotted !== null) && ($cat_version != $version_dotted)) {
+                continue;
+            }
+
+            // Skip categories of older versions if we already picked up on a newer version download
+            if (($cat_version < $latest_category_version) && ($version !== null)) {
+                continue;
+            }
+            $latest_category_version = $cat_version;
+
+            foreach ($types as $type => $rows) {
+                foreach ($rows as $download) {
+                    $name = get_translated_text($download['name']);
+
+                    // If we do not want bleeding-edge, skip bleeding-edge releases
+                    if ((!$bleeding_edge) && strpos($name, 'bleeding-edge') !== false) {
+                        continue;
+                    }
+
+                    // This download is older than our newest one, so it is not the newest version
+                    if ($download['add_date'] < $latest_time) {
+                        continue;
+                    }
+
+                    // At this point, this download / version is now considered the latest one
+                    $latest_time = $download['add_date'];
+                    $version = preg_replace('# \(.*#', '', $name);
+                }
+            }
         }
-        $fetched_version = true;
     }
-    return ($version == '0.0') ? null : $version;
+
+    return $version;
 }
 
-function get_latest_version_pretty()
+/**
+ * Get a pretty version of the latest version of the software available in the downloads system.
+ *
+ * @param  ?float $version_dotted Limit to this version branch (null: do not limit)
+ * @param  boolean $bleeding_edge Whether to include bleeding-edge releases
+ * @return ?string The latest version (null: none found)
+ */
+function get_latest_version_pretty(?float $version_dotted = null, bool $bleeding_edge = false) : ?string
 {
-    $version_dotted = get_latest_version_dotted();
+    $version_dotted = get_latest_version_dotted($version_dotted, $bleeding_edge);
     if ($version_dotted === null) {
         return null;
     }
     return get_version_pretty__from_dotted($version_dotted);
 }
 
-function get_latest_version_basis_number()
+/**
+ * Get the major.minor version of the latest available software version in the downloads.
+ *
+ * @param  ?float $version_dotted Limit to this major/minor category version (null: do not limit)
+ * @param  boolean $bleeding_edge Whether to include bleeding-edge releases
+ * @return ?float The major.minor version (null: none found)
+ */
+function get_latest_version_basis_number(?float $version_dotted = null, bool $bleeding_edge = false) : ?float
 {
     require_code('version2');
-    $latest_pretty = get_latest_version_pretty();
-    if (($latest_pretty === null) && ($GLOBALS['DEV_MODE'])) { // Not uploaded any releases to dev site?
-        $latest_pretty = float_to_raw_string(cms_version_number(), 2, true);
-    }
+    $latest_pretty = get_latest_version_pretty($version_dotted, $bleeding_edge);
     if ($latest_pretty === null) {
         return null;
     }
@@ -69,24 +112,48 @@ function get_latest_version_basis_number()
     return floatval($_latest_number);
 }
 
-function get_release_tree($type = 'manual')
+/**
+ * Return an array of downloads in sequence for upgrading.
+ *
+ * @param  ID_TEXT $type The type of installer we want
+ * @set manual quick
+ * @param  boolean $bleeding_edge Whether to include bleeding-edge releases in the tree
+ * @return array Maps of version number to its download row, in order according to upgrade path
+ */
+function get_release_tree(string $type = 'manual', bool $bleeding_edge = false) : array
 {
+    static $versions;
+    if (isset($versions)) {
+        return $versions;
+    }
+
     require_code('version2');
+
+    $download_rows = load_version_download_rows();
 
     $versions = [];
 
-    global $DOWNLOAD_ROWS;
-    load_version_download_rows();
-
-    foreach ($DOWNLOAD_ROWS as $download_row) {
-        $matches = [];
-        if (preg_match('#^Composr Version (.*) \((.*)\)$#', $download_row['nice_title'], $matches) != 0) {
-            if (strpos($matches[2], $type) === false) {
+    foreach ($download_rows as $cat_version => $download_types) {
+        foreach ($download_types as $download_type => $download_rows) {
+            if ($type != $download_type) {
                 continue;
             }
-            $version_dotted = get_version_dotted__from_anything($matches[1]);
-            list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
-            $versions[$long_dotted_number_with_qualifier] = $download_row;
+
+            foreach ($download_rows as $download_row) {
+                $name = get_translated_text($download_row['name']);
+
+                // If we do not want bleeding-edge, skip bleeding-edge releases
+                if ((!$bleeding_edge) && strpos($name, 'bleeding-edge') !== false) {
+                    continue;
+                }
+
+                $matches = [];
+                if (preg_match('#^' . preg_quote(brand_name(), '#') . ' Version (.*)$#', $name, $matches) != 0) {
+                    $version_dotted = get_version_dotted__from_anything($matches[1]);
+                    list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
+                    $versions[$long_dotted_number_with_qualifier] = $download_row;
+                }
+            }
         }
     }
 
@@ -100,56 +167,51 @@ function get_release_tree($type = 'manual')
     return $_versions;
 }
 
-function is_release_discontinued($version)
+/**
+ * Find out if a given major/minor version has been discontinued.
+ *
+ * @param  string $version The major/minor dotted version
+ * @return boolean Whether it was discontinued
+ */
+function is_release_discontinued(string $version)
 {
     // LEGACY: update as required
     $discontinued = ['1', '2', '2.1', '2.5', '2.6', '3', '3.1', '3.2', '4', '5', '6', '7', '8', '9', '10.1'];
     return (preg_match('#^(' . implode('|', array_map('preg_quote', $discontinued)) . ')($|\.)#', $version) != 0);
 }
 
-function find_version_download_fast($version_pretty, $type_wanted = 'manual', $version_must_be_newer_than = null)
+/**
+ * Find a download row for the given version.
+ *
+ * @param  ?ID_TEXT $version_pretty The pretty version we want (null: get the latest, ignoring bleeding-edge)
+ * @param  ID_TEXT $type_wanted The type of installer we want
+ * @set manual quick
+ * @return ?array The download row (null: not found)
+ */
+function find_version_download(string $version_pretty, string $type_wanted = 'manual') : ?array
 {
-    if ($GLOBALS['DEV_MODE']) {
-        $t = 'Composr version 1337';
-
-        $myrow = [
-            'd_id' => 123,
-            'num_downloads' => 321,
-            'name' => $t . '(' . $type_wanted . ')',
-            'file_size' => 12345,
-        ];
-    } else {
-        $sql = 'SELECT d.num_downloads,d.name,d.file_size,d.id AS d_id,d.add_date FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'downloadauthor');
-        $sql .= ' WHERE ' . db_string_equal_to('author', 'Core Development Team') . ' AND validated=1';
-        $like = 'Composr Version ';
-        $like .= (($version_pretty === null) ? '%' : $version_pretty);
-        if ($type_wanted != '') {
-            $like .= ' (' . $type_wanted . ')';
-        }
-        $sql .= ' AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('%' . $like) . '\'';
-        $sql .= ' ORDER BY add_date DESC';
-        $rows = $GLOBALS['SITE_DB']->query($sql, 1, 0, false, false, ['name' => 'SHORT_TRANS']);
-        if (!array_key_exists(0, $rows)) {
-            return null; // Shouldn't happen, but let's avoid transitional errors
-        }
-
-        $myrow = $rows[0];
+    if ($version_pretty === null) {
+        $version_pretty = get_latest_version_pretty();
     }
-    return $myrow;
-}
+    if ($version_pretty === null) {
+        return null;
+    }
 
-function find_version_download($version_pretty, $type_wanted = 'manual')
-{
-    global $DOWNLOAD_ROWS;
-    load_version_download_rows();
+    $download_rows = load_version_download_rows();
 
-    $download_row = null;
-    foreach ($DOWNLOAD_ROWS as $download_row) {
-        $nice_title_stripped = preg_replace('# \(.*\)$#', '', $download_row['nice_title']);
-        if ($nice_title_stripped == 'Composr Version ' . $version_pretty) {
-            $is_manual = (strpos($download_row['nice_title'], 'manual') !== false);
-            if (($is_manual && $type_wanted == 'manual') || (!$is_manual && $type_wanted == 'quick')) {
-                return $download_row;
+    foreach ($download_rows as $cat_version => $types) {
+        foreach ($types as $type => $rows) {
+            if ($type_wanted != $type) {
+                continue;
+            }
+
+            foreach ($rows as $download_row) {
+                $nice_title_stripped = preg_replace('# \(.*\)$#', '', get_translated_text($download_row['name']));
+
+                // Search both stable and bleeding-edge because there should never be the same version with both types
+                if (($nice_title_stripped == brand_name() . ' Version ' . $version_pretty) || ($nice_title_stripped == brand_name() . ' Version ' . $version_pretty . ' (bleeding-edge)')) {
+                    return $download_row;
+                }
             }
         }
     }
@@ -157,39 +219,55 @@ function find_version_download($version_pretty, $type_wanted = 'manual')
     return null;
 }
 
-function load_version_download_rows()
+/**
+ * Return a structured array of version download rows.
+ *
+ * @return array Array of download rows
+ */
+function load_version_download_rows() : array
 {
-    global $DOWNLOAD_ROWS;
-    if (!isset($DOWNLOAD_ROWS)) {
-        if (get_param_integer('test_mode', 0) == 1) {
-            // Test data
-            $DOWNLOAD_ROWS = [
-                ['id' => 20, 'edit_date' => time() - 60 * 60 * 8, 'nice_title' => 'Composr Version 13 (manual)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/a.zip'],
-                ['id' => 30, 'edit_date' => time() - 60 * 60 * 5, 'nice_title' => 'Composr Version 13.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/b.zip'],
-                ['id' => 35, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.1.1 (manual)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/c.zip'],
-                ['id' => 40, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.2 beta1 (manual)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/d.zip'],
-                ['id' => 50, 'edit_date' => time() - 60 * 60 * 3, 'nice_title' => 'Composr Version 13.2 (manual)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/e.zip'],
-                ['id' => 60, 'edit_date' => time() - 60 * 60 * 1, 'nice_title' => 'Composr Version 14 (manual)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => 'Manual installer (as opposed to the regular quick installer). Please note this isn\'t documentation.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/f.zip'],
+    // Cache
+    static $download_rows;
+    if (isset($download_rows)) {
+        return $download_rows;
+    }
 
-                ['id' => 20, 'edit_date' => time() - 60 * 60 * 8, 'nice_title' => 'Composr Version 13 (quick)', 'add_date' => time() - 60 * 60 * 8, 'nice_description' => '[Test message] This is 3. Yo peeps. 3.1 is the biz.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/a.zip'],
-                ['id' => 30, 'edit_date' => time() - 60 * 60 * 5, 'nice_title' => 'Composr Version 13.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.1.1 is out dudes.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/b.zip'],
-                ['id' => 35, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.1.1 (quick)', 'add_date' => time() - 60 * 60 * 5, 'nice_description' => '[Test message] This is 3.1.1. 3.2 is out dudes.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/c.zip'],
-                ['id' => 40, 'edit_date' => time() - 60 * 60 * 4, 'nice_title' => 'Composr Version 13.2 beta1 (quick)', 'add_date' => time() - 60 * 60 * 4, 'nice_description' => '[Test message] This is 3.2 beta1. 3.2 beta2 is out.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/d.zip'],
-                ['id' => 50, 'edit_date' => time() - 60 * 60 * 3, 'nice_title' => 'Composr Version 13.2 (quick)', 'add_date' => time() - 60 * 60 * 3, 'nice_description' => '[Test message] This is 3.2. 4 is out.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/e.zip'],
-                ['id' => 60, 'edit_date' => time() - 60 * 60 * 1, 'nice_title' => 'Composr Version 14 (quick)', 'add_date' => time() - 60 * 60 * 1, 'nice_description' => '[Test message] This is the 4 and you can find bug reports somewhere.', 'url' => 'uploads/website_specific/cms_homesite/upgrades/sample_data/f.zip'],
-            ];
-        } else {
-            // Live data
-            $sql = 'SELECT d.* FROM ' . get_table_prefix() . 'download_downloads d' . $GLOBALS['SITE_DB']->prefer_index('download_downloads', 'recent_downloads', false);
-            $sql .= ' WHERE validated=1 AND ' . $GLOBALS['SITE_DB']->translate_field_ref('name') . ' LIKE \'' . db_encode_like('Composr Version %') . '\' ORDER BY add_date';
-            $DOWNLOAD_ROWS = $GLOBALS['SITE_DB']->query($sql, null, 0, false, false, ['name' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
-            foreach ($DOWNLOAD_ROWS as $i => $row) {
-                $DOWNLOAD_ROWS[$i] = $row;
-                $DOWNLOAD_ROWS[$i]['nice_title'] = get_translated_text($row['name']);
-                $DOWNLOAD_ROWS[$i]['nice_description'] = get_translated_text($row['the_description']);
-            }
+    // Get the main releases category
+    $download_category = brand_name() . ' Releases';
+    $releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);
+    if ($releases_category_id === null) {
+        $download_rows = [];
+        return $download_rows;
+    }
+
+    // Get all of the version categories within the releases
+    $where = ['parent_id' => $releases_category_id];
+    $release_categories = $GLOBALS['SITE_DB']->query_select('download_categories', ['id', 'category'], $where);
+
+    // Process each category
+    foreach ($release_categories as $category) {
+        $category_version = str_replace('Version ', '', get_translated_text($category['name']));
+        $version_branch = floatval($category_version);
+        if (!isset($download_rows[$version_branch])) {
+            $download_rows[$version_branch] = ['manual' => [], 'quick' => []];
+        }
+
+        // Get quick installers
+        $quick_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $category['id'], $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Quick Installer']);
+        if ($quick_category_id !== null) {
+            $quick_downloads = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['category_id' => $quick_category_id], ' ORDER BY add_date ASC');
+            $download_rows[$version_branch]['quick'] = $quick_downloads;
+        }
+
+        // Get manual installers
+        $manual_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $category['id'], $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Manual Installer']);
+        if ($manual_category_id !== null) {
+            $manual_downloads = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['category_id' => $manual_category_id], ' ORDER BY add_date ASC');
+            $download_rows[$version_branch]['manual'] = $manual_downloads;
         }
     }
+
+    return $download_rows;
 }
 
 function find_version_news($version_pretty)
@@ -198,10 +276,10 @@ function find_version_news($version_pretty)
     load_version_news_rows();
 
     foreach ($NEWS_ROWS as $news_row) {
-        if ($news_row['nice_title'] == 'Composr ' . $version_pretty . ' released') {
+        if ($news_row['nice_title'] == brand_name() . ' ' . $version_pretty . ' released') {
             return $news_row;
         }
-        if ($news_row['nice_title'] == 'Composr ' . $version_pretty . ' released!') { // Major releases have exclamation marks
+        if ($news_row['nice_title'] == brand_name() . ' ' . $version_pretty . ' released!') { // Major releases have exclamation marks
             return $news_row;
         }
     }
@@ -243,7 +321,12 @@ function load_version_news_rows()
     }
 }
 
-function get_composr_branches()
+/**
+ * Get details of software branches available in git or GitLab.
+ *
+ * @return array Map of available branches and information
+ */
+function get_composr_branches() : array
 {
     require_code('version2');
 
@@ -278,7 +361,7 @@ function get_composr_branches()
                 ];
             }
         }
-    } elseif (file_exists(get_file_base() . '/data_custom/keys/gitlab.ini')) { // Local git repository not present; try GitLab
+    } elseif (file_exists(get_file_base() . '/data_custom/keys/gitlab.ini')) { // Local git repository not present; try GitLab if a key is present
         require_code('files');
         require_code('http');
         require_code('zones');

@@ -60,7 +60,7 @@ if (!$is_bleeding_edge) {
     $bleeding2 = '';
 } else {
     $bleeding1 = ' (bleeding-edge)';
-    $bleeding2 = 'bleeding-edge, ';
+    $bleeding2 = ' (bleeding-edge)';
 }
 
 $video_url = post_param_string('video_url', '', INPUT_FILTER_URL_GENERAL);
@@ -106,6 +106,20 @@ if ($release_category_id === null) {
     $release_category_id = add_download_category('Version ' . strval(intval($version_dotted)), $releases_category_id, '', '');
     set_global_category_access('downloads', $release_category_id);
     set_privilege_access('downloads', strval($release_category_id), 'submit_midrange_content', false);
+}
+
+// Get or create the sub-category for Quick Installer and Manual Installer
+$quick_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $release_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Quick Installer']);
+if ($quick_category_id === null) {
+    $quick_category_id = add_download_category('Quick Installer', $release_category_id, '', '');
+    set_global_category_access('downloads', $quick_category_id);
+    set_privilege_access('downloads', strval($quick_category_id), 'submit_midrange_content', false);
+}
+$manual_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $release_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Manual Installer']);
+if ($manual_category_id === null) {
+    $manual_category_id = add_download_category('Manual Installer', $manual_category_id, '', '');
+    set_global_category_access('downloads', $manual_category_id);
+    set_privilege_access('downloads', strval($manual_category_id), 'submit_midrange_content', false);
 }
 // NB: We don't add addon categories. This is done in publish_addons_as_downloads.php
 
@@ -159,20 +173,20 @@ if (!$is_old_tree) {
 
 $all_downloads_to_add = [
     [
-        'name' => brand_name() . " Version {$version_pretty} ({$bleeding2}quick)",
+        'name' => brand_name() . " Version {$version_pretty}{$bleeding2}",
         'description' => "This is version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
         'additional_details' => $additional_details,
-        'category_id' => $release_category_id,
+        'category_id' => $quick_category_id,
         'internal_name' => 'Quick installer',
     ],
 
     [
-        'name' => brand_name() . " Version {$version_pretty} ({$bleeding2}manual)",
+        'name' => brand_name() . " Version {$version_pretty}{$bleeding2}",
         'description' => "This is the manual installer (as opposed to the regular quick installer) for version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_manualextraction_installer-' . $version_dotted . '.zip',
         'additional_details' => '',
-        'category_id' => $release_category_id,
+        'category_id' => $manual_category_id,
         'internal_name' => 'Manual installer',
     ],
 
@@ -220,8 +234,10 @@ foreach ($all_downloads_to_add as $i => $d) {
     $category_id = $d['category_id'];
 
     $download_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', ['category_id' => $category_id, $GLOBALS['SITE_DB']->translate_field_ref('name') => $name]);
+    $download_added = false;
     if ($download_id === null) {
         $download_id = add_download($category_id, $name, $url, $description, 'Core Development Team', $additional_details, null, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0);
+        $download_added = true;
     } else {
         edit_download($download_id, $category_id, $name, $url, $description, 'Core Development Team', $additional_details, null, 0, 1, 0, 0, 0, '', $original_filename, $file_size, 0, 0, null, '', '');
     }
@@ -231,28 +247,30 @@ foreach ($all_downloads_to_add as $i => $d) {
 
     $urls[$d['internal_name']] = static_evaluate_tempcode(build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $download_id], get_module_zone('downloads'), [], false, false, true));
     $urls[$d['internal_name'] . ' (direct download)'] = find_script('dload') . '?id=' . strval($download_id);
-}
 
-// Edit past download
+    // Edit past download to indicate it is old and replaced by this one
 
-if (($additional_details != '') && (isset($all_downloads_to_add[0]['download_id']))) {
-    $last_version_str = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'additional_details', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
-    if ($last_version_str !== null) {
-        $last_version_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
-        $last_version_description = $GLOBALS['SITE_DB']->query_select_value_if_there('download_downloads', $GLOBALS['SITE_DB']->translate_field_ref('description'), [$GLOBALS['SITE_DB']->translate_field_ref('additional_details') => $additional_details], ' AND main.id<>' . strval($all_downloads_to_add[0]['download_id']));
-        if ($last_version_id != $all_downloads_to_add[0]['download_id']) {
-            $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . $last_version_description;
-            $map = lang_remap_comcode('description', $last_version_description, $description);
-            $map += lang_remap_comcode('additional_details', $last_version_str, '');
-            $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version_id], '', 1);
+    if ($download_added === true) {
+        $_last_version = $GLOBALS['SITE_DB']->query_select('download_downloads', ['add_date', 'additional_details', 'id', 'the_description'], ['category_id' => $category_id], ' AND main.out_mode_id IS NULL AND main.id<>' . strval($all_downloads_to_add[0]['download_id']) . ' ORDER BY add_date DESC', 1);
+        if (array_key_exists(0, $_last_version)) {
+            $last_version = $_last_version[0];
+            if ($last_version['id'] != $all_downloads_to_add[0]['download_id']) {
+                $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . get_translated_text($last_version['description']);
+                $map = lang_remap_comcode('description', get_translated_text($last_version['the_description']), $description);
+                $map += lang_remap_comcode('additional_details', get_translated_text($last_version['additional_details']), '');
+                $map['out_mode_id'] = $all_downloads_to_add[0]['download_id'];
+                $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version['id']], '', 1);
+            }
         }
     }
 }
 
 // Extract latest download
 if ((!$is_bleeding_edge) && (!$is_old_tree)) {
+    // Delete unnecessary files that are often created by the release build
     @unlink('data.cms');
     @unlink('install.php');
+
     $cmd = 'cd ' . get_custom_file_base() . '/uploads/downloads; unzip -o ' . $all_downloads_to_add[0]['filename'];
     shell_exec($cmd);
 }
@@ -266,7 +284,7 @@ $summary = "{$version_pretty} released. Read the full article for more informati
 
 $article = "Version {$version_pretty} has now been released. {$summary_line}
 
-To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[/tt] script. You will need to copy the URL of the attached file (created via the form below) during step 4.{$major_release}
+To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[/tt] script. You will need to copy the URL of the attached file (created via the form below) when running the step to transfer new / updated files.{$major_release}
 {$major_release_1}
 {$db_upgrade_1}
 
@@ -274,6 +292,7 @@ To upgrade follow the steps in your website's [tt]http://mybaseurl/upgrader.php[
 
 {$changes}";
 
+// Get or create the new releases category
 $news_category = $GLOBALS['SITE_DB']->query_select_value_if_there('news_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('nc_title') => 'New releases']);
 if ($news_category === null) {
     $news_category = add_news_category('New releases', 'icons/news/general', '');
@@ -292,7 +311,7 @@ $urls['News: ' . $news_title] = static_evaluate_tempcode(build_url(['page' => 'n
 
 $issues_found = [];
 
-$regexp = '#' . preg_quote(get_base_url(), '#') . '/tracker/view\.php\?id=(\d+)#';
+$regexp = '#' . preg_quote(get_brand_base_url(), '#') . '/tracker/view\.php\?id=(\d+)#';
 $matches = [];
 $num_matches = preg_match_all($regexp, $changes, $matches);
 for ($i = 0; $i < $num_matches; $i++) {
