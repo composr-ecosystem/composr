@@ -63,7 +63,7 @@ if ($type == 'submit') {
         'Core software / bundled addons / default theme' => '1',
         'Downloadable (non-bundled) addons or themes' => '4',
         'Content in a Documentation / Tutorial' => '7',
-        'Composr website' => '3',
+        'Homesite' => '3',
         'Custom code' => null,
     ];
 
@@ -114,7 +114,7 @@ if ($type == 'submit') {
 
     // Create the tracker issue
     $tracker_id = create_tracker_issue($version, $summary, $description, $additional_information, $severities[$severity], strval($category), $projects[$project], '0', $steps_to_reproduce, '100', '10', '10', $view_state);
-    create_tracker_post($tracker_id, 'Automated message: This issue was created using the Report Issue Wizard on the Composr homesite.');
+    create_tracker_post($tracker_id, 'Automated message: This issue was created using the Report Issue Wizard on the homesite.');
 
     // Inform the member it has been done with a redirect to it.
     $decision_tree = [
@@ -129,7 +129,7 @@ if ($type == 'submit') {
     $decision_tree = [
         'start' => [
             'title' => 'Report an Issue or Feature / Suggestion',
-            'text' => 'Thank you for taking the time to report an issue or a feature / suggestion for Composr CMS. Your feedback is what helps improve Composr CMS and make it the best software it can be for everyone. This wizard will guide you through the process of making an issue. If you prefer, you can make an issue directly on the tracker at ' . $BASE_URL . '/tracker/ instead. This wizard aims to simplify the process by asking questions specific to your selections.' . "\n\n" . 'Please refer to the relevant section of the [page="docs:tut-software-feedback"]providing feedback tutorial[/page] for guidance on making an effective report / issue. At any time, click the question mark next to a field for guidance on what to fill out.',
+            'text' => 'Thank you for taking the time to report an issue or a feature / suggestion for ' . brand_name() . '. Your feedback is what helps improve the software and make it the best software it can be for everyone. This wizard will guide you through the process of making an issue. If you prefer, you can make an issue directly on the tracker at ' . $BASE_URL . '/tracker/ instead. This wizard aims to simplify the process by asking questions specific to your selections.' . "\n\n" . 'Please refer to the relevant section of the [page="docs:tut-software-feedback"]providing feedback tutorial[/page] for guidance on making an effective report / issue. At any time, click the question mark next to a field for guidance on what to fill out.',
             'form_method' => 'POST',
             'questions' => [
                 'search' => [
@@ -149,7 +149,7 @@ if ($type == 'submit') {
                         'Core software / bundled addons / default theme',
                         'Downloadable (non-bundled) addons or themes',
                         'Content in a Documentation / Tutorial',
-                        'Composr website',
+                        'Homesite',
                         'Custom code',
                     ],
                     'options' => 'widget=radio',
@@ -162,13 +162,13 @@ if ($type == 'submit') {
                 ['project', 'Core software / bundled addons / default theme', 'core_category'],
                 ['project', 'Content in a Documentation / Tutorial', 'doc_issue'],
                 ['project', 'Downloadable (non-bundled) addons or themes', 'nb_issue'],
-                ['project', 'Composr website', 'site_issue'],
+                ['project', 'Homesite', 'site_issue'],
             ],
         ],
 
         'custom_code' => [
             'title' => 'Issues for custom code are not supported',
-            'text' => 'We apologize, but the Composr issue tracker is not for reporting issues with custom code which is not part of the core Composr software or a non-bundled addon. Please consider utilising one of the available support options at ' . $BASE_URL . '/support.htm to get help.',
+            'text' => 'We apologize, but the issue tracker is not for reporting issues with custom code which is not part of the core software or a non-bundled addon. Please consider [page=":partners"]hiring a developer[/page] for your needs.',
         ],
 
         'core_category' => [
@@ -189,8 +189,8 @@ if ($type == 'submit') {
                     'required' => true,
                 ],
                 'version' => [
-                    'label' => 'Composr version',
-                    'description' => 'Please specify what version of Composr you are running (this can be found in your Admin Zone dashboard).',
+                    'label' => 'Software version',
+                    'description' => 'Please specify what version of ' . brand_name() . ' you are running (this can be found in your Admin Zone dashboard).',
                     'type' => 'short_text',
                     'default' => get_latest_version_dotted(),
                     'options' => '',
@@ -202,7 +202,7 @@ if ($type == 'submit') {
                     'type' => 'list',
                     'default' => 'Feature / Request',
                     'default_list' => [
-                        'Feature-request: For feature requests and suggestions on improving Composr',
+                        'Feature-request: For feature requests and suggestions on improving the software',
                         'Trivial-bug: For typos and other issues that do not affect the operation of the software',
                         'Minor-bug: For issues that affect software operation but not to the point entire features are unusable',
                         'Major-bug: For issues that render entire features unusable or cause corruption to the site',
@@ -214,7 +214,7 @@ if ($type == 'submit') {
             ],
             'next' => [
                 // Parameter, Value, Target
-                ['severity', 'Feature-request: For feature requests and suggestions on improving Composr', 'feature'],
+                ['severity', 'Feature-request: For feature requests and suggestions on improving the software', 'feature'],
                 ['severity', 'Trivial-bug: For typos and other issues that do not affect the operation of the software', 'bug'],
                 ['severity', 'Minor-bug: For issues that affect software operation but not to the point entire features are unusable', 'bug'],
                 ['severity', 'Major-bug: For issues that render entire features unusable or cause corruption to the site', 'bug'],
@@ -230,7 +230,7 @@ if ($type == 'submit') {
             'text' => 'Step 2 of 3: Please provide the following basic information about your issue.',
             'form_method' => 'POST',
             'notice' => [
-              'Please do not use the issue tracker to report issues with addons or themes which were not downloaded from your Admin Zone\'s Addons page or from the Addons / Themes pages on the Composr homesite. If you need support for an addon independently distributed by someone else, please see ' . $BASE_URL . '/support.htm .'
+              'Please do not use the issue tracker to report issues with addons or themes which were not downloaded from your Admin Zone\'s Addons page or from the Addons / Themes pages on the homesite. If you need support for an addon independently distributed by someone else, please see ' . $BASE_URL . '/support.htm .'
             ],
             'questions' => [
                 'category_aux' => [
@@ -242,8 +242,8 @@ if ($type == 'submit') {
                     'required' => false,
                 ],
                 'version' => [
-                    'label' => 'Composr version',
-                    'description' => 'Please specify what version of Composr you are running (this can be found in your Admin Zone dashboard).',
+                    'label' => 'Software version',
+                    'description' => 'Please specify what version of ' . brand_name() . ' you are running (this can be found in your Admin Zone dashboard).',
                     'type' => 'short_text',
                     'default' => get_latest_version_dotted(),
                     'options' => '',
@@ -279,7 +279,7 @@ if ($type == 'submit') {
             'expects_parameters' => [
                 'project'
             ],
-            'title' => 'Basic Issue Information (Composr homesite)',
+            'title' => 'Basic Issue Information (Homesite)',
             'text' => 'Step 2 of 3: Please provide the following basic information about your issue.',
             'form_method' => 'POST',
             'questions' => [
@@ -289,11 +289,11 @@ if ($type == 'submit') {
                     'type' => 'list',
                     'default' => 'Feature / Request',
                     'default_list' => [
-                        'Feature-request: For feature requests and suggestions on improving the Composr site',
-                        'Trivial-bug: For typos and other issues that do not affect the operation of the Composr site',
-                        'Minor-bug: For issues that affect the Composr site\'s operation but not to the point entire features are unusable',
-                        'Major-bug: For issues that render entire features unusable or cause corruption to the Composr site',
-                        'Security-hole: For reporting security vulnerabilities in the Composr site'
+                        'Feature-request: For feature requests and suggestions on improving the homesite',
+                        'Trivial-bug: For typos and other issues that do not affect the operation of the homesite',
+                        'Minor-bug: For issues that affect the the homesite\'s operation but not to the point entire features are unusable',
+                        'Major-bug: For issues that render entire features unusable or cause corruption to the homesite',
+                        'Security-hole: For reporting security vulnerabilities in the homesite'
                     ],
                     'options' => 'widget=radio',
                     'required' => true,
@@ -301,11 +301,11 @@ if ($type == 'submit') {
             ],
             'next' => [
                 // Parameter, Value, Target
-                ['severity', 'Feature-request: For feature requests and suggestions on improving the Composr site', 'feature'],
-                ['severity', 'Trivial-bug: For typos and other issues that do not affect the operation of the Composr site', 'bug'],
-                ['severity', 'Minor-bug: For issues that affect the Composr site\'s operation but not to the point entire features are unusable', 'bug'],
-                ['severity', 'Major-bug: For issues that render entire features unusable or cause corruption to the Composr site', 'bug'],
-                ['severity', 'Security-hole: For reporting security vulnerabilities in the Composr site', 'security'],
+                ['severity', 'Feature-request: For feature requests and suggestions on improving the homesite', 'feature'],
+                ['severity', 'Trivial-bug: For typos and other issues that do not affect the operation of the homesite', 'bug'],
+                ['severity', 'Minor-bug: For issues that affect the the homesite\'s operation but not to the point entire features are unusable', 'bug'],
+                ['severity', 'Major-bug: For issues that render entire features unusable or cause corruption to the homesite', 'bug'],
+                ['severity', 'Security-hole: For reporting security vulnerabilities in the homesite', 'security'],
             ],
         ],
 
@@ -341,8 +341,8 @@ if ($type == 'submit') {
                     'required' => true,
                 ],
                 'additional_information' => [
-                    'label' => 'How will this benefit Composr? + Additional Info',
-                    'description' => 'Please provide any additional information about your request here. For example, you can elaborate on why you believe this feature / request will improve the overall Composr software for everyone.',
+                    'label' => 'How will this benefit the software? + Additional Info',
+                    'description' => 'Please provide any additional information about your request here. For example, you can elaborate on why you believe this feature / request will improve the overall ' . brand_name() . ' software for everyone.',
                     'type' => 'long_text',
                     'default' => '',
                     'options' => '',
@@ -394,7 +394,7 @@ if ($type == 'submit') {
                 ],
                 'additional_information' => [
                     'label' => 'Additional Info / Workarounds / Server Environment',
-                    'description' => 'Please provide any additional information about the bug / issue here. For example, you can provide relevant non-sensitive details about your server environment... PHP version, web server and version, RAM/CPU, etc (not relevant if reporting a Composr site issue). Or if you found a workaround, you can mention it here.',
+                    'description' => 'Please provide any additional information about the bug / issue here. For example, you can provide relevant non-sensitive details about your server environment... PHP version, web server and version, RAM/CPU, etc (not relevant if reporting a homesite issue). Or if you found a workaround, you can mention it here.',
                     'type' => 'long_text',
                     'default' => '',
                     'options' => '',
@@ -427,7 +427,7 @@ if ($type == 'submit') {
                 'Security issues will be reported to the tracker privately; only you (assuming you are logged in) and the core developers will see the issue.'
             ],
             'warn' => [
-                'Please follow responsible practices for disclosing security vulnerabilities, located at ' . $BASE_URL . '/docs/tut-software-feedback.htm#title__46 . Do not publicly disclose the vulnerability anywhere until a confirmed patch has been released by the Composr core developer team.',
+                'Please follow responsible practices for disclosing security vulnerabilities, located at ' . $BASE_URL . '/docs/tut-software-feedback.htm#title__46 . Do not publicly disclose the vulnerability anywhere until a confirmed patch has been released by the Core Development Team.',
                 'Do not ever submit account credentials or other secrets or keys in an issue.'
             ],
             'form_method' => 'POST',
@@ -458,7 +458,7 @@ if ($type == 'submit') {
                 ],
                 'additional_information' => [
                     'label' => 'Additional Info / Workarounds / Server Environment',
-                    'description' => 'Please provide any additional information about the vulnerability here. For example, you can provide relevant non-sensitive details about your server environment... PHP version, web server and version, RAM/CPU, etc (not relevant if reporting a vulnerability with the Composr site). Or you can provide workarounds to negate the security hole until it is patched.',
+                    'description' => 'Please provide any additional information about the vulnerability here. For example, you can provide relevant non-sensitive details about your server environment... PHP version, web server and version, RAM/CPU, etc (not relevant if reporting a vulnerability with the homesite). Or you can provide workarounds to negate the security hole until it is patched.',
                     'type' => 'long_text',
                     'default' => '',
                     'options' => '',
@@ -557,7 +557,7 @@ if ($type == 'submit') {
                 ],
                 'additional_information' => [
                     'label' => 'How will this benefit the community?',
-                    'description' => 'Please let us know why you feel this new tutorial will benefit the Composr community at large (why it should be an official tutorial instead of one you can make yourself off-site and add via off-site links).',
+                    'description' => 'Please let us know why you feel this new tutorial will benefit the ' . brand_name() . ' community at large (why it should be an official tutorial instead of one you can make yourself off-site and add via off-site links).',
                     'type' => 'long_text',
                     'default' => '',
                     'options' => '',

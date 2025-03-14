@@ -41,7 +41,7 @@ class Hook_startup_cms_homesite__for_outdated_version
 
             $latest_number = intval(get_latest_version_basis_number());
             if (($latest_number !== null) && ($latest_number > $docs_viewed_for_number) && (file_exists(get_custom_file_base() . '/docs' . strval($latest_number)))) {
-                $message = 'The latest version of Composr CMS is ' . strval($latest_number) . ', but you are viewing archived documentation <em>text</em> for version ' . strval($docs_viewed_for_number) . '.';
+                $message = 'The latest version of ' . brand_name() . ' is ' . strval($latest_number) . ', but you are viewing archived documentation <em>text</em> for version ' . strval($docs_viewed_for_number) . '.';
                 $message .= '<br />Be aware that old documentation is not fully maintained. Screenshots may be wrong/missing, links may become broken, etc.';
                 $message .= '<br />We recommend that if you are actively working on your site, that you upgrade. Holding off upgrading too long is a security risk.';
                 attach_message(protect_from_escaping($message), 'notice');
@@ -76,7 +76,7 @@ class Hook_startup_cms_homesite__for_outdated_version
                             $cat = 'Version 8';
                         }
 
-                        if ($cat == 'Addons' || $cat == 'Composr Releases') { // We know these are under root, no need to recurse further
+                        if ($cat == 'Addons' || $cat == (brand_name() . ' Releases')) { // We know these are under root, no need to recurse further
                             break;
                         }
 
@@ -97,7 +97,7 @@ class Hook_startup_cms_homesite__for_outdated_version
                 }
 
                 if ($in_bad_cat) {
-                    $message = 'The latest version of Composr CMS is ' . strval($latest_number) . ', but you are viewing archived addons for version ' . strval($addons_viewed_for_number) . '.';
+                    $message = 'The latest version of ' . brand_name() . ' is ' . strval($latest_number) . ', but you are viewing archived addons for version ' . strval($addons_viewed_for_number) . '.';
                     $message .= '<br />Be aware that old non-bundled addons are not fully maintained. Screenshots may be wrong/missing, etc.';
                     $message .= '<br />We recommend that if you are actively working on your site, that you upgrade. Holding off upgrading too long is a security risk.';
                     attach_message(protect_from_escaping($message), 'notice');

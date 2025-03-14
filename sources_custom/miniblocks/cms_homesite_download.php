@@ -38,10 +38,8 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
             require_lang('downloads');
 
             // Put together details about releases
+            $latest_version_pretty_possibly_bleeding = get_latest_version_pretty(null, true);
             $latest_version_pretty = get_latest_version_pretty();
-            if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
-                $latest_version_pretty = '1337';
-            }
             $releases_tpl_map = [];
             $release_quick = null;
             $release_manual = null;
@@ -60,8 +58,8 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
                 }
             }
 
-            $release_bleedingquick = $this->do_release(null, 'bleeding-edge, quick', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
-            $release_bleedingmanual = $this->do_release(null, 'bleeding-edge, manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
+            $release_bleedingquick = $this->do_release($latest_version_pretty_possibly_bleeding, 'quick', 'BLEEDINGQUICK_', ($release_quick === null) ? null : $release_quick['QUICK_VERSION']);
+            $release_bleedingmanual = $this->do_release($latest_version_pretty_possibly_bleeding, 'manual', 'BLEEDINGMANUAL_', ($release_manual === null) ? null : $release_manual['MANUAL_VERSION']);
 
             if ($release_bleedingquick !== null) {
                 $releases_tpl_map += $release_bleedingquick;
@@ -81,9 +79,9 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
         }
 
         /**
-         * @param  ?SHORT_TEXT $version_pretty Version we want (null: don't care)
-         * @param  string $type_wanted Installer/etc type
-         * @set "" "manual" "bleeding-edge" "bleeding-edge manual"
+         * @param  ?SHORT_TEXT $version_pretty Version we want (null: latest)
+         * @param  string $type_wanted installer type
+         * @set manual quick
          * @param  string $prefix Prefix to put on the template params
          * @param  ?string $version_must_be_newer_than The version this must be newer than (null: no check)
          * @return ?array Map of template variables (null: could not find)
@@ -99,16 +97,13 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
             }
 
             $latest_version_pretty = get_latest_version_pretty();
-            if (($latest_version_pretty === null) && ($GLOBALS['DEV_MODE'])) {
-                $latest_version_pretty = '1337';
-            }
 
-            $myrow = find_version_download_fast($version_pretty, $type_wanted, $version_must_be_newer_than);
+            $myrow = find_version_download($version_pretty, $type_wanted);
             if ($myrow === null) {
-                return $myrow;
+                return null;
             }
 
-            $id = $myrow['d_id'];
+            $id = $myrow['id'];
 
             $num_downloads = $myrow['num_downloads'];
 
@@ -119,7 +114,7 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
             }
 
             require_code('version2');
-            $t = $GLOBALS['DEV_MODE'] ? $myrow['name'] : get_translated_text($myrow['name']);
+            $t = get_translated_text($myrow['name']);
             $t = preg_replace('# \(.*#', '', $t);
             $version = get_version_pretty__from_dotted(get_version_dotted__from_anything($t));
 

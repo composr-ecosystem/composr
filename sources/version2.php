@@ -196,7 +196,32 @@ function get_version_components__from_dotted(string $dotted) : array
  */
 function get_version_pretty__from_dotted(string $dotted) : string
 {
-    return preg_replace('#(\.0)*\.(alpha|beta|RC|dev)#', ' ${2}', $dotted);
+    $parts = explode('.', $dotted);
+    $ret = '';
+    $buffer = '';
+
+    foreach ($parts as $i => $part) {
+        if ($part == '0') {
+            if ($ret != '') {
+                $buffer .= '.';
+            }
+            $buffer .= '0';
+        } elseif (is_numeric($part)) {
+            $ret .= $buffer;
+            $buffer = '';
+            if ($ret != '') {
+                $ret .= '.';
+            }
+            $ret .= $part;
+        } else {
+            if ($ret != '') {
+                $ret .= ' ';
+            }
+            $ret .= $part;
+        }
+    }
+
+    return $ret;
 }
 
 /**

@@ -66,7 +66,7 @@ class Hook_endpoint_cms_homesite_version
         list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
 
         // Work out upgrade paths
-        $release_tree = get_release_tree('quick');
+        $release_tree = get_release_tree('quick', true);
         $higher_versions = [null, null, null, null];
         $description = '';
         foreach ($release_tree as $other_version_dotted => $download_row) { // As $release_tree is sorted we will keep updating recommendations with newer, so we end with the newest on each level
@@ -100,7 +100,7 @@ class Hook_endpoint_cms_homesite_version
             }
 
             // We don't want changelogs
-            $nice_description_parts = explode('---', $download_row['nice_description']);
+            $nice_description_parts = explode('---', get_translated_text($download_row['the_description']));
             $nice_description = $nice_description_parts[0];
 
             // We chain all the download descriptions together; each says why the version involved is out of date, so together it is like a "why upgrade" history. The news posts on the other hand says what a new version itself offers.
@@ -127,7 +127,7 @@ class Hook_endpoint_cms_homesite_version
 
         // We don't want changelogs
         if ($download_row !== null) {
-            $nice_description_parts = explode('---', $download_row['nice_description']);
+            $nice_description_parts = explode('---', get_translated_text($download_row['the_description']));
             $nice_description = $nice_description_parts[0];
 
             $our_version = [
@@ -145,7 +145,7 @@ class Hook_endpoint_cms_homesite_version
                 $tracker_url = get_base_url() . '/tracker/search.php?version=' . urlencode($version_dotted) . '&sort=last_updated%2Cid&dir=DESC%2CDESC';
                 $descrip .= '<br /><br />See bug reports for <a target="_blank" title="Bug reports (this link will open in a new window)" href="' . escape_html($tracker_url) . '">' . escape_html($version_pretty) . '</a>.';
             } else {
-                $descrip = 'You are <strong>not</strong> running the latest version. Browse the <a title="Composr news archive (this link will open in a new window)" target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'news'], get_module_zone('news')))) . '">Composr news archive</a> for a full list of the updates or see below for recommended paths.';
+                $descrip = 'You are <strong>not</strong> running the latest version. Browse the <a title="' . escape_html(brand_name()) . ' news archive (this link will open in a new window)" target="_blank" href="' . escape_html(static_evaluate_tempcode(build_url(['page' => 'news'], get_module_zone('news')))) . '">' . escape_html(brand_name()) . ' news archive</a> for a full list of the updates or see below for recommended paths.';
             }
             $output .= '<p>' . $descrip . '</p>';
         } else {
