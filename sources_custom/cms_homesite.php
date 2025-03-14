@@ -246,7 +246,7 @@ function load_version_download_rows() : array
 
     // Process each category
     foreach ($release_categories as $category) {
-        $category_version = str_replace('Version ', '', get_translated_text($category['name']));
+        $category_version = str_replace('Version ', '', get_translated_text($category['category']));
         $version_branch = floatval($category_version);
         if (!isset($download_rows[$version_branch])) {
             $download_rows[$version_branch] = ['manual' => [], 'quick' => []];
