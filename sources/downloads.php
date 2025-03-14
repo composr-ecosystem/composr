@@ -671,7 +671,7 @@ function generate_dload_url(int $id, bool $use_gateway) : object
         $use_gateway = false;
     }
 
-    $keep = symbol_tempcode('KEEP', ['0', '1']);
+    $keep = symbol_tempcode('KEEP', ['0']);
 
     if ($use_gateway) {
         $download_url = make_string_tempcode(find_script('download_gateway'));
