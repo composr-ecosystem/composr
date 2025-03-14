@@ -96,6 +96,10 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
                 return null;
             }
 
+            require_code('downloads');
+            require_code('version2');
+            require_code('files');
+
             $latest_version_pretty = get_latest_version_pretty();
 
             $myrow = find_version_download($version_pretty, $type_wanted);
@@ -107,18 +111,12 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
 
             $num_downloads = $myrow['num_downloads'];
 
-            $keep = symbol_tempcode('KEEP');
-            $url = find_script('dload') . '?id=' . strval($id) . $keep->evaluate();
-            if (($version_pretty == $latest_version_pretty) && ($version_must_be_newer_than === null)) {
-                $url = find_script('download_composr') . '?type=' . urlencode($type_wanted) . $keep->evaluate();
-            }
+            $url = generate_dload_url($id, $myrow['url_redirect'] != '');
 
-            require_code('version2');
             $t = get_translated_text($myrow['name']);
             $t = str_replace([(brand_name() . ' Version '), ' (bleeding-edge)'], ['', ''], $t);
             $version = get_version_pretty__from_dotted(get_version_dotted__from_anything($t));
 
-            require_code('files');
             $filesize = clean_file_size($myrow['file_size']);
 
             if ($version_must_be_newer_than !== null) {
@@ -131,7 +129,7 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
             $ret[$prefix . 'VERSION'] = $version;
             $ret[$prefix . 'FILESIZE'] = $filesize;
             $ret[$prefix . 'NUM_DOWNLOADS'] = integer_format($num_downloads);
-            $ret[$prefix . 'URL'] = $url;
+            $ret[$prefix . 'URL'] = $url->evaluate();
             return $ret;
         }
     }
