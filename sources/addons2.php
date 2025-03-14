@@ -378,11 +378,11 @@ function find_remote_addons() : array
     $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
     if ($contents !== null) {
         $matches = [];
-        $num_matches = preg_match_all('#<entry id="(\d+)".* title="([^"]+)"#Us', $contents, $matches);
+        $num_matches = preg_match_all('#<entry id="([0-9a-fA-F\-]+)".* title="([^"]+)"#Us', $contents, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
-            $id = intval($matches[1][$i]);
+            $id = strval($matches[1][$i]);
             $title = html_entity_decode($matches[2][$i], ENT_QUOTES);
-            if ((!array_key_exists($title, $addons)) || ($addons[$title] > $id)) { // We want the one with the lowest ID, as that will be the official one (uploaded via automated process, then maintained since then)
+            if (!array_key_exists($title, $addons)) { // We want the one with the lowest ID, as that will be the official one (uploaded via automated process, then maintained since then)
                 $addons[$title] = $id;
             }
         }

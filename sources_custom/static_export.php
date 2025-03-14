@@ -88,7 +88,7 @@ function _page_link_to_static(array $node)
             }
 
             if (get_param_integer('save__deps_files', 1) == 1) {
-                $data = preg_replace_callback('#"([^"]*/(attachment|dload)\.php\?id=(\d+)[^"]*)"#', '_static_export_scriptrep_callback', $data);
+                $data = preg_replace_callback('#"([^"]*/(attachment|dload)\.php\?id=([0-9a-fA-F\-]+)[^"]*)"#', '_static_export_scriptrep_callback', $data);
                 $data = preg_replace_callback('#"([^"]*/(catalogue_file)\.php\?file=([^"&]+)&amp;original_filename=([^"&]+)[^"]*)"#', '_static_export_scriptrep_callback', $data);
             }
 
@@ -207,9 +207,24 @@ function _static_export_scriptrep_callback(array $matches) : string
             break;
 
         case 'dload':
-            $id = intval($matches[3]);
+            $id = $matches[3];
 
-            $download = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'url', 'original_filename'], ['id' => $id], '', 1);
+            // Security: We use resource GUID if Commandr is installed to prevent content scraping
+            // LEGACY: The cms_version_time is to ensure we do not do this until 11 beta8
+            require_code('version');
+            if (addon_installed('commandr') && ((cms_version_time() > 1741833435) || $GLOBALS['DEV_MODE'])) {
+                require_code('resource_fs');
+
+                $_id = find_id_via_guid(strval($id));
+                if ($_id === null) {
+                    return $matches[0];
+                }
+                $real_id = intval($_id);
+            } else {
+                $real_id = intval($id);
+            }
+
+            $download = $GLOBALS['SITE_DB']->query_select('download_downloads', ['id', 'url', 'original_filename'], ['id' => $real_id], '', 1);
 
             if (!array_key_exists(0, $download)) {
                 return $matches[0];

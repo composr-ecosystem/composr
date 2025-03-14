@@ -32,6 +32,8 @@ class Hook_ajax_tree_choose_homesite_addon
      */
     protected function get_file(?string $id, ?string $default) : string
     {
+        require_code('version');
+
         $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : get_brand_base_url();
         $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
         if ($id !== null) {
@@ -42,6 +44,9 @@ class Hook_ajax_tree_choose_homesite_addon
             $url .= '&default=' . urlencode($default);
         }
         $contents = http_get_contents($url, ['convert_to_internal_encoding' => true]);
+        if (($contents === null) || (strpos($contents, '<request>') === false)) { // Don't use invalid XML (e.g. errors)
+            return '';
+        }
         $contents = preg_replace('#^\s*<' . '\?xml version="1.0" encoding="[^"]*"\?' . '><request>#', '', $contents);
         $contents = preg_replace('#</request>#', '', $contents);
         $contents = preg_replace('#<category [^>]*has_children="false"[^>]*>[^>]*</category>#', '', $contents);
@@ -81,7 +86,7 @@ class Hook_ajax_tree_choose_homesite_addon
 
         $matches = [];
 
-        $num_matches = preg_match_all('#<entry id="(\d+)"[^<>]* title="([^"]+)"#', $file, $matches);
+        $num_matches = preg_match_all('#<entry id="([0-9a-fA-F\-]+)"[^<>]* title="([^"]+)"#', $file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $list->attach(form_input_list_entry(get_brand_base_url() . '/site/dload.php?id=' . urlencode($matches[1][$i]), in_array($matches[1][$i], $it_exp), $prefix . $matches[2][$i]));
         }

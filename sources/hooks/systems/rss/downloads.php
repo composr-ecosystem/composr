@@ -62,6 +62,7 @@ class Hook_rss_downloads
         $filters = selectcode_to_sqlfragment($_filters, 'category_id', 'download_categories', 'parent_id', 'category_id', 'id'); // Note that the parameters are fiddled here so that category-set and record-set are the same, yet SQL is returned to deal in an entirely different record-set (entries' record-set)
 
         require_lang('downloads');
+        require_code('downloads');
 
         $content = new Tempcode();
         $_categories = $GLOBALS['SITE_DB']->query_select('download_categories', ['id', 'category'], [], '', 300);
@@ -109,8 +110,7 @@ class Hook_rss_downloads
                     $if_comments = new Tempcode();
                 }
 
-                $keep = symbol_tempcode('KEEP');
-                $enclosure_url = find_script('dload') . '?id=' . $id . $keep->evaluate();
+                $enclosure_url = generate_dload_url(intval($id), true);
                 $full_url = $row['url'];
                 if (url_is_local($full_url)) {
                     $full_url = get_custom_base_url() . '/' . $full_url;

@@ -91,7 +91,21 @@ function dload_script()
     require_lang('downloads');
     require_code('downloads');
 
-    $id = get_param_integer('id', 0);
+    // Security: We use resource GUID if Commandr is installed to prevent content scraping
+    // LEGACY: The cms_version_time is to ensure we do not do this until 11 beta8
+    require_code('version');
+    if (addon_installed('commandr') && ((cms_version_time() > 1741833435) || $GLOBALS['DEV_MODE'])) {
+        require_code('resource_fs');
+
+        $__id = get_param_string('id');
+        $_id = find_id_via_guid($__id);
+        if ($_id === null) {
+            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download'));
+        }
+        $id = intval($_id);
+    } else {
+        $id = get_param_integer('id');
+    }
 
     // Lookup
     $rows = $GLOBALS['SITE_DB']->query_select('download_downloads', ['*'], ['id' => $id], '', 1);

@@ -51,7 +51,7 @@ function find_addon_category_download_category(string $category_name, ?int $pare
             if ($description === null) {
                 // Copy version category description from parent ("Addons")
                 $description = get_translated_text($GLOBALS['SITE_DB']->query_select_value('download_categories', 'the_description', ['id' => $parent_id]));
-                $description = str_replace('[title="2"]Choose Composr version below[/title]', '[title="2"]Choose addon category below[/title]', $description);
+                $description = str_replace('[title="2"]Choose ' . brand_name() . ' version below[/title]', '[title="2"]Choose addon category below[/title]', $description);
             }
         }
     }
@@ -66,7 +66,7 @@ function find_addon_category_download_category(string $category_name, ?int $pare
             switch ($category_name) {
                 // Some categories may have hard-coded default descriptions. Any others will default to blank.
                 case 'Themes':
-                    $description = "Themes provide a new look to Composr.\n\nThemes are a kind of addon. You can actually install the themes listed here directly from inside Composr.\n\nGo to Admin Zone > Structure > Addons. Follow the \"Import non-bundled addon(s)\" link.\n\nThese are themes that have been released for this version of Composr. Themes that have been released for earlier versions would need upgrading -- you may wish to browse through them also, and contact the author if you\'d like them upgraded.";
+                    $description = "Themes provide a new look to " . brand_name() . ".\n\nThemes are a kind of addon. You can actually install the themes listed here directly from inside your site.\n\nGo to Admin Zone > Structure > Addons. Follow the \"Import non-bundled addon(s)\" link.\n\nThese are themes that have been released for this version of " . brand_name() . ". Themes that have been released for earlier versions would need upgrading -- you may wish to browse through them also, and contact the author if you\'d like them upgraded.";
                     break;
             }
         }
@@ -77,7 +77,7 @@ function find_addon_category_download_category(string $category_name, ?int $pare
             $theme_image = 'icons/spare/installation';
         } else {
             switch ($category_name) {
-                case 'Composr Releases':
+                case (brand_name() . ' Releases'):
                     $theme_image = 'icons/spare/installation';
                     break;
 
