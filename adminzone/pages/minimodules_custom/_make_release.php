@@ -180,7 +180,7 @@ $all_downloads_to_add = [
         'name' => brand_name() . " Version {$version_pretty}{$bleeding2}",
         'description' => "This is version {$version_pretty}. {$summary_line}\n\n---\n\n{$changes}",
         'filename' => 'composr_quick_installer-' . $version_dotted . '.zip',
-        'additional_details' => $additional_details,
+        'additional_details' => '',
         'category_id' => $quick_category_id,
         'internal_name' => 'Quick installer',
     ],
@@ -255,15 +255,12 @@ foreach ($all_downloads_to_add as $i => $d) {
     // Edit past download to indicate it is old and replaced by this one
 
     if ($download_added === true) {
-        $_last_version = $GLOBALS['SITE_DB']->query_select('download_downloads', ['add_date', 'additional_details', 'id', 'the_description'], ['category_id' => $category_id], ' AND main.out_mode_id IS NULL AND main.id<>' . strval($all_downloads_to_add[0]['download_id']) . ' ORDER BY add_date DESC', 1);
+        $_last_version = $GLOBALS['SITE_DB']->query_select('download_downloads', ['add_date', 'additional_details', 'id', 'the_description'], ['category_id' => $category_id], ' AND main.out_mode_id IS NULL AND main.id<>' . strval($all_downloads_to_add[$i]['download_id']) . ' ORDER BY add_date DESC', 1);
         if (array_key_exists(0, $_last_version)) {
             $last_version = $_last_version[0];
             if ($last_version['id'] != $all_downloads_to_add[$i]['download_id']) {
-                $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . get_translated_text($last_version['the_description']);
-                $map = lang_remap_comcode('description', get_translated_text($last_version['the_description']), $description);
-                $map += lang_remap_comcode('additional_details', get_translated_text($last_version['additional_details']), '');
                 $map['out_mode_id'] = $all_downloads_to_add[$i]['download_id'];
-                $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version['id']], '', 1);
+                $GLOBALS['SITE_DB']->query_update('download_downloads', ['out_mode_id' => $all_downloads_to_add[$i]['download_id']], ['id' => $last_version['id']], '', 1);
             }
         }
     }
