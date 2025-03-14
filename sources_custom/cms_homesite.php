@@ -35,6 +35,7 @@ function get_latest_version_dotted(?float $version_dotted = null, bool $bleeding
     static $version = null; // null means unset (uncached)
 
     if ($version === null) {
+        require_code('version2');
         $download_rows = load_version_download_rows();
 
         $latest_category_version = 0.0;
@@ -67,7 +68,8 @@ function get_latest_version_dotted(?float $version_dotted = null, bool $bleeding
 
                     // At this point, this download / version is now considered the latest one
                     $latest_time = $download['add_date'];
-                    $version = preg_replace('# \(.*#', '', $name);
+                    $version = str_replace([(brand_name() . ' Version '), ' (bleeding-edge)'], ['', ''], $name);
+                    $version = get_version_dotted__from_anything($version);
                 }
             }
         }

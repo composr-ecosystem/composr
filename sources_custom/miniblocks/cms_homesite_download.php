@@ -115,7 +115,7 @@ if (!class_exists('Miniblock_cms_homesite_download')) {
 
             require_code('version2');
             $t = get_translated_text($myrow['name']);
-            $t = preg_replace('# \(.*#', '', $t);
+            $t = str_replace([(brand_name() . ' Version '), ' (bleeding-edge)'], ['', ''], $t);
             $version = get_version_pretty__from_dotted(get_version_dotted__from_anything($t));
 
             require_code('files');
