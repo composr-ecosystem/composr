@@ -141,6 +141,7 @@ This addon does not contain the homesite install code and the overall site and t
             ],
             'recommends' => [
                 'downloads',
+                'addon_publish',
                 'news',
                 'tickets',
                 'newsletter',
@@ -265,12 +266,13 @@ This addon does not contain the homesite install code and the overall site and t
     public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
         // For software releases, we need our specialised download category to exist
-        if (addon_installed('downloads')) {
+        if (addon_installed('downloads') && addon_installed('addon_publish')) {
             $download_category = brand_name() . ' Releases';
             $releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);
             if ($releases_category_id === null) {
                 require_code('downloads2');
                 require_code('permissions2');
+                require_code('addon_publish');
 
                 $releases_category_id = add_download_category($download_category, db_get_first_id(), $download_category);
                 set_global_category_access('downloads', $releases_category_id);

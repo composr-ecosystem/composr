@@ -25,6 +25,9 @@ if (!addon_installed('downloads')) {
 if (!addon_installed('news')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('news')));
 }
+if (!addon_installed('addon_publish')) {
+    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('addon_publish')));
+}
 
 $error_msg = new Tempcode();
 if (!addon_installed__messaged('cms_homesite', $error_msg)) {
@@ -89,6 +92,7 @@ if (!$is_bleeding_edge) {
 
 require_code('downloads2');
 require_code('permissions2');
+require_code('addon_publish');
 
 // Get or create the base releases category
 $download_category = brand_name() . ' Releases';
@@ -117,7 +121,7 @@ if ($quick_category_id === null) {
 }
 $manual_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $release_category_id, $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Manual Installer']);
 if ($manual_category_id === null) {
-    $manual_category_id = add_download_category('Manual Installer', $manual_category_id, '', '');
+    $manual_category_id = add_download_category('Manual Installer', $release_category_id, '', '');
     set_global_category_access('downloads', $manual_category_id);
     set_privilege_access('downloads', strval($manual_category_id), 'submit_midrange_content', false);
 }
@@ -254,11 +258,11 @@ foreach ($all_downloads_to_add as $i => $d) {
         $_last_version = $GLOBALS['SITE_DB']->query_select('download_downloads', ['add_date', 'additional_details', 'id', 'the_description'], ['category_id' => $category_id], ' AND main.out_mode_id IS NULL AND main.id<>' . strval($all_downloads_to_add[0]['download_id']) . ' ORDER BY add_date DESC', 1);
         if (array_key_exists(0, $_last_version)) {
             $last_version = $_last_version[0];
-            if ($last_version['id'] != $all_downloads_to_add[0]['download_id']) {
-                $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . get_translated_text($last_version['description']);
+            if ($last_version['id'] != $all_downloads_to_add[$i]['download_id']) {
+                $description = "A new version, {$version_pretty} is available. Upgrading to {$version_pretty} is considered {$needed} by the Core Development Team{$criteria}{$justification}. There may have been other upgrades since {$version_pretty} - see [url=\"the software news archive\" target=\"_blank\"]" . get_brand_page_url(['page' => 'news'], 'site') . "[/url].\n\n---\n\n" . get_translated_text($last_version['the_description']);
                 $map = lang_remap_comcode('description', get_translated_text($last_version['the_description']), $description);
                 $map += lang_remap_comcode('additional_details', get_translated_text($last_version['additional_details']), '');
-                $map['out_mode_id'] = $all_downloads_to_add[0]['download_id'];
+                $map['out_mode_id'] = $all_downloads_to_add[$i]['download_id'];
                 $GLOBALS['SITE_DB']->query_update('download_downloads', $map, ['id' => $last_version['id']], '', 1);
             }
         }
