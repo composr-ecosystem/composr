@@ -625,7 +625,6 @@ function cms_error_get_last() : string
             $type = 'notice';
             break;
 
-        case E_STRICT:
         case E_USER_DEPRECATED:
         case E_DEPRECATED:
         default:
