@@ -425,7 +425,7 @@ function get_option(string $name, bool $missing_ok = false) : ?string
 
     // Maybe missing a DB row, or has an old null one, so we need to auto-create from hook
     if (!isset($CONFIG_OPTIONS_CACHE[$name]['c_value'])) {
-        check_for_infinite_loop('get_option', [$name, false], 2);
+        check_for_infinite_loop('get_option', [$name, false], 10);
 
         if ((!$CONFIG_OPTIONS_FULLY_LOADED) && (!array_key_exists($name, $CONFIG_OPTIONS_CACHE))) {
             load_config_options();

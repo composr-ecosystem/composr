@@ -4392,6 +4392,16 @@ function ignore_user_abort(bool $setting) : bool
 }
 
 /**
+ * If running CGI, tell PHP to finish the request stream.
+ *
+ * @return boolean Whether the finish request was successful
+ */
+function fastcgi_finish_request() : bool
+{
+    return true;
+}
+
+/**
  * Get the contents of a file.
  *
  * @param  SHORT_TEXT $filename The file name

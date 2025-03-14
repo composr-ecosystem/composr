@@ -1226,7 +1226,12 @@ function do_site()
                     (get_value_newer_than('cron_currently_running', time() - (60 * 60), true) !== '1') && // Don't run if scheduled tasks are running now unless it's been over an hour
                     (get_value_newer_than('last_cron', time() - 60) === null) // Don't run if scheduled tasks ran in the last 60 seconds
                 ) {
-                    ob_flush(); // Send the rest of the data in the buffer if we have any
+                    @ignore_user_abort(true);
+
+                    // Use fastcgi_finish_request if available to prevent blocking
+                    if (function_exists('fastcgi_finish_request')) {
+                        @fastcgi_finish_request();
+                    }
 
                     require_code('cron');
                     cron_run();
