@@ -32,45 +32,43 @@ function init__cms_homesite()
  */
 function get_latest_version_dotted(?float $version_dotted = null, bool $bleeding_edge = false) : ?string
 {
-    static $version = null; // null means unset (uncached)
+    require_code('version2');
+    $download_rows = load_version_download_rows();
 
-    if ($version === null) {
-        require_code('version2');
-        $download_rows = load_version_download_rows();
+    $version = null;
 
-        $latest_category_version = 0.0;
-        $latest_time = 0;
-        foreach ($download_rows as $cat_version => $types) {
-            // Skip categories whose version does not pertain to the one we specified, if applicable
-            if (($version_dotted !== null) && ($cat_version != $version_dotted)) {
-                continue;
-            }
+    $latest_category_version = 0.0;
+    $latest_time = 0;
+    foreach ($download_rows as $cat_version => $types) {
+        // Skip categories whose version does not pertain to the one we specified, if applicable
+        if (($version_dotted !== null) && ($cat_version != $version_dotted)) {
+            continue;
+        }
 
-            // Skip categories of older versions if we already picked up on a newer version download
-            if (($cat_version < $latest_category_version) && ($version !== null)) {
-                continue;
-            }
-            $latest_category_version = $cat_version;
+        // Skip categories of older versions if we already picked up on a newer version download
+        if (($cat_version < $latest_category_version) && ($version !== null)) {
+            continue;
+        }
+        $latest_category_version = $cat_version;
 
-            foreach ($types as $type => $rows) {
-                foreach ($rows as $download) {
-                    $name = get_translated_text($download['name']);
+        foreach ($types as $type => $rows) {
+            foreach ($rows as $download) {
+                $name = get_translated_text($download['name']);
 
-                    // If we do not want bleeding-edge, skip bleeding-edge releases
-                    if ((!$bleeding_edge) && strpos($name, 'bleeding-edge') !== false) {
-                        continue;
-                    }
-
-                    // This download is older than our newest one, so it is not the newest version
-                    if ($download['add_date'] < $latest_time) {
-                        continue;
-                    }
-
-                    // At this point, this download / version is now considered the latest one
-                    $latest_time = $download['add_date'];
-                    $version = str_replace([(brand_name() . ' Version '), ' (bleeding-edge)'], ['', ''], $name);
-                    $version = get_version_dotted__from_anything($version);
+                // If we do not want bleeding-edge, skip bleeding-edge releases
+                if ((!$bleeding_edge) && strpos($name, 'bleeding-edge') !== false) {
+                    continue;
                 }
+
+                // This download is older than our newest one, so it is not the newest version
+                if ($download['add_date'] < $latest_time) {
+                    continue;
+                }
+
+                // At this point, this download / version is now considered the latest one
+                $latest_time = $download['add_date'];
+                $version = str_replace([(brand_name() . ' Version '), ' (bleeding-edge)'], ['', ''], $name);
+                $version = get_version_dotted__from_anything($version);
             }
         }
     }
@@ -126,16 +124,16 @@ function get_latest_version_basis_number(?float $version_dotted = null, bool $bl
  */
 function get_release_tree(string $type = 'manual', bool $bleeding_edge = false) : array
 {
-    static $versions;
-    if (isset($versions)) {
-        return $versions;
+    static $versions = [];
+    if (isset($versions[$type])) {
+        return $versions[$type];
     }
 
     require_code('version2');
 
     $download_rows = load_version_download_rows();
 
-    $versions = [];
+    $versions[$type] = [];
 
     foreach ($download_rows as $cat_version => $download_types) {
         foreach ($download_types as $download_type => $download_rows) {
@@ -155,18 +153,20 @@ function get_release_tree(string $type = 'manual', bool $bleeding_edge = false) 
                 if (preg_match('#^' . preg_quote(brand_name(), '#') . ' Version (.*)$#', $name, $matches) != 0) {
                     $version_dotted = get_version_dotted__from_anything($matches[1]);
                     list(, $qualifier, $qualifier_number, $long_dotted_number, , $long_dotted_number_with_qualifier) = get_version_components__from_dotted($version_dotted);
-                    $versions[$long_dotted_number_with_qualifier] = $download_row;
+                    $_versions[$long_dotted_number_with_qualifier] = $download_row;
                 }
             }
         }
     }
 
-    uksort($versions, 'version_compare');
+    uksort($_versions, 'version_compare');
 
-    $_versions = [];
-    foreach ($versions as $long_dotted_number_with_qualifier => $download_row) {
-        $_versions[preg_replace('#\.0$#', '', $long_dotted_number_with_qualifier)] = $download_row;
+    $__versions = [];
+    foreach ($_versions as $long_dotted_number_with_qualifier => $download_row) {
+        $__versions[preg_replace('#\.0$#', '', $long_dotted_number_with_qualifier)] = $download_row;
     }
+
+    $versions[$type] = $__versions;
 
     return $_versions;
 }
