@@ -89,6 +89,8 @@ function get_latest_version_pretty(?float $version_dotted = null, bool $bleeding
     if ($version_dotted === null) {
         return null;
     }
+
+    require_code('version2');
     return get_version_pretty__from_dotted($version_dotted);
 }
 
