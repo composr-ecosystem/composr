@@ -243,7 +243,7 @@ function has_actual_page_access(?int $member_id = null, ?string $page = null, ?s
         if ($zone === '_SELF') {
             $zone = get_zone_name();
         } elseif (($zone === null) || ($zone == '_SEARCH')) {
-            $zone = get_module_zone($page);
+            $zone = get_module_zone($page, 'modules', null, 'php', false);
         }
         if ($zone === null) {
             $zone = get_zone_name(); // Weird problem that can happen on some AJAX hooks
@@ -426,7 +426,7 @@ function has_page_access(int $member_id, string $page, string $zone, bool $at_no
         }
     }
 
-    check_for_infinite_loop('has_page_access', func_get_args());
+    check_for_infinite_loop('has_page_access', func_get_args(), 5);
 
     // Had to populate cache, so we must check again now with the caches populated
     return has_page_access($member_id, $page, $zone, $at_now);

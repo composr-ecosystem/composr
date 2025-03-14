@@ -90,7 +90,7 @@ class Hook_profiles_tabs_about
 
         // Things staff can do with this user
         $modules = [];
-        if ((has_privilege($member_id_viewing, 'warn_members')) && (has_actual_page_access($member_id_viewing, 'warnings')) && (addon_installed('cns_warnings'))) {
+        if ((addon_installed('cns_warnings')) && (has_privilege($member_id_viewing, 'warn_members')) && (has_actual_page_access($member_id_viewing, 'warnings'))) {
             $redir_url = get_self_url(true);
             $modules[] = ['audit', do_lang_tempcode('WARN_MEMBER'), build_url(['page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'redirect' => protect_url_parameter($redir_url)], get_module_zone('warnings')), 'links/warning_add'];
             $modules[] = ['audit', do_lang_tempcode('WARN_MEMBER_AS_SPAMMER'), build_url(['page' => 'warnings', 'type' => 'add', 'member_id' => $member_id_of, 'spam' => 1, 'redirect' => protect_url_parameter($redir_url)], get_module_zone('warnings')), 'buttons/report'];
@@ -116,7 +116,7 @@ class Hook_profiles_tabs_about
         if ((has_privilege($member_id_viewing, 'assume_any_member')) && (get_member() != $member_id_of)) {
             $modules[] = ['views', do_lang_tempcode('MASQUERADE_AS_MEMBER'), build_url(['page' => '', 'keep_su' => $member_info['username']], ''), 'menu/site_meta/user_actions/login'];
         }
-        if ((has_actual_page_access($member_id_viewing, 'search')) && (addon_installed('search'))) {
+        if ((addon_installed('search')) && (has_actual_page_access($member_id_viewing, 'search'))) {
             $modules[] = ['content', do_lang_tempcode('SEARCH'), build_url(['page' => 'search', 'type' => 'results', 'author' => $member_info['username']], get_module_zone('search')), 'buttons/search', 'search nofollow'];
         }
         if (addon_installed('authors')) {
