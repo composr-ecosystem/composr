@@ -54,7 +54,7 @@ We recommend the following criteria for an optimal install of Composr CMS:
    - Ctype
    - cURL
    - GD2
-	- Gettext
+   - Gettext
    - Hash
    - Intl
    - Json
