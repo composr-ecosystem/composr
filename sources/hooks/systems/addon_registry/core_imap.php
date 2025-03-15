@@ -141,7 +141,7 @@ class Hook_addon_registry_core_imap
                 //'ecommerce',
                 //'newsletter',
             ],
-            'conflicts_with' => ['imap'/*non-bundled*/],
+            'previously_in_addon' => ['imap'],
         ];
     }
 
