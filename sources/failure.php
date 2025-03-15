@@ -691,7 +691,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // Automatic ban needed?...
 
-    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0]) + $risk_score);
+    $count = @intval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip, 'silent_to_staff_log' => 0])) + $risk_score;
     $hack_threshold = intval(get_option('hack_ban_threshold'));
 
     // Super administrators do not get risk scores
