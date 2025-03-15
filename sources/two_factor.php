@@ -116,6 +116,8 @@ function adjust_htaccess()
         return;
     }
 
+    require_code('failure');
+
     $option_enabled = ((maintenance_script_htaccess_option_available()) && (get_option('maintenance_script_htaccess') === '1'));
 
     $contents = cms_file_get_contents_safe($path, FILE_READ_LOCK);
@@ -132,7 +134,10 @@ function adjust_htaccess()
         $ips = array_merge($ips, $GLOBALS['FORUM_DB']->query_select('f_members', ['DISTINCT m_ip_address AS i_ip_address'], ['m_validated' => 1]));
         $ips = array_unique(collapse_1d_complexity('i_ip_address', $ips));
         foreach ($ips as $ip) {
-            $lines[] = 'Require ip ' . $ip;
+            $ip = ip_wild_to_apache($ip);
+            if ($ip != '') {
+                $lines[] = 'Require ip ' . $ip;
+            }
         }
     }
 
