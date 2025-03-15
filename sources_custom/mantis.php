@@ -13,7 +13,15 @@
  * @package    cms_homesite_tracker
  */
 
-function get_tracker_issues($ids, $version = null, $previous_version = null)
+/**
+ * Get rows of tracker issues from Mantis.
+ *
+ * @param  array $ids Array of tracker IDs to get
+ * @param  ?ID_TEXT $version Limit to issues fixed in this version (null: do not limit)
+ * @param  ?ID_TEXT $previous_version Limit to issues reported in the given version (null: do not limit)
+ * @return array Array of issues found
+ */
+function get_tracker_issues(array $ids, ?string $version = null, ?string $previous_version = null) : array
 {
     if ((empty($ids)) && ($version === null) && ($previous_version === null)) {
         return [];
@@ -66,7 +74,25 @@ function get_tracker_issues($ids, $version = null, $previous_version = null)
     return $_issue_titles;
 }
 
-function create_tracker_issue($version, $tracker_title, $tracker_message, $tracker_additional, $tracker_severity, $tracker_category, $tracker_project = '1', $handler_id = null, $steps_to_reproduce = '', $reproducibility = '10'/*always*/, $status = '80'/*resolved*/, $resolution = '20'/*fixed*/, $view_state = '10'/*public*/)
+/**
+ * Create a new tracker issue in Mantis.
+ *
+ * @param  ID_TEXT $version The version in which this issue occurs
+ * @param  SHORT_TEXT $tracker_title The title for this issue
+ * @param  LONG_TEXT $tracker_message The description of the issue
+ * @param  LONG_TEXT $tracker_additional Additional information
+ * @param  integer $tracker_severity The severity identifier
+ * @param  AUTO_LINK $tracker_category The issue category ID, usually an addon
+ * @param  AUTO_LINK $tracker_project The project in which to file this issue
+ * @param  ?MEMBER $handler_id The member handling this issue (null: current member)
+ * @param  LONG_TEXT $steps_to_reproduce Steps to reproduce this issue
+ * @param  integer $reproducibility Reproducibility identifier
+ * @param  integer $status Issue status identifier
+ * @param  integer $resolution Issue resolution identifier
+ * @param  integer $view_state The identifier determining how this issue can be viewed
+ * @return AUTO The issue ID
+ */
+function create_tracker_issue(string $version, string $tracker_title, string $tracker_message, string $tracker_additional, int $tracker_severity, int $tracker_category, int $tracker_project = 1, ?int $handler_id = null, string $steps_to_reproduce = '', int $reproducibility = 10/*always*/, int $status = 80/*resolved*/, int $resolution = 20/*fixed*/, int $view_state = 10/*public*/) : int
 {
     $query = "
         INSERT INTO
@@ -126,15 +152,15 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
         )
         VALUES
         (
-            '" . db_escape_string($tracker_project) . "',
+            '" . db_escape_string(strval($tracker_project)) . "',
             '" . strval(get_member()) . "',
-            '" . db_escape_string($handler_id) . "',
+            '" . db_escape_string(strval($handler_id)) . "',
             '0',
             '40', /* High priority */
-            '" . db_escape_string($tracker_severity) . "',
-            '" . db_escape_string($reproducibility) . "',
-            '" . db_escape_string($status) . "',
-            '" . db_escape_string($resolution) . "',
+            '" . db_escape_string(strval($tracker_severity)) . "',
+            '" . db_escape_string(strval($reproducibility)) . "',
+            '" . db_escape_string(strval($status)) . "',
+            '" . db_escape_string(strval($resolution)) . "',
             '10',
             '10',
             '" . strval($text_id) . "',
@@ -150,7 +176,7 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
             '0',
             '0',
             '" . db_escape_string($version) . "',
-            '" . db_escape_string($tracker_category) . "',
+            '" . db_escape_string(strval($tracker_category)) . "',
             '" . strval(time()) . "',
             '1',
             '" . strval(time()) . "'
@@ -170,7 +196,16 @@ function create_tracker_issue($version, $tracker_title, $tracker_message, $track
     return $ret;
 }
 
-function update_tracker_issue($tracker_id, $version = null, $tracker_severity = null, $tracker_category = null, $tracker_project = null)
+/**
+ * Update details on a Mantis tracker issue (and set the handler to the current member).
+ *
+ * @param  AUTO_LINK $tracker_id The tracker issue we are editing
+ * @param  ?ID_TEXT $version The issue reported version (null: do not change)
+ * @param  ?integer $tracker_severity The severity identifier (null: do not change)
+ * @param  ?AUTO_LINK $tracker_category The category / addon (null: do not change)
+ * @param  ?AUTO_LINK $tracker_project The issue project (null: do not change)
+ */
+function update_tracker_issue(int $tracker_id, ?string $version = null, ?int $tracker_severity = null, ?int $tracker_category = null, ?int $tracker_project = null)
 {
     ensure_version_exists_in_tracker($version);
 
@@ -181,7 +216,7 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
     ";
     if ($tracker_project !== null) {
         $query .= "
-            `project_id`='" . db_escape_string($tracker_project) . "',
+            `project_id`='" . db_escape_string(strval($tracker_project)) . "',
         ";
     }
     if (true) {
@@ -191,7 +226,7 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
     }
     if ($tracker_severity !== null) {
         $query .= "
-            `severity`='" . db_escape_string($tracker_severity) . "',
+            `severity`='" . db_escape_string(strval($tracker_severity)) . "',
         ";
     }
     if ($version !== null) {
@@ -201,7 +236,7 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
     }
     if ($tracker_category !== null) {
         $query .= "
-            `category_id`='" . db_escape_string($tracker_category) . "',
+            `category_id`='" . db_escape_string(strval($tracker_category)) . "',
         ";
     }
     $query .= "
@@ -211,7 +246,12 @@ function update_tracker_issue($tracker_id, $version = null, $tracker_severity = 
     $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, false, null, '', false);
 }
 
-function ensure_version_exists_in_tracker($version)
+/**
+ * Make sure the given version exists in Mantis.
+ *
+ * @param  ?ID_TEXT $version The version to check and create if it does not exist (null: do not check anything)
+ */
+function ensure_version_exists_in_tracker(?string $version)
 {
     if ($version === null) {
         return;
@@ -243,7 +283,14 @@ function ensure_version_exists_in_tracker($version)
     }
 }
 
-function upload_to_tracker_issue($tracker_id, $upload)
+/**
+ * Upload a file to a tracker issue in Mantis.
+ *
+ * @param  AUTO_LINK $tracker_id The tracker ID on which to upload a file
+ * @param  mixed $upload The file resource to upload
+ * @return AUTO The file ID
+ */
+function upload_to_tracker_issue(int $tracker_id, $upload) : int
 {
     $out = new Tempcode();
     if (!addon_installed__messaged('cms_homesite', $out)) {
@@ -293,7 +340,14 @@ function upload_to_tracker_issue($tracker_id, $upload)
     return $GLOBALS['SITE_DB']->_query(trim($query), null, 0, false, true, null, '', false);
 }
 
-function create_tracker_post($tracker_id, $tracker_comment_message)
+/**
+ * Create a bug note on a Mantis tracker issue.
+ *
+ * @param  AUTO_LINK $tracker_id The tracker ID on which to post the note
+ * @param  LONG_TEXT $tracker_comment_message The message to post
+ * @return AUTO The bugnote ID
+ */
+function create_tracker_post(int $tracker_id, string $tracker_comment_message) : int
 {
     $out = new Tempcode();
     if (!addon_installed__messaged('cms_homesite', $out)) {
@@ -358,7 +412,13 @@ function create_tracker_post($tracker_id, $tracker_comment_message)
     return $GLOBALS['SITE_DB']->_query($query, null, 0, false, true, null, '', false);
 }
 
-function resolve_tracker_issue($tracker_id, $handler = null)
+/**
+ * Mark a Mantis tracker issue as resolved, and award points where applicable.
+ *
+ * @param  AUTO_LINK $tracker_id The tracker issue to resolve
+ * @param  ?MEMBER $handler The member who resolved the issue (null: current member)
+ */
+function resolve_tracker_issue(int $tracker_id, ?int $handler = null)
 {
     if ($handler === null) {
         $handler = get_member();
@@ -367,8 +427,10 @@ function resolve_tracker_issue($tracker_id, $handler = null)
     $GLOBALS['SITE_DB']->query('UPDATE mantis_bug_table SET resolution=20, status=80, handler_id=' . strval($handler) . ' WHERE id=' . strval($tracker_id));
 
     if (addon_installed('points')) {
-        require_code('points_escrow__sponsorship');
-        escrow_complete_all_sponsorships($tracker_id, $handler);
+        if (addon_installed('cms_homesite')) {
+            require_code('points_escrow__sponsorship');
+            escrow_complete_all_sponsorships($tracker_id, $handler);
+        }
 
         $reporter = $GLOBALS['SITE_DB']->query_value_if_there('SELECT reporter_id FROM mantis_bug_table WHERE id=' . strval($tracker_id));
         if ($reporter !== null) {
