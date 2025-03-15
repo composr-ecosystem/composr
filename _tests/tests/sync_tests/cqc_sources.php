@@ -24,7 +24,7 @@ class cqc_sources_test_set extends cms_test_case
         $this->dump($message, 'INFO:');
 
         cms_set_time_limit(120);
-        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=sources&filter_avoid=cns_.*&avoid=forum,database,hooks,blocks,persistent_caching,diff,isocodes';
+        $url = get_base_url() . '/_tests/codechecker/codechecker.php?subdir=sources&filter_avoid=cns_.*&avoid=forum,database,hooks,blocks,persistent_caching,diff,isocodes,imap';
         $url = $this->extend_cqc_call($url);
         $result = http_get_contents($url, ['timeout' => 10000.0]);
         foreach (explode('<br />', $result) as $line) {

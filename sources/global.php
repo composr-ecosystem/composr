@@ -1263,6 +1263,7 @@ function list_untouchable_third_party_directories() : array
         '_old',
         //'sources/diff', We maintain this now
         'sources/isocodes',
+        'sources/imap',
         'sources_custom/aws_ses',
         'sources_custom/Cloudinary',
         'sources_custom/composr_mobile_sdk',
