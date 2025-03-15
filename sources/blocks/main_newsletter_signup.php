@@ -85,6 +85,19 @@ class Block_main_newsletter_signup
             require_code('type_sanitisation');
             if (!is_valid_email_address($address)) {
                 $msg = do_template('INLINE_WIP_MESSAGE', ['_GUID' => '9ce849d0d2dc879acba609b907317c74', 'MESSAGE' => do_lang_tempcode('INVALID_EMAIL_ADDRESS')]);
+
+                $extra_fields = new Tempcode();
+                $extra_hidden = new Tempcode();
+
+                // CAPTCHA?
+                if (addon_installed('captcha')) {
+                    require_code('captcha');
+                    if (use_captcha()) {
+                        $extra_fields->attach(paragraph(do_lang_tempcode('captcha:FORM_TIME_SECURITY')));
+                        $extra_fields->attach(form_input_captcha($extra_hidden));
+                    }
+                }
+
                 return do_template('BLOCK_MAIN_NEWSLETTER_SIGNUP', [
                     '_GUID' => '3759e07077d74e6537cab04c897e76d2',
                     'BLOCK_PARAMS' => comma_list_arr_to_str($map),
@@ -94,8 +107,8 @@ class Block_main_newsletter_signup
                     'URL' => get_self_url(),
                     'MSG' => $msg,
                     'BUTTON_ONLY' => $button_only,
-                    'EXTRA_FIELDS' => new Tempcode(),
-                    'EXTRA_HIDDEN' => new Tempcode(),
+                    'EXTRA_FIELDS' => $extra_fields,
+                    'EXTRA_HIDDEN' => $extra_hidden,
                 ]);
             }
 
