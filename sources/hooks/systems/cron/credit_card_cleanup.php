@@ -87,19 +87,42 @@ class Hook_cron_credit_card_cleanup
      */
     public function run(?int $last_run)
     {
+        if (!isset($this->threshold)) { // Nothing to do
+            return;
+        }
+
+        require_code('cns_members');
+        require_code('cns_members_action2');
+
         $protected_field_changes = [];
         $protected_field_names = ['payment_cardholder_name', 'payment_card_type', 'payment_card_number', 'payment_card_start_date', 'payment_card_expiry_date', 'billing_street_address', 'billing_city', 'billing_post_code', 'billing_country', 'billing_mobile_phone_number', 'billing_county', 'billing_state'];
         foreach ($protected_field_names as $cpf) {
             $field_id = find_cms_cpf_field_id('cms_' . $cpf);
             if ($field_id !== null) {
-                $protected_field_changes['field_' . strval($field_id)] = (($cpf == 'payment_card_number') ? null : '');
+                $protected_field_changes[$field_id] = (($cpf == 'payment_card_number') ? null : '');
             }
         }
 
-        $where = 'm_last_visit_time<' . strval($this->threshold);
-        $GLOBALS['FORUM_DB']->query_update(
-            'f_members m JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_member_custom_fields f ON f.mf_member_id=m.id AND ' . $where,
-            $protected_field_changes
-        );
+        $start = 0;
+        $max = 100;
+        do {
+            $rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['id'], [], ' AND m_last_visit_time<' . strval($this->threshold), $max, $start);
+
+            foreach ($rows as $row) {
+                foreach ($protected_field_changes as $key => $value) {
+                    $map = [];
+                    $change_map = cns_set_custom_field($row['id'], $key, $value, null, true);
+                    if ($change_map !== null) {
+                        $map += $change_map;
+                    }
+                }
+
+                if (count($map) > 0) {
+                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', $map, ['mf_member_id' => $row['id']], '', 1);
+                }
+            }
+
+            $start += $max;
+        } while (count($rows) > 0);
     }
 }
