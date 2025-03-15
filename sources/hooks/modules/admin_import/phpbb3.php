@@ -609,7 +609,7 @@ class Hook_import_phpbb3
                 continue;
             }
 
-            add_ip_ban($row['ban_ip']);
+            add_ip_ban($row['ban_ip'], '', null, true, true);
 
             import_id_remap_put('ip_ban', strval($row['ban_id']), 0);
         }

@@ -511,7 +511,7 @@ class Module_admin_ip_ban
             }
 
             require_code('failure');
-            add_ip_ban($ip);
+            add_ip_ban($ip, '', null, true, true); // Force it because this is a user request and not automated
             log_it('IP_BANNED', $ip);
         } else {
             if (post_param_integer('confirm', 0) == 0) {
@@ -558,7 +558,7 @@ class Module_admin_ip_ban
             cns_ban_member(intval($member_id));
         }
         require_code('failure');
-        add_ip_ban($ip);
+        add_ip_ban($ip, '', null, true, true); // Force it because this is a user request and not automated
 
         return inform_screen($this->title, do_lang_tempcode('SUCCESS'));
     }

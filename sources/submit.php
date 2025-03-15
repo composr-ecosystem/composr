@@ -215,7 +215,7 @@ function wrap_add_ip_ban(string $ip, string $descrip = '')
     $ban = trim($ip);
     if (($ban != '') && (!compare_ip_address($ban, get_ip_address()))) {
         require_code('failure');
-        add_ip_ban($ban, $descrip);
+        add_ip_ban($ban, $descrip, null, true, true); // Forced as it is usually manually triggered
 
         log_it('IP_BANNED', $ip);
     } elseif (compare_ip_address($ban, get_ip_address())) {

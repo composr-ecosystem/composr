@@ -2719,7 +2719,7 @@ class Hook_import_cms_merge
         $rows = $db->query_select('banned_ip', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
-            $change = add_ip_ban($row['ip'], $row['i_descrip'], $row['i_ban_until'], $row['i_ban_positive'] == 1);
+            $change = add_ip_ban($row['ip'], $row['i_descrip'], $row['i_ban_until'], $row['i_ban_positive'] == 1, true);
 
             if ($change) {
                 global $I_REFRESH_DID_SOMETHING;

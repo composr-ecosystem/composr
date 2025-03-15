@@ -197,7 +197,7 @@ function check_posted_field(string $name, string $val, int $filters)
         if (strpos($val, $trigger) !== false) {
             if ($details['ip_ban']) {
                 require_code('failure');
-                add_ip_ban(get_ip_address(), 'automaticRule: ' . $trigger);
+                add_ip_ban(get_ip_address(), 'automaticRule: ' . $trigger, null, true, true); // Forced because a staff member defined the rules
                 log_it('IP_BANNED', get_ip_address());
             }
 

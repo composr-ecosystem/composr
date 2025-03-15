@@ -117,7 +117,7 @@ class Hook_cns_warnings_ban_ip
                 $banned_ip = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_ip_address');
 
                 require_code('failure');
-                add_ip_ban($banned_ip, $explanation);
+                add_ip_ban($banned_ip, $explanation, null, true, true); // Forced because a staff member triggered it
                 log_it('IP_BANNED', $banned_ip);
 
                 $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [

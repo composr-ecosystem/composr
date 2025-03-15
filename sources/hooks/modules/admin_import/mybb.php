@@ -591,7 +591,7 @@ class Hook_import_mybb
                 continue;
             }
 
-            add_ip_ban($row['lastip']);
+            add_ip_ban($row['lastip'], '', null, true, true);
 
             import_id_remap_put('ip_ban', strval($row['lastip']), 0);
         }

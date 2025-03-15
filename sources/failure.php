@@ -638,7 +638,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
     // Infinite loop protection (we first needed to determine if this is silent so we can either show hack message or loop message)...
 
-    $looping = check_for_infinite_loop('_log_hack_attack_and_exit', [$reason], 1, $silent_to_user);
+    $looping = check_for_infinite_loop('_log_hack_attack_and_exit', [$reason, $reason_param_a, $reason_param_b], 1, $silent_to_user);
     if ($looping) {
         require_code('critical_errors');
         critical_error('HACK_ATTACK');
@@ -726,7 +726,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
         if ((!is_our_server($ip)) && (!is_unbannable_bot_dns($ip)) && (!is_unbannable_bot_ip($ip))) {
             // Prepare message about a ban...
 
-            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], ['ip' => $ip], 'ORDER BY date_and_time');
+            $rows = $GLOBALS['SITE_DB']->query_select('hackattack', ['*'], ['ip' => $ip, 'silent_to_staff_log' => 0], 'ORDER BY date_and_time');
             $rows[] = $new_row;
 
             $summary = '[list]';
@@ -755,7 +755,7 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
 
             // Add ban...
 
-            $ban_happened = add_ip_ban($ip, do_lang('AUTO_BAN_HACK_REASON'));
+            $ban_happened = add_ip_ban($ip, do_lang('AUTO_BAN_HACK_REASON'), null, true, true); // Must force so it overrides negative bans (security bans take priority over antispam)
 
             // Prepare notification text...
 
@@ -933,10 +933,11 @@ function is_unbannable_bot_ip(string $ip) : bool
  * @param  LONG_TEXT $descrip Explanation for ban
  * @param  ?TIME $ban_until When to ban until (null: no limit)
  * @param  boolean $ban_positive Whether this is a positive ban (as opposed to a cached negative)
+ * @param  boolean $force_ban Whether to force the ban to take place even if the IP address is on a spam exclusion or has a negative ban
  * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return boolean Whether a change actually happened
  */
-function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bool $ban_positive = true, bool $check_caching = true) : bool
+function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bool $ban_positive = true, bool $force_ban = false, bool $check_caching = true) : bool
 {
     // Edge case: No securitylogging addon
     if (!addon_installed('securitylogging')) {
@@ -954,15 +955,15 @@ function add_ip_ban(string $ip, string $descrip = '', ?int $ban_until = null, bo
     $is_unbannable_existing = null;
     $ban_until_existing = null;
     $already_banned = ip_banned($ip, true, false, $is_unbannable_existing, $ban_until_existing, $check_caching);
-    if ($is_unbannable_existing) {
+    if (($is_unbannable_existing) && (!$force_ban)) {
         return false; // Don't allow automatically banning of what is marked as unbannable
     }
     if (($already_banned) && ($ban_until !== null) && (($ban_until_existing === null) || ($ban_until < $ban_until_existing))) {
         return false; // Don't allow automatically shortening of an existing ban period
     }
 
-    // Ban it
-    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip], '', 1);
+    // Ban them
+    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip]); // Remove existing bans (e.g. negatives, shorter bans)
     $GLOBALS['SITE_DB']->query_insert('banned_ip', ['ip' => $ip, 'i_descrip' => $descrip, 'i_ban_until' => $ban_until, 'i_ban_positive' => $ban_positive ? 1 : 0], false, true); // To stop weird race-like conditions
     persistent_cache_delete('IP_BANS');
     if ((cms_is_writable(get_file_base() . '/.htaccess')) && (is_null($ban_until)) && ($ban_positive)) {
@@ -1026,6 +1027,7 @@ function ip_wild_to_apache(string $ip) : string
 
 /**
  * Remove an IP-ban.
+ * This also silences all hack-attack logs from staff for this IP address (which also means they no-longer count towards risk score).
  *
  * @param  IP $ip The IP address to unban (potentially encoded with *'s, although this will only unban an exact matching wildcard ban)
  */
@@ -1035,7 +1037,7 @@ function remove_ip_ban(string $ip)
         return;
     }
 
-    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip], '', 1);
+    $GLOBALS['SITE_DB']->query_delete('banned_ip', ['ip' => $ip]);
     persistent_cache_delete('IP_BANS');
     if (cms_is_writable(get_file_base() . '/.htaccess')) {
         $contents = cms_file_get_contents_safe(get_file_base() . '/.htaccess', FILE_READ_UNIXIFIED_TEXT);
@@ -1048,7 +1050,7 @@ function remove_ip_ban(string $ip)
             cms_file_put_contents_safe(get_file_base() . '/.htaccess', $contents, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
         }
     }
-    $GLOBALS['SITE_DB']->query_delete('hackattack', ['ip' => $ip]);
+    $GLOBALS['SITE_DB']->query_update('hackattack', ['silent_to_staff_log' => 1], ['ip' => $ip]);
 }
 
 /**

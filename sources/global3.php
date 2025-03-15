@@ -3157,7 +3157,7 @@ function _compare_ip_address(string $wild, array $full_parts, string $delimiter)
  * @param  string $ip The IP address to check for banning
  * @param  boolean $force_db Force check via database only
  * @param  boolean $handle_uncertainties Handle uncertainties (used for the external bans - if true, we may return null, showing we need to do an external check). Only works with $force_db.
- * @param  ?boolean $is_unbannable Whether the IP is unbannable (returned by reference) (null: not set yet by caller)
+ * @param  ?boolean $is_unbannable Whether the IP is unbannable by spam standards; on an exclusion list or has a negative ban (returned by reference) (null: not set yet by caller)
  * @param  ?integer $ban_until When the ban will expire, will always be more than the current timestamp (null: not set yet by caller / no expiration)
  * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return ?boolean Whether the IP address is banned (null: unknown)
