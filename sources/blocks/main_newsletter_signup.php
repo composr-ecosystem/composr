@@ -44,26 +44,6 @@ class Block_main_newsletter_signup
     }
 
     /**
-     * Find caching details for the block.
-     *
-     * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
-     */
-    public function caching_environment() : ?array
-    {
-        $info = [];
-        $info['cache_on'] = <<<'PHP'
-        (count($_POST) == 0)
-        ?
-        $map
-        :
-        null
-PHP;
-        $info['special_cache_flags'] = CACHE_AGAINST_DEFAULT;
-        $info['ttl'] = 60 * 24;
-        return $info;
-    }
-
-    /**
      * Execute the block.
      *
      * @param  array $map A map of parameters
