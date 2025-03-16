@@ -529,19 +529,19 @@ function make_dummy_db_row(string $table, bool $allow_null = true, array $forced
                 $primary_map[$field] = $value8;
             }
         } elseif (strpos($type, 'UINTEGER') !== false) {
-            $value9 = mt_rand(0, 4294967295);
+            $value9 = mt_rand(0, 1000000);
             $map[$field] = $value9;
             if ($primary_field === true) {
                 $primary_map[$field] = $value9;
             }
         } elseif (strpos($type, 'INTEGER') !== false) {
-            $value10 = random_int(-2147483648, 2147483647);
+            $value10 = random_int(-1000000, 1000000);
             $map[$field] = $value10;
             if ($primary_field === true) {
                 $primary_map[$field] = $value10;
             }
         } elseif (strpos($type, 'REAL') !== false) {
-            $value11 = (mt_rand(0, 4294967295) / 1000000);
+            $value11 = (mt_rand(0, 1000000) / 1000000);
             $map[$field] = $value11;
             if ($primary_field === true) {
                 $primary_map[$field] = $value11;

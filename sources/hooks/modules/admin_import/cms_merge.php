@@ -157,6 +157,7 @@ class Hook_import_cms_merge
         $info['final_message'] = do_lang_tempcode('FORUM_CACHE_CLEAR', escape_html($cleanup_url));
 
         $info['final_tasks'] = [
+            ['cns_members_dedup', do_lang('DEDUP_MEMBERS'), 'f_members', 1000000], // Realistically, there would be very few e-mail address duplicates, and the hook uses intelligent SQL filtering so we aren't processing the full member list
             ['cns_topics_recache', do_lang('CACHE_TOPICS'), 'f_topics', 100],
             ['cns_recache', do_lang('CACHE_FORUMS'), 'f_topics', 100],
             ['cns_members_recache', do_lang('CACHE_MEMBERS'), 'f_members', 100],
