@@ -36,7 +36,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive ban (add, then banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip();
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -54,7 +54,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive wildcard ban (add, then banned, remove, then not banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $result = add_ip_ban($wildcarded_ip, '', null, true, false);
+            $result = add_ip_ban($wildcarded_ip, '', null, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -70,7 +70,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive temporary ban (add, then banned, remove, then not banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip();
-            $result = add_ip_ban($ip, '', $future_timestamp, true, false);
+            $result = add_ip_ban($ip, '', $future_timestamp, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -86,7 +86,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive expired temporary ban (add, then not banned, remove, then also not banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip();
-            $result = add_ip_ban($ip, '', $past_timestamp, true, false);
+            $result = add_ip_ban($ip, '', $past_timestamp, true, false, false);
             //$this->assertTrue($result); Actually we only test expiry in ip_banned, to reduce code weight
             $is_unbannable = null;
             $ban_until = null;
@@ -102,7 +102,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive wildcard temporary ban (add, then banned, remove, then not banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip();
-            $result = add_ip_ban($wildcarded_ip, '', $future_timestamp, true, false);
+            $result = add_ip_ban($wildcarded_ip, '', $future_timestamp, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -120,14 +120,14 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a negative ban (add, not banned, add a positive, still not banned)
             list($ip, $wildcarded_ip) = $this->generate_test_ip();
-            $result = add_ip_ban($ip, '', null, false/*negative ban*/, false);
+            $result = add_ip_ban($ip, '', null, false/*negative ban*/, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue(!$result);
             $is_unbannable = null;
             $ban_until = null;
@@ -137,7 +137,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test removing the negative ban (remove, add positive ban on top, then banned) - then cleanup
             remove_ip_ban($ip);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -148,14 +148,14 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a negative wildcard ban (add, then not banned, add a positive, still not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $result = add_ip_ban($wildcarded_ip, '', null, false/*negative ban*/, false);
+            $result = add_ip_ban($wildcarded_ip, '', null, false/*negative ban*/, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue(!$result);
             $is_unbannable = null;
             $ban_until = null;
@@ -167,14 +167,14 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a negative temporary ban (add, then not banned, add a positive, still not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $result = add_ip_ban($ip, '', $future_timestamp, false/*negative ban*/, false);
+            $result = add_ip_ban($ip, '', $future_timestamp, false/*negative ban*/, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === $future_timestamp);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue(!$result);
             $is_unbannable = null;
             $ban_until = null;
@@ -185,14 +185,14 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a negative expired temporary ban (add, then not banned, add a positive, is banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $result = add_ip_ban($ip, '', $past_timestamp, false/*negative ban*/, false);
+            $result = add_ip_ban($ip, '', $past_timestamp, false/*negative ban*/, false, false);
             //$this->assertTrue($result); Actually we only test expiry in ip_banned, to reduce code weight
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === false);
             $this->assertTrue($ban_until === null);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
@@ -203,14 +203,14 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a negative wildcard temporary ban (add, then not banned, add a positive, still not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
-            $result = add_ip_ban($wildcarded_ip, '', $future_timestamp, false/*negative ban*/, false);
+            $result = add_ip_ban($wildcarded_ip, '', $future_timestamp, false/*negative ban*/, false, false);
             $this->assertTrue($result);
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === $future_timestamp);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue(!$result);
             $is_unbannable = null;
             $ban_until = null;
@@ -225,14 +225,14 @@ class ip_bans_test_set extends cms_test_case
             // Test adding a positive ban against something listed in spam_check_exclusions (add, then not banned) - then cleanup
             list($ip, $wildcarded_ip) = $this->generate_test_ip(true);
             set_option('spam_check_exclusions', $ip);
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             //$this->assertTrue(!$result); Actually we do let it be added, as the check is meant to be on ip_banned only (allows retroactive setting of spam_check_exclusions, and less code)
             $is_unbannable = null;
             $ban_until = null;
             $this->assertTrue(!ip_banned($ip, $force_db, false, $is_unbannable, $ban_until, false));
             $this->assertTrue($is_unbannable === true);
             $this->assertTrue($ban_until === null);
-            $result = add_ip_ban($wildcarded_ip, '', null, true, false);
+            $result = add_ip_ban($wildcarded_ip, '', null, true, false, false);
             //$this->assertTrue(!$result); Ditto previous comment
             $is_unbannable = null;
             $ban_until = null;
@@ -244,7 +244,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive ban against a localhost IP (add, then not banned)
             $ip = '127.0.0.1';
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             //$this->assertTrue(!$result); Actually we do let it be added, as the check is meant to be on ip_banned only (allows retroactive bug-fixing, and less code)
             $is_unbannable = null;
             $ban_until = null;
@@ -255,7 +255,7 @@ class ip_bans_test_set extends cms_test_case
 
             // Test adding a positive ban against an invalid IP (add, then not banned)
             $ip = '123';
-            $result = add_ip_ban($ip, '', null, true, false);
+            $result = add_ip_ban($ip, '', null, true, false, false);
             $this->assertTrue(!$result);
             $is_unbannable = null;
             $ban_until = null;
