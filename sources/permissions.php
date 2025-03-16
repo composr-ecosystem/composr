@@ -211,7 +211,7 @@ function has_zone_access(int $member_id, string $zone) : bool
         }
     }
 
-    check_for_infinite_loop('has_zone_access', func_get_args());
+    check_for_infinite_loop('has_zone_access', func_get_args(), 5);
 
     return has_zone_access($member_id, $zone);
 }
@@ -920,7 +920,7 @@ function has_privilege(int $member_id, string $privilege, ?string $page = null, 
         }
     }
 
-    check_for_infinite_loop('has_privilege', func_get_args());
+    check_for_infinite_loop('has_privilege', func_get_args(), 5);
 
     return has_privilege($member_id, $privilege, $page, $cats);
 }

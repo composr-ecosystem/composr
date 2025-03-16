@@ -5897,7 +5897,7 @@ function cms_shuffle_assoc(array &$array) : bool
  * @param  boolean $actually_exit Whether we want to bail on critical error if an infinite loop occurs
  * @return boolean Whether an infinite loop is occurring
  */
-function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 1, bool $actually_exit = true) : bool
+function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 10, bool $actually_exit = true) : bool
 {
     global $CHECK_FOR_INFINITE_LOOP; // Global in case we want to reset iteration count
 
@@ -5914,6 +5914,16 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     // Increment count and handle if we surpassed the allowed number of iterations
     $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
     if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        require_code('failure');
+
+        // Use a more helpful (and relayed) error message, which includes serialised arguments, for the developers and staff
+        $dev_error = do_lang('_INFINITE_LOOP_HALTED', comcode_escape($codename), comcode_escape(serialize($args)));
+        if ((php_function_allowed('error_log'))) {
+            @error_log('Composr: CRITICAL ' . $dev_error, 0);
+        }
+        relay_error_notification($dev_error);
+
+        // Do not include serialised arguments in the actual UI as it may contain sensitive information
         if ($actually_exit) {
             require_code('critical_errors');
             critical_error('INFINITE_LOOP', $codename, true);

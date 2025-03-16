@@ -187,7 +187,7 @@ function has_privilege_group(int $group_id, string $privilege, ?string $page = n
         }
     }
 
-    check_for_infinite_loop('has_privilege_group', func_get_args());
+    check_for_infinite_loop('has_privilege_group', func_get_args(), 5);
 
     return has_privilege_group($group_id, $privilege, $page, $cats);
 }

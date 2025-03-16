@@ -177,6 +177,8 @@ function load_value_options()
 
     $VALUE_OPTIONS_CACHE = persistent_cache_get('VALUES');
     if (!is_array($VALUE_OPTIONS_CACHE)) {
+        check_for_infinite_loop('load_value_options', [], 25);
+
         $_value_options = $GLOBALS['SITE_DB']->query_select('values', ['*']);
         $VALUE_OPTIONS_CACHE = list_to_map('the_name', $_value_options);
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
@@ -425,7 +427,7 @@ function get_option(string $name, bool $missing_ok = false) : ?string
 
     // Maybe missing a DB row, or has an old null one, so we need to auto-create from hook
     if (!isset($CONFIG_OPTIONS_CACHE[$name]['c_value'])) {
-        check_for_infinite_loop('get_option', [$name, false], 10);
+        check_for_infinite_loop('get_option', [$name], 25);
 
         if ((!$CONFIG_OPTIONS_FULLY_LOADED) && (!array_key_exists($name, $CONFIG_OPTIONS_CACHE))) {
             load_config_options();
@@ -520,8 +522,6 @@ function get_option(string $name, bool $missing_ok = false) : ?string
  */
 function get_value(string $name, ?string $default = null, bool $elective_or_lengthy = false, bool $env_also = false) : ?string
 {
-    //check_for_infinite_loop('get_value', [$name, $elective_or_lengthy, $env_also], 100);
-
     // Elective / lengthy values have quick logic as we only load them on request
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
@@ -529,6 +529,7 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
             if (!isset($GLOBALS['SITE_DB'])) {
                 return $default;
             }
+            check_for_infinite_loop('get_value', func_get_args(), 25);
             $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
         }
         if ($VALUE_OPTIONS_ELECTIVE_CACHE[$name] === null) {
@@ -581,6 +582,8 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
  */
 function _get_value(string $name, string $end = '') : ?string
 {
+    check_for_infinite_loop('_get_value', func_get_args(), 25);
+
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
 
     $value = $GLOBALS['SITE_DB']->query_select('values', ['the_value', 'date_and_time'], ['the_name' => $name], $end, 1, 0, running_script('install') || running_script('upgrader'));
@@ -615,6 +618,7 @@ function _get_value(string $name, string $end = '') : ?string
 function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengthy = false) : ?string
 {
     if ($elective_or_lengthy) {
+        check_for_infinite_loop('get_value_newer_than', func_get_args(), 25);
         return $GLOBALS['SITE_DB']->query_value_if_there('SELECT the_value FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'values_elective WHERE date_and_time>' . strval($cutoff) . ' AND ' . db_string_equal_to('the_name', $name));
     }
 
@@ -658,6 +662,8 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
  */
 function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : ?string
 {
+    check_for_infinite_loop('set_value', func_get_args(), 25);
+
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
         if ($value === null) {
@@ -701,6 +707,8 @@ function set_value(string $name, ?string $value, bool $elective_or_lengthy = fal
  */
 function delete_value(string $name, bool $elective_or_lengthy = false)
 {
+    check_for_infinite_loop('delete_value', func_get_args(), 100);
+
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
         unset($VALUE_OPTIONS_ELECTIVE_CACHE[$name]);
@@ -729,6 +737,8 @@ function delete_values(array $values)
     if (empty($values)) {
         return;
     }
+
+    check_for_infinite_loop('delete_values', func_get_args(), 100);
 
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
     $end = [];
