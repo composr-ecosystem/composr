@@ -138,7 +138,7 @@ All Composr development shall follow the core principles of the Bazaar model.
 
 [title="3"]Section II - Board[/title]
 
-Legislation shall be guided by the Composr member Board, who may draft decisions and guide the direction in which the Composr community shall take. The members of the Board alone may not put into effect any measure or decision that will consequently alter the Composr Constitution or the members of the Board without completing an official vote from the members and satisfying the necessary requirements as defined in section VI for ratifying a measure.
+Legislation shall be guided by the [page="_SEARCH:board_members"]members of the Board[/page], who may draft decisions and guide the direction in which the Composr community shall take. The members of the Board alone may not put into effect any measure or decision that will consequently alter the Composr Constitution or the members of the Board without completing an official vote from the members and satisfying the necessary requirements as defined in section VI for ratifying a measure.
 
 Members of the board are not to be considered superior to any members of the community, and only wield the authority granted to them by the Constitution. Hierarchy is only introduced to the extent necessary for practical purposes and is not a badge of honor or mark of prestige. It is unconstitutional to grant any member (especially members of the Board) seniority.
 
