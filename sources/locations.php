@@ -383,10 +383,10 @@ function _form_input_region(string $stub, ?string $default = null, bool $require
     ]);
 
     // Input for region
-    $region_list = form_input_list_entry('', ($default === null), do_lang_tempcode('REGION_MUST_CHOOSE_COUNTRY'));
+    $region_list = form_input_list_entry('', true, do_lang_tempcode('REGION_MUST_CHOOSE_COUNTRY'));
     $region_input = new Tempcode();
 
-    if ($default !== null) {
+    if (array_key_exists(0, $selected_countries)) {
         $region_list = create_region_selection_list($selected_countries[0], (($default !== null) ? [$default] : []));
     }
     $region_input = do_template('FORM_SCREEN_INPUT_LIST', [
