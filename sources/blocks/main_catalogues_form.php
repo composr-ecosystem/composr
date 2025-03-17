@@ -44,31 +44,6 @@ class Block_main_catalogues_form
     }
 
     /**
-     * Find caching details for the block.
-     *
-     * @return ?array Map of cache details (cache_on and ttl) (null: block is disabled)
-     */
-    public function caching_environment() : ?array
-    {
-        $info = [];
-        $info['cache_on'] = <<<'PHP'
-        (post_param_string('_block_id', '') != '')
-        ?
-        null // No cache when submitting the form
-        :
-        [
-            md5(get_ip_address() . ' ' . strval(get_member())), // Separate cache by member / IP so CAPTCHA works
-            array_key_exists('param', $map) ? $map['param'] : '',
-            array_key_exists('only_one', $map) ? $map['only_one'] : '',
-            array_key_exists('guid', $map) ? $map['guid'] : '',
-            array_key_exists('redirect', $map) ? $map['redirect'] : '',
-        ]
-PHP;
-        $info['ttl'] = 60 * 24;
-        return $info;
-    }
-
-    /**
      * Execute the block.
      *
      * @param  array $map A map of parameters
