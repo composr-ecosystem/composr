@@ -41,4 +41,4 @@ Over a dozen developers have contributed to ocPortal / Composr CMS in an officia
 [block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
 
 [title="3"]Inactive Core Developers[/title]
-[block param="7" display_type="TITLELIST" sorting="1" max="100" start="0" pagination="0" as_guest="0" check="1"]main_cc_embed[/block]
+[block param="7" display_type="TITLELIST" sorting="1" max="100" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]

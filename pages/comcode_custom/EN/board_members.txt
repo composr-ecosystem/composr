@@ -1,0 +1,13 @@
+[title="1"]Members of the Composr CMS Board[/title]
+
+The following are the current members of the Composr CMS Board. These members take on leadership roles within the community to help guide the direction, vision, and development of Composr. They also enforce the terms of the [page="_SEARCH:constitution"]Constitution[/page].
+
+As Composr operates on the democratic Bazaar model, members can be voted in or out of the Board by the community by following the process of voting under Article III of the [page="_SEARCH:constitution"]Constitution[/page].
+
+[title="2"]Current Active Members[/title]
+
+[block="64" display_type="TABULAR"]main_cc_embed[/block]
+
+[title="2"]Former Inactive Members[/title]
+
+[block="65" display_type="TITLELIST" max="100" pagination="1"]main_cc_embed[/block]

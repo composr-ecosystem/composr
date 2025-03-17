@@ -2,9 +2,7 @@
 
 [title="1"]The Composr CMS Constitution[/title]
 
-(WORK IN PROGRESS)
-
-We, the members of the Composr CMS community, in order to establish the rights, responsibilities, and governance of Composr CMS, its Board members, its core developers, and its community, hereby ordain and establish this Constitution for Composr CMS.
+We, the members of the Composr CMS community, in order to establish the rights and responsibilities of its core developers, its community, its Board members, and governance of Composr CMS, hereby ordain and establish this Constitution for Composr CMS.
 
 [title="2"]Article I - Rights and Privileges[/title]
 
@@ -15,10 +13,11 @@ Article I outlines the rights and the privileges granted of all Composr members.
 All members of the Composr CMS community shall be granted these [abbr="These rights, as defined, cannot be taken away from any member of the Composr community under any circumstances."]rights[/abbr]:
 
 [list]
-[*]the right to [abbr="This right does not cover the right to download Composr specifically from composr.app; if a member is banned from composr.app, they cannot download Composr from that site anymore. They may, however, download it elsewhere, such as GitLab."]download[/abbr] and use the Composr CMS software [abbr="Free of charge does not mean there will not be costs involved. One is reasonably expected to be able to provide their own web hosting or purchase web hosting on which to run Composr. Members will be expected to consider hiring outside developers for upkeep and/or customizations to the software they do not want to (or cannot) make themselves. Users of Composr should acknowledge that, within a free and open source community, developers can only contribute what they can when they can (and often do not get financially compensated for it). And developers may request a sponsorship to implement some proposed features for Composr CMS to help financially support the work and contributions they make."]free of charge[/abbr], subject to the license agreement of Composr CMS;
-[*]the right to view and [abbr="While you can, the core developers do not recommend modifying the original source code as this will make upgrading to newer versions much harder. Composr was developed with customization in mind via _custom folders and contentious_overrides hooks."]modify[/abbr] the full source code of Composr CMS, subject to the license agreement of Composr CMS;
-[*]the right to fork the Composr CMS project, subject to the license agreement of Composr CMS; and
-[*]the right to receive attribution for any and all contributions made to the Composr CMS code or to the issue tracker, subject to the license agreement of Composr CMS.
+[*]the right to [abbr="This right does not cover the right to download Composr specifically from composr.app; if a member is banned from composr.app, they cannot download Composr from that site anymore. They may, however, download it elsewhere, such as GitLab."]download[/abbr] and use the Composr CMS software [abbr="Free of charge does not mean there will not be costs involved. One is reasonably expected to be able to provide their own web hosting or purchase web hosting on which to run Composr. Members will be expected to consider hiring outside developers for upkeep and/or customizations to the software they do not want to (or cannot) make themselves. Users of Composr should acknowledge that, within a free and open source community, developers can only contribute what they can when they can (and often do not get financially compensated for it). And developers may request a sponsorship to implement some proposed features for Composr CMS to help financially support the work and contributions they make. All contributions are voluntary."]free of charge[/abbr], subject to the license agreement of Composr CMS;
+[*]the right to view and [abbr="Composr was developed with customization in mind via _custom folders and contentious_overrides hooks. You can also modify the original code, but this presents its own challenges (e.g. upgrading)."]modify[/abbr] the full source code of Composr CMS, subject to the license agreement of Composr CMS;
+[*]the right to fork the Composr CMS project, subject to the license agreement of Composr CMS;
+[*]the right to receive attribution for any and all contributions made to the Composr CMS code or to the issue tracker, subject to the license agreement of Composr CMS; and
+[*]the right to exchange their site points to other members for any reason which does not otherwise violate this Constitution, including for monetary gain, and even if the member is banned.
 [/list]
 
 These rights shall not be infringed.
@@ -30,8 +29,8 @@ All members of the Composr CMS community shall be granted these [abbr="Privilege
 [list]
 [*]the privilege to collaborate on the official Composr CMS website (composr.app), including but not limited to receiving support from others, discussing ideas, voting on decisions for the community, sharing personal customizations / addons / themes, improving documentation, and offering professional development services which directly relate to Composr CMS, subject to the terms of this Constitution;
 [*]the privilege to report bugs, features, and suggestions to the official tracker ({$BASE_URL*}/tracker/);
-[*]the privilege to submit merge requests to the official Composr CMS GitLab ({$CMS_REPOS_URL*}) implementing new features or fixing bugs which have been reported on the official tracker ({$BASE_URL*}/tracker/); the merge requests are subject to Composr's Coding Standards as documented in the tutorials; and
-[*]the privilege to [abbr="One may argue this should be a right and not a privilege. In the Composr community, it is a privilege. Abuse of the Composr platform or the voting system will result in the loss of voting privileges. However, it is unconstitutional for a member to be denied their voting privileges for any biased reason (e.g. being denied the ability to vote on specific measures)."]vote on changes to Composr legislation and direction[/abbr] as explained in Article III.
+[*]the privilege to submit merge requests to the official Composr CMS GitLab ({$CMS_REPOS_URL*}); and
+[*]the privilege to [abbr="One may argue this should be a right and not a privilege. In the Composr community, it is a privilege. Abuse of the Composr platform or the voting system will result in the loss of voting privileges. However, it is unconstitutional for a member to be denied their voting privileges for any biased reason (e.g. being denied the ability to vote on specific measures)."]vote on measures[/abbr] as explained in Article III.
 [/list]
 
 [title="2"]Article II - Responsibilities[/title]
@@ -43,30 +42,34 @@ Article II outlines the responsibilities of all Composr members to maintain thei
 All members of the Composr CMS community, including members of the Board, shall acknowledge and adhere to their responsibility...
 
 [list]
-[*]to read and indicate agreement or disagreement with any and all future changes to the Constitution, which will be reasonably communicated by the members of the Board;
+[*]to read and indicate agreement or disagreement with any and all future changes to the Constitution, which will be reasonably communicated by the members of the Board, prior to engagement and re-engagement within Composr CMS spaces;
 [*]to contribute to the [page=":ecosystem"]Composr ecosystem[/page], if they can, in any way(s) they can, when using the software, to support its continued growth and longevity*;
+[*]to monitor the official forum (TODO) for voting on measures, and to participate in voting**;
 [*]to register and use only one account on composr.app per physical person;
 [*]to demonstrate empathy and kindness to all;
 [*]to be respectful of differing opinions, viewpoints, and experiences;
 [*]to give and gracefully receive constructive criticism and feedback;
 [*]to accept accountability for any and all mistakes made, to learn from them, to provide apologies and restitution to those impacted, and to come up with an actionable plan to avoid those same mistakes in the future;
 [*]to approach suggestions and feedback with the mindset of what is best for the overall community opposed to any given individual;
+[*]to earn or give rewards and incentives (e.g. points) with honesty and integrity (e.g. having actively contributed or exchanged something);
 [*]to refrain from posting any content, engaging in any behaviour, or using any language that is sexual or violent;
 [*]to refrain from spamming, trolling, or personally attacking others;
 [*]to refrain from harassing anyone especially after being told no / to stop;
 [*]to refrain from impersonating others;
 [*]to refrain from uploading or doing anything which could cause harm to the website, the server running the website, or the devices of anyone who views or downloads our content;
 [*]to act lawfully and refrain from (including encouraging) criminal activity in accordance with U.S. Law and the Laws of the States of [abbr="That is the state in which the server running composr.app is located."]Virginia[/abbr] and [abbr="Ohio is the state under which PDStig, LLC, the company hosting and managing composr.app, does business."]Ohio[/abbr];
-[*]to refrain from publishing any private or personally identifiable information of others;
+[*]to refrain from publishing any private or personally identifiable information of others, unless said information was already publicly shared by said person, or said person has granted prior documented consent to share it;
 [*]to otherwise act with civility and respect; and
 [*]to report when someone is violating these responsibilities through the applicable "Report this" links or "Report" buttons, or through [email]support@composr.app[/email] when using a report link / button is not available.
 [/list]
 
-*Not actively contributing will not result in any enforcement actions. However, those who actively contribute receive more privileges, voting power, and rewards.
+*Not actively contributing will not result in any enforcement actions (contributions are voluntary). However, those who actively contribute receive more privileges, voting power, and rewards.
+
+**Not actively enforced, but it is encouraged for members to participate in the decision-making processes of the community.
 
 [title="3"]Section II - Board / Moderator Responsibilities[/title]
 
-The members of the Board and the moderators acknowledge their responsibility to enforce the Constitution in the Composr community within reason. They acknowledge their responsibility to uphold the safety, security, integrity, and enjoyment of the Composr platform while avoiding unnecessary use of punitive discipline where mediation would have likely sufficed.
+The [page="_SEARCH:board_members"]members of the Board[/page] and the moderators acknowledge their responsibility to enforce the Constitution in the Composr community within reason. They acknowledge their responsibility to uphold the safety, security, integrity, and enjoyment of the Composr platform while avoiding unnecessary use of punitive discipline where mediation would have likely sufficed.
 
 The members of the Board and the moderators acknowledge their responsibility to provide ample clarification to the expectations of the Composr community at large and to the enforcement actions taken against violations (if any actions were taken).
 
@@ -102,7 +105,7 @@ A member of the Board or a moderator may delete some or all of the violating con
 [*][b]Restrictions[/b]
 A member of the Board or a moderator may place temporary restrictions on the permissions or privileges of the member's account. This could include being prohibited from posting in a topic for a period of time, making any topics or posts in a forum for a period of time, accessing certain areas of the site, or being able to perform certain actions. These actions help prevent the member from causing further harm in specific problematic areas of the site.
 [*][b]Probation[/b]
-A member of the Board or a moderator may place a member's account on probation for a temporary period of time. When in probation, a member loses all of the usergroup and rank benefits they had until probation expires. Additionally, any and all content they submit must be approved by a member of the Board or a moderator before it becomes visible. Members in probation also cannot vote on official measures in Article III. This helps prevent the member from causing further harm in cases where the member has been significantly problematic.
+A member of the Board or a moderator may place a member's account on probation for a temporary period of time. When in probation, a member loses all of the usergroup and rank benefits they had until probation expires. Additionally, any and all content they submit must be approved by a member of the Board or a moderator before it becomes visible. Members in probation also cannot vote on measures in Article III. This helps prevent the member from causing further harm in cases where the member has been significantly problematic.
 [*][b]Submission ban[/b]
 Where the members of the Board and the moderators feel a member cannot responsibly submit content in good faith, they may issue an arbitrary "submission ban". This permanently prevents the member from being able to submit anything on the site. But they may still be able to log in and use the site.
 [*][b]Account / IP ban[/b]
@@ -135,55 +138,54 @@ All Composr development shall follow the core principles of the Bazaar model.
 
 [title="3"]Section II - Board[/title]
 
-Legislation shall be guided by the Composr member Board, who may draft decisions and guide the direction in which the Composr community shall take. The members of the Board alone may not put into effect any legislation or decision that will consequently alter the Composr Constitution, its Bylaws, or the members of the Board without completing an official vote from the members and satisfying the necessary requirements as defined in section VI for ratifying a motion.
+Legislation shall be guided by the Composr member Board, who may draft decisions and guide the direction in which the Composr community shall take. The members of the Board alone may not put into effect any measure or decision that will consequently alter the Composr Constitution or the members of the Board without completing an official vote from the members and satisfying the necessary requirements as defined in section VI for ratifying a measure.
+
+Members of the board are not to be considered superior to any members of the community, and only wield the authority granted to them by the Constitution. Hierarchy is only introduced to the extent necessary for practical purposes and is not a badge of honor or mark of prestige. It is unconstitutional to grant any member (especially members of the Board) seniority.
 
 [title="3"]Section III - Voting Power[/title]
 
-All members within the Composr community who have established an account on the official website (composr.app) are to be granted voting power. Voting power is defined as the amount of weight the member has on a weighted poll, particularly polls to vote on changes on Composr legislation. A member shall be granted more voting power the more points they have earned since registering a composr.app account (rank points, although there are exceptions such as charged points from warnings which can take away from rank points).
+All members within the Composr community who have established an account on the official website (composr.app) are to be granted voting power. Voting power is defined as the amount of weight the member has on a weighted poll, particularly polls to vote on measures. A member shall be granted more voting power the more points they have earned since registering a composr.app account (rank points, although there are exceptions such as charged points from warnings which can take away from rank points).
 
 A member has a voting power equal to the cubic root of their rank points (or 0 if they have 0 or less rank points). For example, if a member has 2,500 rank points, their voting power is about 13.572, which means their vote on a weighted poll influences its results 13.572 times as much as someone with a voting power of 1.
 
 [title="3"]Section IV - Voting Requirements[/title]
 
-Where a Board member or the community wishes to introduce a change, addition, or removal in legislation, or where the community wishes to nominate a member for the Board or remove a member from the Board, a vote on that motion [i]must[/i] be conducted.
+Where a Board member or the community wishes to introduce a change, addition, or removal in legislation or in the Constitution, or where the community wishes to nominate a member for the Board or remove a member from the Board, a vote on that motion [i]must[/i] be conducted.
 
-Additionally, a vote [i]must[/i] be conducted for the appeal of a member's ban if multiple other members express legitimate concern about the member having been banned. And said member must have their ban appealed if the measure passes.
+A vote [i]must[/i] be conducted for the appeal of a member's ban if multiple other members express legitimate concern about the member having been banned. And said member must have their ban appealed if the measure passes.
 
-Additionally, a vote [i]must[/i] be conducted should a member propose a veto of a decision made by a member of the Board.
+A vote [i]must[/i] be conducted should a member propose the appeal of a decision made by a member of the Board; this includes moderation decisions.
 
-Additionally, effective after the first stable release of Composr CMS version 11, a vote [i]must[/i] be conducted for the implementation of feature requests listed on the tracker, or for feature changes to the {$BASE_URL*} homesite, except if one or more of the following conditions apply:
+A vote [i]may[/i] be conducted to delegate authority to the members of the Board, or to any named group or individual, and does not require a change to the Constitution.
+
+Effective after the first stable release of Composr CMS version 11, a vote [i]must[/i] be conducted for the implementation of feature requests listed on the tracker, or for feature changes to the {$BASE_URL*} homesite, except if one or more of the following conditions apply:
  - The change is small and would be implemented as a patch release
  - The change pertains to a non-bundled addon / theme (except if bundling a non-bundled addon, or un-bundling a bundled addon)
   - In this case, the author of the addon has full governing jurisdiction over their addon and not the Composr community at large
  - The change pertains to the tutorials (except when changing a Composr standard, e.g. the codebook)
- - The feature request has been sponsored via points or financial donations, and the total amount of sponsorships satisfies the recommended sponsorship amount listed on the issue
+ - The feature request has been sponsored via points or financial donations, and a sponsorship amount has been listed on the issue by a core developer, and the total amount of sponsorships satisfies the sponsorship amount listed on the issue
 
 A vote [i]may[/i] be conducted for other reasons, such as issues or suggestions raised by the Composr community, but it is not required unless requested by the person who brought it up.
 
 [list]
 [*]Votes shall be conducted as topics with a weighted poll in the (TODO: link) forum.
 [*]The first post in each topic shall clearly and concisely explain the measure on which members are voting. All details necessary for the measure are to be included in the first post; anything that was not included shall be deemed not a part of the measure to be voted on (e.g. there are no assumptions).
-[*]Each topic shall include a weighted poll where members can vote on the measure. The poll options shall reflect the measure. There shall be no more than three distinct poll options and no less than two distinct options (if the need exists for more than 3, then unofficial straw-polls shall be conducted first to narrow the choices down to 2 or 3 for the official vote). Members shall not be allowed to vote on all options, but may be allowed to vote for 2 options on a 3-option poll. Votes and their results shall be kept hidden until voting closes. The ability to forfeit a vote to see the results shall be denied. The ability to change one's vote after having already voted shall be denied. And only website members (not Guests) shall be allowed to vote.
-[*]Neither the first post nor the poll options shall express any language that would reasonably suggest bias or persuade members towards any particular option.
-[*]Members of the Board shall refrain from including any of their own biases in discussing the measure throughout the composr.app site unless explicitly requested by a member, but may respond to questions or concerns posted by members, including requests to disclose potential pros, cons, and risks of each option.
-[*]The member of the Board initiating the vote / measure shall abstain from voting on the measure. Additionally, if a measure involves any Board members (such as the removal of a Board member), the involved Board members shall also abstain from voting on the measure. However, other Board members may vote on it barring they refrain from discussing the matter internally (but rather discussing it publicly on the topic) and therefore potentially introducing a Conflict of Interest among Board members.
-[*]The initial post and poll shall not be edited in any way, shape, or form, once voting has officially been opened. If a significant error is later discovered, the vote shall be closed and re-opened in a new topic / measure. Arbitrary errors shall not be 'discovered' with the intent on disrupting the voting process. The voting period shall last exactly 30 days from the time voting has been opened.
-[*]The members of the Board shall send out a newsletter to all members informing them of the measure being up for vote within no more than 7 days after the vote has been opened. The measure may be included in an aggregate newsletter with other measures, news, or content, providing it is in a prominent position.
+[*]Each topic shall include a weighted poll where members can vote on the measure. The poll options shall reflect the measure.
+[*]Votes shall be "yay" or "nay", where "yay" is to implement the measure, and "nay" is to do nothing (maintain the status quo). Where a measure cannot yet effectively narrow the issue down to "yay" or "nay", unofficial straw-polls shall be conducted outside of the official voting forum to narrow down a measure to a single choice. Then, an official "yay" or "nay" vote shall be conducted on implementing the final choice.
+[*]Votes and their results shall be kept hidden until voting closes. The ability to forfeit a vote to see the results shall be denied. The ability to change one's vote after having already voted shall be denied. And only website members (not Guests) shall be allowed to vote.
+[*]Where a measure governs the addition or removal of a member to or from the Board, the involved member shall abstain from voting out of Conflict of Interest.
+[*]The measure text (first post) shall not express any language that would reasonably suggest bias (e.g. calls to action); it shall remain neutral and factual.
+[*]The initial post and poll shall not be edited in any way, shape, or form, once voting has officially been opened. If a significant error is later discovered, the vote shall be closed and re-opened in a new topic / measure. Arbitrary errors shall not be 'discovered' with the intent on disrupting the voting process.
+[*]For measures regarding Composr development or disciplinary appeals, the voting period shall be one week. For all other measures, the voting period shall be two weeks.
 [/list]
 
 [title="3"]Section V - Closure[/title]
 
 Once voting has closed, the Board member shall reveal the results publicly to the community by editing the poll and setting its results to public. The measure, or similar measures, shall not be proposed for a re-vote or opened again for at least 3 months following the closing of the votes.
 
-[title="3"]Section VI - Requirements to Pass[/title]
+[title="3"]Section VI - Requirements to Ratify[/title]
 
-A measure must meet all of the following criteria for it to be ratified:
-
-[list]
-[*]At least 10% of the active (within the last month) member base on composr.app placed a vote on the poll, or 5 members, whichever is greatest.
- - For votes on feature requests from the tracker, the overall requirement is only 3 member votes as these are more common, lower priority issues
-[*]Regardless of the number of options, a simple majority of 51% is needed on one option, except for constitutional amendments (excluding Article II Section I) which require a supermajority (67%) on one option.
-[/list]
+A measure must receive a simple majority (more than 50%) on the "yay" option to pass and be ratified, except for constitutional amendments (excluding Article II Section I) which require a supermajority (more than 2/3) on the "yay" option. This requirement is in no respects to the number of members who vote.
 
 [title="3"]Section VII - Constitutionality[/title]
 
@@ -194,8 +196,8 @@ No vote shall be conducted on matters regarding the following as they are deemed
 The rights defined in this Constitution are absolute and cannot be infringed.
 [*][b]Biased voter restrictions[/b]
 While voting is a privilege and not a right, it is unconstitutional to place biased voting restrictions on any members of the Composr community or on any measures. The following are the only constitutional methods of restricting votes:
- - members losing or being reinstated their privilege to vote on any and all measures (e.g. being banned from the site), not just specific measures
- - measures being closed or opened for voting from any and all members at once, not just select members
+ - members losing their privilege to vote on any and all measures (e.g. being banned from the site), not just specific measures
+ - measures being closed for voting from any and all members at once, not just select members (exception: where a measure directly involves a member, it is permitted to restrict the involved member from voting out of Conflict of Interest, but the member must still be allowed to comment about the measure)
  - voting power and rank points affect all members equally; the voting power equation shall not differ between members for any reason, and the methods of earning or losing rank points shall also be consistent for all members equally
 [*][b]Unrealistic expectations[/b] (requests that are not actionable nor measurable)
 But reasonable effort must be made by the members of the Board to propose alternative measures which break the problematic measure down into realistic, actionable and measurable phases
@@ -204,3 +206,26 @@ No one is entitled to free labour, and no one shall ever be required to provide 
 [*][b]Positions of seniority[/b]
 Everyone is equally bound by the Constitution, in full, regardless of their history with, or roles in, Composr.
 [/list]
+
+[title="2"]Article IV - Amendments[/title]
+
+[title="3"]Amendment I - Transition Clause[/title]
+
+This clause and its terms shall take precedence over the rest of the Constitution as applicable until [b]1st January, 2026[/b]. On that date, this Clause shall be deemed dissolved.
+
+Until the given date, the following terms shall apply as the Composr community transitions from compo.sr over to composr.app, and from the sponsorship support model over to the Bazaar model / the terms of this Constitution:
+ - A Transition Board shall assume temporary responsibilities of the members of the Board until official members of the Board are voted in, and the Transition Clause expires. Should a Board not be voted in before the Clause expires, then there will be no Board until one is voted in by the community. The Transition Board shall consist of the following members:
+  - Christopher Graham
+  - Patrick Schmalstig
+ - The governance of this Constitution shall only be loosely enforced during the Transition Clause.
+ - The Constitution may be amended at any time without a vote, but a final version must be voted in before the Transition Clause expires. Should the Clause expire without a final version of the Constitution being voted in, then no Constitution shall apply until one is voted in.
+ - Voting of a final Constitution and members of the Board shall be conducted according to the terms of the Constitution as written at the time voting takes place.
+
+[concepts
+	1_key="Motion"	1_value="A proposal to make an addition, change, or appeal to the Constitution, legislation, members of the Board, or other decision affecting the Composr community or development"
+	2_key="Measure"	2_value="A motion on which the community will vote, or has voted, to ratify or not to ratify; a measure includes declarative text which go into effect if the measure is ratified"
+	3_key="Ratify"	3_value="Go into effect; its terms apply until and unless another measure is ratified to amend it"
+	4_key="Legislation"	4_value="Ratified (effective) measures"
+	5_key="Constitution"	5_value="The highest-level governing framework and principles of Composr CMS and its community (e.g. this text)"
+	6_key="Board"	6_value="Members of the Composr community who have been voted in by the community to help guide its decisions; the responsibilities of the Board can be changed according to the desires of the community"
+]Concepts[/concepts]
