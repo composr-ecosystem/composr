@@ -55,9 +55,6 @@ class Block_main_tutorial_rating
         if (!addon_installed__messaged('cms_homesite', $error_msg)) {
             return $error_msg;
         }
-        if (!addon_installed__messaged('cms_homesite_tracker', $error_msg)) {
-            return $error_msg;
-        }
         if (!addon_installed__messaged('cms_release_build', $error_msg)) {
             return $error_msg;
         }

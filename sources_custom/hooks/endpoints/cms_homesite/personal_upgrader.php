@@ -105,7 +105,6 @@ class Hook_endpoint_cms_homesite_personal_upgrader
             // 10 => 11
             'unvalidated' => 'validation',
             'composr_homesite' => 'cms_homesite',
-            'composr_homesite_support_credits' => 'cms_homesite_support_credits',
         ];
 
         $addons = [];

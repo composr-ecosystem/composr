@@ -23,9 +23,6 @@ if (!addon_installed__messaged('composr_tutorials', $error_msg)) {
 if (!addon_installed('cms_homesite')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
 }
-if (!addon_installed('cms_homesite_tracker')) {
-    warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker')));
-}
 if (!addon_installed('cms_release_build')) {
     warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build')));
 }

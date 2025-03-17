@@ -141,7 +141,6 @@ You may want to put them in your Git \'cmd\' directory, as that is in your path.
             ],
             'recommends' => [
                 'cms_homesite',
-                'cms_homesite_tracker',
                 'composr_tutorials',
             ],
             'conflicts_with' => [],

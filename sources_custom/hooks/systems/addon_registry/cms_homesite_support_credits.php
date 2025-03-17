@@ -135,7 +135,6 @@ class Hook_addon_registry_cms_homesite_support_credits
                 'Conversr',
                 //'core_all_icons',
                 'cms_homesite',
-                'cms_homesite_tracker',
             ],
             'recommends' => [
                 'stats',
