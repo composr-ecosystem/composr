@@ -38,6 +38,11 @@
 			<qualification name="member" ids="" text="cms_homesite:ACHIEVEMENT_PUBLISH_AMAZING_ADDON" />
 		</qualifications>
 	</achievement>
+	<achievement name="translate" image="icons/menu/adminzone/style/language/language" title="Translation publication" points="100">
+		<qualifications>
+			<qualification name="member" ids="" text="cms_homesite:ACHIEVEMENT_TRANSLATE_SOFTWARE" />
+		</qualifications>
+	</achievement>
 	<!-- END custom achievements for composr.app -->
 
 	<achievement name="anniversary" image="icons_monochrome/calendar/birthday" title="achievements:ACHIEVEMENT_ANNIVERSARY">
@@ -53,14 +58,6 @@
 	</achievement>
 
 	<achievement name="extrovert" image="icons_monochrome/menu/social/chat/chat" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
-		<!-- 
-				Multiple "qualifications" are treated as an OR, and multiple "qualification" within the same "qualifications" is treated as an AND.
-				In this case, the achievement is awarded if the member either made 10 activity messages and 50 chat messages, or they made 25 forum posts.
-		-->
-		<qualifications>
-			<qualification name="activity_feed" count="10" />
-			<qualification name="chat_messages" count="50" />
-		</qualifications>
 		<qualifications>
 			<qualification name="content" types="post" count="25" />
 		</qualifications>
@@ -111,12 +108,6 @@
 		</qualifications>
 	</achievement>
 
-	<achievement name="ecommerce_purse" image="icons_monochrome/menu/rich_content/ecommerce/orders" title="achievements:ACHIEVEMENT_ECOMMERCE_PURSE" points="100">
-		<qualifications>
-			<qualification name="ecom_transactions" count="5" no_free="1" />
-		</qualifications>
-	</achievement>
-
 	<achievement name="escrower_power" title="achievements:ACHIEVEMENT_ESCROWER_POWER" points="50">
 		<qualifications>
 			<qualification name="escrows" count="1000" as_points="1" />
@@ -128,7 +119,7 @@
 
 	<achievement name="file_dumper" image="icons_monochrome/menu/cms/filedump" title="achievements:ACHIEVEMENT_FILE_DUMPER" points="25">
 		<qualifications>
-			<qualification name="filedump" count="100" />
+			<qualification name="filedump" count="10" />
 		</qualifications>
 	</achievement>
 
@@ -199,12 +190,6 @@
 	<achievement name="rater_tater" image="icons_monochrome/feedback/rate" title="achievements:ACHIEVEMENT_RATER_TATER" points="25">
 		<qualifications>
 			<qualification name="ratings" count="25" />
-		</qualifications>
-	</achievement>
-
-	<achievement name="tracker_master_9000" image="icons_monochrome/spare/report_usability" title="achievements:ACHIEVEMENT_TRACKER_MASTER_9000" points="100">
-		<qualifications>
-			<qualification name="tracker" count="10" />
 		</qualifications>
 	</achievement>
 
