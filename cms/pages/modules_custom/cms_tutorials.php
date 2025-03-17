@@ -51,9 +51,6 @@ class Module_cms_tutorials extends Standard_crud_module
         if (!addon_installed('cms_homesite')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite')));
         }
-        if (!addon_installed('cms_homesite_tracker')) {
-            warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker')));
-        }
         if (!addon_installed('cms_release_build')) {
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_release_build')));
         }

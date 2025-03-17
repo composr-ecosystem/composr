@@ -163,7 +163,7 @@ class Hook_addon_registry_core_imap
     public function get_file_list() : array
     {
         return [
-            'sources/hooks/systems/addon_registry/imap.php',
+            'sources/hooks/systems/addon_registry/core_imap.php',
             'sources/imap.php',
             'sources/imap/.htaccess',
             'sources/imap/composer.json',

@@ -331,6 +331,7 @@ class Hook_addon_registry_core_cns
             'sources/hooks/systems/snippets/pt_rules.php',
             'sources/hooks/systems/symbols/CPF_LIST.php',
             'sources/hooks/systems/tasks/cns_delete_member.php',
+            'sources/hooks/systems/tasks/cns_members_dedup.php',
             'sources/hooks/systems/tasks/cns_members_recache.php',
             'sources/hooks/systems/tasks/export_members.php',
             'sources/hooks/systems/tasks/import_members.php',

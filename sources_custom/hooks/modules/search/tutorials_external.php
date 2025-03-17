@@ -34,9 +34,6 @@ class Hook_search_tutorials_external extends FieldsSearchHook
         if (!addon_installed('cms_homesite')) {
             return null;
         }
-        if (!addon_installed('cms_homesite_tracker')) {
-            return null;
-        }
         if (!addon_installed('cms_release_build')) {
             return null;
         }

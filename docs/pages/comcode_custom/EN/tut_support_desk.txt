@@ -296,7 +296,7 @@ For more information on this, see the [page="_SEARCH:tut_feedback"]Feedback and 
 
 [title="2"]Support tracker[/title]
 
-Composr does not come with its own issue management database, but we have a non-bundled addon that includes an integrated modified version of Mantis ([tt]cms_homesite_tracker[/tt]).
+Composr does not come with its own issue management database.
 
 Support tickets can work as a basic private issue management system, using Post Templates among other features.
 
