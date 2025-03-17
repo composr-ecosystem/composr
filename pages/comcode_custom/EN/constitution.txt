@@ -222,7 +222,7 @@ Until the given date, the following terms shall apply as the Composr community t
  - Voting of a final Constitution and members of the Board shall be conducted according to the terms of the Constitution as written at the time voting takes place.
 
 [concepts
-	1_key="Measure (noun)"	1_value="Declarative text which go into effect if ratified"
+	1_key="Measure (noun)"	1_value="Declarative text which goes into effect if ratified"
 	2_key="Motion (verb)"	2_value="The action of proposing an addition, change, or appeal to the Constitution, legislation, members of the Board, or other decision affecting the Composr community or development; this is usually followed by the creation of a measure to be voted on"
 	3_key="Ratify"	3_value="Go into effect; its terms apply until and unless another measure is ratified to amend it"
 	4_key="Legislation"	4_value="Ratified (effective) measures"
