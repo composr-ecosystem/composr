@@ -44,7 +44,7 @@ All members of the Composr CMS community, including members of the Board, shall 
 [list]
 [*]to read and indicate agreement or disagreement with any and all future changes to the Constitution, which will be reasonably communicated by the members of the Board, prior to engagement and re-engagement within Composr CMS spaces;
 [*]to contribute to the [page=":ecosystem"]Composr ecosystem[/page], if they can, in any way(s) they can, when using the software, to support its continued growth and longevity*;
-[*]to monitor the official forum (TODO) for voting on measures, and to participate in voting**;
+[*]to monitor the [page="forum:forumview:id=13"]official forum for voting on measures[/page], and to participate in voting**;
 [*]to register and use only one account on composr.app per physical person;
 [*]to demonstrate empathy and kindness to all;
 [*]to be respectful of differing opinions, viewpoints, and experiences;
@@ -168,7 +168,7 @@ Effective after the first stable release of Composr CMS version 11, a vote [i]mu
 A vote [i]may[/i] be conducted for other reasons, such as issues or suggestions raised by the Composr community, but it is not required unless requested by the person who brought it up.
 
 [list]
-[*]Votes shall be conducted as topics with a weighted poll in the (TODO: link) forum.
+[*]Votes shall be conducted as topics with a weighted poll in the [page="forum:forumview:id=13"]measures forum[/page].
 [*]The first post in each topic shall clearly and concisely explain the measure on which members are voting. All details necessary for the measure are to be included in the first post; anything that was not included shall be deemed not a part of the measure to be voted on (e.g. there are no assumptions).
 [*]Each topic shall include a weighted poll where members can vote on the measure. The poll options shall reflect the measure.
 [*]Votes shall be "yay" or "nay", where "yay" is to implement the measure, and "nay" is to do nothing (maintain the status quo). Where a measure cannot yet effectively narrow the issue down to "yay" or "nay", unofficial straw-polls shall be conducted outside of the official voting forum to narrow down a measure to a single choice. Then, an official "yay" or "nay" vote shall be conducted on implementing the final choice.
