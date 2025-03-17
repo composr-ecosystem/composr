@@ -165,6 +165,7 @@ class Hook_addon_registry_core_fields
             'sources/hooks/systems/fields/reference.php',
             'sources/hooks/systems/fields/reference_multi.php',
             'sources/hooks/systems/fields/region.php',
+            'sources/hooks/systems/fields/region_multi.php',
             'sources/hooks/systems/fields/short_text.php',
             'sources/hooks/systems/fields/short_text_multi.php',
             'sources/hooks/systems/fields/short_trans.php',
