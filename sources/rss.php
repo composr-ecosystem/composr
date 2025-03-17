@@ -135,11 +135,11 @@ class CMS_RSS
             }
             xml_set_object($xml_parser, $this);
             @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, $target_charset);
-            xml_set_element_handler($xml_parser, 'startElement', 'endElement');
-            xml_set_character_data_handler($xml_parser, 'startText');
-            //xml_set_external_entity_ref_handler($xml_parser, 'extEntity');
-            xml_set_start_namespace_decl_handler($xml_parser, 'startNamespace');
-            xml_set_end_namespace_decl_handler($xml_parser, 'endNameSpace');
+            xml_set_element_handler($xml_parser, [$this, 'startElement'], [$this, 'endElement']);
+            xml_set_character_data_handler($xml_parser, [$this, 'startText']);
+            //xml_set_external_entity_ref_handler($xml_parser, [$this, 'extEntity']);
+            xml_set_start_namespace_decl_handler($xml_parser, [$this, 'startNamespace']);
+            xml_set_end_namespace_decl_handler($xml_parser, [$this, 'endNameSpace']);
 
             /*
             require_code('character_sets');

@@ -197,7 +197,7 @@ function check_posted_field(string $name, string $val, int $filters)
         if (strpos($val, $trigger) !== false) {
             if ($details['ip_ban']) {
                 require_code('failure');
-                add_ip_ban(get_ip_address(), 'automaticRule: ' . $trigger);
+                add_ip_ban(get_ip_address(), 'automaticRule: ' . $trigger, null, true, true); // Forced because a staff member defined the rules
                 log_it('IP_BANNED', get_ip_address());
             }
 
@@ -703,8 +703,8 @@ class Field_restriction_loader
         }
         xml_set_object($xml_parser, $this);
         @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
-        xml_set_element_handler($xml_parser, 'startElement', 'endElement');
-        xml_set_character_data_handler($xml_parser, 'startText');
+        xml_set_element_handler($xml_parser, [$this, 'startElement'], [$this, 'endElement']);
+        xml_set_character_data_handler($xml_parser, [$this, 'startText']);
 
         // Run the parser
         $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/fields.xml') ? (get_custom_file_base() . '/data_custom/xml_config/fields.xml') : (get_file_base() . '/data/xml_config/fields.xml'), FILE_READ_LOCK | FILE_READ_BOM);
@@ -947,8 +947,8 @@ class Advanced_banning_loader
         $xml_parser = xml_parser_create(get_charset());
         xml_set_object($xml_parser, $this);
         @xml_parser_set_option($xml_parser, XML_OPTION_TARGET_ENCODING, get_charset());
-        xml_set_element_handler($xml_parser, 'startElement', 'endElement');
-        xml_set_character_data_handler($xml_parser, 'startText');
+        xml_set_element_handler($xml_parser, [$this, 'startElement'], [$this, 'endElement']);
+        xml_set_character_data_handler($xml_parser, [$this, 'startText']);
 
         // Run the parser
         $data = cms_file_get_contents_safe(is_file(get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') ? (get_custom_file_base() . '/data_custom/xml_config/advanced_banning.xml') : (get_file_base() . '/data/xml_config/advanced_banning.xml'), FILE_READ_LOCK | FILE_READ_BOM);

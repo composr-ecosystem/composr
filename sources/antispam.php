@@ -505,9 +505,12 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
     if ($key != '') {
         $url .= '&api_key=' . urlencode($key); // Key not needed for read requests, but give it as a courtesy
     }
-    $_result = cms_http_request($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]);
 
-    $result = @json_decode($_result->data, true);
+    // Reduce load on Stop Forum Spam in case of an active massive spam attack by adding a 1-hour cache
+    require_code('http');
+    $_result = cache_and_carry('cms_http_request', [$url, ['convert_to_internal_encoding' => true, 'trigger_error' => false, 'ignore_http_status' => true]], 60);
+
+    $result = @json_decode($_result[0], true);
     if (is_array($result)) {
         if ($result['success']) {
             foreach (['username', 'email', 'ip'] as $criterion) {
@@ -546,7 +549,7 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
         }
     } else {
         require_code('failure');
-        $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $_result->message, $user_ip);
+        $error = do_lang('ERROR_CHECKING_FOR_SPAMMERS', 'stopforumspam.com', $_result[4], $user_ip);
         cms_error_log(brand_name() . ': ERROR ' . $error, 'error_occurred_api');
         return [ANTISPAM_RESPONSE_ERROR, $confidence_level, $confidence_by_criterion];
     }

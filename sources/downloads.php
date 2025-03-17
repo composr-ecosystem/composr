@@ -671,7 +671,7 @@ function generate_dload_url(int $id, bool $use_gateway) : object
         $use_gateway = false;
     }
 
-    $keep = symbol_tempcode('KEEP', ['0', '1']);
+    $keep = symbol_tempcode('KEEP', ['0']);
 
     if ($use_gateway) {
         $download_url = make_string_tempcode(find_script('download_gateway'));
@@ -679,7 +679,22 @@ function generate_dload_url(int $id, bool $use_gateway) : object
         $download_url = make_string_tempcode(find_script('dload'));
     }
 
-    $download_url->attach('?id=' . strval($id));
+    // Security: We use resource GUID if Commandr is installed to prevent content scraping
+    // LEGACY: The cms_version_time is to ensure we do not do this until 11 beta8
+    require_code('version');
+    if (addon_installed('commandr') && ((cms_version_time() > 1741833435) || $GLOBALS['DEV_MODE'])) {
+        require_code('resource_fs');
+
+        $_id = find_guid_via_id('download', strval($id));
+        if ($_id === null) {
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+        }
+        $real_id = $_id;
+    } else {
+        $real_id = strval($id);
+    }
+
+    $download_url->attach('?id=' . $real_id);
     $download_url->attach($keep);
 
     require_code('anti_leech');

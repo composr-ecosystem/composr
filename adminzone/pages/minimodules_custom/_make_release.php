@@ -250,7 +250,6 @@ foreach ($all_downloads_to_add as $i => $d) {
     $all_downloads_to_add[$i] = $d;
 
     $urls[$d['internal_name']] = static_evaluate_tempcode(build_url(['page' => 'downloads', 'type' => 'entry', 'id' => $download_id], get_module_zone('downloads'), [], false, false, true));
-    $urls[$d['internal_name'] . ' (direct download)'] = find_script('dload') . '?id=' . strval($download_id);
 
     // Edit past download to indicate it is old and replaced by this one
 

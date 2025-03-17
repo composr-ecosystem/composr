@@ -274,7 +274,7 @@ class Module_admin_lookup
             foreach ($all_ips as $bip) {
                 if (addon_installed('securitylogging')) {
                     if (in_array($bip, $_POST['banned'])) {
-                        add_ip_ban($bip);
+                        add_ip_ban($bip, '', null, true, true); // Force it because this is a user request and not automated
                         $all_banned_filtered[] = $bip;
                     } else {
                         remove_ip_ban($bip);

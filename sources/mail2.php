@@ -147,13 +147,7 @@ function _imap_server_spec(string $host, int $port, ?string $type = null) : stri
  */
 function find_mail_folders(string $host, int $port, ?string $type, string $username, string $password) : array
 {
-    if (addon_installed('imap')) {
-        require_code('imap');
-    }
-
-    if (!function_exists('imap_open')) {
-        warn_exit(do_lang_tempcode('IMAP_NEEDED'));
-    }
+    require_code('imap');
 
     $server_spec = _imap_server_spec($host, $port, $type);
     $mbox = @imap_open($server_spec . 'INBOX', $username, $password);
@@ -290,7 +284,7 @@ function is_mail_bounced(string $email, ?string $host = null, ?int $port = null,
  *
  * @param  string $host The server hostname
  * @param  integer $port The port
- * @param  string $type The protocol (null: use configured / autodetect)
+ * @param  ?string $type The protocol (null: use configured / autodetect)
  * @set imap imaps imaps_nocert pop3 pop3s pop3s_nocert
  * @param  string $folder The inbox identifier
  * @param  string $username The username
@@ -386,14 +380,7 @@ function find_mail_bounces(string $host, int $port, string $type, string $folder
  */
 function _find_mail_bounces(string $host, int $port, ?string $type, string $folder, string $username, string $password, bool $bounces_only = true, ?int $since = null) : array
 {
-    if (addon_installed('imap')) {
-        require_code('imap');
-    }
-
-    if (!function_exists('imap_open')) {
-        warn_exit(do_lang_tempcode('IMAP_NEEDED'));
-    }
-
+    require_code('imap');
     require_code('type_sanitisation');
 
     disable_php_memory_limit(); // In case of a huge number

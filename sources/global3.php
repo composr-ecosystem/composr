@@ -3157,7 +3157,7 @@ function _compare_ip_address(string $wild, array $full_parts, string $delimiter)
  * @param  string $ip The IP address to check for banning
  * @param  boolean $force_db Force check via database only
  * @param  boolean $handle_uncertainties Handle uncertainties (used for the external bans - if true, we may return null, showing we need to do an external check). Only works with $force_db.
- * @param  ?boolean $is_unbannable Whether the IP is unbannable (returned by reference) (null: not set yet by caller)
+ * @param  ?boolean $is_unbannable Whether the IP is unbannable by spam standards; on an exclusion list or has a negative ban (returned by reference) (null: not set yet by caller)
  * @param  ?integer $ban_until When the ban will expire, will always be more than the current timestamp (null: not set yet by caller / no expiration)
  * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return ?boolean Whether the IP address is banned (null: unknown)
@@ -5897,7 +5897,7 @@ function cms_shuffle_assoc(array &$array) : bool
  * @param  boolean $actually_exit Whether we want to bail on critical error if an infinite loop occurs
  * @return boolean Whether an infinite loop is occurring
  */
-function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 1, bool $actually_exit = true) : bool
+function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 10, bool $actually_exit = true) : bool
 {
     global $CHECK_FOR_INFINITE_LOOP; // Global in case we want to reset iteration count
 
@@ -5914,6 +5914,16 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     // Increment count and handle if we surpassed the allowed number of iterations
     $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
     if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        require_code('failure');
+
+        // Use a more helpful (and relayed) error message, which includes serialised arguments, for the developers and staff
+        $dev_error = do_lang('_INFINITE_LOOP_HALTED', comcode_escape($codename), comcode_escape(serialize($args)));
+        if ((php_function_allowed('error_log'))) {
+            @error_log('Composr: CRITICAL ' . $dev_error, 0);
+        }
+        relay_error_notification($dev_error);
+
+        // Do not include serialised arguments in the actual UI as it may contain sensitive information
         if ($actually_exit) {
             require_code('critical_errors');
             critical_error('INFINITE_LOOP', $codename, true);

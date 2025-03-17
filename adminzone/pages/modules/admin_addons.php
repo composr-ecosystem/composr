@@ -667,13 +667,14 @@ class Module_admin_addons
         cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST); // get_url extends it further as needed
 
         require_code('uploads');
+        require_code('global4');
 
         $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
 
         $__url = post_param_string('url', '', INPUT_FILTER_URL_GENERAL);
         $_urls = explode('%2C', $__url);
         foreach ($_urls as $i => $url) {
-            if (is_numeric($url)) {
+            if (is_numeric($url) || (looks_like_guid($url))) {
                 $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($url);
             } else {
                 $_POST['url'] = $url; // In case it was submitted in array form, which is possible on some UAs (based on an automated bug report)

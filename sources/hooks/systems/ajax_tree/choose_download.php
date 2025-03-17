@@ -38,8 +38,10 @@ class Hook_ajax_tree_choose_download
         }
 
         require_code('downloads');
+        require_code('global4');
 
         if ((!is_numeric($id)) && ($id != '')) { // This code is actually for the homesite, for the addon directory
+            $_id = null;
             if (substr($id, 0, 8) == 'Version ') {
                 $id_float = floatval(substr($id, 8));
                 do {

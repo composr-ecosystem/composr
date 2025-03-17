@@ -331,7 +331,7 @@ class _third_party_code_test_set extends cms_test_case
                 if (preg_match('#^sources/(forum|database)/#', $path) != 0) {
                     continue;
                 }
-                if (preg_match('#^sources/diff/#', $path) != 0) {
+                if (preg_match('#^sources/(diff|isocodes|imap)/#', $path) != 0) {
                     continue;
                 }
                 if (in_array($path, [

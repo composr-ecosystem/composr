@@ -158,10 +158,10 @@ class Database_Static_mysqli extends Database_super_mysql
         if (($results === false) && ((!$fail_ok) || (strpos(mysqli_error($db_link), 'is marked as crashed and should be repaired') !== false))) {
             $err = mysqli_error($db_link);
 
-            if ((function_exists('mysqli_ping')) && ($err == 'MySQL server has gone away') && (!$this->reconnected_once)) {
+            if (in_array($err, ['MySQL server has gone away', 'Lost connection to MySQL server during query']) && (!$this->reconnected_once)) {
                 cms_ini_set('mysqli.reconnect', '1');
                 $this->reconnected_once = true;
-                mysqli_ping($db_link);
+                @mysqli_query($db_link, 'SELECT 1'); // Implicit reconnect
                 $ret = $this->query($query, $connection, null/*already encoded*/, 0/*already encoded*/, $fail_ok, $get_insert_id);
                 $this->reconnected_once = false;
                 return $ret;

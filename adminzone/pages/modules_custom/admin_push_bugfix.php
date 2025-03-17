@@ -209,6 +209,8 @@ class Module_admin_push_bugfix
     {
         require_code('form_templates');
 
+        cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
+
         global $REMOTE_BASE_URL;
 
         if (!is_suexec_like()) {

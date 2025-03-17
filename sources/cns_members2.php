@@ -308,3 +308,111 @@ function cns_may_whisper(int $target, ?int $member_id = null) : bool
     $may_whisper_cache[$key] = $answer;
     return $answer;
 }
+
+/**
+ * Merge one member into another member.
+ *
+ * @param  MEMBER $from_id The member ID to merge from
+ * @param  MEMBER $to_id The member ID to merge into
+ * @param  boolean $keep Whether to keep the $from_id member (false: the member will be deleted)
+ */
+function cns_merge_members(int $from_id, int $to_id, bool $keep = false)
+{
+    if ($to_id == $from_id) {
+        warn_exit(do_lang_tempcode('MERGE_SAME'));
+    }
+
+    // Do not merge guests
+    if (is_guest($from_id) || is_guest($to_id)) {
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+    }
+
+    $from_username = $GLOBALS['FORUM_DRIVER']->get_username($from_id);
+    $to_username = $GLOBALS['FORUM_DRIVER']->get_username($to_id);
+
+    // Reassign submitter field values
+    $meta = $GLOBALS['SITE_DB']->query('SELECT m_table,m_name FROM ' . get_table_prefix() . 'db_meta WHERE ' . db_string_equal_to('m_type', 'MEMBER') . ' OR ' . db_string_equal_to('m_type', '?MEMBER') . ' OR ' . db_string_equal_to('m_type', '*MEMBER'));
+    foreach ($meta as $m) {
+        $db = get_db_for($m['m_table']);
+        $db->query_update($m['m_table'], [$m['m_name'] => $to_id], [$m['m_name'] => $from_id], '', null, 0, false, true); // Errors suppressed in case rows conflict with existing
+    }
+
+    // Reassign poster usernames
+    $GLOBALS['FORUM_DB']->query_update('f_posts', ['p_poster_name_if_guest' => $to_username], ['p_posting_member' => $from_id]);
+
+    // Merge in post count caching
+    $new_post_count = $GLOBALS['FORUM_DRIVER']->get_member_row_field($from_id, 'm_cache_num_posts') + $GLOBALS['FORUM_DRIVER']->get_member_row_field($to_id, 'm_cache_num_posts');
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_num_posts' => $new_post_count], ['id' => $to_id], '', 1);
+
+    // Reassign personal galleries
+    if (addon_installed('galleries')) {
+        $personal_galleries = $GLOBALS['SITE_DB']->query('SELECT name FROM ' . get_table_prefix() . 'galleries WHERE name LIKE \'member_' . strval($from_id) . '\_%\'');
+        foreach ($personal_galleries as $gallery) {
+            $old_gallery_name = $gallery['name'];
+            $new_gallery_name = preg_replace('#^member_\d+_#', 'member_' . strval($to_id) . '_', $old_gallery_name);
+
+            $GLOBALS['SITE_DB']->query_update('galleries', ['parent_id' => $new_gallery_name], ['parent_id' => $old_gallery_name]);
+            $GLOBALS['SITE_DB']->query_update('images', ['cat' => $new_gallery_name], ['cat' => $old_gallery_name]);
+            $GLOBALS['SITE_DB']->query_update('videos', ['cat' => $new_gallery_name], ['cat' => $old_gallery_name]);
+
+            $test = $GLOBALS['SITE_DB']->query_select_value_if_there('galleries', 'name', ['name' => $new_gallery_name]);
+            if ($test === null) { // Rename
+                $GLOBALS['SITE_DB']->query_update('galleries', ['name' => $new_gallery_name], ['name' => $old_gallery_name], '', 1);
+            } else { // Delete
+                require_code('galleries2');
+                delete_gallery($old_gallery_name);
+            }
+        }
+    }
+
+    require_code('cns_members_action');
+    require_code('cns_members_action2');
+
+    // Merge in CPFs
+    $custom_fields = cns_get_all_custom_fields_match_member($from_id);
+    foreach ($custom_fields as $details) {
+        if ($details['RAW'] != '') {
+            cns_set_custom_field($to_id, intval($details['FIELD_ID']), $details['RAW']);
+        }
+    }
+
+    // Delete old member
+    if (!$keep) {
+        cns_delete_member($from_id);
+    }
+
+    // Cache emptying ...
+    cns_require_all_forum_stuff();
+
+    require_code('cns_posts_action');
+    require_code('cns_posts_action2');
+    require_code('cns_topics_action2');
+    require_code('cns_forums_action2');
+
+    // Members
+    cns_force_update_member_post_count($to_id);
+    $num_warnings = $GLOBALS['FORUM_DB']->query_select_value('f_warnings', 'COUNT(*)', ['w_member_id' => $to_id]);
+    $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => $num_warnings], ['id' => $to_id], '', 1);
+
+    // Topics and posts
+    require_code('cns_topics_action');
+    $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_cache_first_member_id' => $from_id]);
+    foreach ($topics as $topic) {
+        cns_force_update_topic_caching($topic['id'], null, true, true);
+    }
+    $topics = $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_forum_id'], ['t_cache_last_member_id' => $from_id]);
+    foreach ($topics as $topic) {
+        cns_force_update_topic_caching($topic['id'], null, true, true);
+    }
+
+    // Forums
+    require_code('cns_posts_action2');
+    $forums = $GLOBALS['FORUM_DB']->query_select('f_forums', ['id'], ['f_cache_last_member_id' => $from_id]);
+    foreach ($forums as $forum) {
+        cns_force_update_forum_caching($forum['id']);
+    }
+
+    // ---
+
+    log_it('MERGE_MEMBERS', $from_username, $to_username);
+}

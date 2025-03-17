@@ -60,24 +60,24 @@ if ($type == 'submit') {
 
     // Map project values from the form to their ID in Mantis
     $projects = [
-        'Core software / bundled addons / default theme' => '1',
-        'Downloadable (non-bundled) addons or themes' => '4',
-        'Content in a Documentation / Tutorial' => '7',
-        'Homesite' => '3',
-        'Custom code' => null,
+        'Core software / bundled addons / default theme' => 1,
+        'Downloadable (non-bundled) addons or themes' => 4,
+        'Content in a Documentation / Tutorial' => 7,
+        'Homesite' => 3,
+        'Custom code' => null, // Never gets added as an issue
     ];
 
     // Map severities to their integer value
     $severities = [
-        'Feature-request' => '10',
-        'Trivial-bug' => '20',
-        'Minor-bug' => '50',
-        'Major-bug' => '60',
-        'Security-hole' => '95'
+        'Feature-request' => 10,
+        'Trivial-bug' => 20,
+        'Minor-bug' => 50,
+        'Major-bug' => 60,
+        'Security-hole' => 95
     ];
 
     // Set security reports to private
-    $view_state = ($severities[$severity] == '95') ? '50' : '10';
+    $view_state = ($severities[$severity] == 95) ? 50 : 10;
 
     // Get category ID
     // TODO: Need to add back in ORDER BY id once we figure out why it's failing sql_compat and how to fix it
@@ -113,7 +113,7 @@ if ($type == 'submit') {
     }
 
     // Create the tracker issue
-    $tracker_id = create_tracker_issue($version, $summary, $description, $additional_information, $severities[$severity], strval($category), $projects[$project], '0', $steps_to_reproduce, '100', '10', '10', $view_state);
+    $tracker_id = create_tracker_issue($version, $summary, $description, $additional_information, $severities[$severity], $category, $projects[$project], 0, $steps_to_reproduce, 10, 10, 10, $view_state);
     create_tracker_post($tracker_id, 'Automated message: This issue was created using the Report Issue Wizard on the homesite.');
 
     // Inform the member it has been done with a redirect to it.

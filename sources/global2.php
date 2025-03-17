@@ -1341,7 +1341,6 @@ function catch_fatal_errors()
             // While not fatalistic in PHP, these error types are not supported by user-defined error handlers in PHP. So we also have to catch them here. We will treat these as fatalistic anyway.
             case E_CORE_WARNING: // Error during bootstrap, so before set_error_handler could have been called
             case E_COMPILE_WARNING:
-            case E_STRICT: // Not used much in PHP, as most of this has now been enforced in the language and E_DEPRECATED tends to be used now.
                 push_suppress_error_death(false); // We can't recover as we've lost our execution track. Force a nice death rather than trying to display a recoverable error.
                 $GLOBALS['DYING_BADLY'] = true; // Tells software_error_handler to roll through, definitely an error.
                 $GLOBALS['EXITING'] = 2; // Fudge to force a critical error, we're too desperate to show a Tempcode stack trace.
@@ -1403,7 +1402,6 @@ function cms_error_handler(int $errno, string $errstr, string $errfile, int $err
                 $handling_method = 'ATTACH';
                 break;
 
-            case E_STRICT:
             case E_USER_DEPRECATED:
             case E_DEPRECATED:
             default:

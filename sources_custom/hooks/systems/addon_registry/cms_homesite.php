@@ -178,7 +178,6 @@ This addon does not contain the homesite install code and the overall site and t
             'adminzone/pages/minimodules_custom/_make_release.php',
             'adminzone/pages/modules_custom/admin_telemetry.php',
             'cmscore.rdf',
-            'data_custom/download_composr.php',
             'data_custom/redirect_release_notes.php',
             'lang_custom/EN/cms_homesite.ini',
             'pages/minimodules_custom/contact.php',
@@ -265,8 +264,8 @@ This addon does not contain the homesite install code and the overall site and t
      */
     public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
     {
-        // For software releases, we need our specialised download category to exist
         if (addon_installed('downloads') && addon_installed('addon_publish')) {
+            // For software releases, we need our specialised download category to exist
             $download_category = brand_name() . ' Releases';
             $releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);
             if ($releases_category_id === null) {
@@ -278,6 +277,13 @@ This addon does not contain the homesite install code and the overall site and t
                 set_global_category_access('downloads', $releases_category_id);
                 set_privilege_access('downloads', strval($releases_category_id), 'submit_midrange_content', false);
             }
+
+            // We also need our addons category
+            $addons_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
+            if ($addons_id === null) {
+                require_code('addon_publish');
+                $addons_id = find_addon_category_download_category('Addons'); // This will auto-create it
+            }
         }
     }
 
@@ -286,13 +292,20 @@ This addon does not contain the homesite install code and the overall site and t
      */
     public function uninstall()
     {
-        // Delete our download category for software releases
         if (addon_installed('downloads')) {
+            // Delete our download category for software releases
             $download_category = brand_name() . ' Releases';
             $releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);
             if ($releases_category_id !== null) {
                 require_code('downloads2');
                 delete_download_category($releases_category_id);
+            }
+
+            // Also delete addons category
+            $addons_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
+            if ($addons_id !== null) {
+                require_code('downloads2');
+                delete_download_category($addons_id);
             }
         }
     }

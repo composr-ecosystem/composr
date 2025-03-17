@@ -156,3 +156,5 @@ karma,Karma non-bundled addon,"PDStig, LLC","PDStig, LLC",Not regularly tested d
 early_access,Early access non-bundled addon,,,Not regularly tested. Needs a sponsor for regular maintenance.,Yes,
 emoticons,Emoticons,Composr Core Development Team,Composr Core Development Team,Emoticons can appear within text if their codenames exist within text. Spell check might warn of misspelled words in emoticon codenames when saving a page with emoticons on it.,No,
 achievements,Achievements non-bundled addon,Composr Core Development Team,,Not regularly tested due to needing a testing platform. Needs a sponsor for regular maintenance.,Yes,
+php_imap2,PHP IMAP2,Composr Core Development Team,Composr Core Development Team,Could potentially break due to third-party changes.,No,_protocol_imap
+php_isocodes,PHP ISO Codes,Composr Core Development Team,Composr Core Development Team,Not regularly tested due to needing a testing platform. Could potentially break due to third-party changes.,No,

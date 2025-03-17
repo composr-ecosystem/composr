@@ -1,0 +1,651 @@
+<?php /*
+
+ Composr
+ Copyright (c) Christopher Graham, 2004-2024
+
+ See docs/LICENSE.md for full licensing information.
+
+*/
+
+/**
+ * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @copyright  Christopher Graham
+ * @package    core_imap
+ */
+
+/**
+ * Hook class.
+ */
+class Hook_addon_registry_core_imap
+{
+    /**
+     * Get a list of file permissions to set.
+     *
+     * @param  boolean $runtime Whether to include wildcards represented runtime-created chmoddable files
+     * @return array File permissions to set
+     */
+    public function get_chmod_array(bool $runtime = false) : array
+    {
+        return [];
+    }
+
+    /**
+     * Get the current version of this addon (usually software major, software minor, addon build).
+     * Put the comment "// addon_version_auto_update" to the right of the return if you want release tools to automatically update this according to software version and find_addon_effective_md5.
+     *
+     * @return SHORT_TEXT Version number
+     */
+    public function get_version() : string
+    {
+        return '11'; // addon_version_auto_update d9df9dfa3193ebadaa8b9d80fc02dce4
+    }
+
+    /**
+     * Get the minimum required version of the website software needed to use this addon.
+     *
+     * @return float Minimum required website software version
+     */
+    public function get_min_cms_version() : float
+    {
+        return 11.0;
+    }
+
+    /**
+     * Get the maximum compatible version of the website software to use this addon.
+     *
+     * @return ?float Maximum compatible website software version (null: no maximum version currently)
+     */
+    public function get_max_cms_version() : ?float
+    {
+        return 11.9;
+    }
+
+    /**
+     * Get the addon category.
+     *
+     * @return string The category
+     */
+    public function get_category() : string
+    {
+        return 'Development';
+    }
+
+    /**
+     * Get the addon author.
+     *
+     * @return string The author
+     */
+    public function get_author() : string
+    {
+        return 'Patrick Schmalstig';
+    }
+
+    /**
+     * Find other authors.
+     *
+     * @return array A list of co-authors that should be attributed
+     */
+    public function get_copyright_attribution() : array
+    {
+        return [
+            'Javanile',
+            'Francesco Bianco',
+            'Other javanile/php-imap2 contributors',
+            'RoundCube contributors including Aleksander Machniak, Ryo Chijiiwa',
+        ];
+    }
+
+    /**
+     * Get the addon licence (one-line summary only).
+     *
+     * @return string The licence
+     */
+    public function get_licence() : string
+    {
+        return 'GNU General Public License v3.0';
+    }
+
+    /**
+     * Get the description of the addon.
+     *
+     * @return string Description of the addon
+     */
+    public function get_description() : string
+    {
+        return 'This addon adds an actively-maintained drop-in replacement for the deprecated PHP IMAP extension by using javanile php-imap2. This also supports oAuth which the PHP IMAP extension does not.';
+    }
+
+    /**
+     * Get a list of tutorials that apply to this addon.
+     *
+     * @return array List of tutorials
+     */
+    public function get_applicable_tutorials() : array
+    {
+        return [];
+    }
+
+    /**
+     * Get a mapping of dependency types.
+     *
+     * @return array A structure specifying dependency information
+     */
+    public function get_dependencies() : array
+    {
+        return [
+            'requires' => [],
+            'recommends' => [
+                // These addons use IMAP to some optional capacity
+                //'cns_forum',
+                //'tickets',
+                //'ecommerce',
+                //'newsletter',
+            ],
+            'previously_in_addon' => ['imap'],
+        ];
+    }
+
+    /**
+     * Explicitly say which icon should be used.
+     *
+     * @return URLPATH Icon
+     */
+    public function get_default_icon() : string
+    {
+        return 'themes/default/images/icons/admin/component.svg';
+    }
+
+    /**
+     * Get a list of files that belong to this addon.
+     *
+     * @return array List of files
+     */
+    public function get_file_list() : array
+    {
+        return [
+            'sources/hooks/systems/addon_registry/imap.php',
+            'sources/imap.php',
+            'sources/imap/.htaccess',
+            'sources/imap/composer.json',
+            'sources/imap/composer.lock',
+            'sources/imap/index.html',
+            'sources/imap/vendor/.htaccess',
+            'sources/imap/vendor/autoload.php',
+            'sources/imap/vendor/composer/.htaccess',
+            'sources/imap/vendor/composer/ClassLoader.php',
+            'sources/imap/vendor/composer/LICENSE',
+            'sources/imap/vendor/composer/autoload_classmap.php',
+            'sources/imap/vendor/composer/autoload_files.php',
+            'sources/imap/vendor/composer/autoload_namespaces.php',
+            'sources/imap/vendor/composer/autoload_psr4.php',
+            'sources/imap/vendor/composer/autoload_real.php',
+            'sources/imap/vendor/composer/autoload_static.php',
+            'sources/imap/vendor/composer/include_paths.php',
+            'sources/imap/vendor/composer/index.html',
+            'sources/imap/vendor/composer/installed.json',
+            'sources/imap/vendor/guzzlehttp/psr7/.htaccess',
+            'sources/imap/vendor/guzzlehttp/psr7/CHANGELOG.md',
+            'sources/imap/vendor/guzzlehttp/psr7/LICENSE',
+            'sources/imap/vendor/guzzlehttp/psr7/README.md',
+            'sources/imap/vendor/guzzlehttp/psr7/composer.json',
+            'sources/imap/vendor/guzzlehttp/psr7/index.html',
+            'sources/imap/vendor/guzzlehttp/psr7/src/.htaccess',
+            'sources/imap/vendor/guzzlehttp/psr7/src/AppendStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/BufferStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/CachingStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/DroppingStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Exception/.htaccess',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Exception/MalformedUriException.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Exception/index.html',
+            'sources/imap/vendor/guzzlehttp/psr7/src/FnStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Header.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/HttpFactory.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/InflateStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/LazyOpenStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/LimitStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Message.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/MessageTrait.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/MimeType.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/MultipartStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/NoSeekStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/PumpStream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Query.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Request.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Response.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Rfc7230.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/ServerRequest.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Stream.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/StreamDecoratorTrait.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/StreamWrapper.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/UploadedFile.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Uri.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/UriComparator.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/UriNormalizer.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/UriResolver.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/Utils.php',
+            'sources/imap/vendor/guzzlehttp/psr7/src/index.html',
+            'sources/imap/vendor/index.html',
+            'sources/imap/vendor/javanile/php-imap2/.htaccess',
+            'sources/imap/vendor/javanile/php-imap2/CHANGELOG.md',
+            'sources/imap/vendor/javanile/php-imap2/LICENSE',
+            'sources/imap/vendor/javanile/php-imap2/README.md',
+            'sources/imap/vendor/javanile/php-imap2/bootstrap.php',
+            'sources/imap/vendor/javanile/php-imap2/composer.json',
+            'sources/imap/vendor/javanile/php-imap2/contrib/.htaccess',
+            'sources/imap/vendor/javanile/php-imap2/contrib/google-access-token.php',
+            'sources/imap/vendor/javanile/php-imap2/contrib/google-access-token.sh',
+            'sources/imap/vendor/javanile/php-imap2/contrib/index.html',
+            'sources/imap/vendor/javanile/php-imap2/contrib/refresh-access-token.sh',
+            'sources/imap/vendor/javanile/php-imap2/index.html',
+            'sources/imap/vendor/javanile/php-imap2/src/.htaccess',
+            'sources/imap/vendor/javanile/php-imap2/src/Acl.php',
+            'sources/imap/vendor/javanile/php-imap2/src/BodyStructure.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Connection.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Errors.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Functions.php',
+            'sources/imap/vendor/javanile/php-imap2/src/HeaderInfo.php',
+            'sources/imap/vendor/javanile/php-imap2/src/ImapHelpers.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Mail.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Mailbox.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Message.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Polyfill.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/.htaccess',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/Charset.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/ImapClient.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/MessageHeader.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/MessageHeaderSorter.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/Mime.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/ResultIndex.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/ResultThread.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/Utils.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Roundcube/index.html',
+            'sources/imap/vendor/javanile/php-imap2/src/Thread.php',
+            'sources/imap/vendor/javanile/php-imap2/src/Timeout.php',
+            'sources/imap/vendor/javanile/php-imap2/src/index.html',
+            'sources/imap/vendor/pear/auth_sasl/.gitignore',
+            'sources/imap/vendor/pear/auth_sasl/.htaccess',
+            'sources/imap/vendor/pear/auth_sasl/.travis.yml',
+            'sources/imap/vendor/pear/auth_sasl/Auth/.htaccess',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/.htaccess',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/Anonymous.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/Common.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/CramMD5.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/DigestMD5.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/External.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/Login.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/Plain.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/SCRAM.php',
+            'sources/imap/vendor/pear/auth_sasl/Auth/SASL/index.html',
+            'sources/imap/vendor/pear/auth_sasl/Auth/index.html',
+            'sources/imap/vendor/pear/auth_sasl/README.md',
+            'sources/imap/vendor/pear/auth_sasl/composer.json',
+            'sources/imap/vendor/pear/auth_sasl/index.html',
+            'sources/imap/vendor/pear/auth_sasl/package.xml',
+            'sources/imap/vendor/pear/auth_sasl/phpunit.xml.dist',
+            'sources/imap/vendor/pear/pear_exception/.htaccess',
+            'sources/imap/vendor/pear/pear_exception/LICENSE',
+            'sources/imap/vendor/pear/pear_exception/PEAR/.htaccess',
+            'sources/imap/vendor/pear/pear_exception/PEAR/Exception.php',
+            'sources/imap/vendor/pear/pear_exception/PEAR/index.html',
+            'sources/imap/vendor/pear/pear_exception/composer.json',
+            'sources/imap/vendor/pear/pear_exception/index.html',
+            'sources/imap/vendor/pimple/pimple/.github/workflows/.htaccess',
+            'sources/imap/vendor/pimple/pimple/.github/workflows/index.html',
+            'sources/imap/vendor/pimple/pimple/.github/workflows/tests.yml',
+            'sources/imap/vendor/pimple/pimple/.gitignore',
+            'sources/imap/vendor/pimple/pimple/.htaccess',
+            'sources/imap/vendor/pimple/pimple/.php_cs.dist',
+            'sources/imap/vendor/pimple/pimple/CHANGELOG',
+            'sources/imap/vendor/pimple/pimple/LICENSE',
+            'sources/imap/vendor/pimple/pimple/README.rst',
+            'sources/imap/vendor/pimple/pimple/composer.json',
+            'sources/imap/vendor/pimple/pimple/index.html',
+            'sources/imap/vendor/pimple/pimple/phpunit.xml.dist',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Container.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/ExpectedInvokableException.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/FrozenServiceException.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/InvalidServiceIdentifierException.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/UnknownIdentifierException.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Exception/index.html',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Psr11/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Psr11/Container.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Psr11/ServiceLocator.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Psr11/index.html',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/ServiceIterator.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/ServiceProviderInterface.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/Invokable.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/NonInvokable.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/PimpleServiceProvider.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/Service.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Fixtures/index.html',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/PimpleServiceProviderInterfaceTest.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/PimpleTest.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Psr11/.htaccess',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Psr11/ContainerTest.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Psr11/ServiceLocatorTest.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/Psr11/index.html',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/ServiceIteratorTest.php',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/Tests/index.html',
+            'sources/imap/vendor/pimple/pimple/src/Pimple/index.html',
+            'sources/imap/vendor/psr/container/.gitignore',
+            'sources/imap/vendor/psr/container/.htaccess',
+            'sources/imap/vendor/psr/container/LICENSE',
+            'sources/imap/vendor/psr/container/README.md',
+            'sources/imap/vendor/psr/container/composer.json',
+            'sources/imap/vendor/psr/container/index.html',
+            'sources/imap/vendor/psr/container/src/.htaccess',
+            'sources/imap/vendor/psr/container/src/ContainerExceptionInterface.php',
+            'sources/imap/vendor/psr/container/src/ContainerInterface.php',
+            'sources/imap/vendor/psr/container/src/NotFoundExceptionInterface.php',
+            'sources/imap/vendor/psr/container/src/index.html',
+            'sources/imap/vendor/psr/http-factory/.gitignore',
+            'sources/imap/vendor/psr/http-factory/.htaccess',
+            'sources/imap/vendor/psr/http-factory/.pullapprove.yml',
+            'sources/imap/vendor/psr/http-factory/LICENSE',
+            'sources/imap/vendor/psr/http-factory/README.md',
+            'sources/imap/vendor/psr/http-factory/composer.json',
+            'sources/imap/vendor/psr/http-factory/index.html',
+            'sources/imap/vendor/psr/http-factory/src/.htaccess',
+            'sources/imap/vendor/psr/http-factory/src/RequestFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/ResponseFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/ServerRequestFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/StreamFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/UploadedFileFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/UriFactoryInterface.php',
+            'sources/imap/vendor/psr/http-factory/src/index.html',
+            'sources/imap/vendor/psr/http-message/.htaccess',
+            'sources/imap/vendor/psr/http-message/CHANGELOG.md',
+            'sources/imap/vendor/psr/http-message/LICENSE',
+            'sources/imap/vendor/psr/http-message/README.md',
+            'sources/imap/vendor/psr/http-message/composer.json',
+            'sources/imap/vendor/psr/http-message/index.html',
+            'sources/imap/vendor/psr/http-message/src/.htaccess',
+            'sources/imap/vendor/psr/http-message/src/MessageInterface.php',
+            'sources/imap/vendor/psr/http-message/src/RequestInterface.php',
+            'sources/imap/vendor/psr/http-message/src/ResponseInterface.php',
+            'sources/imap/vendor/psr/http-message/src/ServerRequestInterface.php',
+            'sources/imap/vendor/psr/http-message/src/StreamInterface.php',
+            'sources/imap/vendor/psr/http-message/src/UploadedFileInterface.php',
+            'sources/imap/vendor/psr/http-message/src/UriInterface.php',
+            'sources/imap/vendor/psr/http-message/src/index.html',
+            'sources/imap/vendor/ralouphie/getallheaders/.htaccess',
+            'sources/imap/vendor/ralouphie/getallheaders/LICENSE',
+            'sources/imap/vendor/ralouphie/getallheaders/README.md',
+            'sources/imap/vendor/ralouphie/getallheaders/composer.json',
+            'sources/imap/vendor/ralouphie/getallheaders/index.html',
+            'sources/imap/vendor/ralouphie/getallheaders/src/.htaccess',
+            'sources/imap/vendor/ralouphie/getallheaders/src/getallheaders.php',
+            'sources/imap/vendor/ralouphie/getallheaders/src/index.html',
+            'sources/imap/vendor/symfony/polyfill-iconv/.htaccess',
+            'sources/imap/vendor/symfony/polyfill-iconv/Iconv.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/LICENSE',
+            'sources/imap/vendor/symfony/polyfill-iconv/README.md',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/.htaccess',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.big5.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp037.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp1006.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp1026.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp424.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp437.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp500.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp737.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp775.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp850.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp852.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp855.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp856.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp857.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp860.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp861.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp862.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp863.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp864.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp865.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp866.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp869.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp874.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp875.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp932.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp936.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp949.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.cp950.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-1.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-10.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-11.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-13.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-14.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-15.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-16.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-2.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-3.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-4.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-5.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-6.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-7.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-8.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.iso-8859-9.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.koi8-r.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.koi8-u.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.us-ascii.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1250.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1251.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1252.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1253.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1254.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1255.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1256.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1257.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/from.windows-1258.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/index.html',
+            'sources/imap/vendor/symfony/polyfill-iconv/Resources/charset/translit.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/bootstrap.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/bootstrap80.php',
+            'sources/imap/vendor/symfony/polyfill-iconv/composer.json',
+            'sources/imap/vendor/symfony/polyfill-iconv/index.html',
+            'sources/imap/vendor/symfony/polyfill-mbstring/.htaccess',
+            'sources/imap/vendor/symfony/polyfill-mbstring/LICENSE',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Mbstring.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/README.md',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Resources/unidata/.htaccess',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Resources/unidata/index.html',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Resources/unidata/lowerCase.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Resources/unidata/titleCaseRegexp.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/Resources/unidata/upperCase.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/bootstrap.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/bootstrap80.php',
+            'sources/imap/vendor/symfony/polyfill-mbstring/composer.json',
+            'sources/imap/vendor/symfony/polyfill-mbstring/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/FUNDING.yml',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/workflows/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/workflows/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.github/workflows/tests.yml',
+            'sources/imap/vendor/zbateson/mail-mime-parser/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/LICENSE',
+            'sources/imap/vendor/zbateson/mail-mime-parser/README.md',
+            'sources/imap/vendor/zbateson/mail-mime-parser/composer.json',
+            'sources/imap/vendor/zbateson/mail-mime-parser/composer.lock',
+            'sources/imap/vendor/zbateson/mail-mime-parser/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Container.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/AbstractHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/AddressHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/AbstractConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/AddressBaseConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/AddressConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/AddressEmailConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/AddressGroupConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/CommentConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/ConsumerService.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/DateConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/GenericConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/IdBaseConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/IdConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/ParameterConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/QuotedStringConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/Received/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/Received/DomainConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/Received/GenericReceivedConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/Received/ReceivedDateConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/Received/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/ReceivedConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/SubjectConsumer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Consumer/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/DateHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/GenericHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/HeaderConsts.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/HeaderFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/IHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/IHeaderPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/IdHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/MimeEncodedHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/ParameterHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/AddressGroupPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/AddressPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/CommentPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/DatePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/HeaderPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/HeaderPartFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/LiteralPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/MimeLiteralPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/MimeLiteralPartFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/ParameterPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/ReceivedDomainPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/ReceivedPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/SplitParameterToken.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/Token.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/Part/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/ReceivedHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/SubjectHeader.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Header/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/IMessage.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/MailMimeParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/IMessagePartFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/IMimePartFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/IUUEncodedPartFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/PartChildrenContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/PartHeaderContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/PartStreamContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Factory/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/AbstractHelper.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/GenericHelper.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/MultipartHelper.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/PrivacyHelper.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/Helper/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/IMessagePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/IMimePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/IMultiPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/IUUEncodedPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/MessagePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/MimePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/MultiPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/NonMimePart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/PartChildrenContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/PartFilter.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/PartHeaderContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/PartStreamContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/UUEncodedPart.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Message/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/AbstractParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/HeaderParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/IParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/MessageParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/MimeParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/NonMimeParser.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/ParserManager.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/ParserPartChildrenContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/ParserPartChildrenContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/ParserPartStreamContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/ParserPartStreamContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/UUEncodedPartHeaderContainer.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/UUEncodedPartHeaderContainerFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Part/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/PartBuilder.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/PartBuilderFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserMessageProxy.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserMessageProxyFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserMimePartProxy.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserMimePartProxyFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserNonMimeMessageProxy.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserNonMimeMessageProxyFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserPartProxy.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserPartProxyFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserUUEncodedPartProxy.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/ParserUUEncodedPartProxyFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/Proxy/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Parser/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Stream/.htaccess',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Stream/HeaderStream.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Stream/MessagePartStream.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Stream/StreamFactory.php',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/Stream/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/src/index.html',
+            'sources/imap/vendor/zbateson/mail-mime-parser/version.txt',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/FUNDING.yml',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/workflows/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/workflows/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/.github/workflows/tests.yml',
+            'sources/imap/vendor/zbateson/mb-wrapper/.gitignore',
+            'sources/imap/vendor/zbateson/mb-wrapper/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/.php-cs-fixer.dist.php',
+            'sources/imap/vendor/zbateson/mb-wrapper/LICENSE',
+            'sources/imap/vendor/zbateson/mb-wrapper/PhpCsFixer.php',
+            'sources/imap/vendor/zbateson/mb-wrapper/README.md',
+            'sources/imap/vendor/zbateson/mb-wrapper/composer.json',
+            'sources/imap/vendor/zbateson/mb-wrapper/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/phpstan.neon',
+            'sources/imap/vendor/zbateson/mb-wrapper/src/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/src/MbWrapper.php',
+            'sources/imap/vendor/zbateson/mb-wrapper/src/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/MbWrapper/.htaccess',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/MbWrapper/MbWrapperTest.php',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/MbWrapper/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/bootstrap.php',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/index.html',
+            'sources/imap/vendor/zbateson/mb-wrapper/tests/phpunit.xml',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/.htaccess',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/FUNDING.yml',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/index.html',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/workflows/.htaccess',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/workflows/index.html',
+            'sources/imap/vendor/zbateson/stream-decorators/.github/workflows/tests.yml',
+            'sources/imap/vendor/zbateson/stream-decorators/.htaccess',
+            'sources/imap/vendor/zbateson/stream-decorators/.php-cs-fixer.dist.php',
+            'sources/imap/vendor/zbateson/stream-decorators/LICENSE',
+            'sources/imap/vendor/zbateson/stream-decorators/PhpCsFixer.php',
+            'sources/imap/vendor/zbateson/stream-decorators/README.md',
+            'sources/imap/vendor/zbateson/stream-decorators/composer.json',
+            'sources/imap/vendor/zbateson/stream-decorators/index.html',
+            'sources/imap/vendor/zbateson/stream-decorators/phpstan.neon',
+            'sources/imap/vendor/zbateson/stream-decorators/src/.htaccess',
+            'sources/imap/vendor/zbateson/stream-decorators/src/Base64Stream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/CharsetStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/ChunkSplitStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/NonClosingStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/PregReplaceFilterStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/QuotedPrintableStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/SeekingLimitStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/UUStream.php',
+            'sources/imap/vendor/zbateson/stream-decorators/src/index.html',
+        ];
+    }
+}

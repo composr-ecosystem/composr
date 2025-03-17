@@ -49,14 +49,7 @@ class _protocol_imap_test_set extends cms_test_case
 
     public function setUp()
     {
-        if (addon_installed('imap')) {
-            require_code('imap');
-        }
-
-        if (!function_exists('imap_open')) {
-            $this->assertTrue(false, 'PHP IMAP extension is required');
-            return;
-        }
+        require_code('imap');
 
         // Set to local IMAP server on test account
         $this->key_options = $this->load_key_options('mail_');
@@ -101,13 +94,7 @@ class _protocol_imap_test_set extends cms_test_case
 
     public function testBounceFinder()
     {
-        if (addon_installed('imap')) {
-            require_code('imap');
-        }
-
-        if (!function_exists('imap_open')) {
-            return;
-        }
+        require_code('imap');
 
         list($mbox, $server_spec, $host, $username, $password, $port, $type) = $this->get_imap_connection();
         if ($mbox === false) {

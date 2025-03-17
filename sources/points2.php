@@ -116,7 +116,8 @@ function points_transact(int $sending_member, int $receiving_member, string $rea
         return null;
     }
 
-    check_for_infinite_loop('points_transact', [$sending_member, $receiving_member, $reason, $total_points, $t_type, $t_subtype, $t_type_id, $time, $is_ranked]);
+    // Don't try to process the same transaction more than once
+    check_for_infinite_loop('points_transact', [$sending_member, $receiving_member, $reason, $total_points, $t_type, $t_subtype, $t_type_id, $time], 1);
 
     // If more gift points than total points are specified, then limit it to total points
     if ($amount_gift_points !== null && $amount_gift_points > $total_points) {

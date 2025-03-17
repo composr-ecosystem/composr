@@ -130,16 +130,7 @@ abstract class EmailIntegration
     protected function _incoming_scan(string $type, string $host, ?int $port, string $folder, string $username, string $password)
     {
         require_code('mail2');
-
-        if (addon_installed('imap')) {
-            require_code('imap');
-        }
-
-        if (!function_exists('imap_open')) {
-            $this->log_message('IMAP is not available');
-
-            warn_exit(do_lang_tempcode('IMAP_NEEDED'));
-        }
+        require_code('imap');
 
         if ($type == '') {
             $type = get_option('mail_server_type');

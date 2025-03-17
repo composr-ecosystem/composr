@@ -767,7 +767,7 @@ class Hook_import_smf2
                     $ip_high = inet_ntop($row['ip_high']);
 
                     if (($ip_low == $ip_high) && (!import_check_if_imported('ip_ban', $ip_low))) {
-                        add_ip_ban($ip_low, 'SMF imported ban', $ban_till);
+                        add_ip_ban($ip_low, 'SMF imported ban', $ban_till, true, true);
                         import_id_remap_put('ip_ban', $ip_low, 0);
                     }
                 }

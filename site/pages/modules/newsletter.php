@@ -477,6 +477,16 @@ class Module_newsletter
                 warn_exit(do_lang_tempcode('NOT_NEWSLETTER_SUBSCRIBER'));
             }
 
+            // Forbid registering for newsletters using e-mail addresses on a spam list, or from IP addresses listed
+            if (!ip_address_is_local(get_ip_address())) {
+                require_code('antispam');
+                list($spam_status) = _check_stopforumspam(get_ip_address(), null, $email);
+                if ($spam_status == ANTISPAM_RESPONSE_ACTIVE) {
+                    log_hack_attack_and_exit('HACK_ATTACK', $email, 'NEWSLETTER_SPAM_REGISTRATION');
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+                }
+            }
+
             $code_confirm = ($old_confirm === null) ? get_secure_random_number() : $old_confirm;
             if ($password == '') {
                 $password = get_secure_random_password(null, $forename . ' ' . $surname, $email);
