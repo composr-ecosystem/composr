@@ -65,6 +65,7 @@
 	<achievement name="extrovert" image="icons_monochrome/menu/social/chat/chat" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
 		<qualifications>
 			<qualification name="content" types="post" count="25" />
+			<qualification name="gitlab_comments" count="25" />
 		</qualifications>
 	</achievement>
 
