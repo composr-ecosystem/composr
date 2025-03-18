@@ -50,6 +50,7 @@
 		</qualifications>
 		<qualifications>
 			<qualification name="content" types="post" count="25" />
+			<qualification name="gitlab_comments" count="25" />
 		</qualifications>
 	</achievement>
 
