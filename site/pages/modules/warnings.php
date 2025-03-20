@@ -85,6 +85,8 @@ class Module_warnings extends Standard_crud_module
      */
     public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
     {
+        require_code('permissions3');
+
         if ($upgrade_from === null) {
             if (!$GLOBALS['FORUM_DB']->table_exists('f_warnings')) {
                 $GLOBALS['FORUM_DB']->create_table('f_warnings', [
@@ -123,6 +125,9 @@ class Module_warnings extends Standard_crud_module
                     's_message' => 'LONG_TEXT',
                 ]);
             }
+
+            add_privilege('FORUMS_AND_MEMBERS', 'see_warnings', false);
+            add_privilege('FORUMS_AND_MEMBERS', 'warn_members', false);
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY: v10 to v11.rc1
