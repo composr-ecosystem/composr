@@ -327,7 +327,7 @@ function cleanup()
 
         [
             'cns_delete_warning',
-            'cns_moderation_action2',
+            'cns_warnings2',
             'f_warnings',
             'id',
             [],

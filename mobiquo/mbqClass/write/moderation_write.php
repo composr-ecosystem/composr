@@ -390,6 +390,9 @@ class CMSModerationWrite
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('600acc29f9905a0498e74de82229f2ec')));
         }
 
+        require_code('cns_warnings');
+        require_lang('cns_warnings');
+
         if (!cns_may_warn_members()) {
             access_denied('I_ERROR');
         }
@@ -398,8 +401,6 @@ class CMSModerationWrite
         if (($user_id === null) || (is_guest($user_id))) {
             warn_exit(do_lang_tempcode('MEMBER_NO_EXIST'));
         }
-
-        require_lang('cns_warnings');
 
         if (($delete_all_posts) && (!has_delete_permission('low', get_member(), $user_id, 'topics'))) {
             require_code('cns_posts_action3');
@@ -454,13 +455,14 @@ class CMSModerationWrite
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('0b79c65520c15b298d378ca8f48a96a6')));
         }
 
+        require_code('cns_warnings');
+        require_lang('cns_warnings');
+
         if (!cns_may_warn_members()) {
             access_denied('I_ERROR');
         }
 
         $username = $GLOBALS['FORUM_DRIVER']->get_username($user_id, false, USERNAME_DEFAULT_ERROR);
-
-        require_lang('cns_warnings');
 
         require_code('cns_members_action2');
         cns_unban_member($user_id);
@@ -489,6 +491,9 @@ class CMSModerationWrite
         if (is_guest()) {
             return false;
         }
+
+        require_code('cns_warnings');
+        require_lang('cns_warnings');
 
         if (!cns_may_warn_members()) {
             access_denied('I_ERROR');

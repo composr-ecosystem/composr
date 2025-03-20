@@ -91,3 +91,100 @@ function find_member_content(int $member_id, ?int $days = null, ?int $max = 30) 
 
     return $content;
 }
+
+/**
+ * Script for loading presets from saved warnings.
+ */
+function warnings_script()
+{
+    if (!addon_installed('cns_warnings')) {
+        warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_warnings')));
+    }
+
+    if (get_forum_type() != 'cns') {
+        warn_exit(do_lang_tempcode('NO_CNS'));
+    }
+
+    cns_require_all_forum_stuff();
+
+    require_lang('cns_warnings');
+
+    if (!cns_may_warn_members()) {
+        access_denied('PRIVILEGE', 'warn_members');
+    }
+
+    $type = get_param_string('type');
+
+    if ($type == 'delete') { // Delete a saved warning
+        $_title = post_param_string('title');
+        $GLOBALS['FORUM_DB']->query_delete('f_saved_warnings', ['s_title' => $_title], '', 1);
+        $content = paragraph(do_lang_tempcode('SUCCESS'));
+        $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => 'dc97492788a5049e697a296ca10a0390', 'TITLE' => do_lang_tempcode('DELETE_SAVED_WARNING'), 'POPUP' => true, 'CONTENT' => $content]);
+        $echo->evaluate_echo();
+        return;
+    }
+
+    // Show list of saved warnings
+    // ---------------------------
+
+    require_javascript('cns_warnings');
+
+    $content = new Tempcode();
+    $rows = $GLOBALS['FORUM_DB']->query_select('f_saved_warnings', ['*'], [], 'ORDER BY s_title');
+    $keep = symbol_tempcode('KEEP');
+    $delete_url = find_script('warnings_browse') . '?type=delete' . $keep->evaluate();
+    foreach ($rows as $myrow) {
+        $content->attach(do_template('CNS_SAVED_WARNING', [
+            '_GUID' => '537a5e28bfdc3f2d2cb6c06b0a939b51',
+            'MESSAGE' => $myrow['s_message'],
+            'MESSAGE_HTML' => comcode_to_tempcode($myrow['s_message'], $GLOBALS['FORUM_DRIVER']->get_guest_id()),
+            'EXPLANATION' => $myrow['s_explanation'],
+            'TITLE' => $myrow['s_title'],
+            'DELETE_URL' => $delete_url,
+        ]));
+    }
+    if ($content->is_empty()) {
+        $content = paragraph(do_lang_tempcode('NO_ENTRIES'), 'rfdsfsdf3t45', 'nothing-here');
+    }
+
+    $echo = do_template('STANDALONE_HTML_WRAP', ['_GUID' => '90c86490760cee23a8d5b8a5d14122e9', 'TITLE' => do_lang_tempcode('CHOOSE_SAVED_WARNING'), 'POPUP' => true, 'NOINDEX' => true, 'CONTENT' => $content]);
+    $echo->evaluate_echo();
+}
+
+/**
+ * Whether a certain member may give formal warnings to other members.
+ *
+ * @param  ?MEMBER $member_id The member (null: current member)
+ * @return boolean Answer
+ */
+function cns_may_warn_members(?int $member_id = null) : bool
+{
+    if ($member_id === null) {
+        $member_id = get_member();
+    }
+
+    return has_privilege($member_id, 'warn_members');
+}
+
+/**
+ * Get all the warning and warnings_punitive rows for a certain member.
+ *
+ * @param  MEMBER $member_id The member
+ * @return array The warning rows
+ */
+function cns_get_warnings(int $member_id) : array
+{
+    if (!addon_installed('cns_warnings')) {
+        return [];
+    }
+
+    // Get warnings
+    $warnings = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], ['w_member_id' => $member_id, 'w_is_warning' => 1], 'ORDER BY w_time');
+
+    // Load in punitive actions via the 'punitive' key of each warning
+    foreach ($warnings as $i => $warning) {
+        $warnings[$i]['punitive'] = $GLOBALS['FORUM_DB']->query_select('f_warnings_punitive', ['*'], ['p_warning_id' => $warning['id']], '');
+    }
+
+    return $warnings;
+}

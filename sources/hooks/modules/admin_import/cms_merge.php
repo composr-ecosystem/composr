@@ -4767,6 +4767,8 @@ class Hook_import_cms_merge
             return;
         }
 
+        require_code('cns_warnings2');
+
         // Start with the warnings themselves
         $max = 300;
         $start = 0;

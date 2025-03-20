@@ -24,14 +24,18 @@ class warnings_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (!addon_installed('cns_warnings')) {
+            $this->assertTrue(false, 'Test requires the cns_warnings addon');
+            return;
+        }
+
         if (get_forum_type() != 'cns') {
             $this->assertTrue(false, 'Test only works with Conversr');
             return;
         }
 
-        require_code('cns_moderation');
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_warnings');
+        require_code('cns_warnings2');
 
         $this->establish_admin_session();
 
@@ -42,7 +46,7 @@ class warnings_test_set extends cms_test_case
 
     public function testConsistentOrdering()
     {
-        if (get_forum_type() != 'cns') {
+        if ((get_forum_type() != 'cns') || (!addon_installed('cns_warnings'))) {
             return;
         }
 
@@ -73,7 +77,7 @@ class warnings_test_set extends cms_test_case
 
     public function testEditWarning()
     {
-        if (get_forum_type() != 'cns') {
+        if ((get_forum_type() != 'cns') || (!addon_installed('cns_warnings'))) {
             return;
         }
 
@@ -84,7 +88,7 @@ class warnings_test_set extends cms_test_case
 
     public function tearDown()
     {
-        if (get_forum_type() != 'cns') {
+        if ((get_forum_type() != 'cns') || (!addon_installed('cns_warnings'))) {
             return;
         }
 

@@ -1284,6 +1284,8 @@ class Hook_import_ipb2
      */
     public function import_cns_warnings(object $db, string $table_prefix, string $file_base)
     {
+        require_code('cns_warnings2');
+
         $select = ['*'];
         $select[] = 'wlog_id AS id';
         $select[] = 'wlog_mid';

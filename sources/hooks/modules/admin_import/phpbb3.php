@@ -1364,6 +1364,8 @@ class Hook_import_phpbb3
      */
     public function import_cns_warnings(object $db, string $table_prefix, string $file_base)
     {
+        require_code('cns_warnings2');
+
         $rows = $db->query_select('warnings', ['*']);
         foreach ($rows as $row) {
             $member_id = import_id_remap_get('member', strval($row['user_id']), true);

@@ -383,7 +383,7 @@ function cns_read_in_member_profile(int $member_id, ?array $need = null, bool $i
     // Any warnings?
     if (($need === null) || (in_array('warnings', $need))) {
         if ((has_privilege($member_id_viewing, 'see_warnings')) && (addon_installed('cns_warnings'))) {
-            require_code('cns_moderation');
+            require_code('cns_warnings');
             $member_info['warnings'] = cns_get_warnings($member_id);
         }
     }
