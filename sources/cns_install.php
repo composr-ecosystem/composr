@@ -48,7 +48,6 @@ function init__cns_install()
 {
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
     $CNS_TRUE_PERMISSIONS = [
-        'run_multi_moderations',
         'use_pt',
         'edit_private_topic_posts',
         'may_unblind_own_poll',
@@ -138,7 +137,6 @@ function uninstall_cns()
         'f_read_logs',
         'f_forum_tracking',
         'f_topic_tracking',
-        'f_multi_moderations',
         'f_invites',
         'f_forum_group_access',
         'f_special_pt_access',
@@ -189,7 +187,6 @@ function install_cns(?float $upgrade_from = null)
     require_lang('cns_polls');
     require_lang('cns_config');
     require_lang('cns_special_cpf');
-    require_code('cns_moderation_action');
     require_code('cns_posts_action');
     require_code('cns_members_action');
     require_code('cns_groups_action');
@@ -226,7 +223,6 @@ function install_cns(?float $upgrade_from = null)
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
-        $GLOBALS['FORUM_DB']->delete_table_field('f_multi_moderations', 'mm_sink_state');
         $GLOBALS['FORUM_DB']->delete_table_field('f_topics', 't_sunk');
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 'topic_order_2');
@@ -362,8 +358,6 @@ function install_cns(?float $upgrade_from = null)
 
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_emoticon=REPLACE(t_emoticon,\'ocf_\',\'cns_\') WHERE t_emoticon LIKE \'%ocf\_%\'');
         $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_emoticon' => 'icons/14x14/cns_topic_modifiers/announcement'], ['t_emoticon' => 'cns_topic_modifiers/announcement']);
-
-        $GLOBALS['FORUM_DB']->change_primary_key('f_multi_moderations', ['id']);
 
         $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'double_post']);
         $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'delete_account']);
@@ -737,7 +731,7 @@ function install_cns(?float $upgrade_from = null)
         $staff_access = [$administrator_group => 5, $super_moderator_group => 5];
         $root_forum = cns_make_forum(do_lang('ROOT_FORUM'), '', null, $staff_post_access, null);
         cns_make_forum(do_lang('DEFAULT_FORUM_TITLE'), '', $forum_grouping_id, $typical_access, $root_forum);
-        $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
+        cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         cns_make_forum(do_lang('COMMENT_FORUM_NAME'), '', $forum_grouping_id, $typical_access, $root_forum, 1, 1, 0, '', '', '', 'last_post', 1);
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
@@ -885,18 +879,6 @@ function install_cns(?float $upgrade_from = null)
             'pv_points_when_voted' => 'INTEGER',
             'pv_cache_voting_power' => '?REAL'
         ]);
-
-        $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', [
-            'id' => '*AUTO',
-            'mm_name' => 'SHORT_TRANS',
-            'mm_post_text' => 'LONG_TEXT',    // Comcode
-            'mm_move_to_forum_id' => '?AUTO_LINK',
-            'mm_pin_state' => '?BINARY',
-            'mm_open_state' => '?BINARY',
-            'mm_forum_multi_code' => 'SHORT_TEXT',
-            'mm_title_suffix' => 'SHORT_TEXT',
-        ]);
-        cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
 
         $GLOBALS['FORUM_DB']->create_table('f_moderator_logs', [
             'id' => '*AUTO',
@@ -1649,7 +1631,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
 

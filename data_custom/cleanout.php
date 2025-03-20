@@ -335,7 +335,7 @@ function cleanup()
 
         [
             'cns_delete_multi_moderation',
-            'cns_moderation_action2',
+            'cns_multi_moderations2',
             'f_multi_moderations',
             'id',
             [db_get_first_id()],

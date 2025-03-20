@@ -1192,6 +1192,12 @@ class Hook_import_ipb2
      */
     public function import_cns_multi_moderations(object $db, string $table_prefix, string $file_base)
     {
+        if (!addon_installed('cns_multi_moderations')) {
+            return;
+        }
+
+        require_code('cns_multi_moderations');
+
         $rows = $db->query_select('topic_mmod', ['*']);
         foreach ($rows as $row) {
             if (import_check_if_imported('multi_moderation', strval($row['mm_id']))) {

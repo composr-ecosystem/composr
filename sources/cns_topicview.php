@@ -519,7 +519,7 @@ function cns_read_in_topic(?int $topic_id, int $start, int $max, bool $view_poll
                 $out['may_warn_members'] = true;
             }
         }
-        require_code('cns_moderation');
+        require_code('cns_multi_moderations');
         require_code('cns_forums');
         if (cns_may_delete_topics_by($forum_id, get_member(), $topic_info['t_cache_first_member_id'])) {
             $out['may_delete_topic'] = true;

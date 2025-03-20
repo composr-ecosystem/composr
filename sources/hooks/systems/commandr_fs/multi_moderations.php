@@ -91,7 +91,7 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
     {
         list($properties, $label) = $this->_file_magic_filter($filename, $path, $properties, $this->file_resource_type);
 
-        require_code('cns_moderation_action');
+        require_code('cns_multi_moderations');
 
         $post_text = $this->_default_property_str($properties, 'post_text');
         $move_to = $this->_default_property_int($properties, 'move_to');
@@ -155,7 +155,7 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
             return false;
         }
 
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations2');
 
         $label = $this->_default_property_str($properties, 'label');
         $post_text = $this->_default_property_str($properties, 'post_text');
@@ -187,7 +187,7 @@ class Hook_commandr_fs_multi_moderations extends Resource_fs_base
             return false;
         }
 
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations2');
         cns_delete_multi_moderation(intval($resource_id));
 
         return true;

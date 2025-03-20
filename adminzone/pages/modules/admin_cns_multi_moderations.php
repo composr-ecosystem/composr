@@ -38,6 +38,84 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     protected $donext_category_content_type = null;
 
     /**
+     * Find details of the module.
+     *
+     * @return ?array Map of module info (null: module is disabled)
+     */
+    public function info() : ?array
+    {
+        $info = [];
+        $info['author'] = 'Chris Graham';
+        $info['organisation'] = 'Composr';
+        $info['hacked_by'] = null;
+        $info['hack_version'] = null;
+        $info['version'] = 2;
+        $info['update_require_upgrade'] = true;
+        $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'cns_multi_moderations';
+        return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        require_code('permissions3');
+
+        $privileges = [
+            'run_multi_moderations',
+        ];
+        delete_privilege($privileges);
+
+        $tables = [
+            'f_multi_moderations',
+        ];
+        $GLOBALS['FORUM_DB']->drop_table_if_exists($tables);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        require_code('permissions3');
+
+        if ($upgrade_from === null) {
+            if (!$GLOBALS['FORUM_DB']->table_exists('f_multi_moderations')) {
+                $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', [
+                    'id' => '*AUTO',
+                    'mm_name' => 'SHORT_TRANS',
+                    'mm_post_text' => 'LONG_TEXT',    // Comcode
+                    'mm_move_to_forum_id' => '?AUTO_LINK',
+                    'mm_pin_state' => '?BINARY',
+                    'mm_open_state' => '?BINARY',
+                    'mm_forum_multi_code' => 'SHORT_TEXT',
+                    'mm_title_suffix' => 'SHORT_TEXT',
+                ]);
+
+                $trash_forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => do_lang('TRASH')]);
+                if ($trash_forum_id !== null) {
+                    require_code('cns_multi_moderations');
+
+                    cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
+                }
+            }
+
+            add_privilege('FORUMS_AND_MEMBERS', 'run_multi_moderations', true);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
+            $GLOBALS['FORUM_DB']->delete_table_field('f_multi_moderations', 'mm_sink_state');
+            $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
+        }
+    }
+
+    /**
      * Find entry-points available within this module.
      *
      * @param  boolean $check_perms Whether to check permissions
@@ -124,8 +202,8 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     {
         cns_require_all_forum_stuff();
 
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations');
+        require_code('cns_multi_moderations2');
         require_code('cns_general_action2');
 
         $this->add_one_label = do_lang_tempcode('ADD_MULTI_MODERATION');
@@ -233,7 +311,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
         $target_forum = read_multi_code('forum_multi_code');
 
         $multi_mods = $GLOBALS['FORUM_DB']->query_select('f_multi_moderations', ['id'], ['mm_move_to_forum_id' => null, 'mm_pin_state' => null, 'mm_open_state' => null, 'mm_title_suffix' => '', 'mm_forum_multi_code' => $target_forum]);
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations2');
         foreach ($multi_mods as $multi_mod) {
             cns_delete_multi_moderation($multi_mod['id']);
         }
@@ -338,7 +416,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
      */
     public function _import_stock_response(string $path, string $data, string $target_forum)
     {
-        require_code('cns_moderation_action');
+        require_code('cns_multi_moderations');
 
         $name = do_lang('STOCK_RESPONSE', cms_ucwords_ascii(str_replace(['/', '\\'], [': ', ': '], preg_replace('#\.txt$#', '', $path))));
 
