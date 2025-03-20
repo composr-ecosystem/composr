@@ -65,23 +65,9 @@ class Hook_endpoint_cms_homesite_gitlab_comments
             return ['success' => false, 'error_details' => 'Only actionable on creating comments.'];
         }
 
-        // Try figuring out which of our members opened the issue on GitLab
-        $member_id = null;
+        require_code('cms_homesite_gitlab');
 
-        // Maximum authenticity: Hybridauth linked GitLab account
-        if (($member_id === null) && (isset($data['user']['id']))) {
-            $member_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_password_compat_scheme' => 'GitLab', 'm_pass_hash_salted' => strval($data['user']['id'])], 'ORDER BY m_join_time DESC,id DESC');
-        }
-
-        // Medium authenticity: matching e-mail address
-        if (($member_id === null) && (isset($data['user']['email']))) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($data['user']['email']);
-        }
-
-        // Low authenticity: matching username
-        if (($member_id === null) && (isset($data['user']['username']))) {
-            $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_username($data['user']['username']);
-        }
+        $member_id = gitlab_webhook_payload_to_member($data);
 
         // Could not find any members? Exit out.
         if ($member_id === null) {

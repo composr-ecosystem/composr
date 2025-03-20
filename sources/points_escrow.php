@@ -184,8 +184,8 @@ function escrow_get_logs(int $id) : object
 /**
  * Create a new points escrow between two members.
  *
- * @param  MEMBER $sending_member The member creating and putting the points into escrow
- * @param  ?MEMBER $receiving_member The member who will receive the points once the escrow conditions are met (null: system because we do not know who will receive these points yet)
+ * @param  MEMBER $sending_member The member creating and putting the points into escrow; use guest for system-initiated escrows
+ * @param  ?MEMBER $receiving_member The member who will receive the points once the escrow conditions are met (null: virtually system because we do not know who will receive these points yet)
  * @param  integer $amount The amount of points to escrow
  * @param  SHORT_TEXT $reason The reason for escrow used in logs
  * @param  LONG_TEXT $agreement The detailed terms and conditions for the escrow
@@ -198,9 +198,6 @@ function escrow_get_logs(int $id) : object
  */
 function escrow_points(int $sending_member, ?int $receiving_member, int $amount, string $reason, string $agreement, ?int $expiry_time = null, string $content_type = '', string $content_id = '', bool $escrow_log = true, ?bool $send_notifications = true) : ?int
 {
-    if (is_guest($sending_member) || (($receiving_member !== null) && (is_guest($receiving_member)))) { // We can escrow to guest, but not from guest
-        return null;
-    }
     if ($amount <= 0) {
         return null;
     }
@@ -214,9 +211,12 @@ function escrow_points(int $sending_member, ?int $receiving_member, int $amount,
     require_code('points2');
 
     // Actually debit the points into escrow (do not allow using gift points as escrows since escrows are for transactions, not gifts)
-    $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, 0, 0, $send_notifications, 0, 'points_escrow', 'add');
-    if ($escrow_id === null) {
-        return null;
+    $escrow_id = null;
+    if (!is_guest($sending_member)) {
+        $escrow_id = points_debit_member($sending_member, do_lang('ESCROW_REASON', $username, $reason), $amount, 0, 0, $send_notifications, 0, 'points_escrow', 'add');
+        if ($escrow_id === null) {
+            return null;
+        }
     }
 
     // Insert the escrow into the database
@@ -394,11 +394,12 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
     $response[] = $_id;
 
     // If we are not crediting the recipient with the full escrow points, then we need to refund the rest to the sender
-    if ($amount < $row['amount']) {
+    if (($amount < $row['amount']) && ($row['original_points_ledger_id'] !== null)) {
         $_ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['original_points_ledger_id']], '', 1);
-        if ($_ledger === null || !array_key_exists(0, $_ledger)) {
+        if (($_ledger === null) || !array_key_exists(0, $_ledger)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
+
         $ledger = $_ledger[0];
 
         $refund = ($row['amount'] - $amount);
@@ -471,7 +472,7 @@ function _complete_escrow(array $row, ?int $amount = null, bool $escrow_log = tr
  * @param  LONG_TEXT $reason The explanation for cancelling the escrow
  * @param  ?array $row The database row for the escrow (null: query for it)
  * @param  boolean $actually_refund Whether to actually refund the points to the sender (this should be false if the original points transaction is being reversed)
- * @return ?AUTO_LINK The ID of the points_ledger transaction refunding the points to the sender (null: the refund was not processed)
+ * @return ?AUTO_LINK The ID of the points_ledger transaction refunding the points to the sender (null: no refund was processed)
  */
 function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = null, bool $actually_refund = true) : ?int
 {
@@ -495,7 +496,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     $GLOBALS['SITE_DB']->query_update('escrow', ['status' => ESCROW_STATUS_CANCELLED, 'update_date_and_time' => time()], ['id' => $id], '', 1);
 
     $refund_id = null;
-    if ($actually_refund) {
+    if (($actually_refund) && ($row['original_points_ledger_id'] !== null)) {
         // Get the original points ledger
         $_ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'amount_gift_points'], ['id' => $row['original_points_ledger_id']], '', 1);
         if ($_ledger === null || !array_key_exists(0, $_ledger)) {

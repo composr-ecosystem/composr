@@ -179,6 +179,7 @@ We hope other users will appreciate your efforts and give you some points to rew
         return [
             'requires' => [ // Actually, we need every bundled addon, but that's unreasonable to list
                 'meta_toolkit',
+                'gitlab_shared',
             ],
             'recommends' => [],
             'conflicts_with' => [],
