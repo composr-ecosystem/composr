@@ -26,9 +26,7 @@ As more is maintained officially (maintenance_status.csv), we can fo the followi
 
 function init__continuous_integration()
 {
-    if (!defined('COMPOSR_GITLAB_PROJECT_ID')) {
-        define('COMPOSR_GITLAB_PROJECT_ID', '14182874');
-
+    if (!defined('CI_EXCLUDED_TESTS')) {
         $status = cms_version_branch_status();
         define('CI_EXCLUDED_TESTS', [
             // Very slow
@@ -82,6 +80,7 @@ function init__continuous_integration()
     require_code('files');
     require_code('files2');
     require_code('failure');
+    require_code('gitlab');
 }
 
 // e.g. To queue http://localhost/composr/data_custom/continuous_integration.php?ci_password=test&commit_id=HEAD&verbose=1&dry_run=1&limit_to=awards&immediate=0&output=1
@@ -438,7 +437,7 @@ function run_all_applicable_tests($output, $commit_id, $verbose, $dry_run, $limi
 
     if ($results != '') {
         if (!$dry_run) {
-            post_results_to_commit($commit_id, $results);
+            gitlab_add_commit_comment($commit_id, $results);
         }
     }
 
@@ -464,24 +463,6 @@ function find_all_applicable_tests($limit_to = null)
     sort($other_tests);
 
     return array_merge($first_tests, $other_tests);
-}
-
-function post_results_to_commit($commit_id, $note)
-{
-    $project_id = '14182874';
-
-    $url = 'https://gitlab.com/api/v4/projects/' . COMPOSR_GITLAB_PROJECT_ID . '/repository/commits/' . $commit_id . '/comments';
-
-    global $SITE_INFO;
-    if (!isset($SITE_INFO['gitlab_personal_token'])) {
-        throw new Exception('No gitlab_personal_token defined in _config.php');
-    }
-    $token = $SITE_INFO['gitlab_personal_token'];
-
-    $result = cms_http_request($url, ['timeout' => 100.0, 'trigger_errors' => false, 'extra_headers' => ['Private-Token' => $token], 'post_params' => ['note' => $note]]);
-    if (substr($result->message, 0, 1) != '2') {
-        throw new Exception($result->data);
-    }
 }
 
 function process_ci_context_hooks($method, $output, $commit_id, $verbose, $dry_run, $limit_to, &$context)

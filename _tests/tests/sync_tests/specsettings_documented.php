@@ -113,7 +113,7 @@ class specsettings_documented_test_set extends cms_test_case
                 (/*LEGACY: removed from _config.php as it should not be readily editable*/$var != 'multi_lang_content') &&
                 (/*string replace array*/$var != 'reps') &&
                 (/*AFM*/strpos($var, 'ftp_') === false) &&
-                (/*Testing Platform*/!in_array($var, ['ci_password', 'gitlab_personal_token'])) &&
+                (/*Testing Platform*/!in_array($var, ['ci_password'])) &&
 
                 // LEGACY: Demonstrator; no longer maintained (but some of these are also used by Google App Engine, make release, etc)
                 (strpos($var, 'throttle_') === false) &&

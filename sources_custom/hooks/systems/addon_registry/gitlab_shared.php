@@ -10,13 +10,13 @@
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
- * @package    cms_homesite_gitlab
+ * @package    gitlab_shared
  */
 
 /**
  * Hook class.
  */
-class Hook_addon_registry_cms_homesite_gitlab
+class Hook_addon_registry_gitlab_shared
 {
     /**
      * Get a list of file permissions to set.
@@ -107,7 +107,7 @@ class Hook_addon_registry_cms_homesite_gitlab
      */
     public function get_description() : string
     {
-        return 'This addon is used with cms_homesite to support GitLab integrations (branch status and webhooks to award points for issues / commits)';
+        return 'This addon contains the REST API calls needed to perform some GitLab operations by other addons';
     }
 
     /**
@@ -129,12 +129,9 @@ class Hook_addon_registry_cms_homesite_gitlab
     {
         return [
             'requires' => [
-                'cms_homesite',
-                'points',
-                'gitlab_shared',
             ],
             'recommends' => [
-                'achievements'
+                'cms_homesite_gitlab'
             ],
             'conflicts_with' => [],
         ];
@@ -158,13 +155,7 @@ class Hook_addon_registry_cms_homesite_gitlab
     public function get_file_list() : array
     {
         return [
-            'lang_custom/EN/cms_homesite_gitlab.ini',
-            'sources_custom/hooks/endpoints/cms_homesite_gitlab/issues.php',
-            'sources_custom/hooks/systems/addon_registry/cms_homesite_gitlab.php',
-            'sources_custom/hooks/systems/config/gitlab_issue_points.php',
-            'sources_custom/hooks/systems/config/gitlab_webhook_secret.php',
-            'sources_custom/hooks/systems/endpoint_authorization/gitlab_webhook.php',
-            'sources_custom/hooks/systems/points/gitlab__issue.php',
+            'sources_custom/gitlab.php',
         ];
     }
 }

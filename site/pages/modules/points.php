@@ -32,7 +32,7 @@ class Module_points
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 12;
+        $info['version'] = 13;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -124,7 +124,7 @@ class Module_points
                 'date_and_time' => 'TIME',
                 'update_date_and_time' => 'TIME',
                 'amount' => 'INTEGER',
-                'original_points_ledger_id' => 'AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
+                'original_points_ledger_id' => '?AUTO_LINK', // This will always point to the first ledger id (when the escrow was created / points sent to the system)
                 'sending_member' => 'MEMBER',
                 'receiving_member' => '?MEMBER',
                 'reason' => 'SHORT_TRANS__COMCODE',
@@ -484,6 +484,11 @@ class Module_points
 
             // ...but charges from warnings do!
             $GLOBALS['SITE_DB']->query_update('points_ledger', ['is_ranked' => 1], ['t_type' => 'warning', 't_subtype' => 'add']);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 13)) { // LEGACY: 11.rc1
+            // original_points_ledger_id can now be null (when an escrow is created by the system)
+            $GLOBALS['SITE_DB']->alter_table_field('escrow', 'original_points_ledger_id', '?AUTO_LINK');
         }
     }
 
