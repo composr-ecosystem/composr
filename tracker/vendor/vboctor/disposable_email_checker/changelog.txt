@@ -1,0 +1,85 @@
+DisposableEmailChecker ChangeLog
+
+2018.11.04 - 3.1.0
+- Supported adding a set of domains to black list.
+- Supported removing a set of domains from black list.
+- Used associative array for domains to check membership faster.
+- Removed `ukr.net` from domain list.
+- Removed testing for PHP 5.3 since it is no longer supported by Travis CI.
+
+2017.05.21 - 3.0.1
+- Fixes for composer.json relating to auto-loading.
+
+2017.05.21 - 3.0.0 (domains = 1,915)
+- Added 1,400 domains from ivolo/disposable-email-domains.
+- Added 256 domains from aaronbassett/DisposableEmailChecker.
+- Remove types of domains, just track disposable list of domains.
+- Publish to Packagist to be used via Composer.
+
+2016.05.21 - 2.1.1
+- Added 18 domains
+
+2015.11.28 - 2.1.0
+- Changed license to MIT
+- Added support for comments in data files (starting with '#').
+- Update copyright year.
+- Added 'DisposableEmailChecker::is_subaddressed_email()' to check for domains like user+tag@domain.tld.
+- Added Composer package manager support.
+- Added a bunch of domains.
+
+2014.01.26 - 2.0.0
+- Separate code from data files containing domain lists.
+- Change directory structure to enable having implementations in multiple languages.
+- Added public and private access specifiers to all methods on the class.
+- All class methods are now static.
+- Added 12 unit tests and continuous integration setup for php 5.3, 5.4 and 5.5.
+- 37 disposable forwarding email providers (1 new).
+- 142 disposable trash email providers.
+- 1 disposable shredder email provider.
+- 42 disposable time bound email provider.
+- 285 free email providers (1 new).
+
+2012.09.07  -  1.1.3
+- 36 disposable forwarding email providers.
+- 142 disposable trash email providers (10 new).
+- 1 disposable shredder email provider.
+- 42 disposable time bound email provider.
+- 284 free email providers.
+
+2012.09.02  -  1.1.2
+- 36 disposable forwarding email providers.
+- 132 disposable trash email providers.
+- 1 disposable shredder email provider.
+- 42 disposable time bound email provider.
+- 284 free email providers (201 new).
+
+2011.08.19  -  1.1.1
+- 36 disposable forwarding email providers.
+- 132 disposable trash email providers (24 new).
+- 1 disposable shredder email provider.
+- 42 disposable time bound email provider.
+- 83 free email providers (1 new).
+
+2008.04.13  -  1.1.0
+
+- 36 disposable forwarding email providers (removed 1 duplicate).
+- 108 disposable trash email providers (removed 3 duplicates).
+- 1 disposable shredder email provider.
+- 42 disposable time bound email provider (removed 1 duplicate).
+- 82 free email providers (13 new).
+
+2007.07.31  -  1.0.1
+
+- 37 disposable forwarding email providers (29 new).
+- 111 disposable trash email providers (100 new).
+- 1 disposable shredder email provider (0 new).
+- 43 disposable time bound email provider (38 new).
+- 69 free email providers (66 new).
+
+2007.06.16  -  1.0.0
+
+- Initial implementation
+- 8 disposable forwarding email providers.
+- 11 disposable trash email providers.
+- 1 disposable shredder email provider.
+- 3 free email providers
