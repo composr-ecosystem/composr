@@ -72,7 +72,7 @@ class Hook_achievement_qualifications_tracker
         // Read in parameters
         $count_required = isset($params['count']) ? intval($params['count']) : 5;
         $handler = isset($params['handler']) ? $params['handler'] : '0';
-        $resolved_only = isset($params['resolved_only']) ? ($params['resolved_only'] == '1') : false;
+        $resolved_only = isset($params['resolved_only']) ? ($params['resolved_only'] == '1') : true;
         $days = isset($params['days']) ? intval($params['days']) : null;
 
         // Build query
