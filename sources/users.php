@@ -578,9 +578,10 @@ function get_displayname(string $username) : string
  * Get the current session ID.
  *
  * @param  boolean $ignore_static_cache Whether to ignore the fact there may be a static cache; used to get true session ID during authentication code to break a paradoxs
+ * @param  boolean $ignore_ip_validation Whether to ignore IP validation when getting the session; always ignored if the IP address is the server
  * @return ID_TEXT The current session ID (blank: none)
  */
-function get_session_id(bool $ignore_static_cache = false) : string
+function get_session_id(bool $ignore_static_cache = false, bool $ignore_ip_validation = false) : string
 {
     require_code('static_cache');
 
@@ -615,8 +616,10 @@ function get_session_id(bool $ignore_static_cache = false) : string
         }
 
         // IP validation
-        if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
-            return '';
+        if ((!$ignore_ip_validation) && (!is_our_server())) {
+            if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
+                return '';
+            }
         }
 
         return $ret;
@@ -642,8 +645,10 @@ function get_session_id(bool $ignore_static_cache = false) : string
         }
 
         // IP validation
-        if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
-            return '';
+        if ((!$ignore_ip_validation) && (!is_our_server())) {
+            if (((get_option('ip_strict_for_sessions') == '1') || (is_guest())) && ($SESSION_CACHE[$ret]['ip'] != get_ip_address(3))) {
+                return '';
+            }
         }
 
         return $ret;
