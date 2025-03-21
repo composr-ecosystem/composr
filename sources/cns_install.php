@@ -35,6 +35,8 @@ CNS_DRIVER - A forum driver to Conversr. This is always used in Conversr rather 
 
 The Conversr functions should always call up the attachment and language systems using explicitly the forum database, so multi site networks function properly.
 
+NOTE: To keep things organised, and to prevent Conversr upgrade code timeouts, anything pertaining to a specific cns addon (and not core_cns) should be in its own module upgrade code and not here.
+
 */
 
 /**
@@ -46,7 +48,6 @@ function init__cns_install()
 {
     global $CNS_TRUE_PERMISSIONS, $CNS_FALSE_PERMISSIONS;
     $CNS_TRUE_PERMISSIONS = [
-        'run_multi_moderations',
         'use_pt',
         'edit_private_topic_posts',
         'may_unblind_own_poll',
@@ -64,7 +65,6 @@ function init__cns_install()
         'disable_lost_passwords',
         'close_own_topics',
         'edit_own_polls',
-        'see_warnings',
         'see_ip',
         'may_choose_custom_title',
         'view_other_pt',
@@ -72,7 +72,6 @@ function init__cns_install()
         'moderate_private_topic',
         'member_maintenance',
         'probate_members',
-        'warn_members',
         'control_usergroups',
         'multi_delete_topics',
         'show_user_browsing',
@@ -130,7 +129,6 @@ function uninstall_cns()
         'f_poll_answers',
         'f_poll_votes',
         'f_post_templates',
-        'f_warnings',
         'f_moderator_logs',
         'f_member_known_login_ips',
         'f_members',
@@ -139,11 +137,9 @@ function uninstall_cns()
         'f_read_logs',
         'f_forum_tracking',
         'f_topic_tracking',
-        'f_multi_moderations',
         'f_invites',
         'f_forum_group_access',
         'f_special_pt_access',
-        'f_saved_warnings',
         'f_member_cpf_perms',
         'f_group_join_log',
         'f_password_history',
@@ -191,7 +187,6 @@ function install_cns(?float $upgrade_from = null)
     require_lang('cns_polls');
     require_lang('cns_config');
     require_lang('cns_special_cpf');
-    require_code('cns_moderation_action');
     require_code('cns_posts_action');
     require_code('cns_members_action');
     require_code('cns_groups_action');
@@ -228,7 +223,6 @@ function install_cns(?float $upgrade_from = null)
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
-        $GLOBALS['FORUM_DB']->delete_table_field('f_multi_moderations', 'mm_sink_state');
         $GLOBALS['FORUM_DB']->delete_table_field('f_topics', 't_sunk');
 
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_topics', 'topic_order_2');
@@ -239,7 +233,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'date'], ['cf_type' => 'just_date']);
         $GLOBALS['FORUM_DB']->query_update('f_custom_fields', ['cf_type' => 'time'], ['cf_type' => 'just_time']);
 
-        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'w_topic_id', '?AUTO_LINK');
         $GLOBALS['FORUM_DB']->add_table_field('f_moderator_logs', 'l_warning_id', '?AUTO_LINK');
 
         $GLOBALS['FORUM_DB']->add_table_field('f_groups', 'g_promotion_approval', 'BINARY');
@@ -366,8 +359,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics SET t_emoticon=REPLACE(t_emoticon,\'ocf_\',\'cns_\') WHERE t_emoticon LIKE \'%ocf\_%\'');
         $GLOBALS['FORUM_DB']->query_update('f_topics', ['t_emoticon' => 'icons/14x14/cns_topic_modifiers/announcement'], ['t_emoticon' => 'cns_topic_modifiers/announcement']);
 
-        $GLOBALS['FORUM_DB']->change_primary_key('f_multi_moderations', ['id']);
-
         $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'double_post']);
         $GLOBALS['SITE_DB']->query_update('privilege_list', ['the_default' => 1], ['the_name' => 'delete_account']);
 
@@ -442,8 +433,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->query('UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers SET pa_order=id');
 
         $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pa_poll_id', ['pa_poll_id']);
-
-        $GLOBALS['FORUM_DB']->add_table_field('f_warnings', 'p_changed_usergroup_to', '?GROUP');
 
         $max = 100;
         $start = 0;
@@ -742,7 +731,7 @@ function install_cns(?float $upgrade_from = null)
         $staff_access = [$administrator_group => 5, $super_moderator_group => 5];
         $root_forum = cns_make_forum(do_lang('ROOT_FORUM'), '', null, $staff_post_access, null);
         cns_make_forum(do_lang('DEFAULT_FORUM_TITLE'), '', $forum_grouping_id, $typical_access, $root_forum);
-        $trash_forum_id = cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
+        cns_make_forum(do_lang('TRASH'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
         cns_make_forum(do_lang('COMMENT_FORUM_NAME'), '', $forum_grouping_id, $typical_access, $root_forum, 1, 1, 0, '', '', '', 'last_post', 1);
         $staff_forum_id = cns_make_forum(do_lang('STAFF'), '', $forum_grouping_id_staff, $staff_access, $root_forum);
 
@@ -827,12 +816,6 @@ function install_cns(?float $upgrade_from = null)
             's_topic_id' => '*AUTO_LINK',
         ]);
 
-        $GLOBALS['FORUM_DB']->create_table('f_saved_warnings', [
-            's_title' => '*SHORT_TEXT',
-            's_explanation' => 'LONG_TEXT',
-            's_message' => 'LONG_TEXT',
-        ], false, false, true);
-
         $GLOBALS['FORUM_DB']->create_table('f_forum_intro_ip', [
             'i_forum_id' => '*AUTO_LINK',
             'i_ip_address' => '*IP',
@@ -896,29 +879,6 @@ function install_cns(?float $upgrade_from = null)
             'pv_points_when_voted' => 'INTEGER',
             'pv_cache_voting_power' => '?REAL'
         ]);
-
-        $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', [
-            'id' => '*AUTO',
-            'mm_name' => 'SHORT_TRANS',
-            'mm_post_text' => 'LONG_TEXT',    // Comcode
-            'mm_move_to_forum_id' => '?AUTO_LINK',
-            'mm_pin_state' => '?BINARY',
-            'mm_open_state' => '?BINARY',
-            'mm_forum_multi_code' => 'SHORT_TEXT',
-            'mm_title_suffix' => 'SHORT_TEXT',
-        ]);
-        cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
-
-        $GLOBALS['FORUM_DB']->create_table('f_warnings', [
-            'id' => '*AUTO',
-            'w_member_id' => 'MEMBER',
-            'w_time' => 'TIME',
-            'w_explanation' => 'LONG_TEXT',
-            'w_issuing_member' => 'MEMBER',
-            'w_is_warning' => 'BINARY',
-            'w_topic_id' => '?AUTO_LINK',
-        ]);
-        $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
 
         $GLOBALS['FORUM_DB']->create_table('f_moderator_logs', [
             'id' => '*AUTO',
@@ -1612,21 +1572,6 @@ function install_cns(?float $upgrade_from = null)
             'i_ngram',
             'i_occurrence_rate', // For sorting
         ]);
-
-        $GLOBALS['FORUM_DB']->create_table('f_warnings_punitive', [
-            'id' => '*AUTO',
-            'p_warning_id' => 'AUTO_LINK',
-            'p_member_id' => 'MEMBER', // The member to which the action applies
-            'p_ip_address' => 'IP', // The IP address to which the action applies, if applicable
-            'p_email_address' => 'SHORT_TEXT', // The e-mail address to which the action applies, if applicable
-            'p_hook' => 'ID_TEXT', // name of a hook in systems/cns_warnings that performed the action
-            'p_action' => 'ID_TEXT', // A punitive action language string code, which p_param_a and p_param_b will be injected for written context
-            'p_param_a' => 'SHORT_TEXT', // some parameter relating to the action
-            'p_param_b' => 'SHORT_TEXT', // some other parameter relating to the action
-            'p_reversed' => 'BINARY', // Whether this punitive action was reversed
-        ]);
-        $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warningsid', ['p_warning_id']);
-        $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warninghook', ['p_hook']);
     }
 
     if (($upgrade_from !== null) && ($upgrade_from < 11.0)) { // LEGACY
@@ -1640,7 +1585,7 @@ function install_cns(?float $upgrade_from = null)
 
         // Migrate old publication time code to our new validation time
         $GLOBALS['FORUM_DB']->add_table_field('f_topics', 't_validation_time', '?TIME');
-        if (addon_installed('calendar')) {
+        if (addon_installed('calendar') && $GLOBALS['SITE_DB']->table_exists('calendar_events')) {
             require_code('calendar2');
             require_code('temporal');
 
@@ -1686,8 +1631,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->alter_table_field('f_posts', 'p_last_edit_by', '?MEMBER', 'p_last_edit_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_forum_intro_ip', 'i_ip', '*IP', 'i_ip_address');
         $GLOBALS['FORUM_DB']->alter_table_field('f_poll_votes', 'pv_ip', 'IP', 'pv_ip_address');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
-        $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_moderator_logs', 'l_by', 'MEMBER', 'l_by_member');
         $GLOBALS['FORUM_DB']->alter_table_field('f_member_known_login_ips', 'i_ip', '*IP', 'i_ip_address');
 
@@ -1699,115 +1642,6 @@ function install_cns(?float $upgrade_from = null)
         $GLOBALS['FORUM_DB']->delete_index_if_exists('f_poll_votes', 'v_voter_ip');
 
         $GLOBALS['FORUM_DB']->create_index('f_poll_answers', 'pollid', ['pa_poll_id']);
-
-        // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
-        $start = 0;
-            do {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 250, $start);
-                foreach ($rows as $i => $row) {
-                    if ($row['p_silence_from_topic'] !== null) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'silencing',
-                            'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
-                            'p_param_a' => strval($row['p_silence_from_topic']),
-                            'p_param_b' => '', // f_warnings did not track time
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if ($row['p_silence_from_forum'] !== null) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'silencing',
-                            'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
-                            'p_param_a' => strval($row['p_silence_from_forum']),
-                            'p_param_b' => '', // f_warnings did not track time
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if (($row['p_probation'] !== null) && ($row['p_probation'] > 0)) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'probation',
-                            'p_action' => '_PUNITIVE_PROBATION',
-                            'p_param_a' => strval($row['p_probation']),
-                            'p_param_b' => '',
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if (($row['p_banned_ip'] !== null) && ($row['p_banned_ip'] != '')) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => strval($row['p_banned_ip']),
-                            'p_email_address' => '',
-                            'p_hook' => 'ban_ip',
-                            'p_action' => '_PUNITIVE_IP_BANNED',
-                            'p_param_a' => '',
-                            'p_param_b' => '',
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if (($row['p_charged_points'] !== null) && ($row['p_charged_points'] > 0)) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'points',
-                            'p_action' => '_PUNITIVE_CHARGED_POINTS',
-                            'p_param_a' => strval($row['p_charged_points']),
-                            'p_param_b' => '',
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if ($row['p_banned_member'] !== 0) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'ban_member',
-                            'p_action' => '_PUNITIVE_BAN_ACCOUNT',
-                            'p_param_a' => '',
-                            'p_param_b' => '',
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                    if ($row['p_changed_usergroup_from'] !== null) {
-                        $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
-                            'p_warning_id' => $row['id'],
-                            'p_member_id' => $row['w_member_id'],
-                            'p_ip_address' => '',
-                            'p_email_address' => '',
-                            'p_hook' => 'change_group',
-                            'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
-                            'p_param_a' => strval($row['p_changed_usergroup_from']),
-                            'p_param_b' => strval($row['p_changed_usergroup_to']),
-                            'p_reversed' => 0,
-                        ]);
-                    }
-                }
-                $start += 250;
-            } while (array_key_exists(0, $rows));
-
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_probation');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_ip');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
-        $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
     }
 
     if (($upgrade_from === null) || ($upgrade_from < 11.0)) {

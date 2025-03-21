@@ -4709,6 +4709,12 @@ class Hook_import_cms_merge
             return;
         }
 
+        if (!addon_installed('cns_multi_moderations')) {
+            return;
+        }
+
+        require_code('cns_multi_moderations');
+
         $rows = $db->query_select('f_multi_moderations', ['*']);
         $this->_fix_comcode_ownership($rows);
         foreach ($rows as $row) {
@@ -4766,6 +4772,8 @@ class Hook_import_cms_merge
         if ($this->on_same_msn($file_base)) {
             return;
         }
+
+        require_code('cns_warnings2');
 
         // Start with the warnings themselves
         $max = 300;

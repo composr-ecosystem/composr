@@ -24,13 +24,18 @@ class multi_moderations_test_set extends cms_test_case
     {
         parent::setUp();
 
+        if (!addon_installed('cns_multi_moderations')) {
+            $this->assertTrue(false, 'Test only works when the cns_multi_moderations addon is installed');
+            return;
+        }
+
         if (get_forum_type() != 'cns') {
             $this->assertTrue(false, 'Test only works with Conversr');
             return;
         }
 
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations');
+        require_code('cns_multi_moderations2');
 
         $this->mod_id = cns_make_multi_moderation('Test Moderation', 'Test', null, 0, 0, '*', 'Nothing');
 

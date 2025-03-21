@@ -1792,10 +1792,10 @@ function has_no_forum() : bool
  * For addons with no addon_registry hook can also check the database (if requested via $check_hookless).
  *
  * @param  ID_TEXT $addon_name The addon name
- * @param  boolean $check_hookless Whether to check addons with no addon_registry hook (it's very rare to need this)
+ * @param  boolean $check_hookless Whether to check addons with no addon_registry hook (it's very rare to need this; will skip $deep_scan)
  * @param  boolean $deep_scan Do a deep scan of the database to see if the addon is fully installed
  * @param  boolean $disabled_scan Consider whether the addon is set as disabled
- * @param  boolean $force_custom Whether to forcefully check custom even if in safe mode
+ * @param  boolean $force_custom Whether to forcefully check custom hooks even if in safe mode
  * @return boolean Whether it is
  */
 function addon_installed(string $addon_name, bool $check_hookless = false, bool $deep_scan = true, bool $disabled_scan = true, bool $force_custom = false) : bool
@@ -1830,20 +1830,21 @@ function addon_installed(string $addon_name, bool $check_hookless = false, bool 
         }
     }
 
-    // Check addons table
-    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && ($check_custom) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
+    if ((!$GLOBALS['IN_MINIKERNEL_VERSION']) && (($check_hookless || $deep_scan || $disabled_scan)) && (!$GLOBALS['DEV_MODE']/*stuff maybe changed during dev*/)) {
         require_code('database');
 
-        if ((!$answer) && ($check_hookless)) {
+        // Check addons table
+        // NB: addons without a hook are always custom, so only run if we are also checking custom (bundled addons always have a hook)
+        if ((!$answer) && ($check_hookless) && ($check_custom)) {
             $test = $GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $addon_name]);
             if ($test !== null) {
                 $answer = true;
             }
 
-            // Won't check tables because we don't know them for hookless addons (not in db_meta.bin)
+            // NB: Won't check tables because we don't know them for hookless addons (not in db_meta.bin)
         } else {
             if (($answer) && ($deep_scan)) {
-                // Check tables defined in db_meta.bin (bundled addons)
+                // Do a full scan to see if the addon is fully installed; check tables defined in db_meta.bin (bundled addons only)
                 static $data = null;
                 if ($data === null) {
                     $data = is_file(get_file_base() . '/data/db_meta.bin') ? @unserialize(cms_file_get_contents_safe(get_file_base() . '/data/db_meta.bin', FILE_READ_LOCK)) : [];
@@ -2028,10 +2029,13 @@ function cns_require_all_forum_stuff()
     require_code('cns_members');
     require_code('cns_topics');
     require_code('cns_posts');
-    require_code('cns_moderation');
     require_code('cns_groups');
     require_code('cns_forums');
     require_code('cns_general');
+
+    if (addon_installed('cns_multi_moderations')) {
+        require_code('cns_multi_moderations');
+    }
 }
 
 /**

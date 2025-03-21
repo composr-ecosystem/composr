@@ -50,5 +50,5 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 require_once $FILE_BASE . '/sources/bootstrap.php';
 require_code__bootstrap('global');
 
-require_code('cns_moderation_action2');
+require_code('cns_warnings');
 warnings_script();

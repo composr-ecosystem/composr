@@ -18,6 +18,11 @@
  * @package    core
  */
 
+/*
+    NOTE: Upgrade code here should only specifically pertain to core components (what's in installer step_5_core/step_5_core_2, permissions, addon management).
+    To prevent upgrader timeouts, everything else should be in its own addon module's install code (even if part of core_*).
+ */
+
 /**
  * Module page class.
  */

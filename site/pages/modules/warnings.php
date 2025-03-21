@@ -34,6 +34,220 @@ class Module_warnings extends Standard_crud_module
     public $orderer = 'w_time';
 
     /**
+     * Find details of the module.
+     *
+     * @return ?array Map of module info (null: module is disabled)
+     */
+    public function info() : ?array
+    {
+        $info = [];
+        $info['author'] = 'Chris Graham and Patrick Schmalstig';
+        $info['organisation'] = 'Composr';
+        $info['hacked_by'] = null;
+        $info['hack_version'] = null;
+        $info['version'] = 2;
+        $info['update_require_upgrade'] = true;
+        $info['locked'] = false;
+        $info['min_cms_version'] = 11.0;
+        $info['addon'] = 'cns_warnings';
+        return $info;
+    }
+
+    /**
+     * Uninstall the module.
+     */
+    public function uninstall()
+    {
+        require_code('permissions3');
+
+        $privileges = [
+            'see_warnings',
+            'warn_members',
+        ];
+        delete_privilege($privileges);
+
+        $tables = [
+            'f_saved_warnings',
+            'f_warnings',
+            'f_warnings_punitive',
+        ];
+        $GLOBALS['FORUM_DB']->drop_table_if_exists($tables);
+
+        // Reset cached warnings to 0 for all members since we deleted them all
+        $GLOBALS['FORUM_DB']->query_update('f_members', ['m_cache_warnings' => 0]);
+    }
+
+    /**
+     * Install the module.
+     *
+     * @param  ?integer $upgrade_from What version we're upgrading from (null: new install)
+     * @param  ?integer $upgrade_from_hack What hack version we're upgrading from (null: new-install/not-upgrading-from-a-hacked-version)
+     */
+    public function install(?int $upgrade_from = null, ?int $upgrade_from_hack = null)
+    {
+        require_code('permissions3');
+
+        if ($upgrade_from === null) {
+            if (!$GLOBALS['FORUM_DB']->table_exists('f_warnings')) {
+                $GLOBALS['FORUM_DB']->create_table('f_warnings', [
+                    'id' => '*AUTO',
+                    'w_member_id' => 'MEMBER',
+                    'w_time' => 'TIME',
+                    'w_explanation' => 'LONG_TEXT',
+                    'w_issuing_member' => 'MEMBER',
+                    'w_is_warning' => 'BINARY',
+                    'w_topic_id' => '?AUTO_LINK',
+                ]);
+                $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
+            }
+
+            if (!$GLOBALS['FORUM_DB']->table_exists('f_warnings_punitive')) {
+                $GLOBALS['FORUM_DB']->create_table('f_warnings_punitive', [
+                    'id' => '*AUTO',
+                    'p_warning_id' => 'AUTO_LINK',
+                    'p_member_id' => 'MEMBER', // The member to which the action applies
+                    'p_ip_address' => 'IP', // The IP address to which the action applies, if applicable (used for the privacy system)
+                    'p_email_address' => 'SHORT_TEXT', // The e-mail address to which the action applies, if applicable (used for the privacy system)
+                    'p_hook' => 'ID_TEXT', // name of a hook in systems/cns_warnings that performed the action
+                    'p_action' => 'ID_TEXT', // A punitive action language string code, which p_param_a and p_param_b will be injected for written context
+                    'p_param_a' => 'SHORT_TEXT', // some parameter relating to the action
+                    'p_param_b' => 'SHORT_TEXT', // some other parameter relating to the action
+                    'p_reversed' => 'BINARY', // Whether this punitive action was reversed
+                ]);
+                $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warningsid', ['p_warning_id']);
+                $GLOBALS['FORUM_DB']->create_index('f_warnings_punitive', 'warninghook', ['p_hook']);
+            }
+
+            if (!$GLOBALS['FORUM_DB']->table_exists('f_saved_warnings')) {
+                $GLOBALS['FORUM_DB']->create_table('f_saved_warnings', [
+                    's_title' => '*SHORT_TEXT',
+                    's_explanation' => 'LONG_TEXT',
+                    's_message' => 'LONG_TEXT',
+                ]);
+            }
+
+            add_privilege('FORUMS_AND_MEMBERS', 'see_warnings', false);
+            add_privilege('FORUMS_AND_MEMBERS', 'warn_members', false);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY: v10 to v11.rc1
+            $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
+
+            // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
+            $test_row = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 1);
+            if ((count($test_row) > 0) && array_key_exists('p_silence_from_topic', $test_row[0])) { // Make sure we did not already do the migration
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['FORUM_DB']->query_select('f_warnings', ['*'], [], '', 250, $start);
+                    foreach ($rows as $i => $row) {
+                        if ($row['p_silence_from_topic'] !== null) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'silencing',
+                                'p_action' => '_PUNITIVE_SILENCE_FROM_TOPIC',
+                                'p_param_a' => strval($row['p_silence_from_topic']),
+                                'p_param_b' => '', // f_warnings did not track time
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if ($row['p_silence_from_forum'] !== null) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'silencing',
+                                'p_action' => '_PUNITIVE_SILENCE_FROM_FORUM',
+                                'p_param_a' => strval($row['p_silence_from_forum']),
+                                'p_param_b' => '', // f_warnings did not track time
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if (($row['p_probation'] !== null) && ($row['p_probation'] > 0)) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'probation',
+                                'p_action' => '_PUNITIVE_PROBATION',
+                                'p_param_a' => strval($row['p_probation']),
+                                'p_param_b' => '',
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if (($row['p_banned_ip'] !== null) && ($row['p_banned_ip'] != '')) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => strval($row['p_banned_ip']),
+                                'p_email_address' => '',
+                                'p_hook' => 'ban_ip',
+                                'p_action' => '_PUNITIVE_IP_BANNED',
+                                'p_param_a' => '',
+                                'p_param_b' => '',
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if (($row['p_charged_points'] !== null) && ($row['p_charged_points'] > 0)) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'points',
+                                'p_action' => '_PUNITIVE_CHARGED_POINTS',
+                                'p_param_a' => strval($row['p_charged_points']),
+                                'p_param_b' => '',
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if ($row['p_banned_member'] !== 0) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'ban_member',
+                                'p_action' => '_PUNITIVE_BAN_ACCOUNT',
+                                'p_param_a' => '',
+                                'p_param_b' => '',
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                        if ($row['p_changed_usergroup_from'] !== null) {
+                            $GLOBALS['FORUM_DB']->query_insert('f_warnings_punitive', [
+                                'p_warning_id' => $row['id'],
+                                'p_member_id' => $row['w_member_id'],
+                                'p_ip_address' => '',
+                                'p_email_address' => '',
+                                'p_hook' => 'change_group',
+                                'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
+                                'p_param_a' => strval($row['p_changed_usergroup_from']),
+                                'p_param_b' => strval($row['p_changed_usergroup_to']),
+                                'p_reversed' => 0,
+                            ]);
+                        }
+                    }
+                    $start += 250;
+                } while (array_key_exists(0, $rows));
+
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_topic');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_silence_from_forum');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_probation');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_ip');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
+                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
+            }
+        }
+    }
+
+    /**
      * Find icon for this module, specifically to find an icon for the module's main sitemap node. Defined when there is no entry-point for a default page call.
      *
      * @return string Icon
@@ -67,7 +281,7 @@ class Module_warnings extends Standard_crud_module
         }
 
         if ($check_perms) {
-            cns_require_all_forum_stuff();
+            require_code('cns_warnings');
             if (!cns_may_warn_members()) {
                 return null;
             }
@@ -157,8 +371,8 @@ class Module_warnings extends Standard_crud_module
      */
     public function run_start(string $type) : object
     {
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_warnings');
+        require_code('cns_warnings2');
 
         if (!cns_may_warn_members()) {
             access_denied('PRIVILEGE', 'warn_members');
@@ -316,7 +530,7 @@ class Module_warnings extends Standard_crud_module
                     $message .= "\n\n" . do_lang('MODERATED_AS_SPAM', get_site_name());
                 }
             }
-            $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, false));
+            $fields->attach(form_input_text_comcode(do_lang_tempcode('PP_MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, true)); // NB: Required under the EU Digital Services Act
 
             $fields->attach(form_input_line(do_lang_tempcode('SAVE_WARNING_DETAILS'), do_lang_tempcode('DESCRIPTION_SAVE_WARNING_DETAILS'), 'save', '', false));
 
@@ -425,9 +639,13 @@ class Module_warnings extends Standard_crud_module
     {
         require_code('global4');
 
+        if (!cns_may_warn_members()) {
+            access_denied('PRIVILEGE', 'warn_members');
+        }
+
         $explanation = post_param_string('explanation');
         $member_id = post_param_integer('member_id');
-        $message = post_param_string('message', '');
+        $message = post_param_string('message');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
         $message_punitive = post_param_integer('include_punitive_text', 0);
 
@@ -482,23 +700,21 @@ class Module_warnings extends Standard_crud_module
             }
         }
 
-        // Send PT if there is a message to send
-        if ($message != '') {
-            require_code('cns_topics_action');
-            require_code('cns_topics_action2');
-            require_code('cns_posts_action');
-            require_code('cns_posts_action2');
+        // Send PT
+        require_code('cns_topics_action');
+        require_code('cns_topics_action2');
+        require_code('cns_posts_action');
+        require_code('cns_posts_action2');
 
-            $_title = do_lang('NEW_WARNING_TO_YOU');
+        $_title = do_lang('NEW_WARNING_TO_YOU');
 
-            $pt_topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, get_member(), $member_id);
-            $post_id = cns_make_post($pt_topic_id, $_title, $message, 0, true, 1, 1/*emphasised*/, null, null, null, null, null, null, null, false);
+        $pt_topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, get_member(), $member_id);
+        $post_id = cns_make_post($pt_topic_id, $_title, $message, 0, true, 1, 1/*emphasised*/, null, null, null, null, null, null, null, false);
 
-            send_pt_notification($post_id, $_title, $pt_topic_id, $member_id);
+        send_pt_notification($post_id, $_title, $pt_topic_id, $member_id);
 
-            // Update warning row with the new private topic ID
-            $GLOBALS['FORUM_DB']->query_update('f_warnings', ['w_topic_id' => $pt_topic_id], ['id' => $warning_id], '', 1);
-        }
+        // Update warning row with the new private topic ID
+        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['w_topic_id' => $pt_topic_id], ['id' => $warning_id], '', 1);
 
         // Disable warning id association
         set_related_warning_id(null);
@@ -521,6 +737,10 @@ class Module_warnings extends Standard_crud_module
      */
     public function edit_actualisation(string $id) : ?object
     {
+        if (!cns_may_warn_members()) {
+            access_denied('PRIVILEGE', 'warn_members');
+        }
+
         $member_id = cns_edit_warning(intval($id), post_param_string('explanation'), post_param_integer('is_warning', 0));
 
         if (get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL) == '') {
@@ -553,6 +773,10 @@ class Module_warnings extends Standard_crud_module
      */
     public function delete_actualisation(string $id)
     {
+        if (!cns_may_warn_members()) {
+            access_denied('PRIVILEGE', 'warn_members');
+        }
+
         $member_id = cns_delete_warning(intval($id));
 
         if (get_param_string('redirect', '', INPUT_FILTER_URL_INTERNAL) == '') {

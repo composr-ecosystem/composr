@@ -1114,8 +1114,8 @@ class Module_topics
         require_lang('cns_multi_moderations');
 
         $mm_id = get_param_integer('mm_id');
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations');
+        require_code('cns_multi_moderations2');
 
         $topics = $this->get_markers();
         if (empty($topics)) {
@@ -4425,8 +4425,8 @@ class Module_topics
 
         $topic_id = get_param_integer('id');
         $mm_id = get_param_integer('mm_id');
-        require_code('cns_moderation_action');
-        require_code('cns_moderation_action2');
+        require_code('cns_multi_moderations');
+        require_code('cns_multi_moderations2');
         cns_perform_multi_moderation($mm_id, $topic_id, post_param_string('reason'), post_param_string('post_text'), post_param_integer('is_emphasised', 0), post_param_integer('skip_sig', 0));
 
         return $this->redirect_to('PERFORM_MULTI_MODERATION', $topic_id);

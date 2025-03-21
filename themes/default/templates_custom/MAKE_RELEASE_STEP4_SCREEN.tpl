@@ -12,6 +12,21 @@
 	{$,cleaning up}
 	<li>{!MAKE_RELEASE_STEP4_DB}</li>
 
+	{$,Transifex}
+	<li>{$GET,transifex}</li>
+
+	{$,addons part 1}
+	<li>
+		{!MAKE_RELEASE_STEP4_ADDONS}
+		<ul>
+			{+START,IF,{IS_SUBSTANTIAL}}{+START,IF,{$NOT,{IS_BLEEDING_EDGE}}}
+				<li>{!MAKE_RELEASE_STEP4_ADDONS_UPDATE_VERSION,{NEW_VERSION_FLOAT.}}</li>
+			{+END}{+END}
+			<li>{!MAKE_RELEASE_STEP4_ADDONS_GENERATE,{$PAGE_LINK,_SEARCH:build_addons}}</li>\
+			<li>{!MAKE_RELEASE_STEP4_ADDONS_UPLOAD}</li>
+		</ul>
+	</li>
+
 	{$,publishing the build 1}
 	<li>{!MAKE_RELEASE_STEP4_UPLOAD,{COMMAND_TO_TRY*},{NEW_VERSION_DOTTED*}}</li>
 	<li>{!MAKE_RELEASE_STEP4_TAG,{$REPLACE*, ,-,{NEW_VERSION_DOTTED}}}</li>
@@ -31,7 +46,7 @@
 		</ul>
 	</li>
 
-	{$,publishing the build 2}
+	{$,addons and publishing the build part 2}
 	<li>
 		<form target="_blank" style="display: inline" action="{PUSH_URL*}" method="post">
 			{$INSERT_FORM_POST_SECURITY}
@@ -50,6 +65,7 @@
 		</form>
 	</li>
 	<li>{!MAKE_RELEASE_STEP4_TEST,{$BRAND_BASE_URL*}}</li>
+	<li>{!MAKE_RELEASE_STEP4_ADDONS_PUBLISH,{$BRAND_BASE_URL*},{NEW_VERSION_FLOAT.},{NEW_VERSION_BRANCH.}}</li>
 
 	{$,API}
 	<li>{!MAKE_RELEASE_STEP4_API,{$BRAND_BASE_URL*}}</li>
@@ -59,26 +75,10 @@
 		{!MAKE_RELEASE_STEP4_INTEGRATIONS}
 	{+END}{+END}
 
-	{$,addons}
-	<li>
-		{!MAKE_RELEASE_STEP4_ADDONS}
-		<ul>
-			{+START,IF,{IS_SUBSTANTIAL}}{+START,IF,{$NOT,{IS_BLEEDING_EDGE}}}
-				<li>{!MAKE_RELEASE_STEP4_ADDONS_UPDATE_VERSION,{NEW_VERSION_FLOAT.}}</li>
-			{+END}{+END}
-			<li>{!MAKE_RELEASE_STEP4_ADDONS_GENERATE,{$PAGE_LINK,_SEARCH:build_addons}}</li>\
-			<li>{!MAKE_RELEASE_STEP4_ADDONS_UPLOAD}</li>
-			<li>{!MAKE_RELEASE_STEP4_ADDONS_PUBLISH,{$BRAND_BASE_URL*},{NEW_VERSION_FLOAT.},{NEW_VERSION_BRANCH.}}</li>
-		</ul>
-	</li>
-
 	{$,key-pairs}
 	{+START,IF,{IS_SUBSTANTIAL}}
 		<li>{!MAKE_RELEASE_STEP4_KEY_PAIRS}</li>
 	{+END}
-
-	{$,Transifex}
-	<li>{$GET,transifex}</li>
 
 	{+START,IF,{IS_SUBSTANTIAL}}{+START,IF,{$NOT,{IS_BLEEDING_EDGE}}}
 		{$,tracker}
