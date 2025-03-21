@@ -37,9 +37,13 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
             return null;
         }
 
+        return ['authorization' => false];
+
+        /* TODO: get this working
         return [
-            'authorization' => ['keep_session'],
+            'authorization' => 'member',
         ];
+        */
     }
 
     /**

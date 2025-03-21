@@ -34,9 +34,13 @@ class Hook_endpoint_cms_homesite_tracker_posts
             return null;
         }
 
+        return ['authorization' => false];
+
+        /* TODO: get this working
         return [
             'authorization' => ($type !== 'view') ? ['super_admin', 'maintenance_password'] : false,
         ];
+        */
     }
 
     /**
