@@ -30,7 +30,7 @@
 	<!-- BEGIN custom achievements for composr.app -->
 	<achievement name="tracker_master_9000" image="icons_monochrome/spare/report_usability" title="achievements:ACHIEVEMENT_TRACKER_MASTER_9000" points="100">
 		<qualifications>
-			<qualification name="tracker" count="10">
+			<qualification name="tracker" count="10" />
 		</qualifications>
 	</achievement>
 	<achievement name="publish_addon" image="icons_monochrome/menu/adminzone/structure/addons" title="Published an addon">
