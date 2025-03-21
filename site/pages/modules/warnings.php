@@ -530,7 +530,7 @@ class Module_warnings extends Standard_crud_module
                     $message .= "\n\n" . do_lang('MODERATED_AS_SPAM', get_site_name());
                 }
             }
-            $fields->attach(form_input_text_comcode(do_lang_tempcode('MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, false));
+            $fields->attach(form_input_text_comcode(do_lang_tempcode('PP_MESSAGE'), do_lang_tempcode('DESCRIPTION_PP_MESSAGE'), 'message', $message, true)); // NB: Required under the EU Digital Services Act
 
             $fields->attach(form_input_line(do_lang_tempcode('SAVE_WARNING_DETAILS'), do_lang_tempcode('DESCRIPTION_SAVE_WARNING_DETAILS'), 'save', '', false));
 
@@ -645,7 +645,7 @@ class Module_warnings extends Standard_crud_module
 
         $explanation = post_param_string('explanation');
         $member_id = post_param_integer('member_id');
-        $message = post_param_string('message', '');
+        $message = post_param_string('message');
         $username = $GLOBALS['FORUM_DRIVER']->get_username($member_id, false, USERNAME_DEFAULT_ERROR);
         $message_punitive = post_param_integer('include_punitive_text', 0);
 
@@ -700,23 +700,21 @@ class Module_warnings extends Standard_crud_module
             }
         }
 
-        // Send PT if there is a message to send
-        if ($message != '') {
-            require_code('cns_topics_action');
-            require_code('cns_topics_action2');
-            require_code('cns_posts_action');
-            require_code('cns_posts_action2');
+        // Send PT
+        require_code('cns_topics_action');
+        require_code('cns_topics_action2');
+        require_code('cns_posts_action');
+        require_code('cns_posts_action2');
 
-            $_title = do_lang('NEW_WARNING_TO_YOU');
+        $_title = do_lang('NEW_WARNING_TO_YOU');
 
-            $pt_topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, get_member(), $member_id);
-            $post_id = cns_make_post($pt_topic_id, $_title, $message, 0, true, 1, 1/*emphasised*/, null, null, null, null, null, null, null, false);
+        $pt_topic_id = cns_make_topic(null, '', '', 1, 1, 0, 0, get_member(), $member_id);
+        $post_id = cns_make_post($pt_topic_id, $_title, $message, 0, true, 1, 1/*emphasised*/, null, null, null, null, null, null, null, false);
 
-            send_pt_notification($post_id, $_title, $pt_topic_id, $member_id);
+        send_pt_notification($post_id, $_title, $pt_topic_id, $member_id);
 
-            // Update warning row with the new private topic ID
-            $GLOBALS['FORUM_DB']->query_update('f_warnings', ['w_topic_id' => $pt_topic_id], ['id' => $warning_id], '', 1);
-        }
+        // Update warning row with the new private topic ID
+        $GLOBALS['FORUM_DB']->query_update('f_warnings', ['w_topic_id' => $pt_topic_id], ['id' => $warning_id], '', 1);
 
         // Disable warning id association
         set_related_warning_id(null);
