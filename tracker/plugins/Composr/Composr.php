@@ -32,10 +32,10 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_extra_signin_sql = ''; // TODO: Customise for Composr's antispam
     protected $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
     protected $cms_sc_home_url = 'https://composr.app';
-    protected $cms_updater_groups = array();
-    protected $cms_developer_groups = array(22, 30);
-    protected $cms_manager_groups = array();
-    protected $cms_admin_groups = array(2, 3);
+    protected $cms_updater_groups = [];
+    protected $cms_developer_groups = [10]; // TODO: Keep up to date with composr.app's group IDs (member)
+    protected $cms_manager_groups = [];
+    protected $cms_admin_groups = [2, 3]; // TODO: Keep up to date with composr.app's group IDs (administrator, moderator)
 
     // These are set in register()
     protected $cms_sc_site_url = '';
@@ -311,7 +311,7 @@ class ComposrPlugin extends MantisPlugin {
 
                     // Update the session
                     $query = 'UPDATE ' . $this->cms_sc_db_prefix . 'sessions SET last_activity_time=' . db_param() . ', the_zone=' . db_param() . ', the_page=' . db_param() . ', the_type=' . db_param() . ', the_id=' . db_param() . ', the_title=' . db_param() . ' WHERE the_session=' . db_param();
-                    db_query($query, Array(time(), '', '', '', '', $g_window_title,  $_COOKIE[$this->cms_sc_session_cookie_name]));
+                    db_query($query, [time(), '', '', '', '', $g_window_title, $_COOKIE[$this->cms_sc_session_cookie_name]]);
 
                     // This line ensures that the fetched cookie is used in auth_get_current_user_cookie()
                     $g_script_login_cookie = $t_cookie;
