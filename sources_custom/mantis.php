@@ -463,13 +463,13 @@ function award_tracker_points(int $bug_id, int $reporter, int $handler) : bool
 
     points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($bug_id));
 
-    $id = points_credit_member($handler, 'Resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'resolve', strval($bug_id));
+    $id = points_credit_member($handler, 'Programming god: Resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'resolve', strval($bug_id));
     if ($id === null) {
         $ret = false;
     }
 
-    if (($reporter > 0) && !is_guest($reporter)) {
-        $id = points_credit_member($reporter, 'Reported resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'report_resolved', strval($bug_id));
+    if (($reporter > 0) && !is_guest($reporter) && ($reporter != $handler)) {
+        $id = points_credit_member($reporter, 'Tracker master: Reported resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'report_resolved', strval($bug_id));
         if ($id === null) {
             $ret = false;
         }
