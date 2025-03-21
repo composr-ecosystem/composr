@@ -234,7 +234,7 @@ class Module_admin_push_bugfix
             $files = array_keys($git_found);
         }
 
-        $projects = [ // TODO: might need changed when starting to use composr.app
+        $projects = [
             1 => 'Composr',
             10 => 'Composr alpha bug reports',
             8 => 'Composr build tools',
@@ -737,15 +737,7 @@ class Module_admin_push_bugfix
      */
     protected function get_tracker_categories() : ?array
     {
-        // LEGACY
-        $call = 'tracker_categories';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, null);
-        return @json_decode($result, true);
+        return $this->make_call('tracker_categories', null);
     }
 
     /**
@@ -776,21 +768,9 @@ class Module_admin_push_bugfix
             'tracker_project' => $tracker_project
         ];
 
-        // LEGACY
-        $call = 'tracker_issues';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, $post);
+        $result = $this->make_call('tracker_issues', $post);
         if (cms_empty_safe($result)) {
             return null;
-        }
-
-        // LEGACY
-        if (is_numeric($result)) {
-            return intval($result);
         }
 
         return intval($result['id']);
@@ -822,21 +802,9 @@ class Module_admin_push_bugfix
             'tracker_project' => $tracker_project
         ];
 
-        // LEGACY
-        $call = 'tracker_posts';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, $post);
+        $result = $this->make_call('tracker_posts', $post);
         if (cms_empty_safe($result)) {
             return null;
-        }
-
-        // LEGACY
-        if (is_numeric($result)) {
-            return intval($result);
         }
 
         return intval($result['id']);
@@ -860,21 +828,9 @@ class Module_admin_push_bugfix
             // Upload will be filled in by make_call
         ];
 
-        // LEGACY
-        $call = 'tracker_issues';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, $put, $tar_path);
+        $result = $this->make_call('tracker_issues', $put, $tar_path);
         if (cms_empty_safe($result)) {
             return null;
-        }
-
-        // LEGACY
-        if (is_numeric($result)) {
-            return intval($result);
         }
 
         if (!isset($result['upload'])) {
@@ -900,22 +856,9 @@ class Module_admin_push_bugfix
             'close' => 1
         ];
 
-        // LEGACY
-        $call = 'tracker_issues';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            unset($put['close']);
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, $put);
+        $result = $this->make_call('tracker_issues', $put);
         if (cms_empty_safe($result)) {
             return false;
-        }
-
-        // LEGACY
-        if (is_numeric($result)) {
-            return (intval($result) === 1);
         }
 
         return $result['success'];
@@ -943,21 +886,9 @@ class Module_admin_push_bugfix
             'post_important' => $post_important,
         ];
 
-        // LEGACY
-        $call = 'forum_posts';
-        global $REMOTE_BASE_URL;
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            $call = __FUNCTION__;
-        }
-
-        $result = $this->make_call($call, $post);
+        $result = $this->make_call('forum_posts', $post);
         if (cms_empty_safe($result)) {
             return null;
-        }
-
-        // LEGACY
-        if (is_numeric($result)) {
-            return intval($result);
         }
 
         return intval($result['id']);
@@ -1014,61 +945,15 @@ class Module_admin_push_bugfix
 
     /**
      * Make an API call to the software homesite.
-     * TODO: After removing legacy code, assign type ?array as return.
      *
      * @param  ID_TEXT $call The function to call
      * @param  ?array $post_params POST parameters to send with the request (PUT_id: use a PUT request) (null: none, and use a GET request)
      * @param  ?PATH $file The path to the file to upload with the request (null: do not upload a file)
-     * @return ?mixed The results of the call (null: error)
+     * @return ?array The results of the call (null: error)
      */
     protected function make_call(string $call, ?array $post_params, ?string $file = null)
     {
         global $REMOTE_BASE_URL;
-
-        // LEGACY
-        if ($REMOTE_BASE_URL == 'https://compo.sr') {
-            if ($post_params !== null) {
-                $post_params = ['parameters' => array_values($post_params)];
-                foreach ($post_params as $key => $param) {
-                    if (is_array($param)) {
-                        $first_null_index = 0;
-                        foreach ($param as $i => $val) {
-                            if ($val !== null) {
-                                $first_null_index = ($i + 1);
-                            }
-                        }
-                        foreach ($param as $i => $val) {
-                            if ($i >= $first_null_index) {
-                                break;
-                            }
-                            $post_params[$key . '[' . strval($i) . ']'] = @strval($val);
-                        }
-                        unset($post_params[$key]);
-                    }
-                }
-            }
-
-            $_username = post_param_string('username', null, INPUT_FILTER_POST_IDENTIFIER);
-            if ($_username !== null) {
-                $_password = post_param_string('password', '', INPUT_FILTER_PASSWORD);
-                if ($post_params === null) {
-                    $post_params = [];
-                }
-                $post_params['password'] = ($_username == '') ? $_password : ($_username . ':' . $_password);
-            }
-
-            global $REMOTE_BASE_URL;
-            $call_url = $REMOTE_BASE_URL . '/data_custom/composr_homesite_web_service.php?call=' . urlencode($call);
-
-            $files = ($file === null) ? null : ['upload' => $file];
-
-            $result = cms_http_request($call_url, ['post_params' => $post_params, 'files' => $files, 'trigger_error' => false]);
-            if (substr($result->message, 0, 1) !== '2') {
-                return null;
-            }
-
-            return $result->data;
-        }
 
         $type = 'GET';
         $id = null;
