@@ -190,7 +190,9 @@ function create_tracker_issue(string $version, string $tracker_title, string $tr
         'tracker_issue_added',
         null,
         'New tracker issue: ' . $tracker_title,
-        'A new tracker issue has been reported through the report issue wizard, [url="issue #' . strval($ret) . '"]' . get_base_url() . '/tracker/view.php?id=' . strval($ret) . '[/url]' . "\n\n" . 'Subject: ' . comcode_escape($tracker_title) . "\n\n" . 'Message: ' . comcode_escape($tracker_message)
+        'A new tracker issue has been reported through the report issue wizard, [url="issue #' . strval($ret) . '"]' . get_base_url() . '/tracker/view.php?id=' . strval($ret) . '[/url]' . "\n\n" . 'Subject: ' . comcode_escape($tracker_title) . "\n\n" . 'Message: ' . comcode_escape($tracker_message),
+        null,
+        A_FROM_SYSTEM_PRIVILEGED
     );
 
     return $ret;
