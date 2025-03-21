@@ -156,7 +156,7 @@ function create_tracker_issue(string $version, string $tracker_title, string $tr
             '" . strval(get_member()) . "',
             '" . db_escape_string(strval($handler_id)) . "',
             '0',
-            '40', /* High priority */
+            '30', /* Not Sponsored */
             '" . db_escape_string(strval($tracker_severity)) . "',
             '" . db_escape_string(strval($reproducibility)) . "',
             '" . db_escape_string(strval($status)) . "',
