@@ -98,6 +98,8 @@ function cns_delete_multi_moderation(int $id)
  */
 function cns_perform_multi_moderation(int $id, int $topic_id, string $reason, string $post_text = '', int $is_emphasised = 1, int $skip_sig = 0)
 {
+    require_code('cns_multi_moderations');
+
     if (!addon_installed('cns_multi_moderations')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cns_multi_moderations')));
     }

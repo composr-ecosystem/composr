@@ -337,15 +337,19 @@ function cns_render_forumview(?int $id, ?array $forum_info, string $current_filt
         $moderator_actions .= '<option value="open_topics">' . do_lang('OPEN_TOPIC') . '</option>';
         $moderator_actions .= '<option value="close_topics">' . do_lang('CLOSE_TOPIC') . '</option>';
     }
-    if (($id !== null) && (addon_installed('cns_multi_moderations')) && (cns_may_perform_multi_moderation($id))) {
-        $multi_moderations = cns_list_multi_moderations($id);
-        if (!empty($multi_moderations)) {
-            require_lang('cns_multi_moderations');
-            $moderator_actions .= '<optgroup label="' . do_lang('MULTI_MODERATIONS') . '">';
-            foreach ($multi_moderations as $mm_id => $mm_name) {
-                $moderator_actions .= '<option value="mmt_' . strval($mm_id) . '">' . escape_html($mm_name) . '</option>';
+    if (($id !== null) && (addon_installed('cns_multi_moderations'))) {
+        require_code('cns_multi_moderations');
+
+        if (cns_may_perform_multi_moderation($id)) {
+            $multi_moderations = cns_list_multi_moderations($id);
+            if (!empty($multi_moderations)) {
+                require_lang('cns_multi_moderations');
+                $moderator_actions .= '<optgroup label="' . do_lang('MULTI_MODERATIONS') . '">';
+                foreach ($multi_moderations as $mm_id => $mm_name) {
+                    $moderator_actions .= '<option value="mmt_' . strval($mm_id) . '">' . escape_html($mm_name) . '</option>';
+                }
+                $moderator_actions .= '</optgroup>';
             }
-            $moderator_actions .= '</optgroup>';
         }
     }
 

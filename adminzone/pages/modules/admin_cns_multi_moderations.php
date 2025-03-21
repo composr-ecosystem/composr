@@ -99,7 +99,7 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
                 ]);
 
                 $trash_forum_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_forums', 'id', ['f_name' => do_lang('TRASH')]);
-                if ($trash_forum_id !== null) {
+                if (($trash_forum_id !== null) && addon_installed('cns_multi_moderations')) {
                     require_code('cns_multi_moderations');
 
                     cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
