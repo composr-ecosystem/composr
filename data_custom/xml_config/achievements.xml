@@ -194,6 +194,9 @@
 		<qualifications>
 			<qualification name="gitlab_issues" count="10" />
 		</qualifications>
+		<qualifications>
+			<qualification name="tracker" count="10" />
+		</qualifications>
 	</achievement>
 
 	<achievement name="doc_on_the_block" image="icons_monochrome/content_types/page" title="achievements:ACHIEVEMENT_DOC_ON_THE_BLOCK" points="100">
