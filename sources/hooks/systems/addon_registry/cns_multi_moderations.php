@@ -133,6 +133,8 @@ class Hook_addon_registry_cns_multi_moderations
         return [
             'adminzone/pages/modules/admin_cns_multi_moderations.php',
             'lang/EN/cns_multi_moderations.ini',
+            'sources/cns_multi_moderations.php',
+            'sources/cns_multi_moderations2.php',
             'sources/hooks/systems/actionlog/cns_multi_moderations.php',
             'sources/hooks/systems/addon_registry/cns_multi_moderations.php',
             'sources/hooks/systems/commandr_fs/multi_moderations.php',

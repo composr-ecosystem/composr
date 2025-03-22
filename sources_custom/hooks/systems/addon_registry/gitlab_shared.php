@@ -155,7 +155,10 @@ class Hook_addon_registry_gitlab_shared
     public function get_file_list() : array
     {
         return [
+            'lang_custom/EN/gitlab_shared.ini',
             'sources_custom/gitlab.php',
+            'sources_custom/hooks/systems/addon_registry/gitlab_shared.php',
+            'sources_custom/hooks/systems/config/gitlab_access_token.php',
         ];
     }
 }

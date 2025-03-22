@@ -1235,6 +1235,8 @@ class Hook_addon_registry_core
             'sources_custom/hooks/systems/directives/index.html',
             'sources_custom/hooks/systems/disposable_values/.htaccess',
             'sources_custom/hooks/systems/disposable_values/index.html',
+            'sources_custom/hooks/systems/endpoint_authorization/.htaccess',
+            'sources_custom/hooks/systems/endpoint_authorization/index.html',
             'sources_custom/hooks/systems/index.html',
             'sources_custom/hooks/systems/login_providers/.htaccess',
             'sources_custom/hooks/systems/login_providers/index.html',
