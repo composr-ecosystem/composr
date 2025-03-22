@@ -501,7 +501,7 @@ function reinstall_module(string $zone, string $module) : bool
     $info['hack_version'] = null;
     $info['version'] = 2;
     $info['locked'] = true;
-    $info['min_cms_version'] = cms_version_number();
+    // $info['min_cms_version'] = cms_version_number(); // Actually we do not want a default defined; we explicitly want this to fail below if not defined in the module
     $info['addon'] = do_lang('NA');
 
     if ($functions[0] !== null) {
