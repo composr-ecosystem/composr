@@ -72,7 +72,7 @@ class Hook_realtime_rain_stats
                     'TIMESTAMP' => strval($timestamp),
                     'RELATIVE_TIMESTAMP' => strval($timestamp - $from),
                     'TICKER_TEXT' => null,
-                    'URL' => (addon_installed('securitylogging')) ? build_url(['page' => 'admin_lookup', 'type' => 'results', 'id' => $row['ip']], get_module_zone('admin_lookup')) : null,
+                    'URL' => (addon_installed('securitylogging')) ? build_url(['page' => 'admin_lookup', 'type' => 'results', 'param' => $row['ip']], get_module_zone('admin_lookup')) : null,
                     'IS_POSITIVE' => false,
                     'IS_NEGATIVE' => false,
 
