@@ -409,7 +409,10 @@ class Module_purchase
 
             $GLOBALS['SITE_DB']->alter_table_field('ecom_transactions', 't_amount', 'REAL', 't_price');
 
-            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('payment_card_number', 'payment_card_number', 19, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'short_text', 1, '', 'pattern=^\d{13,19}$,pattern_error=' . do_lang('INVALID_CC_NUMBER'), 0, 0, '', '', '', /*autofill_type=*/'cc-number');
+            // Type change, but we cannot simply edit it because that will throw a truncation error. Let's just delete and re-create it; credit card numbers don't have to be remembered during an upgrade.
+            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('payment_card_number');
+            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('payment_card_number', 19, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'short_text', 1, '', 'pattern=^\d{13,19}$,pattern_error=' . do_lang('INVALID_CC_NUMBER'), 0, 0, '', '', '', /*autofill_type=*/'cc-number');
+
             $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('payment_card_issue_number'); // Obsolete as of 2010
 
             // Calculate transaction fees for every transaction with 0 as the fee (uses either set config or the gateway's fallback)
