@@ -493,18 +493,24 @@ function reinstall_module(string $zone, string $module) : bool
     if (($functions[1] === null) && (strpos($module_path, '/modules_custom/') !== false)) {
         $functions = extract_module_functions($module_path, ['info', 'install', 'uninstall']);
     }
-    if ($functions[0] === null) {
-        $info = [];
-        $info['author'] = 'Chris Graham';
-        $info['organisation'] = 'Composr';
-        $info['hacked_by'] = null;
-        $info['hack_version'] = null;
-        $info['version'] = 2;
-        $info['locked'] = true;
-        $info['min_cms_version'] = cms_version_number();
-        $info['addon'] = do_lang('NA');
-    } else {
-        $info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $module_path . '::info()');
+
+    $info = [];
+    $info['author'] = 'Chris Graham';
+    $info['organisation'] = 'Composr';
+    $info['hacked_by'] = null;
+    $info['hack_version'] = null;
+    $info['version'] = 2;
+    $info['locked'] = true;
+    // $info['min_cms_version'] = cms_version_number(); // Actually we do not want a default defined; we explicitly want this to fail below if not defined in the module
+    $info['addon'] = do_lang('NA');
+
+    if ($functions[0] !== null) {
+        $_info = is_array($functions[0]) ? call_user_func_array($functions[0][0], $functions[0][1]) : cms_eval($functions[0], $module_path . '::info()');
+        if (is_array($_info)) {
+            $info = array_merge($info, $_info);
+        } else {
+            $info = null;
+        }
     }
 
     if ($functions[2] !== null) {
@@ -522,6 +528,7 @@ function reinstall_module(string $zone, string $module) : bool
     if ($info === null) {
         return false;
     }
+
     if ($info['hacked_by'] === null) {
         $info['hacked_by'] = '';
     }
@@ -547,10 +554,6 @@ function reinstall_module(string $zone, string $module) : bool
         }
 
         cms_set_time_limit($old);
-    }
-
-    if (empty($info['addon'])) {
-        $info['addon'] = do_lang('NA');
     }
 
     $GLOBALS['SITE_DB']->query_insert('modules', ['module_the_name' => $module, 'module_author' => $info['author'], 'module_organisation' => $info['organisation'], 'module_hacked_by' => ($info['hacked_by'] === null) ? '' : $info['hacked_by'], 'module_hack_version' => $info['hack_version'], 'module_version' => $info['version']]);

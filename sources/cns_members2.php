@@ -324,7 +324,7 @@ function cns_merge_members(int $from_id, int $to_id, bool $keep = false)
 
     // Do not merge guests
     if (is_guest($from_id) || is_guest($to_id)) {
-        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+        warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('8f6253cfcf8a52a39f5d7cc3d8e17e01')));
     }
 
     $from_username = $GLOBALS['FORUM_DRIVER']->get_username($from_id);

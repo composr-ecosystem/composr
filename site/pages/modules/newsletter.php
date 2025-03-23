@@ -483,7 +483,7 @@ class Module_newsletter
                 list($spam_status) = _check_stopforumspam(get_ip_address(), null, $email);
                 if ($spam_status == ANTISPAM_RESPONSE_ACTIVE) {
                     log_hack_attack_and_exit('HACK_ATTACK', $email, 'NEWSLETTER_SPAM_REGISTRATION');
-                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+                    warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('d51dc4d0a1a157bbb9a0e7de8f986f0f')));
                 }
             }
 

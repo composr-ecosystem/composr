@@ -687,7 +687,7 @@ function generate_dload_url(int $id, bool $use_gateway) : object
 
         $_id = find_guid_via_id('download', strval($id));
         if ($_id === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('TODO')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('5b10c1fbdd4955b7b635b7ca5dbc0195')));
         }
         $real_id = $_id;
     } else {

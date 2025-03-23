@@ -137,6 +137,7 @@ class Hook_addon_registry_cns_warnings
             'site/pages/modules/warnings.php',
             'site/warnings_browse.php',
             'sources/cns_warnings.php',
+            'sources/cns_warnings2.php',
             'sources/hooks/modules/admin_stats/warnings.php',
             'sources/hooks/systems/actionlog/cns_warnings.php',
             'sources/hooks/systems/addon_registry/cns_warnings.php',

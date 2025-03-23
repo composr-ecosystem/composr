@@ -159,11 +159,17 @@ class Hook_addon_registry_cms_homesite_gitlab
     {
         return [
             'lang_custom/EN/cms_homesite_gitlab.ini',
+            'sources_custom/cms_homesite_gitlab.php',
+            'sources_custom/hooks/endpoints/cms_homesite_gitlab/.htaccess',
+            'sources_custom/hooks/endpoints/cms_homesite_gitlab/comments.php',
+            'sources_custom/hooks/endpoints/cms_homesite_gitlab/index.html',
             'sources_custom/hooks/endpoints/cms_homesite_gitlab/issues.php',
             'sources_custom/hooks/systems/addon_registry/cms_homesite_gitlab.php',
+            'sources_custom/hooks/systems/config/gitlab_comment_points.php',
             'sources_custom/hooks/systems/config/gitlab_issue_points.php',
             'sources_custom/hooks/systems/config/gitlab_webhook_secret.php',
             'sources_custom/hooks/systems/endpoint_authorization/gitlab_webhook.php',
+            'sources_custom/hooks/systems/points/gitlab__comment.php',
             'sources_custom/hooks/systems/points/gitlab__issue.php',
         ];
     }
