@@ -123,7 +123,7 @@ class Module_warnings extends Standard_crud_module
                     's_title' => '*SHORT_TEXT',
                     's_explanation' => 'LONG_TEXT',
                     's_message' => 'LONG_TEXT',
-                ]);
+                ], false, false, true);
             }
 
             add_privilege('FORUMS_AND_MEMBERS', 'see_warnings', false);
