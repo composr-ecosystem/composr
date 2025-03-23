@@ -92,7 +92,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                     continue;
                 }
 
-                $new_id = $GLOBALS['SITE_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $row['username']]);
+                $new_id = import_id_remap_get('member', strval($row['id']), true);
 
                 // Could not find mapped member; probably deleted so delete / update from Mantis
                 if ($new_id === null) {
