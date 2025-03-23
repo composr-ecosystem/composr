@@ -102,6 +102,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                     $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
                     $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_print_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
                     $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_profile_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_bug_monitor_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
 
                     // For everything else, update to guest
                     foreach ($to_update as $table => $columns) {
