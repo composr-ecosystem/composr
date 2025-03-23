@@ -89,8 +89,9 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
             'mantis_user_profile_table' => ['user_id'],
         ];
 
-        // These tables cannot accept guest IDs, so skip records whose member does not exist
+        // These tables cannot accept guest IDs if a member is missing, so skip records whose member does not exist
         $no_guest_tables = [
+            'mantis_user_table',
             'mantis_project_user_list_table',
             'mantis_user_pref_table',
             'mantis_user_print_pref_table',
