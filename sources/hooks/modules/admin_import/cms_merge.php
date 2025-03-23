@@ -836,7 +836,7 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['a_url'], $file_base);
                 if ($import === false) {
                     attach_message('Importing of attachment ID ' . escape_html(strval($row['id'])) . ' (from old site) skipped; the file is broken or invalid.', 'warn', false, true);
-                    import_id_remap_put('attachment', strval($row['id']), 0);
+                    import_id_remap_put('attachment', strval($row['id']), -1);
                     continue;
                 }
 
@@ -885,11 +885,11 @@ class Hook_import_cms_merge
                 }
 
                 $id_new = import_id_remap_get($import_type_fixed, $row['r_referer_id'], true);
-                if ($id_new === null) {
+                if (($id_new === null) || ($id_new == -1)) {
                     $id_new = $row['r_referer_id'];
                 }
                 $aid = import_id_remap_get('attachment', strval($row['a_id']), true);
-                if ($aid !== null) {
+                if (($aid !== null) && ($aid > 0)) {
                     $id_new = $GLOBALS['SITE_DB']->query_insert('attachment_refs', ['r_referer_type' => $row['r_referer_type'], 'r_referer_id' => $id_new, 'a_id' => $aid], true, true);
                     if ($id_new !== null) {
                         import_id_remap_put('attachment_ref', strval($row['id']), $id_new);
@@ -935,7 +935,7 @@ class Hook_import_cms_merge
                 }
                 if (is_numeric($row['rating_for_id'])) {
                     $id_new = import_id_remap_get($remapped, $row['rating_for_id'], true);
-                    if ($id_new !== null) {
+                    if (($id_new !== null) && ($id_new != -1)) {
                         $row['rating_for_id'] = strval($id_new);
                     }
                 }
@@ -971,7 +971,7 @@ class Hook_import_cms_merge
                 }
                 if (is_numeric($row['trackback_for_id'])) {
                     $id_new = import_id_remap_get($remapped, $row['trackback_for_id'], true);
-                    if ($id_new !== null) {
+                    if (($id_new !== null) && ($id_new != -1)) {
                         $row['trackback_for_id'] = strval($id_new);
                     }
                 }
@@ -1005,7 +1005,7 @@ class Hook_import_cms_merge
 
                 if (is_numeric($row['meta_for_id'])) {
                     $id_new = import_id_remap_get($remapped, $row['meta_for_id'], true);
-                    if ($id_new !== null) {
+                    if (($id_new !== null) && ($id_new != -1)) {
                         $row['meta_for_id'] = strval($id_new);
                     }
                 }
@@ -1040,7 +1040,7 @@ class Hook_import_cms_merge
 
                 if (is_numeric($row['meta_for_id'])) {
                     $id_new = import_id_remap_get($remapped, $row['meta_for_id'], true);
-                    if ($id_new !== null) {
+                    if (($id_new !== null) && ($id_new != -1)) {
                         $row['meta_for_id'] = strval($id_new);
                     }
                 }
@@ -1611,7 +1611,7 @@ class Hook_import_cms_merge
                     $id_new = add_news($this->get_lang_string($db, $row['title']), $this->get_lang_string($db, $row['news']), $row['author'], $row['validated'], $row['allow_rating'], $row['allow_comments'], $row['allow_trackbacks'], $row['notes'], $this->get_lang_string($db, $row['news_article']), $main_news_category, $news_category, $row['date_and_time'], $submitter, $row['news_views'], $row['edit_date'], $id, $row['news_image_url'], '', '', $regions);
                 } catch (Exception $e) {
                     attach_message('Importing of news / blog ' . escape_html($this->get_lang_string($db, $row['title'])) . ' skipped due to an error: ' . escape_html($e->getMessage()), 'warn', false, true);
-                    import_id_remap_put('news', strval($row['id']), 0);
+                    import_id_remap_put('news', strval($row['id']), -1);
                     continue;
                 }
                 set_throw_errors(false);
@@ -1800,7 +1800,7 @@ class Hook_import_cms_merge
                 $results = $this->_import_upload($row['url'], $file_base);
                 if ($results === false) { // Broken download; skip it
                     attach_message('Import of download ' . escape_html($this->get_lang_string($db, $row['name'])) . ' skipped because the file was invalid.', 'warn', false, true);
-                    import_id_remap_put('download', strval($row['id']), 0);
+                    import_id_remap_put('download', strval($row['id']), -1);
                     continue;
                 }
 
@@ -1831,11 +1831,11 @@ class Hook_import_cms_merge
                 foreach ($rows as $row) {
                     if ($row['out_mode_id'] !== null) {
                         $out_mode_id = import_id_remap_get('download', strval($row['out_mode_id']), true);
-                        if ($out_mode_id === null) {
+                        if (($out_mode_id === null) || ($out_mode_id == -1)) {
                             $out_mode_id = null;
                         }
                         $id_new = import_id_remap_get('download', strval($row['id']), true);
-                        if ($id_new === null) {
+                        if (($id_new === null) || ($id_new == -1)) {
                             continue;
                         }
                         $GLOBALS['SITE_DB']->query_update('download_downloads', ['out_mode_id' => $out_mode_id], ['id' => $id_new], '', 1);
@@ -1936,7 +1936,7 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['url'], $file_base);
                 if ($import === false) {
                     attach_message('Importing of image ' . escape_html($this->get_lang_string($db, $row['title'])) . ' skipped as it is broken.', 'warn', false, true);
-                    import_id_remap_put('image', strval($row['id']), 0);
+                    import_id_remap_put('image', strval($row['id']), -1);
                     continue;
                 }
 
@@ -1975,7 +1975,7 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload($row['url'], $file_base);
                 if ($import === false) {
                     attach_message('Importing of video ' . escape_html($this->get_lang_string($db, $row['title'])) . ' skipped as it is broken.', 'warn', false, true);
-                    import_id_remap_put('video', strval($row['id']), 0);
+                    import_id_remap_put('video', strval($row['id']), -1);
                     continue;
                 }
 
@@ -3206,7 +3206,7 @@ class Hook_import_cms_merge
                     $row['member_id'] = $GLOBALS['FORUM_DRIVER']->get_guest_id();
                 }
                 $row['content_id'] = import_id_remap_get($content_types[$row['a_type_id']], $row['content_id'], true);
-                if ($row['content_id'] === null) {
+                if (($row['content_id'] === null) || ($row['content_id'] == -1)) {
                     continue;
                 }
                 $row['a_type_id'] = import_id_remap_get('award_type', strval($row['a_type_id']));
@@ -3244,7 +3244,7 @@ class Hook_import_cms_merge
                 $import = $this->_import_upload('uploads/filedump' . $row['subpath'] . $row['name'], $file_base);
                 if ($import === false) {
                     attach_message('Importing of filedump item (uploads/filedump) ' . escape_html($row['subpath'] . $row['name']) . ' skipped; the file is broken / invalid.', 'warn', false, true);
-                    import_id_remap_put('filedump', strval($row['id']), 0);
+                    import_id_remap_put('filedump', strval($row['id']), -1);
                     continue;
                 }
 
@@ -3342,7 +3342,7 @@ class Hook_import_cms_merge
                         }
                         if ($str) {
                             $id_new = import_id_remap_get($import_type, $row['category_name'], true);
-                            if ($id_new === null) {
+                            if (($id_new === null) || ($id_new == -1)) {
                                 continue;
                             }
                             $row['category_name'] = strval($id_new);
@@ -3459,7 +3459,7 @@ class Hook_import_cms_merge
                         }
                         if (!$str) {
                             $id_new = import_id_remap_get($import_type, $row['category_name'], true);
-                            if ($id_new === null) {
+                            if (($id_new === null) || ($id_new == -1)) {
                                 continue;
                             }
                             $row['category_name'] = strval($id_new);
@@ -3616,7 +3616,7 @@ class Hook_import_cms_merge
                             }
                             if (!$str) {
                                 $id_new = import_id_remap_get($import_type, $row['category_name'], true);
-                                if ($id_new === null) {
+                                if (($id_new === null) || ($id_new == -1)) {
                                     continue;
                                 }
                                 $row['category_name'] = strval($id_new);
@@ -4313,7 +4313,7 @@ class Hook_import_cms_merge
                         $import_type = 'news';
                     }
                     $c_id = import_id_remap_get($import_type, $matches[2], true);
-                    if ($c_id !== null) {
+                    if (($c_id !== null) && ($c_id != -1)) {
                         $row['t_description'] = str_replace($matches[0], ': #' . $matches[1] . 's_' . strval($c_id), $row['t_description']);
                     }
                 }
@@ -5266,7 +5266,7 @@ class Hook_import_cms_merge
         $rows = $db->query_select('review_supplement', ['*'], ['r_rating_type' => $rating_type]);
         foreach ($rows as $row) {
             $rating_for_id = ($import_type === null) ? $row['r_rating_for_id'] : import_id_remap_get($import_type, @strval($row['r_rating_for_id']), true);
-            if ($rating_for_id === null) {
+            if (($rating_for_id === null) || ($rating_for_id == -1)) {
                 continue;
             }
 
@@ -5307,7 +5307,7 @@ class Hook_import_cms_merge
             }
             foreach ($rows as $row) {
                 $content_id = ($import_type === null) ? $row['content_id'] : import_id_remap_get($import_type, @strval($row['content_id']), true);
-                if ($content_id === null) {
+                if (($content_id === null) || ($content_id == -1)) {
                     continue;
                 }
 
@@ -5347,7 +5347,7 @@ class Hook_import_cms_merge
             }
 
             $content_id = ($import_type === null) ? $row['content_id'] : import_id_remap_get($import_type, @strval($row['content_id']), true);
-            if ($content_id === null) {
+            if (($content_id === null) || ($content_id == -1)) {
                 continue;
             }
 
@@ -5450,8 +5450,8 @@ class Hook_import_cms_merge
                 if ($import_type !== null) {
                     // Ignore resources which we did not import
                     $new_id = import_id_remap_get($import_type, $row['resource_id'], true);
-                    if ($new_id === null) {
-                        import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], 0);
+                    if (($new_id === null) || ($new_id == -1)) { // Also check -1 because sometimes we use 0 to indicate a failed import
+                        import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], -1);
                         continue;
                     }
 

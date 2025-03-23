@@ -80,7 +80,7 @@ function cns_over_msn()
  * @param  ID_TEXT $type An importation type code, from those the software has defined (E.g. 'download', 'news', ...)
  * @param  string $id_old The source (old, original) ID of the mapping
  * @param  boolean $fail_ok If it is okay to fail to find a mapping
- * @return ?AUTO_LINK The new ID (null: not found)
+ * @return ?AUTO_LINK The new ID (null: not imported yet, or not found) (0: N/A) (-1: flagged as error and not imported)
  */
 function import_id_remap_get(string $type, string $id_old, bool $fail_ok = false) : ?int
 {
@@ -129,7 +129,7 @@ function import_check_if_imported(string $type, string $id_old) : bool
  *
  * @param  ID_TEXT $type An importation type code, from those the software has defined
  * @param  string $id_old The source (old, original) ID of the mapping
- * @param  AUTO_LINK $id_new The destination (new) ID of the mapping
+ * @param  AUTO_LINK $id_new The destination (new) ID of the mapping (0: N/A) (-1: resource was not imported due to an error)
  */
 function import_id_remap_put(string $type, string $id_old, int $id_new)
 {
