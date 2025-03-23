@@ -78,6 +78,9 @@ class Hook_admin_import_types_core
         if (addon_installed('match_key_permissions')) {
             $ret['match_key_messages'] = 'PAGE_MATCH_KEY_ACCESS';
         }
+        if (addon_installed('stats')) {
+            $ret['stats'] = '_STATISTICS';
+        }
         return $ret;
     }
 }
