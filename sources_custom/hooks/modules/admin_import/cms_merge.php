@@ -82,7 +82,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
         $max = 100;
         $start = 0;
         do {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT id FROM mantis_user_table', $max, $start, true);
+            $rows = $GLOBALS['SITE_DB']->query('SELECT username,id FROM mantis_user_table ORDER BY id', $max, $start);
             if ($rows === null) {
                 return;
             }
@@ -92,21 +92,21 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                     continue;
                 }
 
-                $new_id = import_id_remap_get('member', strval($row['id']), true);
+                $new_id = $GLOBALS['SITE_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $row['username']]);
 
                 // Could not find mapped member; probably deleted so delete / update from Mantis
                 if ($new_id === null) {
                     // Delete the member themselves
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_table WHERE id={id}', ['id' => $row['id']], null, 0, true);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_project_user_list_table WHERE user_id={id}', ['id' => $row['id']], null, 0, true);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0, true);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_print_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0, true);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_profile_table WHERE user_id={id}', ['id' => $row['id']], null, 0, true);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_table WHERE id={id}', ['id' => $row['id']], null, 0);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_project_user_list_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_print_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
+                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_profile_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
 
                     // For everything else, update to guest
                     foreach ($to_update as $table => $columns) {
                         foreach ($columns as $i => $column) {
-                            $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}=1 WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'old_id' => $row['id']], null, 0, true);
+                            $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}=1 WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'old_id' => $row['id']], null, 0);
                         }
                     }
                     continue;
@@ -115,7 +115,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                 // Update stuff
                 foreach ($to_update as $table => $columns) {
                     foreach ($columns as $i => $column) {
-                        $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}={new_id} WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'new_id' => $new_id, 'old_id' => $row['id']], null, 0, true);
+                        $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}={new_id} WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'new_id' => $new_id, 'old_id' => $row['id']], null, 0);
                     }
                 }
 
@@ -123,6 +123,6 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
             }
 
             $start += $max;
-        } while (($rows !== null) && !empty($rows));
+        } while (($rows !== null) && (count($rows) > 0));
     }
 }
