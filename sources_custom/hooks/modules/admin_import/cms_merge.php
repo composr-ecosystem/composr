@@ -44,8 +44,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
 
     /**
      * Standard import function.
-     * NOTE: Actually, we expect that you already migrated all the Mantis data over manually (because we cannot / should not re-map issue IDs, for example).
-     * This tool only ensures member IDs are correctly re-mapped.
+     * WARNING: We do not support merging for the issue tracker (we have to maintain issue numbers)! This will instead replace the issue tracker data on the new site with the old site (and re-map members).
      *
      * @param  object $db The database connector to import from
      * @param  string $table_prefix The table prefix the target prefix is using
@@ -53,24 +52,35 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
      */
     public function import_mantis(object $db, string $table_prefix, string $file_base)
     {
-        // Table => array of user ID columns to update
-        $to_update = [
-            'mantis_user_table' => ['id'], // most important
+        // Table to migrate => array of user ID columns that need re-mapped
+        $to_migrate = [
+            'mantis_user_table' => ['id'], // Must be done first
 
             'mantis_api_token_table' => ['user_id'],
             'mantis_bugnote_table' => ['reporter_id'],
+            'mantis_bugnote_text_table' => [],
             'mantis_bug_file_table' => ['user_id'],
             'mantis_bug_history_table' => ['user_id'],
             'mantis_bug_monitor_table' => ['user_id'],
+            'mantis_bug_relationship_table' => [],
             'mantis_bug_revision_table' => ['user_id'],
             'mantis_bug_table' => ['reporter_id', 'handler_id'],
             'mantis_bug_tag_table' => ['user_id'],
+            'mantis_bug_text_table' => [],
             'mantis_category_table' => ['user_id'],
             'mantis_config_table' => ['user_id'],
+            'mantis_custom_field_project_table' => [],
+            'mantis_custom_field_string_table' => [],
+            'mantis_custom_field_table' => [],
+            'mantis_email_table' => [],
             'mantis_filters_table' => ['user_id'],
             'mantis_news_table' => ['poster_id'],
+            'mantis_plugin_table' => [],
             'mantis_project_file_table' => ['user_id'],
+            'mantis_project_hierarchy_table' => [],
+            'mantis_project_table' => [],
             'mantis_project_user_list_table' => ['user_id'],
+            'mantis_project_version_table' => [],
             'mantis_sponsorship_table' => ['user_id'],
             'mantis_tag_table' => ['user_id'],
             'mantis_tokens_table' => ['owner'],
@@ -79,51 +89,64 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
             'mantis_user_profile_table' => ['user_id'],
         ];
 
-        $max = 100;
-        $start = 0;
-        do {
-            $rows = $GLOBALS['SITE_DB']->query('SELECT username,id FROM mantis_user_table ORDER BY id', $max, $start);
-            if ($rows === null) {
-                return;
+        // These tables cannot accept guest IDs, so skip records whose member does not exist
+        $no_guest_tables = [
+            'mantis_project_user_list_table',
+            'mantis_user_pref_table',
+            'mantis_user_print_pref_table',
+            'mantis_user_profile_table',
+            'mantis_bug_monitor_table',
+        ];
+
+        foreach ($to_migrate as $table => $columns) {
+            // Empty the Mantis table on our end if we have not done so already
+            if (!import_check_if_imported('mantis_table', $table)) {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . $table, null, 0, false, true);
+                import_id_remap_put('mantis_table', $table, 0);
             }
 
-            foreach ($rows as $row) {
-                if (import_check_if_imported('mantis_user', $row['id'])) {
-                    continue;
+            $max = 50;
+            $start = 0;
+            do {
+                $rows = $db->query('SELECT * FROM ' . $table, $max, $start);
+                if ($rows === null) {
+                    return;
                 }
 
-                $new_id = $GLOBALS['SITE_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $row['username']]);
+                foreach ($rows as $row) {
+                    if (import_check_if_imported('mantis_table__' . $table, md5(serialize($row)))) {
+                        continue;
+                    }
 
-                // Could not find mapped member; probably deleted so delete / update from Mantis
-                if ($new_id === null) {
-                    // Delete the member themselves
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_table WHERE id={id}', ['id' => $row['id']], null, 0);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_project_user_list_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_print_pref_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_user_profile_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
-                    $GLOBALS['SITE_DB']->query_parameterised('DELETE FROM mantis_bug_monitor_table WHERE user_id={id}', ['id' => $row['id']], null, 0);
-
-                    // For everything else, update to guest
-                    foreach ($to_update as $table => $columns) {
-                        foreach ($columns as $i => $column) {
-                            $GLOBALS['SITE_DB']->query_parameterised('UPDATE ' . $table . ' SET ' . $column . '=1 WHERE ' . $column . '={old_id}', ['old_id' => $row['id']], null, 0);
+                    // Add into our site carefully
+                    $part_a = [];
+                    $part_b = [];
+                    $part_c = [];
+                    foreach ($row as $key => $value) {
+                        // Use our new member ID instead of the old one, or map to guest if we are allowed to and cannot find a member
+                        if (in_array($key, $columns)) {
+                            $new_id = import_id_remap_get('member', strval($row[$key]), true);
+                            if ($new_id !== null) {
+                                $value = $new_id;
+                            } elseif (in_array($table, $no_guest_tables)) {
+                                continue;
+                            } else {
+                                $value = 1;
+                            }
                         }
+
+                        // Prepare for parameterisation
+                        $part_a[] = $key;
+                        $part_b[] = '{key_' . strval($key) . '}';
+                        $part_c['key_' . strval($key)] = $value;
                     }
-                    continue;
+                    $GLOBALS['SITE_DB']->query_parameterised('INSERT INTO mantis_user_table (' . implode(', ', $part_a) . ') VALUES (' . implode(', ', $part_b) . ')', $part_c);
+
+                    import_id_remap_put('mantis_table__' . $table, md5(serialize($row)), 0);
                 }
 
-                // Update stuff
-                foreach ($to_update as $table => $columns) {
-                    foreach ($columns as $i => $column) {
-                        $GLOBALS['SITE_DB']->query_parameterised('UPDATE ' . $table . ' SET ' . $column . '={new_id} WHERE ' . $column . '={old_id}', ['new_id' => $new_id, 'old_id' => $row['id']], null, 0);
-                    }
-                }
-
-                import_id_remap_put('mantis_user', strval($row['id']), $new_id);
-            }
-
-            $start += $max;
-        } while (($rows !== null) && (count($rows) > 0));
+                $start += $max;
+            } while (($rows !== null) && (count($rows) > 0));
+        }
     }
 }
