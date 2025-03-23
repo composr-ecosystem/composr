@@ -302,7 +302,7 @@ function load_theme_image_cache(object $db, int $db_place, string $true_theme, s
             if ($SMART_CACHE !== null) {
                 $THEME_IMAGES_CACHE[$db_place] = $SMART_CACHE->get('theme_images_' . $true_theme . '_' . $true_lang . '_' . strval($db_place));
             }
-            if ($THEME_IMAGES_CACHE[$db_place] === null) {
+            if (!isset($THEME_IMAGES_CACHE[$db_place])) {
                 $THEME_IMAGES_CACHE[$db_place] = [];
             }
 
