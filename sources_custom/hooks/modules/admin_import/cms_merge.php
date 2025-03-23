@@ -130,7 +130,8 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                             if ($new_id !== null) {
                                 $value = $new_id;
                             } elseif (in_array($table, $no_guest_tables)) {
-                                continue;
+                                import_id_remap_put('mantis_table__' . $table, md5(serialize($row)), 0);
+                                continue 2; // Do not even insert this record at all
                             } else {
                                 $value = 1;
                             }
