@@ -106,7 +106,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                     // For everything else, update to guest
                     foreach ($to_update as $table => $columns) {
                         foreach ($columns as $i => $column) {
-                            $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}=1 WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'old_id' => $row['id']], null, 0);
+                            $GLOBALS['SITE_DB']->query_parameterised('UPDATE ' . $table . ' SET ' . $column . '=1 WHERE ' . $column . '={old_id}', ['old_id' => $row['id']], null, 0);
                         }
                     }
                     continue;
@@ -115,7 +115,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                 // Update stuff
                 foreach ($to_update as $table => $columns) {
                     foreach ($columns as $i => $column) {
-                        $GLOBALS['SITE_DB']->query_parameterised('UPDATE {table} SET {column}={new_id} WHERE {column}={old_id}', ['table' => $table, 'column' => $column, 'new_id' => $new_id, 'old_id' => $row['id']], null, 0);
+                        $GLOBALS['SITE_DB']->query_parameterised('UPDATE ' . $table . ' SET ' . $column . '={new_id} WHERE ' . $column . '={old_id}', ['new_id' => $new_id, 'old_id' => $row['id']], null, 0);
                     }
                 }
 
