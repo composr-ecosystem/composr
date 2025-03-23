@@ -3801,9 +3801,10 @@ class Hook_import_cms_merge
         $cpf_types = collapse_2d_complexity('id', 'cf_type', $GLOBALS['FORUM_DB']->query_select('f_custom_fields', ['id', 'cf_type']));
 
         $row_start = 0;
+        $max = 100;
         $rows = [];
         do {
-            $rows = $db->query_select('f_members', ['*'], [], 'ORDER BY id', 100, $row_start);
+            $rows = $db->query_select('f_members', ['*'], [], 'ORDER BY id', $max, $row_start);
             $this->_fix_comcode_ownership($rows);
             foreach ($rows as $row) {
                 if (import_check_if_imported('member', strval($row['id']))) {
@@ -3949,7 +3950,7 @@ class Hook_import_cms_merge
                 import_id_remap_put('member', strval($row['id']), $id_new);
             }
 
-            $row_start += 200;
+            $row_start += $max;
         } while (!empty($rows));
         $this->_import_alternative_ids($db, 'member', 'member');
         $this->_import_content_reviews($db, $table_prefix, 'member', 'member');
