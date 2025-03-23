@@ -617,8 +617,7 @@ class Module_admin
             $hooks = find_all_hooks('modules', 'admin_import');
             foreach (array_keys($hooks) as $hook) {
                 if ($this->_keyword_match($hook)) {
-                    require_code('hooks/modules/admin_import/' . filter_naughty_harsh($hook));
-                    $_hook = object_factory('Hook_import_' . filter_naughty_harsh($hook));
+                    $_hook = get_hook_ob('modules', 'admin_import', $hook, 'Hook_import_');
                     $info = $_hook->info();
                     $name = $info['product'];
                     $_url = build_url(['page' => 'admin_import', 'type' => 'session', 'importer' => $hook], get_module_zone('admin_import'));
