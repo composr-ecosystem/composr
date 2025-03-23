@@ -494,14 +494,14 @@ function reinstall_module(string $zone, string $module) : bool
         $functions = extract_module_functions($module_path, ['info', 'install', 'uninstall']);
     }
 
+    // TODO: must be kept up to date via Standard_crud_module (but do not include min_cms_version nor max_cms_version, and addon should be NA)
     $info = [];
     $info['author'] = 'Chris Graham';
     $info['organisation'] = 'Composr';
     $info['hacked_by'] = null;
     $info['hack_version'] = null;
     $info['version'] = 2;
-    $info['locked'] = true;
-    // $info['min_cms_version'] = cms_version_number(); // Actually we do not want a default defined; we explicitly want this to fail below if not defined in the module
+    $info['locked'] = false;
     $info['addon'] = do_lang('NA');
 
     if ($functions[0] !== null) {
@@ -509,12 +509,16 @@ function reinstall_module(string $zone, string $module) : bool
         if (is_array($_info)) {
             $info = array_merge($info, $_info);
         } else {
-            $info = null;
+            $info = null; // Disabled module; we will return false after trying the uninstall function
         }
+    } else {
+        // NB: We only inject the required min_cms_version property in with a default if the info function was not defined; this allows us to flag outdated modules.
+        require_code('version');
+        $info['min_cms_version'] = cms_version_number();
     }
 
     if ($functions[2] !== null) {
-        $old = cms_extend_time_limit(15);
+        $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
         if (is_array($functions[2])) {
             call_user_func_array($functions[2][0], $functions[2][1]);
