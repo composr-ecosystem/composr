@@ -142,7 +142,7 @@ class Hx_import_cms_merge extends Hook_import_cms_merge
                         $part_b[] = '{key_' . strval($key) . '}';
                         $part_c['key_' . strval($key)] = $value;
                     }
-                    $GLOBALS['SITE_DB']->query_parameterised('INSERT INTO mantis_user_table (' . implode(', ', $part_a) . ') VALUES (' . implode(', ', $part_b) . ')', $part_c);
+                    $GLOBALS['SITE_DB']->query_parameterised('INSERT INTO ' . $table . ' (' . implode(', ', $part_a) . ') VALUES (' . implode(', ', $part_b) . ')', $part_c);
 
                     import_id_remap_put('mantis_table__' . $table, md5(serialize($row)), 0);
                 }
