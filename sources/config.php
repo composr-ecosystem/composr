@@ -529,7 +529,7 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
             if (!isset($GLOBALS['SITE_DB'])) {
                 return $default;
             }
-            check_for_infinite_loop('get_value', func_get_args(), 25);
+            //check_for_infinite_loop('get_value', func_get_args(), 25); TODO: enable when we figure out why $VALUE_OPTIONS_CACHE is not working
             $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $GLOBALS['SITE_DB']->query_select_value_if_there('values_elective', 'the_value', ['the_name' => $name], '', running_script('install') || running_script('upgrader'));
         }
         if ($VALUE_OPTIONS_ELECTIVE_CACHE[$name] === null) {
@@ -582,7 +582,7 @@ function get_value(string $name, ?string $default = null, bool $elective_or_leng
  */
 function _get_value(string $name, string $end = '') : ?string
 {
-    check_for_infinite_loop('_get_value', func_get_args(), 25);
+    //check_for_infinite_loop('_get_value', func_get_args(), 25); TODO: enable when we figure out why $VALUE_OPTIONS_CACHE is not working
 
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
 
