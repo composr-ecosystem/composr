@@ -237,6 +237,9 @@ PHP;
         if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
             $where .= ' AND m_validated=1';
         }
+        if ((!has_privilege(get_member(), 'view_banned_members'))) {
+            $where .= ' AND m_is_perm_banned=0';
+        }
         if ((!has_privilege(get_member(), 'see_not_validated')) || (!isset($map['include_non_confirmed'])) || ($map['include_non_confirmed'] == 'exclude')) {
             $where .= ' AND ' . db_string_equal_to('m_validated_email_confirm_code', '');
         } elseif ((has_privilege(get_member(), 'see_not_validated')) && (isset($map['include_non_confirmed'])) && ($map['include_non_confirmed'] == 'exclusively')) {
