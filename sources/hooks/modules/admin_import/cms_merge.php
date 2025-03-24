@@ -1391,12 +1391,12 @@ class Hook_import_cms_merge
                     continue;
                 }
 
-                $member_id = $on_same_msn ? $row['d_member'] : import_id_remap_get('member', strval($row['d_member']), true);
+                $member_id = $on_same_msn ? $row['d_member_id'] : import_id_remap_get('member', strval($row['d_member_id']), true);
                 if ($member_id === null) {
                     import_id_remap_put('daily_visits', strval($row['id']), -1);
                     continue;
                 }
-                $new_id = $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member' => $member_id, 'd_date_and_time' => $row['d_date_and_time']], true);
+                $new_id = $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member_id' => $member_id, 'd_date_and_time' => $row['d_date_and_time']], true);
 
                 import_id_remap_put('daily_visits', strval($row['id']), $new_id);
             }
