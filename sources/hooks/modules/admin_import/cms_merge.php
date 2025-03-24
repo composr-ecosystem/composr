@@ -113,7 +113,7 @@ class Hook_import_cms_merge
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
             'attachment_references' => ['attachments', 'cns_members', 'cns_posts', 'news_and_categories', 'wiki'],
             'permissions' => array_diff($info['import'], ['feedback', 'attachment_references', 'permissions', 'stats', 'config', 'menu_items', 'redirects']),
-            'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'quizzes', 'stats', 'config', 'menu_items', 'redirects']),
+            'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'stats', 'config', 'menu_items', 'redirects']),
             'authors' => ['cns_members', 'catalogues'],
             'banners' => ['cns_members'],
             'catalogues' => ['cns_members'],
@@ -941,6 +941,9 @@ class Hook_import_cms_merge
                     $id_new = import_id_remap_get($remapped, $row['rating_for_id'], true);
                     if (($id_new !== null) && ($id_new != -1)) {
                         $row['rating_for_id'] = strval($id_new);
+                    } else {
+                        import_id_remap_put('rating', $id_old, -1);
+                        continue;
                     }
                 }
                 $row['rating_member'] = $on_same_msn ? $row['rating_member'] : import_id_remap_get('member', strval($row['rating_member']), true);
@@ -977,6 +980,9 @@ class Hook_import_cms_merge
                     $id_new = import_id_remap_get($remapped, $row['trackback_for_id'], true);
                     if (($id_new !== null) && ($id_new != -1)) {
                         $row['trackback_for_id'] = strval($id_new);
+                    } else {
+                        import_id_remap_put('trackback', $id_old, -1);
+                        continue;
                     }
                 }
 
@@ -1011,6 +1017,9 @@ class Hook_import_cms_merge
                     $id_new = import_id_remap_get($remapped, $row['meta_for_id'], true);
                     if (($id_new !== null) && ($id_new != -1)) {
                         $row['meta_for_id'] = strval($id_new);
+                    } else {
+                        import_id_remap_put('seo_meta', $id_old, -1);
+                        continue;
                     }
                 }
 
@@ -1046,6 +1055,9 @@ class Hook_import_cms_merge
                     $id_new = import_id_remap_get($remapped, $row['meta_for_id'], true);
                     if (($id_new !== null) && ($id_new != -1)) {
                         $row['meta_for_id'] = strval($id_new);
+                    } else {
+                        import_id_remap_put('seo_meta_keyword', $id_old, -1);
+                        continue;
                     }
                 }
 
