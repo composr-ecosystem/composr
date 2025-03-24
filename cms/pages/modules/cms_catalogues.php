@@ -387,6 +387,10 @@ class Module_cms_catalogues extends Standard_crud_module
             $edit_url = build_url($url_map + ['id' => $row['id']], '_SELF');
 
             $entry_fields = get_catalogue_entry_field_values($catalogue_name, $row['id'], [0]);
+            if (!isset($entry_fields[0]['effective_value'])) {
+                continue;
+            }
+
             $name = $entry_fields[0]['effective_value']; // 'Name' is value of first field
 
             $fr = [];
