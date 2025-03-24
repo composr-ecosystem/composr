@@ -85,6 +85,11 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
     {
         require_code('permissions3');
 
+        if ((($upgrade_from === null) || ($upgrade_from < 2)) && ($GLOBALS['FORUM_DB']->table_exists('f_multi_moderations'))) { // LEGACY
+            $GLOBALS['FORUM_DB']->delete_table_field('f_multi_moderations', 'mm_sink_state');
+            $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
+        }
+
         if ($upgrade_from === null) {
             if (!$GLOBALS['FORUM_DB']->table_exists('f_multi_moderations')) {
                 $GLOBALS['FORUM_DB']->create_table('f_multi_moderations', [
@@ -104,14 +109,9 @@ class Module_admin_cns_multi_moderations extends Standard_crud_module
 
                     cns_make_multi_moderation(do_lang('TRASH_VERB'), '', $trash_forum_id, 0, 0);
                 }
+
+                add_privilege('FORUMS_AND_MEMBERS', 'run_multi_moderations', true);
             }
-
-            add_privilege('FORUMS_AND_MEMBERS', 'run_multi_moderations', true);
-        }
-
-        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY
-            $GLOBALS['FORUM_DB']->delete_table_field('f_multi_moderations', 'mm_sink_state');
-            $GLOBALS['FORUM_DB']->alter_table_field('f_multi_moderations', 'mm_move_to', '?AUTO_LINK', 'mm_move_to_forum_id');
         }
     }
 

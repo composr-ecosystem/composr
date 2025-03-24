@@ -110,8 +110,8 @@ class Hook_import_cms_merge
         $info['dependencies'] = [
             // This dependency tree is overdefined, but I wanted to make it clear what depends on what, rather than having a simplified version
             'attachment_references' => ['attachments', 'cns_members', 'cns_posts', 'news_and_categories', 'wiki'],
-            'permissions' => array_diff($info['import'], ['feedback', 'attachment_references', 'permissions', 'stats']),
-            'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'quizzes', 'stats']),
+            'permissions' => array_diff($info['import'], ['feedback', 'attachment_references', 'permissions', 'stats', 'config']),
+            'feedback' => array_diff($info['import'], ['themes', 'cns_warnings', 'feedback', 'attachment_references', 'permissions', 'quizzes', 'stats', 'config']),
             'authors' => ['cns_members', 'catalogues'],
             'banners' => ['cns_members'],
             'catalogues' => ['cns_members'],
