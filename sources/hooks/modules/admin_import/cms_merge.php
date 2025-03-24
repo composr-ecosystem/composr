@@ -5466,7 +5466,7 @@ class Hook_import_cms_merge
                     $GLOBALS['SITE_DB']->query_insert('alternative_ids', $row, false, true); // Suppress errors in case an alternative ID already exists for a resource
                 }
 
-                import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], 0);
+                import_id_remap_put('alternative_id__' . $resource_type, $row['resource_type'] . '__' . $row['resource_id'], 0);
             }
 
             $start += $max;
