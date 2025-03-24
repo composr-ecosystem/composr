@@ -56,6 +56,11 @@ class Hook_task_cns_members_dedup
 
             // This address matches the previous, so merge it in
             cns_merge_members($member['id'], $current_row['id'], false);
+
+            // Make sure importer has correct mapping
+            if (addon_installed('import')) {
+                $GLOBALS['SITE_DB']->query_update('import_id_remap', ['id_new' => $current_row['id']], ['id_session' => get_session_id(), 'id_type' => 'member', 'id_new' => $member['id']]);
+            }
         }
 
         pop_query_limiting();
