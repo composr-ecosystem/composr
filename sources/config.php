@@ -586,7 +586,16 @@ function _get_value(string $name, string $end = '') : ?string
 
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
 
+    // Prevent get_value loops from database queries
+    static $getting_value = [];
+    if (in_array($name, $getting_value)) {
+        return null;
+    }
+    $getting_value[$name] = true;
+
     $value = $GLOBALS['SITE_DB']->query_select('values', ['the_value', 'date_and_time'], ['the_name' => $name], $end, 1, 0, running_script('install') || running_script('upgrader'));
+
+    unset($getting_value[$name]);
 
     if ($VALUE_OPTIONS_CACHE === null) {
         $VALUE_OPTIONS_CACHE = [];
@@ -607,6 +616,7 @@ function _get_value(string $name, string $end = '') : ?string
     if ($SMART_CACHE !== null) {
         $SMART_CACHE->append('VALUE_OPTIONS', $name, null);
     }
+
     return null;
 }
 
