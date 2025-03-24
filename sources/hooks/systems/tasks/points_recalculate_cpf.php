@@ -39,16 +39,18 @@ class Hook_task_points_recalculate_cpf
 
         // Re-calculate points balance for every member
         $member_id = null;
+        $i = 0;
         do {
             $rows = $GLOBALS['FORUM_DRIVER']->get_next_members($member_id, 100);
             foreach ($rows as $row) {
+                $i++;
                 $member_id = $GLOBALS['FORUM_DRIVER']->mrow_member_id($row);
 
                 if (is_guest($member_id)) {
                     continue;
                 }
 
-                // task_log($this, 'Re-calculating points_balance for member ID ' . strval($member_id), $start, null);
+                task_log($this, 'Re-calculating points_balance for member ID ' . strval($member_id), $i, null);
 
                 // Calculate balance by combining received and sent points
                 $data = points_ledger_calculate(LEDGER_TYPE_RECEIVED | LEDGER_TYPE_SENT, $member_id);
