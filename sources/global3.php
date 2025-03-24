@@ -90,6 +90,9 @@ function init__global3()
     global $CHECK_FOR_INFINITE_LOOP;
     $CHECK_FOR_INFINITE_LOOP = [];
 
+    global $HAS_LOOPED_INFINITELY;
+    $HAS_LOOPED_INFINITELY = false;
+
     // Registry of output state globals
     global $OUTPUT_STATE_VARS;
     $OUTPUT_STATE_VARS = [
@@ -5904,6 +5907,13 @@ function cms_shuffle_assoc(array &$array) : bool
 function check_for_infinite_loop(string $codename, array $args, int $allowed_iterations = 10, bool $actually_exit = true) : bool
 {
     global $CHECK_FOR_INFINITE_LOOP; // Global in case we want to reset iteration count
+    global $HAS_LOOPED_INFINITELY;
+
+    // Fatally exit if we already triggered an infinite loop for something else
+    if ($HAS_LOOPED_INFINITELY) {
+        require_code('critical_errors');
+        critical_error('INFINITE_LOOP', $codename, true);
+    }
 
     $hash = md5(serialize($args));
 
@@ -5918,6 +5928,8 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     // Increment count and handle if we surpassed the allowed number of iterations
     $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
     if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        $HAS_LOOPED_INFINITELY = true;
+
         require_code('failure');
 
         // Use a more helpful (and relayed) error message, which includes serialised arguments, for the developers and staff
