@@ -5451,7 +5451,7 @@ class Hook_import_cms_merge
                     // Ignore resources which we did not import
                     $new_id = import_id_remap_get($import_type, $row['resource_id'], true);
                     if ($new_id === null) {
-                        import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], -1);
+                        import_id_remap_put('alternative_id__' . $resource_type, $row['resource_type'] . '__' . $row['resource_id'], -1);
                         continue;
                     } elseif ($new_id == -1) {
                         continue;
