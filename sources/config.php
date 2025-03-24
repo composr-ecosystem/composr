@@ -587,12 +587,15 @@ function _get_value(string $name, string $end = '') : ?string
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
 
     $value = $GLOBALS['SITE_DB']->query_select('values', ['the_value', 'date_and_time'], ['the_name' => $name], $end, 1, 0, running_script('install') || running_script('upgrader'));
-    if ($VALUE_OPTIONS_CACHE !== null) {
-        if ((is_array($value)) && array_key_exists(0, $value)) {
-            $VALUE_OPTIONS_CACHE[$name] = $value[0];
-        } else {
-            $VALUE_OPTIONS_CACHE[$name] = null;
-        }
+
+    if ($VALUE_OPTIONS_CACHE === null) {
+        $VALUE_OPTIONS_CACHE = [];
+    }
+
+    if ((is_array($value)) && array_key_exists(0, $value)) {
+        $VALUE_OPTIONS_CACHE[$name] = $value[0];
+    } else {
+        $VALUE_OPTIONS_CACHE[$name] = null;
     }
     if ((is_array($value)) && array_key_exists(0, $value)) {
         if ($SMART_CACHE !== null) {

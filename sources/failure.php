@@ -1061,6 +1061,8 @@ function remove_ip_ban(string $ip)
  */
 function get_webservice_result($error_message) : ?string
 {
+    return null; // TODO: is this necessary anymore with telemetry?
+
     if (get_base_url_hostname() == parse_url(get_brand_base_url(), PHP_URL_HOST)) {
         return null; // Don't look up on itself if this is the homesite
     }
@@ -1116,10 +1118,7 @@ function get_webservice_result($error_message) : ?string
     // The first 8 kb is sufficient; very unlikely our webservice will have any matches beyond this.
     $error_message = substr($error_message, 0, (1024 * 8));
 
-    $brand = get_value('rebrand_name');
-    if ($brand === null) {
-        $brand = DEFAULT_BRAND_NAME;
-    }
+    $brand = get_value('rebrand_name', DEFAULT_BRAND_NAME);
 
     // Talk to web service
     require_code('version2');

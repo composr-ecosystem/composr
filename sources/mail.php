@@ -1055,10 +1055,7 @@ abstract class Mail_dispatcher_base
         $headers .= 'Date: ' . date('r', time()) . $this->line_term;
         $headers .= 'Message-ID: <' . $_boundary . '@' . get_domain() . '>' . $this->line_term;
         $headers .= 'X-Priority: ' . strval($this->priority) . $this->line_term;
-        $brand_name = get_value('rebrand_name');
-        if ($brand_name === null) {
-            $brand_name = DEFAULT_BRAND_NAME;
-        }
+        $brand_name = get_value('rebrand_name', DEFAULT_BRAND_NAME);
         $headers .= 'X-Mailer: ' . $brand_name . $this->line_term;
         if ((count($to_emails) == 1) && ($this->require_recipient_valid_since !== null)) {
             $_require_recipient_valid_since = date('r', $this->require_recipient_valid_since);
