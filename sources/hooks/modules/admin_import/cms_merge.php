@@ -5450,12 +5450,18 @@ class Hook_import_cms_merge
                 if ($import_type !== null) {
                     // Ignore resources which we did not import
                     $new_id = import_id_remap_get($import_type, $row['resource_id'], true);
-                    if (($new_id === null) || ($new_id == -1)) { // Also check -1 because sometimes we use 0 to indicate a failed import
+                    if ($new_id === null) {
                         import_id_remap_put('alternative_id__' . $resource_type, $row['resource_id'], -1);
                         continue;
+                    } elseif ($new_id == -1) {
+                        continue;
+                    } elseif ($new_id > 0) {
+                        $map = array_merge($row, ['resource_id' => $new_id]);
+                    } else {
+                        $map = $row;
                     }
 
-                    $GLOBALS['SITE_DB']->query_insert('alternative_ids', array_merge($row, ['resource_id' => $new_id]), false, true); // Suppress errors in case an alternative ID already exists for a resource
+                    $GLOBALS['SITE_DB']->query_insert('alternative_ids', $map, false, true); // Suppress errors in case an alternative ID already exists for a resource
                 } else {
                     $GLOBALS['SITE_DB']->query_insert('alternative_ids', $row, false, true); // Suppress errors in case an alternative ID already exists for a resource
                 }
