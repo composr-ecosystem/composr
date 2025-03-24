@@ -588,7 +588,7 @@ function _get_value(string $name, string $end = '') : ?string
 
     // Prevent get_value loops from database queries
     static $getting_value = [];
-    if (in_array($name, $getting_value)) {
+    if (array_key_exists($name, $getting_value)) {
         return null;
     }
     $getting_value[$name] = true;
