@@ -33,7 +33,7 @@ class Hook_implicit_usergroups_antispam_question
     Show on the join form = yes
     */
 
-    protected $field_name = 'What is Composr a kind of?';
+    protected $field_name = 'What is this software a kind of?';
     protected $expected_answer = 'Content Management System';
 
     protected $field_id = null;

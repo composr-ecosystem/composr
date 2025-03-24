@@ -295,8 +295,7 @@ class Module_admin_import
     {
         // Get importer details
         $importer = filter_naughty(get_param_string('importer'));
-        require_code('hooks/modules/admin_import/' . filter_naughty_harsh($importer));
-        $object = object_factory('Hook_import_' . filter_naughty_harsh($importer));
+        $object = get_hook_ob('modules', 'admin_import', $importer, 'Hook_import_');
         $info = $object->info();
 
         // Code to detect redirect hooks for import
@@ -375,8 +374,7 @@ class Module_admin_import
 
         // Get importer details
         $importer = filter_naughty(get_param_string('importer'));
-        require_code('hooks/modules/admin_import/' . filter_naughty_harsh($importer));
-        $object = object_factory('Hook_import_' . filter_naughty_harsh($importer));
+        $object = get_hook_ob('modules', 'admin_import', $importer, 'Hook_import_');
         $info = $object->info();
 
         // Load in preexisting settings, or defaults (although if probing is supported we'll never use these)
@@ -458,8 +456,7 @@ class Module_admin_import
 
         // Get importer details
         $importer = filter_naughty(get_param_string('importer'));
-        require_code('hooks/modules/admin_import/' . filter_naughty_harsh($importer));
-        $object = object_factory('Hook_import_' . filter_naughty_harsh($importer));
+        $object = get_hook_ob('modules', 'admin_import', $importer, 'Hook_import_');
         $info = $object->info();
 
         // Get source path, and try and fix if it is incorrect
@@ -663,8 +660,7 @@ class Module_admin_import
 
         // Get importer details
         $importer = get_param_string('importer');
-        require_code('hooks/modules/admin_import/' . filter_naughty_harsh($importer));
-        $object = object_factory('Hook_import_' . filter_naughty_harsh($importer));
+        $object = get_hook_ob('modules', 'admin_import', $importer, 'Hook_import_');
         $info = $object->info();
 
         // Protection from if things take too long

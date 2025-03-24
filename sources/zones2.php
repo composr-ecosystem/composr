@@ -487,6 +487,8 @@ function reinstall_module(string $zone, string $module) : bool
     require_code('files2');
     require_code('version');
 
+    $already_installed = ($GLOBALS['SITE_DB']->query_select_value_if_there('modules', 'module_the_name', ['module_the_name' => $module]) !== null);
+
     $GLOBALS['SITE_DB']->query_delete('modules', ['module_the_name' => $module], '', 1);
 
     $functions = extract_module_functions($module_path, ['info', 'install', 'uninstall']);
@@ -517,7 +519,7 @@ function reinstall_module(string $zone, string $module) : bool
         $info['min_cms_version'] = cms_version_number();
     }
 
-    if ($functions[2] !== null) {
+    if (($functions[2] !== null) && ($already_installed)) { // Do not uninstall a module unless declared already installed (upgrader compatibility if forking something to a new module)
         $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
         if (is_array($functions[2])) {

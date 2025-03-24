@@ -88,6 +88,12 @@ class Module_warnings extends Standard_crud_module
         require_code('permissions3');
 
         if ($upgrade_from === null) {
+            // LEGACY: Determine if we need to run code to migrate some f_warnings data to f_warnings_punitive
+            $legacy_upgrade_2 = false;
+            if ($GLOBALS['FORUM_DB']->table_exists('f_warnings') && !$GLOBALS['FORUM_DB']->table_exists('f_warnings_punitive')) {
+                $legacy_upgrade_2 = true;
+            }
+
             if (!$GLOBALS['FORUM_DB']->table_exists('f_warnings')) {
                 $GLOBALS['FORUM_DB']->create_table('f_warnings', [
                     'id' => '*AUTO',
@@ -99,6 +105,9 @@ class Module_warnings extends Standard_crud_module
                     'w_topic_id' => '?AUTO_LINK',
                 ]);
                 $GLOBALS['FORUM_DB']->create_index('f_warnings', 'warningsmemberid', ['w_member_id']);
+
+                add_privilege('FORUMS_AND_MEMBERS', 'see_warnings', false);
+                add_privilege('FORUMS_AND_MEMBERS', 'warn_members', false);
             }
 
             if (!$GLOBALS['FORUM_DB']->table_exists('f_warnings_punitive')) {
@@ -125,12 +134,9 @@ class Module_warnings extends Standard_crud_module
                     's_message' => 'LONG_TEXT',
                 ], false, false, true);
             }
-
-            add_privilege('FORUMS_AND_MEMBERS', 'see_warnings', false);
-            add_privilege('FORUMS_AND_MEMBERS', 'warn_members', false);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 2)) { // LEGACY: v10 to v11.rc1
+        if (($legacy_upgrade_2 === true) || (($upgrade_from !== null) && ($upgrade_from < 2))) { // LEGACY: v10 to v11.rc1
             $GLOBALS['FORUM_DB']->alter_table_field('f_warnings', 'w_by', 'MEMBER', 'w_issuing_member');
 
             // Migrate old f_warnings columns to f_warnings_punitive rows. Then, delete the old columns.
@@ -227,7 +233,7 @@ class Module_warnings extends Standard_crud_module
                                 'p_hook' => 'change_group',
                                 'p_action' => '_PUNITIVE_CHANGE_USERGROUP',
                                 'p_param_a' => strval($row['p_changed_usergroup_from']),
-                                'p_param_b' => strval($row['p_changed_usergroup_to']),
+                                'p_param_b' => '',
                                 'p_reversed' => 0,
                             ]);
                         }
@@ -242,7 +248,6 @@ class Module_warnings extends Standard_crud_module
                 $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_charged_points');
                 $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_banned_member');
                 $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_from');
-                $GLOBALS['FORUM_DB']->delete_table_field('f_warnings', 'p_changed_usergroup_to');
             }
         }
     }
