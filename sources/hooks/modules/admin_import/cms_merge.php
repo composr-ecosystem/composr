@@ -62,7 +62,9 @@ class Hook_import_cms_merge
             'banners',
             'calendar',
             'catalogues', // including rating, trackbacks, seo
-            'point_transactions', // including daily visits
+            'points_ledger', // including daily visits
+            'escrow',
+            'daily_visits',
             'chat_rooms',
             'config',
             'custom_comcode',
@@ -125,7 +127,9 @@ class Hook_import_cms_merge
             'wiki' => ['cns_members', 'attachments', 'catalogues'],
             'useronline_tracking' => ['cns_members'],
             'ip_bans' => ['cns_members'],
-            'point_transactions' => ['cns_members'],
+            'points_ledger' => ['cns_members'],
+            'escrow' => ['points_ledger', 'cns_members'],
+            'daily_visits' => ['cns_members'],
             'calendar' => ['cns_members', 'catalogues'],
             'comcode_pages' => ['cns_members', 'catalogues'],
             'match_key_messages' => [],
@@ -1231,10 +1235,10 @@ class Hook_import_cms_merge
                 $viewer_member = $on_same_msn ? $row['sending_member'] : import_id_remap_get('member', strval($row['sending_member']), true);
                 $member_id = $on_same_msn ? $row['receiving_member'] : import_id_remap_get('member', strval($row['receiving_member']), true);
                 if ($viewer_member === null) {
-                    $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                    $viewer_member = 3; // FUDGE: test account instead of guest to maintain type of record
                 }
                 if ($member_id === null) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                    $member_id = 3; // FUDGE: test account instead of guest to maintain type of record
                 }
 
                 $map = [
@@ -1292,7 +1296,7 @@ class Hook_import_cms_merge
                 $viewer_member = $on_same_msn ? $row['sending_member'] : import_id_remap_get('member', strval($row['sending_member']), true);
                 $member_id = $on_same_msn ? $row['receiving_member'] : import_id_remap_get('member', strval($row['receiving_member']), true);
                 if ($viewer_member === null) {
-                    $viewer_member = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                    $viewer_member = 3; // FUDGE: Test account to maintain type of escrow
                 }
 
                 $reason = get_translated_text($row['reason']);
@@ -1340,7 +1344,7 @@ class Hook_import_cms_merge
                 if ($row['member_id'] !== null) {
                     $member_id = $on_same_msn ? $row['member_id'] : import_id_remap_get('member', strval($row['member_id']), true);
                     if ($member_id === null) {
-                        $member_id = $GLOBALS['FORUM_DRIVER']->get_guest_id();
+                        $member_id = 3; // FUDGE
                     }
                 } else {
                     $member_id = null;
@@ -1383,20 +1387,22 @@ class Hook_import_cms_merge
                 $rows = [];
             }
             foreach ($rows as $row) {
-                $member_id = $on_same_msn ? $row['d_member'] : import_id_remap_get('member', strval($row['d_member']), true);
-                if ($member_id === null) {
-                    i_timed_refresh();
+                if (import_check_if_imported('daily_visits', strval($row['id']))) {
                     continue;
                 }
-                $GLOBALS['SITE_DB']->query_delete('daily_visits', ['d_member' => $row['d_member'], 'd_date_and_time' => $row['d_date_and_time']], '', 1);
-                $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member' => $row['d_member'], 'd_date_and_time' => $row['d_date_and_time']]);
 
-                // We do not mark as something done because there is no test if we already updated something
-                i_timed_refresh();
+                $member_id = $on_same_msn ? $row['d_member'] : import_id_remap_get('member', strval($row['d_member']), true);
+                if ($member_id === null) {
+                    import_id_remap_put('daily_visits', strval($row['id']), -1);
+                    continue;
+                }
+                $new_id = $GLOBALS['SITE_DB']->query_insert('daily_visits', ['d_member' => $member_id, 'd_date_and_time' => $row['d_date_and_time']], true);
+
+                import_id_remap_put('daily_visits', strval($row['id']), $new_id);
             }
 
             $start += $max;
-        } while (!empty($rows));
+        } while (count($rows) > 0);
     }
 
     /**
