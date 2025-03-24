@@ -277,10 +277,7 @@ function get_brand_page_url(array $params, string $zone) : string
  */
 function brand_name() : string
 {
-    $brand_name = function_exists('get_value') ? get_value('rebrand_name') : null;
-    if ($brand_name === null) {
-        $brand_name = DEFAULT_BRAND_NAME;
-    }
+    $brand_name = function_exists('get_value') ? get_value('rebrand_name', DEFAULT_BRAND_NAME) : DEFAULT_BRAND_NAME;
     return $brand_name;
 }
 
