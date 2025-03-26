@@ -802,11 +802,6 @@ abstract class Mail_dispatcher_base
         list($_to_emails, $_to_names, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain) = $this->build_mail_components($subject_line, $message_raw, $to_emails, $to_names, $from_email, $from_name, $lang, $theme, $resource_guid);
         list($worked, $error) = $this->_dispatch($to_emails, $to_names, $from_email, $from_name, $subject_wrapped, $headers, $sending_message, $charset, $html_evaluated, $message_plain);
 
-        // Needs to be marked as queued, as it never sent
-        if ((!$worked) && ($queue_id !== null)) {
-            $GLOBALS['SITE_DB']->query_update('logged_mail_messages', ['m_queued' => 1], ['id' => $queue_id], '', 1);
-        }
-
         // Attachment cleanup
         foreach ($this->real_attachments as $r) {
             if ($r['temp']) {
