@@ -554,7 +554,7 @@ function upgrader_menu_screen() : string
 
     // Error correction links
     $l_safe_mode = upgrader_link('upgrader.php?type=safe_mode', do_lang('UPGRADER_SAFE_MODE'), false);
-    $show_permission_buttons = (!GOOGLE_APPENGINE && !is_suexec_like() || $GLOBALS['DEV_MODE']);
+    $show_permission_buttons = (!GOOGLE_APPENGINE || $GLOBALS['DEV_MODE']);
     $l_check_perms = upgrader_link('upgrader.php?type=check_perms', do_lang('UPGRADER_CHECK_PERMISSIONS'), false);
     $l_fix_perms = upgrader_link('upgrader.php?type=fix_perms', do_lang('UPGRADER_FIX_PERMISSIONS'), false);
     $l_addon_remove = upgrader_link('upgrader.php?type=addon_remove', do_lang('UPGRADER_REMOVE_ADDON_FILES'), false);
