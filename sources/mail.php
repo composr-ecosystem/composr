@@ -299,7 +299,7 @@ class Mail_dispatcher_php extends Mail_dispatcher_base
             }
 
             $old = cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST); // Some servers can be very slow
-            $_worked = @mail($to_line, $subject_wrapped, str_replace(chr(0), '', $sending_message), $signed_headers . $headers, $additional);
+            $worked = @mail($to_line, $subject_wrapped, str_replace(chr(0), '', $sending_message), $signed_headers . $headers, $additional);
             if ((!$worked) && (cms_error_get_last() != '')) {
                 $error = cms_error_get_last();
                 $worked = false;
