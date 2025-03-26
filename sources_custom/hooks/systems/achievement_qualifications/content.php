@@ -36,6 +36,8 @@ class Hook_achievement_qualifications_content
      */
     public function info(int $member_id, array $params) : ?array
     {
+        return null; // TODO: bugged; currently returns content the member can see, not that the member submitted
+
         if (!addon_installed('achievements')) {
             return null;
         }
