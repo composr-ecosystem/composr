@@ -1779,21 +1779,30 @@ class Hook_import_cms_merge
             }
 
             $id = (get_param_integer('keep_preserve_ids', 0) == 0) ? null : $row['id'];
-            $id = add_download_category($this->get_lang_string($db, $row['category']), ($row['parent_id'] === null) ? null : -$row['parent_id'], $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['rep_image'], $id);
+            $id = add_download_category($this->get_lang_string($db, $row['category']), ($row['parent_id'] === null) ? db_get_first_id() : -$row['parent_id'], $this->get_lang_string($db, $row['the_description']), $row['notes'], $row['rep_image'], $id);
 
             import_id_remap_put('download_category', strval($row['id']), $id);
         }
         $this->_import_alternative_ids($db, 'download_category', 'download_category');
         $this->_import_catalogue_entry_linkage($db, $table_prefix, 'download_category', 'download_category');
         $this->_import_content_reviews($db, $table_prefix, 'download_category', 'download_category');
+
+        // Go back through and fix imported parent IDs
+        $rows = $GLOBALS['SITE_DB']->query_select('download_categories', ['id', 'parent_id'], [], ' AND parent_id<0');
         foreach ($rows as $row) {
-            $id = import_id_remap_get('download_category', strval($row['id']));
-            $parent_id = import_id_remap_get('download_category', strval($row['parent_id']), true);
+            $parent_id = null;
+            if ($row['parent_id'] !== null) {
+                $parent_id = import_id_remap_get('download_category', strval(-$row['parent_id']), true);
+            }
+
+            // Put root category (or unknown categories) from old site under root category of current site
             if ($parent_id === null) {
                 $parent_id = db_get_first_id();
             }
 
-            $GLOBALS['SITE_DB']->query_update('download_categories', ['parent_id' => $parent_id], ['id' => $id], '', 1);
+            $GLOBALS['SITE_DB']->query_update('download_categories', ['parent_id' => $parent_id], ['id' => $row['id']], '', 1);
+
+            i_timed_refresh();
         }
 
         $max = 200;
@@ -2900,7 +2909,7 @@ class Hook_import_cms_merge
         $rows = $GLOBALS['SITE_DB']->query('SELECT id,cc_parent_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_categories WHERE cc_parent_id<0');
         foreach ($rows as $row) {
             if ($row['cc_parent_id'] !== null) {
-                $parent_id = import_id_remap_get('catalogue_category', strval(-$row['cc_parent_id']), true);
+                $parent_id = import_id_remap_get('catalogue_category', strval(-$row['cc_parent_id']), true); // NB: cc_parent_id is negative, so a negative on negative makes it positive
             } else {
                 $parent_id = null;
             }
@@ -5057,8 +5066,9 @@ class Hook_import_cms_merge
 
         $child_rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . get_table_prefix() . 'menu_items WHERE i_parent_id<0');
         foreach ($child_rows as $row) {
-            $row['i_parent_id'] = import_id_remap_get('menu_item', strval($row['i_parent_id']), true);
-            $GLOBALS['SITE_DB']->query_update('menu_items', $row, ['id' => $row['id']], '', 1);
+            $update = [];
+            $update['i_parent_id'] = import_id_remap_get('menu_item', strval(-$row['i_parent_id']), true);
+            $GLOBALS['SITE_DB']->query_update('menu_items', $update, ['id' => $row['id']], '', 1);
 
             i_timed_refresh();
         }

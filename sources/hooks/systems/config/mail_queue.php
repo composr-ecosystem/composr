@@ -55,6 +55,6 @@ class Hook_config_mail_queue
         if (!cron_installed()) {
             return null;
         }
-        return '0';
+        return '1';
     }
 }
