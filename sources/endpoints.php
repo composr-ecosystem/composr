@@ -157,11 +157,14 @@ function endpoint_script()
         }
 
         // Log the hit in the stats module if requested
+        // TODO: disabled as it eats up a lot of memory in the long run (stats system is inefficient with large data buckets)
+        /*
         if (isset($info['log_stats_event']) && addon_installed('stats')) {
             require_code('stats');
             require_lang('stats');
             log_stats_event(do_lang('_STATS_ENDPOINT', comcode_escape($info['log_stats_event'])));
         }
+        */
 
         // Run the endpoint
         $result = $ob->run($type, $id);
