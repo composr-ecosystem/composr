@@ -141,11 +141,12 @@ class Hook_admin_stats_events extends CMSStatsProvider
      */
     public function preprocess_raw_data(int $start_time, int $end_time, array &$data_buckets)
     {
+        cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data');
         require_code('temporal');
 
         $server_timezone = get_server_timezone();
 
-        $max = 1000;
+        $max = 100;
         $start = 0;
 
         require_code('locations');
@@ -163,7 +164,10 @@ class Hook_admin_stats_events extends CMSStatsProvider
         $query_events .= 'e_date_and_time>=' . strval($start_time) . ' AND ';
         $query_events .= 'e_date_and_time<=' . strval($end_time);
         $query_events .= ' ORDER BY e_date_and_time';
+
         do {
+            cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats_events loop ' . strval($start));
+
             $event_rows = $GLOBALS['SITE_DB']->query($query_events, $max, $start);
             foreach ($event_rows as $event_row) {
                 $timestamp = $event_row['e_date_and_time'];
@@ -189,6 +193,8 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 }
             }
 
+            cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats_events loop ' . strval($start));
+
             $start += $max;
         } while (!empty($event_rows));
 
@@ -206,6 +212,8 @@ class Hook_admin_stats_events extends CMSStatsProvider
         $query_sessions .= ' GROUP BY session_id';
         $query_sessions .= ' ORDER BY date_and_time';
         do {
+            cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start));
+
             $session_rows = $GLOBALS['SITE_DB']->query($query_sessions, $max, $start);
             foreach ($session_rows as $session_row) {
                 $timestamp = $session_row['date_and_time'];
@@ -219,6 +227,7 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 $session_id = $session_row['session_id'];
 
                 // Find tracking codes for this session
+                cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start) . ' tracking codes ' . $session_id);
                 $ip = null;
                 $tracking_codes = [];
                 $tracking_code_rows = $GLOBALS['SITE_DB']->query_select('stats', ['tracking_code', 'ip'], ['session_id' => $session_id], ' AND ' . db_string_not_equal_to('tracking_code', ''));
@@ -252,7 +261,11 @@ class Hook_admin_stats_events extends CMSStatsProvider
                     }
                 }
 
+                cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start) . ' tracking codes ' . $session_id);
+
                 // Find events for this session
+                cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start) . ' events ' . $session_id);
+
                 $events_for_session = collapse_2d_complexity('e_event', 'e_event', $GLOBALS['SITE_DB']->query_select('stats_events', ['e_event'], ['e_session_id' => $session_id]));
 
                 // Each combination of event wrt session
@@ -289,12 +302,17 @@ class Hook_admin_stats_events extends CMSStatsProvider
                         }
                     }
                 }
+
+                cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start) . ' events ' . $session_id);
             }
+
+            cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data stats loop ' . strval($start));
 
             $start += $max;
         } while (!empty($session_rows));
 
         // Now keep a record of events
+        cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats_known_events');
         foreach ($events_seen as $event => $times_seen) {
             $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_events', 'e_count_logged', ['e_event' => $event]);
             if ($times_seen_before === null) {
@@ -310,8 +328,10 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 ], '', 1);
             }
         }
+        cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data stats_known_events');
 
         // Now keep a record of tracking codes
+        cms_profile_start_for('Hook_admin_stats_events->preprocess_raw_data stats_known_tracking');
         foreach ($tracking_codes_seen as $tracking_code => $times_seen) {
             $times_seen_before = $GLOBALS['SITE_DB']->query_select_value_if_there('stats_known_tracking', 't_count_logged', ['t_tracking_code' => $tracking_code]);
             if ($times_seen_before === null) {
@@ -327,6 +347,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
                 ], '', 1);
             }
         }
+        cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data stats_known_tracking');
+
+        cms_profile_end_for('Hook_admin_stats_events->preprocess_raw_data');
     }
 
     /**
