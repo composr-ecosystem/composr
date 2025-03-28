@@ -2081,6 +2081,9 @@ function cms_tempnam(string $prefix = 'cms')
 function cms_parse_url_safe(string $url, int $component = -1)
 {
     $ret = parse_url($url, $component);
+    if ($ret === false) {
+        return false;
+    }
 
     if ($component != -1) {
         if ($ret === null) {
