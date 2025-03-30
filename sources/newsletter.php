@@ -843,16 +843,16 @@ function newsletter_domain_subscriber_stats(string $key) : array
 
     if (substr($key, 0, 1) == 'g') {
         $sql_expr = db_function('SUBSTR', ['m_email_address', db_function('INSTR', ['m_email_address', '\'@\''])]);
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY ' . $sql_expr);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email_address', 'COUNT(*) as cnt'], ['m_allow_emails' => 1, 'm_primary_group' => intval(substr($key, 1))], 'GROUP BY ' . $sql_expr . ', m_email_address');
     } elseif ($key == '-1') {
         $sql_expr = db_function('SUBSTR', ['m_email_address', db_function('INSTR', ['m_email_address', '\'@\''])]);
-        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY ' . $sql_expr);
+        $rows = $GLOBALS['FORUM_DB']->query_select('f_members', [$sql_expr . ' AS email_address', 'COUNT(*) as cnt'], ['m_allow_emails' => 1], 'GROUP BY ' . $sql_expr . ', m_email_address');
     } else {
         $sql_expr = db_function('SUBSTR', ['email', db_function('INSTR', ['email', '\'@\''])]);
-        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', [$sql_expr . ' AS email', 'COUNT(*) as cnt'], [], 'GROUP BY ' . $sql_expr);
+        $rows = $GLOBALS['SITE_DB']->query_select('newsletter_subscribe', [$sql_expr . ' AS email_address', 'COUNT(*) as cnt'], [], 'GROUP BY ' . $sql_expr . ', email');
     }
     foreach ($rows as $row) {
-        $email = $row['email'];
+        $email = $row['email_address'];
         if (strpos($email, '@') === false) {
             continue;
         }
