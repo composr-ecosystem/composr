@@ -110,7 +110,7 @@ class auth_test_set extends cms_test_case
         require_code('crypt');
 
         foreach ($ips as $ip => $pass_expected) { // We actually test both pass and fail, to help ensure our test is actually not somehow getting a failure from something else
-            $fake_session_id = get_secure_random_string();
+            $fake_session_id = get_secure_random_string(16, CRYPT_BASE32);
 
             // Clean up
             $GLOBALS['SITE_DB']->query_delete('sessions', ['the_session' => $fake_session_id]);

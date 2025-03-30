@@ -1455,7 +1455,7 @@ if (!is_array($SITE_INFO) || (count($SITE_INFO) == 0) || (empty($SITE_INFO))) {
 }
 
 // Check if we might be proxying through Cloudflare (unsafe test as this does not check actual remote address against known Cloudflare IPs)
-global $MIGHT_BE_USING_CF;
+global $MIGHT_BE_USING_CF, $CF_ORIGINAL_IP;
 $MIGHT_BE_USING_CF = isset($_SERVER['HTTP_CF_RAY']);
 
 // Make sure we have the correct IP address in REMOTE_ADDR. Note for Cloudflare checks, some webhosts might handle Cloudflare automatically, which prevents us from knowing the true REMOTE_ADDR of Cloudflare, thus we cannot compare it to trusted proxies.
@@ -1470,6 +1470,7 @@ if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     foreach (explode(',', $trusted_proxies) as $proxy) {
         if (((strpos($proxy, '/') !== false) && (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy))) || ($_SERVER['REMOTE_ADDR'] == $proxy)) {
             if (ip_cidr_check($_SERVER['REMOTE_ADDR'], $proxy)) {
+                $CF_ORIGINAL_IP = (($might_be_cloudflare) && (isset($_SERVER['HTTP_CF_CONNECTING_IP']))) ? $_SERVER['REMOTE_ADDR'] : null; // We may still need to know the original Cloudflare IP address
                 $_SERVER['REMOTE_ADDR'] = (($might_be_cloudflare) && (isset($_SERVER['HTTP_CF_CONNECTING_IP']))) ? $_SERVER['HTTP_CF_CONNECTING_IP'] : $_SERVER['HTTP_X_FORWARDED_FOR'];
                 $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
                 if ($might_be_cloudflare) {

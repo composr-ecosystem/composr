@@ -186,7 +186,10 @@ class Hook_fields_list_multi extends ListFieldHook
 
         $custom_values = option_value_from_field_array($field, 'custom_values', 'off');
 
-        $exploded_chosen = ($actual_value == $default) ? [] : explode("\n", $actual_value);
+        $exploded_chosen = [];
+        if (($actual_value !== null) && ($actual_value != $default)) {
+            $exploded_chosen = explode("\n", $actual_value);
+        }
 
         $auto_sort = option_value_from_field_array($field, 'auto_sort', 'off');
         if ($auto_sort == 'backend' || $auto_sort == 'both') {
