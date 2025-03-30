@@ -37,13 +37,9 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
             return null;
         }
 
-        return ['authorization' => false];
-
-        /* TODO: get this working
         return [
-            'authorization' => 'member',
+            'authorization' => ['member'],
         ];
-        */
     }
 
     /**
@@ -107,7 +103,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
                 return ['success' => false, 'error_details' => 'Could not mark all escrows completed and award the points. Note that some may have been marked completed, but not all. Also note that basic tracker points have not been awarded due to this error.'];
             }
 
-            $tracker_points = award_tracker_points($id, $recipient, $reporter);
+            $tracker_points = award_tracker_points($id, $reporter, $recipient);
             if ($tracker_points === false) {
                 return ['success' => false, 'error_details' => 'Could not award points for resolved tracker issue. Note that sponsorships have been awarded if there were any.'];
             }

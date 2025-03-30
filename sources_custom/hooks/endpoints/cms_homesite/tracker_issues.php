@@ -40,13 +40,9 @@ class Hook_endpoint_cms_homesite_tracker_issues
             $type = 'view';
         }
 
-        return ['authorization' => false];
-
-        /* TODO: get this working
         return [
             'authorization' => ($type !== 'view') ? ['super_admin', 'maintenance_password'] : false,
         ];
-        */
     }
 
     /**
