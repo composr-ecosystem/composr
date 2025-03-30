@@ -64,7 +64,7 @@ class Hook_endpoint_authorization_members
         if ($member === null) {
             require_code('users');
 
-            $session = get_session_id(true);
+            $session = get_session_id(true, true); // Not possible to validate IP as the server might be running behind Cloudflare
             if ($session != '') {
                 global $SESSION_CACHE;
                 if (isset($SESSION_CACHE[$session])) {

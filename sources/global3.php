@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fsockopen|fileowner|filegroup|collator_.**/
+/*EXTRA FUNCTIONS: fsockopen|fileowner|filegroup|collator_.*|dns_get_record*/
 
 /*
     global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
@@ -3030,7 +3030,10 @@ function is_our_server(?string $ip_or_hostname = null) : bool
     if ($ip_or_hostname === null) {
         $ip_or_hostname = get_ip_address();
     }
-    return in_array($ip_or_hostname, get_server_names_and_ips());
+
+    $arr = get_server_names_and_ips();
+
+    return in_array($ip_or_hostname, $arr);
 }
 
 /**
@@ -5165,7 +5168,14 @@ function cms_gethostbyname(string $hostname) : string
     }
 
     if ($ip_address == '') {
-        if (php_function_allowed('gethostbyname')) {
+        if (php_function_allowed('dns_get_record')) {
+            $dns = @dns_get_record($hostname, DNS_AAAA);
+            if (isset($dns[0]['ipv6'])) {
+                $ip_address = $dns[0]['ipv6'];
+            }
+        }
+
+        if (($ip_address == '') && php_function_allowed('gethostbyname')) {
             $ip_address = @gethostbyname($hostname);
         }
     }

@@ -593,12 +593,9 @@ function get_session_id(bool $ignore_static_cache = false, bool $ignore_ip_valid
         $ignore_static_cache = true;
     }
 
-    // Cookie sessions take priority
-    if (isset($_COOKIE[$cookie_var])) {
-        $ret = $_COOKIE[$cookie_var];
-        if ((!$ignore_static_cache) && (substr($ret, 0, 1) == '[') && (substr($ret, -1) == ']') && (can_static_cache_request())) {
-            return ''; // Shy session, so we do not retrieve it
-        }
+    // Try keep_session if it exists
+    if (array_key_exists('keep_session', $_GET)) {
+        $ret = get_param_string('keep_session');
 
         // No validation in kinikernel
         if ($IN_MINIKERNEL_VERSION) {
@@ -625,9 +622,12 @@ function get_session_id(bool $ignore_static_cache = false, bool $ignore_ip_valid
         return $ret;
     }
 
-    // Try keep_session if it exists
-    if (array_key_exists('keep_session', $_GET)) {
-        $ret = get_param_string('keep_session');
+    // Cookie sessions take priority
+    if (isset($_COOKIE[$cookie_var])) {
+        $ret = $_COOKIE[$cookie_var];
+        if ((!$ignore_static_cache) && (substr($ret, 0, 1) == '[') && (substr($ret, -1) == ']') && (can_static_cache_request())) {
+            return ''; // Shy session, so we do not retrieve it
+        }
 
         // No validation in kinikernel
         if ($IN_MINIKERNEL_VERSION) {

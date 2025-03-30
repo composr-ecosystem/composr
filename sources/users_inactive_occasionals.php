@@ -136,7 +136,7 @@ function create_session(int $member_id, int $session_confirmed = 0, bool $invisi
 
         // Generate random session
         require_code('crypt');
-        $new_session = get_secure_random_string();
+        $new_session = get_secure_random_string(16, CRYPT_BASE32);
 
         $shy_session = (($allow_shy_session) && (isset($SITE_INFO['any_guest_cached_too'])) && ($SITE_INFO['any_guest_cached_too'] == '1') && (is_guest($member_id)));
         if ($shy_session) {
@@ -394,7 +394,7 @@ function try_su_login(int $member_id) : int
         if ((get_forum_type() == 'cns') && (get_param_integer('keep_su_online', 0) == 1)) {
             require_code('crypt');
             $new_session_row = [
-                'the_session' => get_secure_random_string(),
+                'the_session' => get_secure_random_string(16, CRYPT_BASE32),
                 'last_activity_time' => time(),
                 'member_id' => $member_id,
                 'ip' => get_ip_address(3),
