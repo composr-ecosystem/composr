@@ -416,6 +416,9 @@ function _find_mail_bounces(string $host, int $port, ?string $type, string $fold
             // Failure message coming from our end
             || (strpos($body, 'Delivery to the following recipient failed permanently') !== false)
 
+            // Plesk has its own way of alerting us
+            || (strpos($body, 'Undelivered Mail Returned to Sender') !== false)
+
             // SMTP error codes (http://www.greenend.org.uk/rjk/tech/smtpreplies.html)
             || (preg_match('#421 .* Service not available#', $body) != 0)
             || (strpos($body, '450 Requested mail action not taken') !== false)
