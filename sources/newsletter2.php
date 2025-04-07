@@ -220,7 +220,7 @@ function delete_newsletter_subscriber(int $id)
 }
 
 /**
- * Remove bounced addresses from the newsletter / turn off staff e-mails on member accounts.
+ * Remove bounced addresses from the newsletter / turn off staff e-mails on member accounts / add e-mail to global unsubscribe.
  *
  * @param  array $bounces List of e-mail addresses
  */
@@ -229,6 +229,8 @@ function remove_email_bounces(array $bounces)
     if (empty($bounces)) {
         return;
     }
+
+    require_code('crypt');
 
     $delete_sql = '';
     $delete_sql_members = '';
@@ -240,14 +242,23 @@ function remove_email_bounces(array $bounces)
         }
         $delete_sql .= db_string_equal_to('email', $email_address);
         $delete_sql_members .= db_string_equal_to('m_email_address', $email_address);
+
+        // Add the address to our global unsubscribe list
+        $email_hashed = hash_hmac('sha256', $email_address, get_site_salt());
+        $GLOBALS['SITE_DB']->query_insert_or_replace('unsubscribed_emails', [
+            'b_email_hashed' => $email_hashed,
+            'b_time' => time(),
+            'b_ip_address' => get_ip_address(),
+        ], ['b_email_hashed' => $email_hashed]);
     }
 
+    // Remove e-mail addresses from newsletter subscriptions
     $query = 'DELETE FROM ' . get_table_prefix() . 'newsletter_subscribers WHERE ' . $delete_sql;
     $GLOBALS['SITE_DB']->query($query);
-
     $query = 'DELETE FROM ' . get_table_prefix() . 'newsletter_subscribe WHERE ' . $delete_sql;
     $GLOBALS['SITE_DB']->query($query);
 
+    // Disable staff e-mails on matched member accounts
     if (get_forum_type() == 'cns') {
         $query = 'UPDATE ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members SET m_allow_emails_from_staff=0 WHERE ' . $delete_sql_members;
         $GLOBALS['FORUM_DB']->query($query);
