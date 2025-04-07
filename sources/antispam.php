@@ -495,7 +495,7 @@ function _check_stopforumspam(string $user_ip, ?string $username = null, ?string
     require_code('files');
     require_code('character_sets');
     $key = get_option('stopforumspam_api_key');
-    $url = 'http://www.stopforumspam.com/api?f=json&unix&confidence&ip=' . urlencode($user_ip);
+    $url = 'https://www.stopforumspam.com/api?f=json&unix&confidence&ip=' . urlencode($user_ip);
     if ($username !== null) {
         $url .= '&username=' . urlencode(convert_to_internal_encoding($username, get_charset(), 'utf-8'));
     }

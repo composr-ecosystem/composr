@@ -341,7 +341,7 @@ abstract class HttpDownloader
     protected $byte_limit = null; // ?integer. The number of bytes to download. This is not a guarantee, it is a minimum (null: all bytes)
     protected $trigger_error = true; // boolean. Whether to throw a software error, on error
     protected $no_redirect = false; // boolean. Whether to block redirects (returns null when found)
-    protected $ua = 'CMS'; // ~?string. The user-agent to identify as (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
+    protected $ua = ''; // ~?string. The user-agent to identify as (blank: use the software name with DOS detection) (null: simulate Google Chrome) (false: none, useful to avoid filtering rules on the other end)
     protected $post_params = null; // ?array or string. An optional array of POST parameters to send or a string of a request body; if this is null, a GET request is used for the default for http_verb (null: none)
     protected $cookies = []; // array. An optional array of cookies to send
     protected $accept = null; // ?string. 'accept' header value (null: don't pass one)
@@ -434,9 +434,9 @@ abstract class HttpDownloader
 
         if ((!empty($_SERVER['HTTP_USER_AGENT'])) && (is_string($this->ua))) {
             if ($_SERVER['HTTP_USER_AGENT'] == $this->ua) {
-                $this->ua = 'CMS-recurse';
+                $this->ua = brand_name() . '-recurse';
             }
-            if ($_SERVER['HTTP_USER_AGENT'] == 'CMS-recurse') {
+            if ($_SERVER['HTTP_USER_AGENT'] == (brand_name() . '-recurse')) {
                 return null;
             }
         }
@@ -746,6 +746,8 @@ abstract class HttpDownloader
             if ($this->ua === null) {
                 $this->ua = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.A.B.C Safari/525.13';
             }
+        } else {
+            $this->ua = brand_name();
         }
 
         if (array_key_exists('post_params', $options)) {
