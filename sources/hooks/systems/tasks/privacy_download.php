@@ -131,7 +131,9 @@ class Hook_task_privacy_download
                                         continue;
                                     }
                                     if (@file_exists($actual_path) === true) {
-                                        $data['files_included'][] = $url;
+                                        $data['files_included'][$url] = true;
+                                    } else {
+                                        $data['files_included'][$url] = false;
                                     }
                                 }
                             }
@@ -142,7 +144,11 @@ class Hook_task_privacy_download
                     $this->create_json_file($table_name, $data, $data_file);
 
                     // Now add files to the archive
-                    foreach ($data['files_included'] as $file) {
+                    foreach ($data['files_included'] as $file => $exists) {
+                        if ($exists === false) {
+                            continue;
+                        }
+
                         $actual_path = (get_custom_file_base() . '/' . rawurldecode($file));
                         $_data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
                         tar_add_file($data_file, rawurldecode($file), $_data);
