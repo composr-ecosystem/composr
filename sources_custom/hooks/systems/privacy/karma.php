@@ -78,11 +78,15 @@ class Hook_privacy_karma extends Hook_privacy_base
         switch ($table_name) {
             case 'karma':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['k_content_type'], $row['k_content_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+
+                // NB: We don't always use an actual content type in karma
+                list($title, , $info) = content_get_details($row['k_content_type'], $row['k_content_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 break;
         }
 

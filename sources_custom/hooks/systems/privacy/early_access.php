@@ -83,7 +83,7 @@ class Hook_privacy_early_access extends Hook_privacy_base
                 $rows = $GLOBALS['SITE_DB']->query_select('early_access_code_content', ['*'], ['a_access_code' => $row['c_access_code']]);
                 foreach ($rows as $row) {
                     $row_i = $row;
-                    list($title, , $info) = content_get_details($row['a_content_type'], $row['a_content_id']);
+                    list($title, , $info) = content_get_details($row['a_content_type'], $row['a_content_id'], false, true);
                     if ($title !== null) {
                         $row_i += [
                             'content_type__dereferenced' => do_lang($info['content_type_label']),

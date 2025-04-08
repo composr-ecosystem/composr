@@ -85,11 +85,13 @@ class Hook_privacy_awards extends Hook_privacy_base
                 $content_type = $GLOBALS['SITE_DB']->query_select_value_if_there('award_types', 'a_content_type', ['id' => $row['a_type_id']]);
                 if ($content_type !== null) {
                     require_code('content');
-                    list($title, , $info) = content_get_details($content_type, $row['content_id']);
-                    $ret += [
-                        'content_type__dereferenced' => do_lang($info['content_type_label']),
-                        'content_title__dereferenced' => $title,
-                    ];
+                    list($title, , $info) = content_get_details($content_type, $row['content_id'], false, true);
+                    if ($title !== null) {
+                        $ret += [
+                            'content_type__dereferenced' => do_lang($info['content_type_label']),
+                            'content_title__dereferenced' => $title,
+                        ];
+                    }
                 }
                 break;
         }
