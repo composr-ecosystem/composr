@@ -83,11 +83,13 @@ class Hook_privacy_actionlog extends Hook_privacy_base
         switch ($table_name) {
             case 'revisions':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['r_resource_type'], $row['r_resource_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+                list($title, , $info) = content_get_details($row['r_resource_type'], $row['r_resource_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 break;
         }
 

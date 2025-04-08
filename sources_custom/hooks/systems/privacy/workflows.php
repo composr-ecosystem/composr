@@ -94,11 +94,13 @@ class Hook_privacy_workflows extends Hook_privacy_base
         switch ($table_name) {
             case 'workflow_content':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['content_type'], $row['content_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+                list($title, , $info) = content_get_details($row['content_type'], $row['content_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 $workflow_name = $GLOBALS['SITE_DB']->query_select_value_if_there('workflows', 'workflow_name', ['id' => $row['workflow_id']]);
                 if ($workflow_name !== null) {
                     $ret += [

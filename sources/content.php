@@ -262,12 +262,16 @@ function convert_cms_type_codes_multiple(string $type_has, string $type_id) : ar
  * @param  ID_TEXT $content_type Content type
  * @param  ID_TEXT $content_id Content ID
  * @param  boolean $resource_fs_style Whether to use the content API as resource-fs requires (may be slightly different)
+ * @param  boolean $fail_ok Whether to exit with an array of nulls instead of bailing out on failure
  * @return array Tuple: title, submitter, content hook info, the content row, URL (for use within current browser session), URL (for use in e-mails / sharing), Content object
  */
-function content_get_details(string $content_type, string $content_id, bool $resource_fs_style = false) : array
+function content_get_details(string $content_type, string $content_id, bool $resource_fs_style = false, bool $fail_ok = false) : array
 {
     $cma_ob = get_content_object($content_type);
     if (!is_object($cma_ob)) {
+        if ($fail_ok) {
+            return [null, null, null, null, null, null, null];
+        }
         warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('a2eab02a77d754c190b8b1ba480d63dc')));
     }
     $cma_info = $cma_ob->info();

@@ -666,20 +666,24 @@ class Hook_privacy_core extends Hook_privacy_base
         switch ($table_name) {
             case 'rating':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['rating_for_type'], $row['rating_for_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+                list($title, , $info) = content_get_details($row['rating_for_type'], $row['rating_for_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 break;
 
             case 'trackbacks':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['trackback_for_type'], $row['trackback_for_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+                list($title, , $info) = content_get_details($row['trackback_for_type'], $row['trackback_for_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 break;
         }
 

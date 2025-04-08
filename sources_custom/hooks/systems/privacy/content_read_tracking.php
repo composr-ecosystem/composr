@@ -78,11 +78,13 @@ class Hook_privacy_content_read_tracking extends Hook_privacy_base
         switch ($table_name) {
             case 'content_read':
                 require_code('content');
-                list($title, , $info) = content_get_details($row['r_content_type'], $row['r_content_id']);
-                $ret += [
-                    'content_type__dereferenced' => do_lang($info['content_type_label']),
-                    'content_title__dereferenced' => $title,
-                ];
+                list($title, , $info) = content_get_details($row['r_content_type'], $row['r_content_id'], false, true);
+                if ($title !== null) {
+                    $ret += [
+                        'content_type__dereferenced' => do_lang($info['content_type_label']),
+                        'content_title__dereferenced' => $title,
+                    ];
+                }
                 break;
         }
 
