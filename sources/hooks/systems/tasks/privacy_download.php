@@ -141,7 +141,6 @@ class Hook_task_privacy_download
                             $start += $max;
                         } while (!empty($rows));
                     }
-                    $this->create_json_file($table_name, $data, $data_file);
 
                     // Now add files to the archive
                     foreach ($data['files_included'] as $file => $exists) {
@@ -150,9 +149,21 @@ class Hook_task_privacy_download
                         }
 
                         $actual_path = (get_custom_file_base() . '/' . rawurldecode($file));
+                        $size = filesize($actual_path);
+
+                        // Skip files which would be too big to load in for adding
+                        // TODO: Not acceptable; GDPR needs to allow the ability to download all member data. So this loop needs optimised.
+                        if (($size === false) || ($size > (1024 * 1024 * 32))) { // FUDGE
+                            $data['files_included'][$file] = false;
+                            continue;
+                        }
+
                         $_data = cms_file_get_contents_safe($actual_path, FILE_READ_LOCK);
                         tar_add_file($data_file, rawurldecode($file), $_data);
                     }
+
+                    // Finally, create JSON file
+                    $this->create_json_file($table_name, $data, $data_file);
                 }
             }
         }
