@@ -477,7 +477,7 @@ abstract class Hook_privacy_base
         // Anonymise e-mail address
         $email_fields = $table_details['email_fields'];
         foreach ($email_fields as $email_field) {
-            if (strpos($metadata[$owner_id_field], 'SERIAL') !== false) { // We might have serialised e-mail addresses
+            if (strpos($metadata[$email_field], 'SERIAL') !== false) { // We might have serialised e-mail addresses
                 if (($row[$email_field] === null) || ($row[$email_field] == '')) {
                     continue;
                 }
@@ -549,7 +549,7 @@ abstract class Hook_privacy_base
                 break;
             }
 
-            if (strpos($metadata[$owner_id_field], 'SERIAL') !== false) { // We might have serialised additional fields
+            if (strpos($metadata[$additional_anonymise_field], 'SERIAL') !== false) { // We might have serialised additional fields
                 /* Easiest way to do this given we do not know the structure of the data:
                  * 1) Unserialize
                  * 2) JSON encode to get it back to a string, but one we can modify in-place without corrupting it
