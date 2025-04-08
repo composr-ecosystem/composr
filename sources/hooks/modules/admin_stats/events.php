@@ -77,6 +77,9 @@ class Hook_admin_stats_events extends CMSStatsProvider
      */
     public function info(bool $for_kpi = false) : ?array
     {
+        // TODO: #6194 disabled until fixed
+        return null;
+
         require_code('locations');
 
         $top_events = $this->get_top_events();
