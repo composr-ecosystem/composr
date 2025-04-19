@@ -1,4 +1,4 @@
-<parental_controls require_dob="1" lock_dob="1" require_timezone="1" require_region="1">
+<parental_controls>
 	<!-- PARENTAL CONSENT -->
 
 	<!-- Lockout: France (FR), under 15 -->
