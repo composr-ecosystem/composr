@@ -1,6 +1,4 @@
 <parental_controls>
-	<!-- PARENTAL CONSENT -->
-
 	<!-- Lockout: France (FR), under 15 -->
 	<control name="lockout" age_threshold="15" regions="FR">
 		<message>Under French law, specifically the Loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés (as modified by GDPR), the minimum age to use social media is 15. You are not yet of age.</message>

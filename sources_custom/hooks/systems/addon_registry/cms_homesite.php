@@ -205,6 +205,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/endpoints/cms_homesite/telemetry.php',
             'sources_custom/hooks/endpoints/cms_homesite/user_stats.php',
             'sources_custom/hooks/endpoints/cms_homesite/version.php',
+            'sources_custom/hooks/modules/admin_import/cms_merge.php',
             'sources_custom/hooks/modules/admin_stats/cms_homesite.php',
             'sources_custom/hooks/systems/addon_registry/cms_homesite.php',
             'sources_custom/hooks/systems/cron/cmsusers.php',

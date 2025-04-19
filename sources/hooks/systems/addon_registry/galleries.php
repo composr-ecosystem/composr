@@ -185,6 +185,7 @@ class Hook_addon_registry_galleries
             'sources/hooks/systems/ajax_tree/choose_image.php',
             'sources/hooks/systems/ajax_tree/choose_video.php',
             'sources/hooks/systems/block_ui_renderers/galleries.php',
+            'sources/hooks/systems/cleanup/download_galleries.php',
             'sources/hooks/systems/commandr_fs/galleries.php',
             'sources/hooks/systems/config/default_video_height.php',
             'sources/hooks/systems/config/default_video_width.php',

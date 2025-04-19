@@ -176,6 +176,7 @@ class Hook_addon_registry_cms_homesite_tracker
             'sources_custom/hooks/endpoints/cms_homesite/tracker_issues.php',
             'sources_custom/hooks/endpoints/cms_homesite/tracker_posts.php',
             'sources_custom/hooks/endpoints/cms_homesite/tracker_sponsorship.php',
+            'sources_custom/hooks/modules/admin_import_types/mantis.php',
             'sources_custom/hooks/systems/addon_registry/cms_homesite_tracker.php',
             'sources_custom/hooks/systems/notifications/tracker_issue_added.php',
             'sources_custom/hooks/systems/points/tracker_issue__report_resolved.php',
