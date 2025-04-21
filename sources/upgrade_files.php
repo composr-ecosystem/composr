@@ -49,7 +49,13 @@ function upgrader_file_upgrade_screen() : string
     foreach (['/data_custom', ''] as $upgrader_place) {
         $files = get_directory_contents(get_file_base() . $upgrader_place, get_file_base() . $upgrader_place, null, false, true, ['cms', 'gz', 'zip']);
         foreach ($files as $file_path) {
+            // Homesite personal upgrader
             if (preg_match('#^.*/(omni-)?upgrade-' . preg_quote(get_version_dotted(), '#') . '-[^/]*\.(cms(\.gz)?|zip)$#', $file_path) != 0) {
+                $found_upgraders[get_base_url() . $upgrader_place . '/' . basename($file_path)] = filemtime($file_path);
+            }
+
+            // Omni-upgrader built using release tools
+            if (preg_match('#^.*/composr_upgrader-[^/]*\.(cms(\.gz)?|zip)$#', $file_path) != 0) {
                 $found_upgraders[get_base_url() . $upgrader_place . '/' . basename($file_path)] = filemtime($file_path);
             }
         }
