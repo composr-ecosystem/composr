@@ -488,29 +488,32 @@ function version_specific() : bool
             }
 
             // We have to take a non-conventional approach to migrating the old long country field to the new short field
-            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'legacy_country', 5, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0);
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
-            $_legacy_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name' => 'cms_legacy_country']);
-            $_new_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
-            $legacy_id = 'field_' . strval($_legacy_id);
-            $new_id = 'field_' . strval($_new_id);
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
+            if ($test !== null) {
+                $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'legacy_country', 5, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0);
+                $GLOBALS['FORUM_DRIVER']->install_create_custom_field('country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
+                $_legacy_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name' => 'cms_legacy_country']);
+                $_new_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
+                $legacy_id = 'field_' . strval($_legacy_id);
+                $new_id = 'field_' . strval($_new_id);
 
-            $max = 200;
-            $start = 0;
-            do {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', [$legacy_id, 'mf_member_id'], [], '', $max, $start);
-                foreach ($rows as $row) {
-                    $text = get_translated_text($row[$legacy_id]);
-                    if (strlen($text) >= 250) {
-                        $text = substr($text, 0, 250) . '...';
+                $max = 200;
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', [$legacy_id, 'mf_member_id'], [], '', $max, $start);
+                    foreach ($rows as $row) {
+                        $text = get_translated_text($row[$legacy_id]);
+                        if (strlen($text) >= 250) {
+                            $text = substr($text, 0, 250) . '...';
+                        }
+                        $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [$new_id => $text], ['mf_member_id' => $row['mf_member_id']]);
                     }
-                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [$new_id => $text], ['mf_member_id' => $row['mf_member_id']]);
-                }
 
-                $start += $max;
-            } while (count($rows) > 0);
+                    $start += $max;
+                } while (count($rows) > 0);
 
-            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('legacy_country');
+                $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('legacy_country');
+            }
 
             // Database changes (correcting previous errors in types)
             $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
