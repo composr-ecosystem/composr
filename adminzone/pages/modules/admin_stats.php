@@ -223,7 +223,6 @@ class Module_admin_stats extends Standard_crud_module
 
         if (($upgrade_from !== null) && ($upgrade_from == 10)) { // LEGACY: 11.beta1
             // Database consistency fixes
-            $GLOBALS['SITE_DB']->alter_table_field('stats', 'referer', 'URLPATH', 'referer_url');
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added', 'TIME', 'k_added_time');
             $GLOBALS['SITE_DB']->alter_table_field('stats_kpis', 'k_added_by', 'MEMBER', 'k_submitter');
             $GLOBALS['SITE_DB']->alter_table_field('stats_known_events', 'e_times_seen', 'INTEGER', 'e_count_logged');
@@ -234,6 +233,9 @@ class Module_admin_stats extends Standard_crud_module
         }
 
         if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
+            // Database consistency fixes
+            $GLOBALS['SITE_DB']->alter_table_field('stats', 'referer', 'URLPATH', 'referer_url');
+
             $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_events', 'e_times_seen');
             $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_links', 'l_times_seen');
             $GLOBALS['SITE_DB']->delete_index_if_exists('stats_known_tracking', 't_times_seen');
