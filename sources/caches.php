@@ -718,6 +718,9 @@ function get_cache_entry(string $codename, string $cache_identifier, int $specia
     }
 
     $rets = _get_cache_entries([$det]);
+    if (!array_key_exists(0, $rets)) {
+        return null;
+    }
     return $rets[0];
 }
 
@@ -796,6 +799,11 @@ function _get_cache_entries(array $dets) : array
     static $cache = [];
 
     if (empty($dets)) {
+        return [];
+    }
+
+    // Edge case: cache table might not be upgraded yet, so do not support cache if running the upgrader
+    if (running_script('upgrader')) {
         return [];
     }
 
