@@ -1348,15 +1348,33 @@ class Module_admin_version
             require_code('zones');
             require_code('zones3');
             $zones = find_all_zones(true, false, true);
-
-            $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_default_page' => 'start']);
             foreach ($zones as $zone) {
-                // Default zones; skip these because we already update them through the upgrader
-                if (in_array($zone, ['', 'adminzone', 'site', 'cms', 'forum'])) {
+                // Do not change zone default page if it is not start
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_default_page', ['zone_name' => $zone]);
+                if ($test !== 'start') {
                     continue;
                 }
 
-                save_comcode_page($zone, 'home', null, null, null, 1, null, null, null, null, 0, null, 'start');
+                // Check if a home page already exists in the zone; skip (and keep zone default page as start) if it does
+                $home_page = find_comcode_page('EN', 'home', $zone);
+                if ($home_page[1] != '') {
+                    // For default zones, we still want to change the default page from start to home (which was extracted from the upgrader), but don't rename pages
+                    if (in_array($zone, ['', 'adminzone', 'site', 'cms', 'forum'])) {
+                        attach_message('Default zone \'' . $zone . '\' now has both a start and a home page; the home page (new in v11) is the new default, but your previous customisations still exist in the start page for merging.', 'notice');
+                        $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_name' => $zone]);
+                        continue;
+                    }
+                    attach_message('Could not change zone \'' . $zone . '\' default page from \'start\' to \'home\'; there already exists a \'home\' page in this zone. The default page for this zone has been left at \'start\'.', 'notice');
+                    continue;
+                }
+
+                // FUDGE: save_comcode_page calls declare_if_member_has_historic_comcode_admin_privileges, which calls set_value and may create a false-positive infinite loop
+                clear_infinite_loop_iterations('set_value', ['member_comcode_admin_' . strval(get_member())]);
+                clear_infinite_loop_iterations('set_value', ['member_comcode_admin_' . strval(get_member()), strval(time())]);
+
+                save_comcode_page($zone, 'home', null, null, null, 1, null, null, null, null, 0, get_member(), 'start');
+
+                $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_name' => $zone]);
             }
         }
 
