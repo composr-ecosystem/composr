@@ -675,7 +675,8 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
  */
 function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : ?string
 {
-    check_for_infinite_loop('set_value', func_get_args(), 25);
+    check_for_infinite_loop('set_value', [$name], 1000); // Lenient check to see if we are saving a new value to the same key many, many times
+    check_for_infinite_loop('set_value', [$name, $value], 50); // Stricter check to see if we are saving the same value to the same key several times
 
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
