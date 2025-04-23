@@ -476,6 +476,11 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
+            // Guard against starting the v11 upgrade if we have a home zone; we will be renaming pages from start to home when upgrading admin_version.
+            if (is_dir(get_custom_file_base() . '/home')) {
+                warn_exit('You have a zone named home. In v11, the default page name for zones was changed from start to home. This means you cannot have a zone named home. Please rename the home folder in your installation and then run this step again.');
+            }
+
             // Even though this is technically Conversr, it absolutely has to be done first because custom fields have to be modified early
             if ($GLOBALS['FORUM_DB']->table_exists('f_custom_fields')) {
                 $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
@@ -662,10 +667,6 @@ function version_specific() : bool
             require_code('zones3');
             actual_delete_zone('collaboration', true);
             echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'removed collaboration zone');
-
-            // Default zone page name change
-            $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_default_page' => 'start']);
-            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'renamed default zone start page to home page');
         }
 
         // Note: When adding upgrade code for a new version it's a good idea to review old code to get an idea for what might need to be done
