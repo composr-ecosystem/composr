@@ -22,9 +22,6 @@ if (!addon_installed('cms_homesite_tracker')) {
 if (!addon_installed('tickets')) {
     return do_template('RED_ALERT', ['_GUID' => '55b8a2367d975704a26365e9c6d15ba9', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('tickets'))]);
 }
-if (!addon_installed('ecommerce')) {
-    return do_template('RED_ALERT', ['_GUID' => '21e96f65bd2d5040961b00274375015a', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('ecommerce'))]);
-}
 if (!addon_installed('points')) {
     return do_template('RED_ALERT', ['_GUID' => '0af62402501f5980bf6f653eaf9e3fde', 'TEXT' => do_lang_tempcode('MISSING_ADDON', escape_html('points'))]);
 }
@@ -38,7 +35,7 @@ if (strpos(get_db_type(), 'mysql') === false) {
 }
 
 require_css('tracker');
-require_lang('customers');
+require_lang('tracker');
 
 $block_id = get_block_id($map);
 
@@ -118,7 +115,7 @@ $table = 'mantis_bug_table a JOIN mantis_bug_text_table b ON b.id=a.bug_text_id 
 
 $where = 'duplicate_id=0';
 $where .= ' AND view_state=10';
-$where .= ' AND severity=10';
+//$where .= ' AND severity=10';
 $where .= ' AND ' . ((isset($map['completed']) && ($map['completed'] == '1')) ? 'a.status=80' : 'a.status<=50');
 
 if (isset($map['voted'])) {
@@ -151,6 +148,8 @@ if (isset($map['sort'])) {
                 $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' ' . $direction;
             }
             break;
+        default: // Number of points sponsored
+            $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) ' . $direction;
     }
 }
 
@@ -173,8 +172,8 @@ foreach ($_issues as $issue) {
     $_cost = ($cost === null) ? '' : integer_format($cost);
     $points_raised = ($issue['points_raised'] !== null) ? $issue['points_raised'] : 0.0;
     $_points_raised = integer_format($points_raised);
-    $_percentage = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : (escape_html(float_format(100.0 * $points_raised / $cost, 0)) . '%');
-    $_hours = ($cost === null) ? do_lang('FEATURES_UNKNOWN_lc') : do_lang('FEATURES_HOURS_lc', escape_html(integer_format($issue['hours'])));
+    $_percentage = ($cost === null) ? do_lang('UNKNOWN') : (escape_html(float_format(100.0 * $points_raised / $cost, 0)) . '%');
+    $_hours = ($cost === null) ? do_lang('UNKNOWN') : do_lang('HOURS', escape_html(integer_format($issue['hours'])));
 
     $voted = ($GLOBALS['SITE_DB']->query_value_if_there('SELECT user_id FROM mantis_bug_monitor_table WHERE user_id=' . strval(get_member()) . ' AND bug_id=' . strval($issue['id'])) !== null);
 

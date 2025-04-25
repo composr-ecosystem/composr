@@ -40,7 +40,7 @@ class Module_admin_version
         $info['organisation'] = 'Composr';
         $info['hacked_by'] = null;
         $info['hack_version'] = null;
-        $info['version'] = 23;
+        $info['version'] = 24;
         $info['locked'] = true;
         $info['update_require_upgrade'] = true;
         $info['min_cms_version'] = 11.0;
@@ -442,7 +442,7 @@ class Module_admin_version
             ]);
         }
 
-        if (($upgrade_from !== null) && ($upgrade_from < 11)) {
+        if (($upgrade_from !== null) && ($upgrade_from < 11)) { // LEGACY
             $GLOBALS['SITE_DB']->query_update('comcode_pages', ['p_submitter' => 2], ['p_submitter' => $GLOBALS['FORUM_DRIVER']->get_guest_id()]);
         }
 
@@ -1336,6 +1336,77 @@ class Module_admin_version
             global $SITE_INFO;
             $multi_lang_content = (((isset($SITE_INFO['multi_lang_content'])) && ($SITE_INFO['multi_lang_content'] == '0')) ? '0' : '1');
             set_value('multi_lang_content', $multi_lang_content);
+        }
+
+        if (($upgrade_from !== null) && ($upgrade_from < 24)) { // LEGACY: 11.beta8
+            // Guard against upgrade if a home zone exists
+            if (is_dir(get_custom_file_base() . '/home')) {
+                warn_exit('Cannot upgrade this module because you have a zone (folder) named home. Please rename it first.');
+            }
+
+            // Default zone page name change from start to home
+            require_code('zones');
+            require_code('zones3');
+            $zones = find_all_zones(true, false, true);
+            foreach ($zones as $zone) {
+                // Do not change zone default page if it is not start
+                $test = $GLOBALS['SITE_DB']->query_select_value_if_there('zones', 'zone_default_page', ['zone_name' => $zone]);
+                if ($test !== 'start') {
+                    continue;
+                }
+
+                // Check if a home page already exists in the zone; skip (and keep zone default page as start) if it does
+                $home_page = find_comcode_page('EN', 'home', $zone);
+                if ($home_page[1] != '') {
+                    // For default zones, we still want to change the default page from start to home (which was extracted from the upgrader), but don't rename pages
+                    if (in_array($zone, ['', 'adminzone', 'site', 'cms', 'forum'])) {
+                        attach_message('Default zone \'' . $zone . '\' now has both a start and a home page; the home page (new in v11) is the new default, but your previous customisations still exist in the start page for merging.', 'notice');
+                        $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_name' => $zone]);
+                        continue;
+                    }
+                    attach_message('Could not change zone \'' . $zone . '\' default page from \'start\' to \'home\'; there already exists a \'home\' page in this zone. The default page for this zone has been left at \'start\'.', 'notice');
+                    continue;
+                }
+
+                // FUDGE: save_comcode_page calls declare_if_member_has_historic_comcode_admin_privileges, which calls set_value and may create a false-positive infinite loop
+                clear_infinite_loop_iterations('set_value', ['member_comcode_admin_' . strval(get_member())]);
+                clear_infinite_loop_iterations('set_value', ['member_comcode_admin_' . strval(get_member()), strval(time())]);
+
+                save_comcode_page($zone, 'home', null, null, null, 1, null, null, null, null, 0, get_member(), 'start');
+
+                $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_name' => $zone]);
+            }
+        }
+
+        // Ensure for every install / upgrade that the entry points for custom zones are updated to match the adminzone one
+        // NB: This must always be last in the install function and must run for every install and upgrade
+        require_code('zones');
+        require_code('zones3');
+        $zones = find_all_zones(true, false, true);
+
+        // Initialise the Admin Zone entry contents
+        $admin_entry_contents = file_get_contents(get_custom_file_base() . '/adminzone/index.php');
+
+        foreach ($zones as $zone) {
+            // Default zones; skip these because we already update them through the upgrader
+            if (in_array($zone, ['', 'adminzone', 'site', 'cms', 'forum'])) {
+                continue;
+            }
+
+            // Initialise the new entry point contents to match the Admin Zone contents
+            $new_entry_contents = $admin_entry_contents;
+
+            // Try to find a package name in the original entry point. If we find one, we want to keep it when updating the entry point code.
+            $entry_contents = file_get_contents(get_custom_file_base() . '/' . $zone . '/index.php');
+            $matches = [];
+            if (preg_match_all('/\*\s@package\s+([a-z0-9_]+)/', $entry_contents, $matches) > 0) {
+                $package = $matches[1][0];
+                $new_entry_contents = preg_replace('/\*\s@package\s+([a-z0-9_]+)/', '* @package    ' . $package, $admin_entry_contents);
+            }
+
+            @unlink(get_custom_file_base() . '/' . $zone . '/index.php');
+            @file_put_contents(get_custom_file_base() . '/' . $zone . '/index.php', $new_entry_contents);
+            @fix_permissions(get_custom_file_base() . '/' . $zone . '/index.php');
         }
     }
 

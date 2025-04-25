@@ -49,7 +49,13 @@ function upgrader_file_upgrade_screen() : string
     foreach (['/data_custom', ''] as $upgrader_place) {
         $files = get_directory_contents(get_file_base() . $upgrader_place, get_file_base() . $upgrader_place, null, false, true, ['cms', 'gz', 'zip']);
         foreach ($files as $file_path) {
+            // Homesite personal upgrader
             if (preg_match('#^.*/(omni-)?upgrade-' . preg_quote(get_version_dotted(), '#') . '-[^/]*\.(cms(\.gz)?|zip)$#', $file_path) != 0) {
+                $found_upgraders[get_base_url() . $upgrader_place . '/' . basename($file_path)] = filemtime($file_path);
+            }
+
+            // Omni-upgrader built using release tools
+            if (preg_match('#^.*/composr_upgrader-[^/]*\.(cms(\.gz)?|zip)$#', $file_path) != 0) {
                 $found_upgraders[get_base_url() . $upgrader_place . '/' . basename($file_path)] = filemtime($file_path);
             }
         }
@@ -391,21 +397,35 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
 
+        // Try to find this file or directory within an addon
         $found = null;
-        if (!$is_directory) {
-            // See if this file belongs to an addon
-            foreach ($addon_contents as $addon_name => $addon_files) {
-                $addon_file_path = $upgrade_file['path'];
-                if (in_array($addon_file_path, $addon_files)) {
-                    $found = $addon_name;
-                    break;
+        foreach ($addon_contents as $addon_name => $addon_files) {
+            // Skip addons we are not going to extract
+            if (!in_array($addon_name, $addons_wanted)) {
+                continue;
+            }
+
+            // See if the addon has any files located within this directory. If so, we want to ensure this directory is created
+            if ($is_directory) {
+                foreach ($addon_files as $addon_file) {
+                    if (strpos($addon_file, $upgrade_file['path']) === 0) {
+                        $found = $addon_name;
+                        break;
+                    }
                 }
+                continue;
+            }
+
+            // See if this file belongs to the addon
+            if (in_array($upgrade_file['path'], $addon_files)) {
+                $found = $addon_name;
+                break;
             }
         }
 
         // Install if it matches an addon either on disk or in the TAR (and not part of an addon we uninstalled)
         // (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
-        if (($found !== null) && (in_array($found, $addons_wanted))) {
+        if ($found !== null) {
             if ($is_directory) {
                 if (!$dry_run) {
                     afm_make_directory($upgrade_file['path'], false, true);
@@ -418,6 +438,8 @@ function _upgrader_file_upgrade_screen() : string
                             afm_make_directory(dirname($upgrade_file['path']), false, true);
                         }
                         afm_make_file($upgrade_file['path'], $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                    } else {
+                        $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
                     }
 
                     $out .= do_lang('UPGRADER_EXTRACTING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';

@@ -515,6 +515,7 @@ function enforce_parental_controls(int $member_id)
 
     require_code('cns_members_action');
     require_code('cns_field_editability');
+    require_code('permissions');
     require_lang('cns');
 
     $special_type = get_member_special_type($member_id);

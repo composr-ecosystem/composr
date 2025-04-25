@@ -476,6 +476,11 @@ function version_specific() : bool
         }
 
         if ($version_database < 11.0) {
+            // Guard against starting the v11 upgrade if we have a home zone; we will be renaming pages from start to home when upgrading admin_version.
+            if (is_dir(get_custom_file_base() . '/home')) {
+                warn_exit('You have a zone named home. In v11, the default page name for zones was changed from start to home. This means you cannot have a zone named home. Please rename the home folder in your installation and then run this step again.');
+            }
+
             // Even though this is technically Conversr, it absolutely has to be done first because custom fields have to be modified early
             if ($GLOBALS['FORUM_DB']->table_exists('f_custom_fields')) {
                 $GLOBALS['FORUM_DB']->add_table_field('f_custom_fields', 'cf_include_in_main_search', 'BINARY');
@@ -488,29 +493,32 @@ function version_specific() : bool
             }
 
             // We have to take a non-conventional approach to migrating the old long country field to the new short field
-            $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'legacy_country', 5, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0);
-            $GLOBALS['FORUM_DRIVER']->install_create_custom_field('country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
-            $_legacy_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name' => 'cms_legacy_country']);
-            $_new_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
-            $legacy_id = 'field_' . strval($_legacy_id);
-            $new_id = 'field_' . strval($_new_id);
+            $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
+            if ($test !== null) {
+                $GLOBALS['FORUM_DRIVER']->install_edit_custom_field('country', 'legacy_country', 5, /*locked=*/1, /*viewable=*/0, /*settable=*/0, /*required=*/0);
+                $GLOBALS['FORUM_DRIVER']->install_create_custom_field('country', 5, /*locked=*/0, /*viewable=*/0, /*settable=*/1, /*required=*/0, '', 'country', 0, null, '', 0, 0, '', '', '', /*autofill_type=*/'country');
+                $_legacy_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name' => 'cms_legacy_country']);
+                $_new_id = $GLOBALS['FORUM_DB']->query_select_value('f_custom_fields', 'id', ['cf_name'=> 'cms_country']);
+                $legacy_id = 'field_' . strval($_legacy_id);
+                $new_id = 'field_' . strval($_new_id);
 
-            $max = 200;
-            $start = 0;
-            do {
-                $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', [$legacy_id, 'mf_member_id'], [], '', $max, $start);
-                foreach ($rows as $row) {
-                    $text = get_translated_text($row[$legacy_id]);
-                    if (strlen($text) >= 250) {
-                        $text = substr($text, 0, 250) . '...';
+                $max = 200;
+                $start = 0;
+                do {
+                    $rows = $GLOBALS['FORUM_DB']->query_select('f_member_custom_fields', [$legacy_id, 'mf_member_id'], [], '', $max, $start);
+                    foreach ($rows as $row) {
+                        $text = get_translated_text($row[$legacy_id]);
+                        if (strlen($text) >= 250) {
+                            $text = substr($text, 0, 250) . '...';
+                        }
+                        $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [$new_id => $text], ['mf_member_id' => $row['mf_member_id']]);
                     }
-                    $GLOBALS['FORUM_DB']->query_update('f_member_custom_fields', [$new_id => $text], ['mf_member_id' => $row['mf_member_id']]);
-                }
 
-                $start += $max;
-            } while (count($rows) > 0);
+                    $start += $max;
+                } while (count($rows) > 0);
 
-            $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('legacy_country');
+                $GLOBALS['FORUM_DRIVER']->install_delete_custom_field('legacy_country');
+            }
 
             // Database changes (correcting previous errors in types)
             $GLOBALS['SITE_DB']->change_primary_key('db_meta_indices', ['i_table', 'i_name']);
@@ -659,10 +667,6 @@ function version_specific() : bool
             require_code('zones3');
             actual_delete_zone('collaboration', true);
             echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'removed collaboration zone');
-
-            // Default zone page name change
-            $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_default_page' => 'start']);
-            echo do_lang('UPGRADER_UPGRADED_CUSTOM', '11', 'renamed default zone start page to home page');
         }
 
         // Note: When adding upgrade code for a new version it's a good idea to review old code to get an idea for what might need to be done

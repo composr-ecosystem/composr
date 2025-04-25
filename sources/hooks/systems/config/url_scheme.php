@@ -77,4 +77,16 @@ class Hook_config_url_scheme
 
         return true;
     }
+
+    /**
+     * Code to run after the option is saved, if the value was changed or we are not formally setting it.
+     *
+     * @param  string $new_value The new value
+     */
+    public function postsave_handler(string $new_value)
+    {
+        // Update .htaccess file with zones in case we switched to HTM or SIMPLE style
+        require_code('zones2');
+        sync_htaccess_with_zones();
+    }
 }
