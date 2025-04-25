@@ -635,7 +635,7 @@ class Module_tracker
         $GLOBALS['SITE_INFO']['block_url_schemes'] = '1';
 
         $content = paragraph(do_lang_tempcode('MANTIS_TRACKER_PAGE_TEXT'));
-        $content->attach(do_block('main_mantis_tracker'));
+        $content->attach(do_block('main_mantis_tracker', ['sort' => 'sponsorships DESC']));
 
         // Display
         return do_template('STANDALONE_HTML_WRAP', ['_GUID' => '11f8625ed8fc9cf4fa6f466f08b7be57', 'FRAME' => true, 'NOINDEX' => true, 'TARGET' => '_blank', 'TITLE' => 'Tracker', 'CONTENT' => $content]);
