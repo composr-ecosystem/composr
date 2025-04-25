@@ -148,8 +148,9 @@ if (isset($map['sort'])) {
                 $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' ' . $direction;
             }
             break;
-        default: // Number of points sponsored
+        case 'sponsorships':
             $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) ' . $direction;
+            break;
     }
 }
 

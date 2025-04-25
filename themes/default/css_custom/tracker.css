@@ -69,6 +69,10 @@
 }
 
 .tracker-issue-votes {
+	font-size: 0.9em;
+}
+
+.tracker-issue-points {
 	font-size: 1.3em;
 }
 
@@ -88,7 +92,7 @@
 }
 
 .tracker-issue-progress {
-	font-size: 0.9em;
+	font-size: 0.8em;
 }
 
 .tracker-issue-b {

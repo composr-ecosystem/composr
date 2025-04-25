@@ -14,9 +14,15 @@
 
 				<div class="float-surrounder">
 					<div class="tracker-issue-a">
-						<p class="tracker-issue-votes">
-							<strong>{!VOTES,{VOTES*}}</strong>
+						<p class="tracker-issue-points">
+							{!POINTS_SPONSORED,{POINTS_RAISED*}}
 						</p>
+
+						{+START,IF_NON_EMPTY,{COST}}
+							<p class="tracker-issue-progress">
+								<span class="associated-details">({!SUGGESTED_TOTAL_SPONSORSHIP,{$TRIM,{COST}}})</span>
+							</p>
+						{+END}
 
 						{+START,IF,{VOTED}}
 							<p class="js-click-add-voted-class tracker-issue-voting-status tracker-issue-not-voted">
@@ -30,13 +36,8 @@
 							</p>
 						{+END}
 
-						<p class="tracker-issue-progress">
-							{!POINTS_SPONSORED,{POINTS_RAISED*}}
-
-							{+START,IF_NON_EMPTY,{COST}}
-								<br />
-								<span class="associated-details">({!SUGGESTED_TOTAL_SPONSORSHIP,{$TRIM,{COST}}})</span>
-							{+END}
+						<p class="tracker-issue-votes">
+							{!VOTES,{VOTES*}}
 						</p>
 					</div>
 
