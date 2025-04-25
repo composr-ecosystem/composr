@@ -595,7 +595,8 @@ class Module_tracker
         $type = get_param_string('type', 'browse');
 
         if ($type == 'browse') {
-            $this->title = get_screen_title('TRACKER');
+            require_lang('tracker');
+            $this->title = get_screen_title('MANTIS_TRACKER_PAGE_TITLE');
         }
 
         return null;
@@ -629,9 +630,12 @@ class Module_tracker
             warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('cms_homesite_tracker')));
         }
 
+        require_lang('tracker');
+
         $GLOBALS['SITE_INFO']['block_url_schemes'] = '1';
 
-        $content = do_block('main_mantis_tracker');
+        $content = paragraph(do_lang_tempcode('MANTIS_TRACKER_PAGE_TEXT'));
+        $content->attach(do_block('main_mantis_tracker'));
 
         // Display
         return do_template('STANDALONE_HTML_WRAP', ['_GUID' => '11f8625ed8fc9cf4fa6f466f08b7be57', 'FRAME' => true, 'NOINDEX' => true, 'TARGET' => '_blank', 'TITLE' => 'Tracker', 'CONTENT' => $content]);
