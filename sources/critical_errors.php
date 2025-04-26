@@ -91,7 +91,7 @@ if (!function_exists('critical_error')) {
             }
         }
 
-        $error = '<div>Unknown critical error type: this should not happen, so please report this to the Core Development Team.</div>';
+        $error = '<div>An unknown critical error occurred: this should not happen, so please report this to the Core Development Team.</div>';
 
         $may_show_footer = true;
         $may_save_critical_error_file = true;
@@ -101,10 +101,10 @@ if (!function_exists('critical_error')) {
 
         switch ($code) {
             case 'CORRUPT_OVERRIDE':
-                $error = '<div>An override seems to no longer be compatible, ' . htmlentities($relay) . '.</div>';
+                $error = '<div>A code override is no-longer compatible: ' . htmlentities($relay) . '.</div>';
                 break;
             case 'MISSING_SOURCE':
-                $error = '<div>A source-code (' . $relay . ') file is missing/corrupt/incompatible.</div>';
+                $error = '<div>A requested source-code file (' . $relay . ') is missing/corrupt/incompatible.</div>';
                 break;
             case 'PASSON':
                 $error = $relay;
@@ -113,32 +113,32 @@ if (!function_exists('critical_error')) {
                 $error = '<div>The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.</div>';
                 $may_show_footer = false;
                 $error_log = '';
-                $may_save_critical_error_file = false;
+                $may_save_critical_error_file = false; // Banned IPs are not actually errors
                 break;
             case 'BANNED':
-                $error = '<div>The IP address you are accessing this website from (' . get_ip_address() . ') has been banished from this website. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>' . "\n" . '<div>If you are yourself staff, you should be able to unban yourself by editing the <kbd>banned_ip</kbd> table in a database administation tool, by removing rows that qualify against yourself. This error is raised to a critical error to reduce the chance of this IP address being able to further consume server resources.';
+                $error = '<div>The IP address you are accessing this website from (' . get_ip_address() . ') has been banned. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>';
                 $may_show_footer = false;
                 $error_log = 'banned_access.log';
-                $may_save_critical_error_file = false;
+                $may_save_critical_error_file = false; // Banned IPs are not actually errors
                 break;
             case 'TEST':
                 $error = '<div>This is a test error.</div>';
                 break;
             case 'BUSY':
-                $error = '<div>This is a less-critical error that has been elevated for quick dismissal due to high server load.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
-                $may_save_critical_error_file = false;
+                $error = '<div>A minor error occurred, but due to a high server load, it has been treated fatally.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
+                $may_save_critical_error_file = false; // Can flood the filesystem very quickly
                 break;
             case 'EMERGENCY':
-                $error = '<div>This is an error that has been elevated to critical error status because it occurred during the primary error mechanism reporting system itself (possibly due to it occurring within the standard output framework). It may be masking a secondary error that occurred before this, but was never output - if so, it is likely strongly related to this one, thus fixing this will fix the other.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
+                $error = '<div>A critical error occurred which we cannot handle gracefully (this may be masking a secondary error which triggered this error when we tried gracefully handling the secondary error).</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
                 break;
             case 'RELAY':
-                $error = '<div>This is a relayed critical error, which means that this less-critical error has occurred during startup, and thus halted startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
+                $error = '<div>An error occurred during startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
                 break;
             case 'FILE_DOS':
-                $error = '<div>This website was prompted to download a file (' . htmlentities($relay) . ') which seemingly has a never-ending chain of redirections. Because this could be a denial of service attack, execution has been terminated.</div>';
+                $error = '<div>A potential Denial of Service attack from an infinite loop of redirections (' . htmlentities($relay) . ') has been halted.</div>';
                 break;
             case 'DATABASE_FAIL':
-                $error = '<div>The website\'s first database query (checking the page request is not from a banned IP address or reading the site configuration) has failed. This almost always means that the database is not set up correctly, which in turns means that either backend database configuration has changed (perhaps the database has been emptied), or the configuration file (_config.php) has been incorrectly altered (perhaps to point to an empty database), or you have moved servers and not updated your _config.php settings properly or placed your database. It could also mean that the <kbd>' . get_table_prefix() . 'banned_ip</kbd> table or <kbd>' . get_table_prefix() . 'config</kbd> table alone is missing or corrupt, but this is unlikely. As this is an error due to the website\'s environment being externally altered by unknown means, the website cannot continue to function or solve the problem itself.</div>';
+                $error = '<div>A database error occurred when trying to query data necessary for startup. Please ensure that your site config file has the correct database information and that the database is working correctly.</div>';
                 break;
             case '_CONFIG.PHP_MISSING':
                 $install_url = 'install.php';
@@ -146,10 +146,10 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error = '<div>The top-level configuration file is missing. You probably have not yet installed the website software, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is missing. This file is created during installation. If you have not yet installed, use an official installation package. If somehow <kbd>_config.php</kbd> was deleted then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file is missing. This file is created during installation. If you have not yet installed, use an official installation package. If somehow the file was deleted then replace it from a backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_EMPTY':
@@ -158,24 +158,24 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. You probably have not yet installed, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error = '<div>The top-level configuration file is empty or cannot be accessed. You probably have not yet installed the website software, so <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official installation package. If somehow <kbd>_config.php</kbd> was blanked out then replace <kbd>_config.php</kbd> from backup.</div>';
+                    $error = '<div>The top-level configuration file is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official installation package. If somehow the file was blanked out then replace it from a backup.</div>';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':
-                $error = '<div>The top-level configuration file (<kbd>_config.php</kbd>) appears to be corrupt. Perhaps it was incorrectly uploaded, or a typo was made. It must be valid PHP code.</div>';
+                $error = '<div>The top-level configuration file appears to be corrupt. Perhaps it was incorrectly uploaded, or a typo was made. It must be valid PHP code.</div>';
                 break;
             case 'CRIT_LANG':
-                $error = '<div>The most basic critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing. It is likely that other files are also, for whatever reason, missing from this installation.</div>';
+                $error = '<div>Startup failed because the critical error language file (lang/' . fallback_lang() . '/critical_error.ini) is missing.</div>';
                 break;
             case 'INFINITE_LOOP':
-                $error = '<div>A potential infinite loop in the software was halted (codename <kbd>' . htmlentities($relay) . '</kbd>). This error has been logged. Please do not refresh this page as it could indicate a significant software or website bug.</div>';
+                $error = '<div>Infinite loop protection was triggered (codename <kbd>' . htmlentities($relay) . '</kbd>). Please do not refresh this page as it could indicate a significant software or website bug.</div>';
                 break;
             case 'HACK_ATTACK':
-                $error = '<div>Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.</div>';
-                $may_save_critical_error_file = false;
+                $error = '<div>Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff (typically, postmaster@' . get_domain() . ' will be able to reach them). If you got here from a link on an external website, demand that the staff of the external site fix or remove the links immediately (you may wish to screenshot this browser window and error message for them).</div>';
+                $may_save_critical_error_file = false; // Not necessary because security logging
                 break;
         }
 
