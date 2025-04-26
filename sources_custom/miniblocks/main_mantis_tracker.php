@@ -133,23 +133,23 @@ if (isset($map['sort'])) {
     }
     switch ($sort) {
         case 'popular':
-            $order = 'num_votes ' . $direction;
+            $order = 'num_votes ' . $direction . ', date_submitted DESC';
             break;
         case 'added':
             $order = 'date_submitted ' . $direction;
             break;
         case 'hours':
-            $order = 'hours ' . $direction;
+            $order = 'hours ' . $direction . ', date_submitted DESC';
             $where .= ' AND ' . db_string_not_equal_to('c.value', '');
             break;
         case 'sponsorship_progress':
             $where .= ' AND (SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)<>0';
             if ($s_points_per_hour !== null) {
-                $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' ' . $direction;
+                $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2)/CAST(c.value AS DECIMAL)*' . strval($s_points_per_hour) . ' ' . $direction . ', date_submitted DESC';
             }
             break;
         case 'sponsorships':
-            $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) ' . $direction;
+            $order = '(SELECT SUM(amount) FROM ' . get_table_prefix() . 'escrow z WHERE z.content_type=\'tracker_issue\' AND z.content_id=a.id AND status=2) ' . $direction . ', date_submitted DESC';
             break;
     }
 }
