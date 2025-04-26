@@ -44,37 +44,17 @@
     </head>
 
     <body>
-        <div class="error-container" id="error_standard">
+        <div class="error-container">
             <h1>Critical Error</h1>
             <p>Uh oh! It seems something has gone terribly wrong. This incident has been logged for the Composr staff.</p>
             <p>You may wish to <a target="_blank" rel="noopener noreferrer" href="https://composr.app/report-issue.htm">report this on our tracker</a> or, if you cannot do that, e-mail us at support at composr dot app .</p>
-            <p>Please include this error code in your report: <strong id="error_code">ERROR_CODE</strong></p>
+            <p>Please include this error code in your report (if applicable): <strong>{ERROR_CODE}</strong></p>
         </div>
 
-        <div class="error-container" id="error_banned" style="display: none;">
-            <h1>Banned</h1>
-            <p>Your device has been banned from the site.</p>
-            <p>If you believe this is a mistake, e-mail us at support at composr dot app.</p>
-            <p>Please include this error code in your report: <strong id="error_code">ERROR_CODE</strong></p>
+        <div class="error-container">
+            <h2>Additional Details</h2>
+            <p>{ERROR_MESSAGE}</p>
+            <p>{STACK_TRACE}</p>
         </div>
-
-        <script>
-            (function () {
-                // Get the URL parameters
-                const urlParams = new URLSearchParams(window.location.search);
-        
-                // Get the error_code parameter
-                const errorCode = urlParams.get('error_code');
-        
-                // Display the error code in the paragraph element
-                document.getElementById('error_code').textContent = errorCode;
-
-                // Display banned message if we are banned
-                if (errorCode.startsWith('BANNED_')) {
-                    document.getElementById('error_standard').style.display = "none";
-                    document.getElementById('error_banned').style.display = "";
-                }
-            })();
-        </script>
     </body>
 </html>
