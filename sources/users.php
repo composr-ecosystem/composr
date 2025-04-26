@@ -747,7 +747,7 @@ function delete_expired_sessions_or_recover(?int $member_id = null, bool $force_
             continue;
         }
 
-        $is_guest = ($member_id == $GLOBALS['FORUM_DRIVER']->get_guest_id());
+        $is_guest = ($row['member_id'] == $GLOBALS['FORUM_DRIVER']->get_guest_id());
         if ($is_guest) {
             $num_guests++;
         } else {
