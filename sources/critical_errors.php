@@ -94,6 +94,7 @@ if (!function_exists('critical_error')) {
         $error = '<div>Unknown critical error type: this should not happen, so please report this to the Core Development Team.</div>';
 
         $may_show_footer = true;
+        $may_save_critical_error_file = true;
 
         // Name of the log file for which this error should be logged (blank: no logging). If errorlog.php, then the error will be passed to error_log.
         $error_log = 'errorlog.php';
@@ -112,23 +113,26 @@ if (!function_exists('critical_error')) {
                 $error = '<div>The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.</div>';
                 $may_show_footer = false;
                 $error_log = '';
+                $may_save_critical_error_file = false;
                 break;
             case 'BANNED':
                 $error = '<div>The IP address you are accessing this website from (' . get_ip_address() . ') has been banished from this website. If you believe this is a mistake, contact the staff to have it resolved (typically, postmaster@' . get_domain() . ' will be able to reach them).</div>' . "\n" . '<div>If you are yourself staff, you should be able to unban yourself by editing the <kbd>banned_ip</kbd> table in a database administation tool, by removing rows that qualify against yourself. This error is raised to a critical error to reduce the chance of this IP address being able to further consume server resources.';
                 $may_show_footer = false;
                 $error_log = 'banned_access.log';
+                $may_save_critical_error_file = false;
                 break;
             case 'TEST':
                 $error = '<div>This is a test error.</div>';
                 break;
             case 'BUSY':
-                $error = '<div>This is a less-critical error that has been elevated for quick dismissal due to high server load.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is a less-critical error that has been elevated for quick dismissal due to high server load.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
+                $may_save_critical_error_file = false;
                 break;
             case 'EMERGENCY':
-                $error = '<div>This is an error that has been elevated to critical error status because it occurred during the primary error mechanism reporting system itself (possibly due to it occurring within the standard output framework). It may be masking a secondary error that occurred before this, but was never output - if so, it is likely strongly related to this one, thus fixing this will fix the other.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is an error that has been elevated to critical error status because it occurred during the primary error mechanism reporting system itself (possibly due to it occurring within the standard output framework). It may be masking a secondary error that occurred before this, but was never output - if so, it is likely strongly related to this one, thus fixing this will fix the other.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
                 break;
             case 'RELAY':
-                $error = '<div>This is a relayed critical error, which means that this less-critical error has occurred during startup, and thus halted startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay;
+                $error = '<div>This is a relayed critical error, which means that this less-critical error has occurred during startup, and thus halted startup.</div>' . "\n" . '<div style="padding-left: 50px">' . $relay . '</div>';
                 break;
             case 'FILE_DOS':
                 $error = '<div>This website was prompted to download a file (' . htmlentities($relay) . ') which seemingly has a never-ending chain of redirections. Because this could be a denial of service attack, execution has been terminated.</div>';
@@ -171,6 +175,7 @@ if (!function_exists('critical_error')) {
                 break;
             case 'HACK_ATTACK':
                 $error = '<div>Your request is suspicious and has been blocked and logged by the Web Application Firewall. Your IP address, user agent, referrer, and request details have been included in the log. <strong>Do not refresh this page.</strong> Repeat suspicious requests may result in your device getting automatically banned. If you believe this is a mistake, please promptly contact the site staff. If you got here from a link on an external website, demand that they fix or remove the links immediately.</div>';
+                $may_save_critical_error_file = false;
                 break;
         }
 
@@ -294,8 +299,13 @@ END;
         $contents = ob_get_contents();
         $dir = get_custom_file_base() . '/critical_errors';
         if ((is_dir($dir)) && ((!isset($_GET['page'])) || ($_GET['page'] != '_critical_error')) && ((!isset($GLOBALS['SEMI_DEV_MODE'])) || (!$GLOBALS['SEMI_DEV_MODE']) || ((!empty($_GET['keep_dev_mode']) && ($_GET['keep_dev_mode'] == '0'))))) {
-            $error_code = uniqid($code . '_', true);
-            file_put_contents($dir . '/' . $error_code . '.log', $contents);
+            if ($may_save_critical_error_file) {
+                $error_code = uniqid($code . '_', true);
+                file_put_contents($dir . '/' . $error_code . '.log', $contents);
+            } else {
+                $error_code = 'NA';
+            }
+
             ob_end_clean();
 
             if ($code == 'BANNED') {
@@ -303,19 +313,23 @@ END;
             } else {
                 http_response_code(500);
             }
-            global $RELATIVE_PATH, $SITE_INFO;
-            if (isset($SITE_INFO['base_url'])) {
-                $back_path = $SITE_INFO['base_url'];
-            } else {
-                $back_path = preg_replace('#[^/]+#', '..', $RELATIVE_PATH);
-            }
+
             if (is_file(get_custom_file_base() . '/_critical_error.html')) {
-                $url = (($back_path == '') ? '' : ($back_path . '/')) . '_critical_error.html?error_code=' . urlencode($error_code);
+                $contents = file_get_contents(get_custom_file_base() . '/_critical_error.html');
+                $contents = str_replace(['{ERROR_CODE}', '{ERROR_MESSAGE}', '{STACK_TRACE}'], [$error_code, $error, $extra], $contents);
+                echo $contents;
             } else {
+                global $RELATIVE_PATH, $SITE_INFO;
+                if (isset($SITE_INFO['base_url'])) {
+                    $back_path = $SITE_INFO['base_url'];
+                } else {
+                    $back_path = preg_replace('#[^/]+#', '..', $RELATIVE_PATH);
+                }
+
                 $url = (($back_path == '') ? '' : ($back_path . '/')) . 'index.php?page=_critical_error&error_code=' . urlencode($error_code);
+                @header('Location: ' . $url);
+                echo '<meta http-equiv="refresh" content="0;url=' . htmlentities($url) . '" />';
             }
-            @header('Location: ' . $url);
-            echo '<meta http-equiv="refresh" content="0;url=' . htmlentities($url) . '" />';
         }
 
         // Standard error logging
