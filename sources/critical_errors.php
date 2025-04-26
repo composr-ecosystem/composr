@@ -138,7 +138,7 @@ if (!function_exists('critical_error')) {
                 $error = '<div>A potential Denial of Service attack from an infinite loop of redirections (' . htmlentities($relay) . ') has been halted.</div>';
                 break;
             case 'DATABASE_FAIL':
-                $error = '<div>A database error occurred when trying to query data necessary for startup. Please ensure that your site config file has the correct database information and that the database is working correctly.</div>';
+                $error = '<div>A database error occurred when trying to query data necessary for startup.</div>';
                 break;
             case '_CONFIG.PHP_MISSING':
                 $install_url = 'install.php';
@@ -146,10 +146,10 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = '<div>The top-level configuration file is missing. You probably have not yet installed the website software, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error = '<div>The top-level configuration file is missing, but we detected the installer, so you may wish to <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file is missing. This file is created during installation. If you have not yet installed, use an official installation package. If somehow the file was deleted then replace it from a backup.</div>';
+                    $error = '<div>The top-level configuration file is missing and must be recovered from a backup or an official software release.</div>';
                 }
                 break;
             case '_CONFIG.PHP_EMPTY':
@@ -158,10 +158,10 @@ if (!function_exists('critical_error')) {
                     $install_url = '../install.php';
                 }
                 if (file_exists($install_url)) {
-                    $error = '<div>The top-level configuration file is empty or cannot be accessed. You probably have not yet installed the website software, so <a href="' . $install_url . '">run the installer</a>.</div>';
+                    $error = '<div>The top-level configuration file is empty or cannot be accessed, but we detected the installer, so you may wish to <a href="' . $install_url . '">run the installer</a>.</div>';
                     $error_log = '';
                 } else {
-                    $error = '<div>The top-level configuration file is empty or cannot be accessed. This file is created during installation. If you have not yet installed, use an official installation package. If somehow the file was blanked out then replace it from a backup.</div>';
+                    $error = '<div>The top-level configuration file is empty or cannot be accessed. Permissions for the file must be fixed, or the file must be recovered from a backup or official software release.</div>';
                 }
                 break;
             case '_CONFIG.PHP_CORRUPTED':
