@@ -502,11 +502,28 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, ?b
         $already_called[$calling_path] = true;
 
         if (($code === null) || ($delete_compiled !== null)) {
-            // We need to wait (but not too long) for locks to be released before we can include the file
+            // Try loading the file; allow up to 3 seconds for it to be created in case another process is compiling it
             $time = microtime(true);
-            $file = fopen($calling_path, 'r');
+            $file = false;
+            do {
+                $file = fopen($calling_path, 'r');
+                if ($file !== false) {
+                    break;
+                }
+
+                if ((microtime(true) - $time) > 3.0) {
+                    throw new \Exception('MISSING_SOURCE: ' . $codename);
+                }
+
+                if (php_function_allowed('usleep')) {
+                    usleep(100000);
+                }
+            } while ($file === false);
+
+            // Try locking the file in a shared way; allow up to 3 seconds for it to be released if a previous lock exists
+            $time = microtime(true);
             while (flock($file, LOCK_SH | LOCK_NB) === false) {
-                if ((microtime(true) - $time) > 5.0) {
+                if ((microtime(true) - $time) > 3.0) {
                     throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
                 }
 
