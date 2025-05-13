@@ -108,6 +108,11 @@ if (!function_exists('critical_error')) {
                 break;
             case 'PASSON':
                 $error = $relay;
+
+                // FUDGE: Antispam messages are not actually errors but are treated as such
+                if ((function_exists('do_lang')) && (strpos($error, do_lang('STOPPED_BY_ANTISPAM_SUBSTRING')) !== false)) {
+                    $may_save_critical_error_file = false;
+                }
                 break;
             case 'YOU_ARE_BANNED':
                 $error = '<div>The member you are masquerading as has been banned. We cannot finish initialising the virtualised environment for this reason.</div>';
