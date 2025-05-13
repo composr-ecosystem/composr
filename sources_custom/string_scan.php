@@ -8707,6 +8707,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INVALID_TELEMETRY_DATA
         DOC_TELEMETRY_STATUS
         DOC_PARENTAL_CONTROLS
+        STOPPED_BY_ANTISPAM_SUBSTRING
     ')));
 
     $non_admin_files = [
