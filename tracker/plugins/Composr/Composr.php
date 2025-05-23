@@ -32,10 +32,11 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_extra_signin_sql = ''; // TODO: Customise for Composr's antispam
     protected $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
     protected $cms_sc_home_url = 'https://composr.app';
+    protected $cms_reporter_groups = [10]; // TODO: Keep up to date with composr.app's group IDs (members)
     protected $cms_updater_groups = [];
-    protected $cms_developer_groups = [10]; // TODO: Keep up to date with composr.app's group IDs (member)
-    protected $cms_manager_groups = [];
-    protected $cms_admin_groups = [2, 3]; // TODO: Keep up to date with composr.app's group IDs (administrator, moderator)
+    protected $cms_developer_groups = []; // TODO: Keep up to date with composr.app's group IDs (Trusted community developers)
+    protected $cms_manager_groups = [3]; // TODO: Keep up to date with composr.app's group IDs (Board Members)
+    protected $cms_admin_groups = [2]; // TODO: Keep up to date with composr.app's group IDs (Core Developers)
 
     // These are set in register()
     protected $cms_sc_site_url = '';
@@ -139,6 +140,7 @@ class ComposrPlugin extends MantisPlugin {
     {
         require_api('utility_api.php');
         require_api('gpc_api.php');
+        require_api('current_user_api.php');
 
         // Redirect the Mantis account page to the Composr members page
         if (is_page_name( 'account_page.php' )) {
@@ -158,6 +160,12 @@ class ComposrPlugin extends MantisPlugin {
             exit();
         }
 
+        // Redirect the Mantis select project page (when viewing as Guest) to the Composr login page
+        if (is_page_name( 'login_select_proj_page.php' ) && (current_user_get_access_level() <= VIEWER)) {
+            header('Location: ' . $this->cms_sc_login_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
         // Redirect the Mantis logout page to the Composr logout page
         if (is_page_name( 'logout_page.php' )) {
             header('Location: ' . $this->cms_sc_login_url . '?type=logout&redirect=' . urlencode($this->cms_sc_tracker_url));
@@ -166,6 +174,12 @@ class ComposrPlugin extends MantisPlugin {
 
         // Redirect the Mantis lost password page to the Composr lost password page
         if (is_page_name( 'lost_pwd_page.php' )) {
+            header('Location: ' . $this->cms_sc_lostpassword_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
+        // Redirect the Mantis login password page to the Composr lost password page
+        if (is_page_name( 'login_password_page.php' )) {
             header('Location: ' . $this->cms_sc_lostpassword_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
@@ -362,7 +376,8 @@ class ComposrPlugin extends MantisPlugin {
             }
 
             // Find access level
-            $access_level = ($cms_row['m_primary_group'] == 1) ? VIEWER : REPORTER;
+            $access_level = VIEWER;
+            if (in_array($cms_row['m_primary_group'], $this->cms_reporter_groups)) $access_level = REPORTER;
             if (in_array($cms_row['m_primary_group'], $this->cms_updater_groups)) $access_level = UPDATER;
             if (in_array($cms_row['m_primary_group'], $this->cms_developer_groups)) $access_level = DEVELOPER;
             if (in_array($cms_row['m_primary_group'], $this->cms_manager_groups)) $access_level = MANAGER;
@@ -374,7 +389,8 @@ class ComposrPlugin extends MantisPlugin {
             for ($i = 0; $i < $num_groups; $i++) {
                 $group_row = db_fetch_array($result);
                 $secondary_group_id = $group_row['gm_group_id'];
-                $access_level_2 = ($secondary_group_id == 1) ? VIEWER : REPORTER;
+                $access_level_2 = VIEWER;
+                if (in_array($secondary_group_id, $this->cms_reporter_groups)) $access_level_2 = REPORTER;
                 if (in_array($secondary_group_id, $this->cms_updater_groups)) $access_level_2 = UPDATER;
                 if (in_array($secondary_group_id, $this->cms_developer_groups)) $access_level_2 = DEVELOPER;
                 if (in_array($secondary_group_id, $this->cms_manager_groups)) $access_level_2 = MANAGER;

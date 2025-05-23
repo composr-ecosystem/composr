@@ -942,17 +942,12 @@ class Virtual_shell
         // Handle the command: load up the relevant hook
         if ($this->parse_runtime['commandr_command'] == COMMAND_NATIVE) {
             // See if it's a lone command first
-            $hooks = find_all_hooks('systems', 'commandr_commands');
+            $hook = get_hook_ob('systems', 'commandr_commands', $this->parsed_input[SECTION_COMMAND], 'Hook_commandr_command_', true);
             $hook_return = null;
-            foreach (array_keys($hooks) as $hook) {
-                if ($hook == $this->parsed_input[SECTION_COMMAND]) {
-                    require_code('hooks/systems/commandr_commands/' . filter_naughty_harsh($hook));
-                    $object = object_factory('Hook_commandr_command_' . filter_naughty_harsh($hook));
-                    $hook_return = $object->run($this->parsed_input[SECTION_OPTIONS], $this->parsed_input[SECTION_PARAMETERS], $this->fs);
-                    log_it('COMMANDR_COMMAND', $hook, implode(' ', $this->parsed_input[SECTION_PARAMETERS]));
-                    $this->parse_runtime['commandr_command'] = COMMAND_LONE;
-                    break;
-                }
+            if ($hook !== null) {
+                $hook_return = $hook->run($this->parsed_input[SECTION_OPTIONS], $this->parsed_input[SECTION_PARAMETERS], $this->fs);
+                log_it('COMMANDR_COMMAND', $this->parsed_input[SECTION_COMMAND], $this->current_input);
+                $this->parse_runtime['commandr_command'] = COMMAND_LONE;
             }
 
             if ($hook_return !== null) {
@@ -1011,6 +1006,8 @@ class Virtual_shell
                 $commandr_output[] = ['...' => '...'];
             }
 
+            log_it('COMMANDR_COMMAND', '@ (SQL)', $this->parsed_input[SECTION_COMMAND]);
+
             $this->output[STREAM_STDCOMMAND] = '';
             $this->output[STREAM_STDHTML] = '';
             $this->output[STREAM_STDOUT] = '';
@@ -1028,6 +1025,7 @@ class Virtual_shell
             $this->output[STREAM_STDHTML] = '';
             if (php_function_allowed('shell_exec')) {
                 $this->output[STREAM_STDOUT] = shell_exec($this->parsed_input[SECTION_COMMAND]);
+                log_it('COMMANDR_COMMAND', '# (SHELL)', $this->parsed_input[SECTION_COMMAND]);
             } else {
                 $this->output[STREAM_STDOUT] = '';
             }
@@ -1280,6 +1278,7 @@ class Virtual_shell
                 }
             }
             ob_end_clean();
+            log_it('COMMANDR_COMMAND', ': (PHP)', $this->parsed_input[SECTION_COMMAND]);
 
             // Save settings...
 

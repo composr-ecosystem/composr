@@ -79,7 +79,7 @@ $g_favicon_image = '../themes/default/images/favicon.ico';
 
 // Access Settings
 $g_access_levels_enum_string = '10:Guest,25:Member,40:Updater,55:Community Developer,70:Core Developer,90:Lead Developer';
-$g_show_user_email_threshold = ADMINISTRATOR; // Prevent spam
+$g_show_user_email_threshold = MANAGER; // Prevent spam
 $g_upload_bug_file_threshold = REPORTER; // Prevent spam
 $g_add_bugnote_threshold = REPORTER; // Prevent spam
 $g_report_bug_threshold = REPORTER; // Prevent spam
@@ -88,7 +88,7 @@ $g_private_bug_threshold = ADMINISTRATOR; // We use private bugs for serious sec
 $g_update_readonly_bug_threshold = DEVELOPER; // If a bug is resolved / closed, we want members to open a new issue, not re-open the existing one
 $g_allow_reporter_reopen = OFF;
 $g_tag_attach_threshold = REPORTER;
-$g_tag_create_threshold = DEVELOPER;
+$g_tag_create_threshold = MANAGER;
 $g_view_changelog_threshold = NOBODY; // We use our own change logs on Composr
 $g_roadmap_view_threshold = NOBODY; // We don't use road maps because nothing is guaranteed
 $g_set_status_threshold = array(
