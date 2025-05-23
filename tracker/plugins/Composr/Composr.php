@@ -139,6 +139,7 @@ class ComposrPlugin extends MantisPlugin {
     {
         require_api('utility_api.php');
         require_api('gpc_api.php');
+        require_api('current_user_api.php');
 
         // Redirect the Mantis account page to the Composr members page
         if (is_page_name( 'account_page.php' )) {
@@ -158,6 +159,12 @@ class ComposrPlugin extends MantisPlugin {
             exit();
         }
 
+        // Redirect the Mantis select project page (when viewing as Guest) to the Composr login page
+        if (is_page_name( 'login_select_proj_page.php' ) && (current_user_get_access_level() <= VIEWER)) {
+            header('Location: ' . $this->cms_sc_login_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
         // Redirect the Mantis logout page to the Composr logout page
         if (is_page_name( 'logout_page.php' )) {
             header('Location: ' . $this->cms_sc_login_url . '?type=logout&redirect=' . urlencode($this->cms_sc_tracker_url));
@@ -166,6 +173,12 @@ class ComposrPlugin extends MantisPlugin {
 
         // Redirect the Mantis lost password page to the Composr lost password page
         if (is_page_name( 'lost_pwd_page.php' )) {
+            header('Location: ' . $this->cms_sc_lostpassword_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+
+        // Redirect the Mantis login password page to the Composr lost password page
+        if (is_page_name( 'login_password_page.php' )) {
             header('Location: ' . $this->cms_sc_lostpassword_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
