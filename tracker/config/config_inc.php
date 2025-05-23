@@ -77,8 +77,8 @@ $g_window_title = 'Composr CMS feature tracker'; // TODO: Customise
 $g_logo_image = '../themes/default/images/EN/logo/standalone_logo.png'; // TODO: Customise
 $g_favicon_image = '../themes/default/images/favicon.ico';
 
-// Access Settings
-$g_access_levels_enum_string = '10:Guest,25:Member,40:Updater,55:Community Developer,70:Core Developer,90:Lead Developer';
+// Access Settings (generally, community developers still require core dev approval on their submitted code)
+$g_access_levels_enum_string = '10:Guest,25:Member,40:Updater,55:Community Developer,70:Board Member,90:Core Developer';
 $g_show_user_email_threshold = MANAGER; // Prevent spam
 $g_upload_bug_file_threshold = REPORTER; // Prevent spam
 $g_add_bugnote_threshold = REPORTER; // Prevent spam
@@ -93,8 +93,8 @@ $g_view_changelog_threshold = NOBODY; // We use our own change logs on Composr
 $g_roadmap_view_threshold = NOBODY; // We don't use road maps because nothing is guaranteed
 $g_set_status_threshold = array(
     NEW_ => REPORTER,
-    CLOSED => MANAGER,
-    RESOLVED => DEVELOPER,
+    CLOSED => MANAGER, // because it triggers refunding of points
+    RESOLVED => MANAGER, // because it triggers awarding of points
     ASSIGNED => DEVELOPER,
 );
 
