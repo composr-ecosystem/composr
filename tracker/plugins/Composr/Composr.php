@@ -32,10 +32,11 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_extra_signin_sql = ''; // TODO: Customise for Composr's antispam
     protected $cms_sc_sourcecode_url = 'https://gitlab.com/composr-foundation/composr';
     protected $cms_sc_home_url = 'https://composr.app';
+    protected $cms_reporter_groups = [10]; // TODO: Keep up to date with composr.app's group IDs (members)
     protected $cms_updater_groups = [];
-    protected $cms_developer_groups = [10]; // TODO: Keep up to date with composr.app's group IDs (member)
-    protected $cms_manager_groups = [];
-    protected $cms_admin_groups = [2, 3]; // TODO: Keep up to date with composr.app's group IDs (administrator, moderator)
+    protected $cms_developer_groups = []; // TODO: Keep up to date with composr.app's group IDs (Trusted community developers)
+    protected $cms_manager_groups = [3]; // TODO: Keep up to date with composr.app's group IDs (Board Members)
+    protected $cms_admin_groups = [2]; // TODO: Keep up to date with composr.app's group IDs (Core Developers)
 
     // These are set in register()
     protected $cms_sc_site_url = '';
@@ -375,7 +376,8 @@ class ComposrPlugin extends MantisPlugin {
             }
 
             // Find access level
-            $access_level = ($cms_row['m_primary_group'] == 1) ? VIEWER : REPORTER;
+            $access_level = VIEWER;
+            if (in_array($cms_row['m_primary_group'], $this->cms_reporter_groups)) $access_level = REPORTER;
             if (in_array($cms_row['m_primary_group'], $this->cms_updater_groups)) $access_level = UPDATER;
             if (in_array($cms_row['m_primary_group'], $this->cms_developer_groups)) $access_level = DEVELOPER;
             if (in_array($cms_row['m_primary_group'], $this->cms_manager_groups)) $access_level = MANAGER;
@@ -387,7 +389,8 @@ class ComposrPlugin extends MantisPlugin {
             for ($i = 0; $i < $num_groups; $i++) {
                 $group_row = db_fetch_array($result);
                 $secondary_group_id = $group_row['gm_group_id'];
-                $access_level_2 = ($secondary_group_id == 1) ? VIEWER : REPORTER;
+                $access_level_2 = VIEWER;
+                if (in_array($secondary_group_id, $this->cms_reporter_groups)) $access_level_2 = REPORTER;
                 if (in_array($secondary_group_id, $this->cms_updater_groups)) $access_level_2 = UPDATER;
                 if (in_array($secondary_group_id, $this->cms_developer_groups)) $access_level_2 = DEVELOPER;
                 if (in_array($secondary_group_id, $this->cms_manager_groups)) $access_level_2 = MANAGER;
