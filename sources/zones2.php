@@ -389,6 +389,7 @@ function save_zone_base_url($zone, $base_url)
 function upgrade_module($zone, $module)
 {
     require_code('version');
+    require_lang('zones');
 
     $rows = $GLOBALS['SITE_DB']->query_select('modules', array('*'), array('module_the_name' => $module), '', 1);
     if (!array_key_exists(0, $rows)) {
@@ -449,6 +450,8 @@ function upgrade_module($zone, $module)
     $GLOBALS['SITE_DB']->query_update('modules', array('module_version' => $info['version'], 'module_hack_version' => $info['hack_version'], 'module_hacked_by' => is_null($info['hacked_by']) ? '' : $info['hacked_by']), array('module_the_name' => $module), '', 1);
     persistent_cache_delete('MODULES');
 
+    log_it('MODULE_UPGRADED', $module);
+
     return $ret;
 }
 
@@ -469,8 +472,11 @@ function reinstall_module($zone, $module)
     require_code('config2');
     require_code('files2');
     require_code('version');
+    require_lang('zones');
 
     $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $module), '', 1);
+
+    log_it('MODULE_UNINSTALLED', $module);
 
     $functions = extract_module_functions($module_path, array('info', 'install', 'uninstall'));
     if ((is_null($functions[1])) && (strpos($module_path, '/modules_custom/') !== false)) {
@@ -523,6 +529,8 @@ function reinstall_module($zone, $module)
 
     persistent_cache_delete('MODULES');
 
+    log_it('MODULE_INSTALLED', $module);
+
     return (!is_null($functions[1]));
 }
 
@@ -539,12 +547,15 @@ function uninstall_module($zone, $module)
     require_code('database_action');
     require_code('config2');
     require_code('files2');
+    require_lang('zones');
 
     $GLOBALS['SITE_DB']->query_delete('modules', array('module_the_name' => $module), '', 1);
     $GLOBALS['SITE_DB']->query_delete('group_page_access', array('page_name' => $module)); // As some modules will try and install this themselves. Entry point permissions they won't.
     $GLOBALS['SITE_DB']->query_delete('group_privileges', array('the_page' => $module)); // Ditto
 
     persistent_cache_delete('MODULES');
+
+    log_it('MODULE_UNINSTALLED', $module);
 
     if (file_exists($module_path)) {
         $functions = extract_module_functions($module_path, array('uninstall'));
@@ -695,6 +706,7 @@ function upgrade_block($block)
             require_code('database_action');
             require_code('config2');
             require_code('files2');
+            require_lang('zones');
 
             if (is_array($functions[1])) {
                 call_user_func_array($functions[1][0], $functions[1][1]);
@@ -705,6 +717,9 @@ function upgrade_block($block)
                 $info['installed_hacked_by'] = '';
             }
             $GLOBALS['SITE_DB']->query_update('blocks', array('block_version' => $info['version'], 'block_hack_version' => $info['hack_version'], 'block_hacked_by' => is_null($info['hacked_by']) ? '' : $info['hacked_by']), array('block_name' => $block), '', 1);
+
+            log_it('BLOCK_UPGRADED', $block);
+
             return 1;
         }
     }
@@ -722,11 +737,14 @@ function reinstall_block($block)
 {
     $block_path = _get_block_path($block);
 
-    $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block), '', 1);
-
     require_code('database_action');
     require_code('config2');
     require_code('files2');
+    require_lang('zones');
+
+    $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block), '', 1);
+
+    log_it('BLOCK_UNINSTALLED', $block);
 
     $functions = extract_module_functions($block_path, array('info', 'install', 'uninstall'));
     if (is_null($functions[0])) {
@@ -759,6 +777,9 @@ function reinstall_block($block)
     }
 
     $GLOBALS['SITE_DB']->query_insert('blocks', array('block_name' => $block, 'block_author' => $info['author'], 'block_organisation' => $info['organisation'], 'block_hacked_by' => is_null($info['hacked_by']) ? '' : $info['hacked_by'], 'block_hack_version' => $info['hack_version'], 'block_version' => $info['version']));
+
+    log_it('BLOCK_INSTALLED', $block);
+
     if (!is_null($functions[1])) {
         if (is_array($functions[1])) {
             call_user_func_array($functions[1][0], $functions[1][1]);
@@ -782,10 +803,13 @@ function uninstall_block($block)
     require_code('database_action');
     require_code('config2');
     require_code('files2');
+    require_lang('zones');
 
     $GLOBALS['SITE_DB']->query_delete('blocks', array('block_name' => $block), '', 1);
     $GLOBALS['SITE_DB']->query_delete('cache_on', array('cached_for' => $block), '', 1);
     $GLOBALS['SITE_DB']->query_delete('cache', array('cached_for' => $block));
+
+    log_it('BLOCK_UNINSTALLED', $block);
 
     if (file_exists($block_path)) {
         $functions = extract_module_functions($block_path, array('uninstall'));

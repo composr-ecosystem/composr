@@ -7135,6 +7135,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         INSTALLING_BETA_VERSION
         INSTALLING_EOL_VERSION
         INSTALLING_LTM_VERSION
+        MODULE_UPGRADED
+        MODULE_UNINSTALLED
+        MODULE_INSTALLED
+        BLOCK_UPGRADED
+        BLOCK_UNINSTALLED
+        BLOCK_INSTALLED
     ')));
 
     $non_admin_files = array(
