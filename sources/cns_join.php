@@ -200,7 +200,6 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     }
 
     // Run a lockout check to see if this member is allowed to create an account given the provided information
-    // TODO: test this
     $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
     $lockout_info = $pc->run('lockout', $age, $region, ['check_join' => true]);
     if ($lockout_info !== null) {
