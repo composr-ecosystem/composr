@@ -569,6 +569,9 @@ class Parental_controls_loader
             return;
         }
 
+        // Parse optional attributes
+        $this->controls[$guid]['no_join'] = ((string)$this->_controls[$guid]['no_join'] === '1');
+
         // Parse optional body tags
         $this->controls[$guid]['message'] = (string)$this->_controls[$guid]->message;
         $this->controls[$guid]['privacy_policy'] = (string)$this->_controls[$guid]->privacy_policy;
@@ -577,6 +580,7 @@ class Parental_controls_loader
     /**
      * Run the lockout control.
      * If $params contains member_id, we will also log that member out if they are to be locked out.
+     * If $params contains check_join as true, then we will skip this if the control's no_join attribute is not 1.
      *
      * @param  ID_TEXT $guid The GUID of the control to run
      * @param  integer $age The age of the member
@@ -587,6 +591,10 @@ class Parental_controls_loader
     private function pcc__lockout(string $guid, int $age, ?string $region, array $params)
     {
         if (!isset($this->controls[$guid]) || ($this->controls[$guid]['name'] != 'lockout')) {
+            return false;
+        }
+
+        if (array_key_exists('check_join', $params) && ($params['check_join'] === true) && ($this->controls[$guid]['no_join'] !== true)) {
             return false;
         }
 
