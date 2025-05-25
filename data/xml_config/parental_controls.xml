@@ -1,26 +1,44 @@
-<parental_controls>
+<parental_controls require_dob="1" require_timezone="1" require_region="1">
 	<!-- Lockout: France (FR), under 15 -->
-	<control name="lockout" age_threshold="15" regions="FR">
-		<message>Under French law, specifically the Loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés (as modified by GDPR), the minimum age to use social media is 15. You are not yet of age.</message>
-		<privacy_policy>This is governed by the Loi n° 78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés (as modified by GDPR).</privacy_policy>
+	<control name="lockout" age_threshold="15" regions="FR" no_join="1">
+		<message>Under French law (Loi n° 2023-566 du 7 juillet 2023), the digital majority is 15. You are not yet of age to create or use an account.</message>
+		<privacy_policy>This is governed by French law, including Loi n° 2023-566, regarding digital majority and online safety.</privacy_policy>
 	</control>
 
 	<!-- Lockout: Ireland (IE), under 16 -->
-	<control name="lockout" age_threshold="16" regions="IE">
-		<message>Under Irish law, specifically the Data Protection Act 2018 (as modified by GDPR), the minimum age to use social media is 16. You are not yet of age.</message>
+	<control name="lockout" age_threshold="16" regions="IE" no_join="1">
+		<message>Under Irish law, specifically the Data Protection Act 2018, the digital age of consent is 16. You are not yet of age.</message>
 		<privacy_policy>This is governed by the Data Protection Act 2018 (as modified by GDPR).</privacy_policy>
 	</control>
 
-	<!-- Lockout: New Zealand (NZ) under 13 -->
-	<control name="lockout" age_threshold="13" regions="NZ">
-		<message>Under New Zealand law, specifically the Privacy Act 2020, the minimum age to use social media is 13. You are not yet of age.</message>
+	<!-- Florida (US) specific: Lockout under 14 (Effective Jan 1, 2025) -->
+	<control name="lockout" age_threshold="14" regions="US-FL" no_join="1">
+		<message>Under Florida law (HB3 - 2024), social media accounts are prohibited for children under 14. You are not yet of age.</message>
+		<privacy_policy>This is governed by Florida House Bill 3 (2024) concerning online protections for minors.</privacy_policy>
+	</control>
+
+	<!-- Florida (US) specific: Parental consent for 14-15 year olds (Effective Jan 1, 2025) -->
+	<control name="parental_consent" age_threshold="16" regions="US-FL">
+		<mail>Under Florida law (HB3 - 2024), parental consent is required for 14 and 15-year-olds to have social media accounts.</mail>
+		<privacy_policy>This is governed by Florida House Bill 3 (2024) concerning online protections for minors.</privacy_policy>
+	</control>
+
+	<!-- Utah (US) specific: Parental consent under 18 -->
+	<control name="parental_consent" age_threshold="18" regions="US-UT">
+		<mail>Under Utah's Social Media Regulation Act, parental consent is required for users under the age of 18.</mail>
+		<privacy_policy>This is governed by the Utah Social Media Regulation Act.</privacy_policy>
+	</control>
+
+	<!-- Parental Consent: New Zealand (NZ) under 16 -->
+	<control name="parental_consent" age_threshold="16" regions="NZ">
+		<mail>Under New Zealand's Privacy Act 2020 principles regarding the handling of young people's data, parental consent is required for users under the age of 16.</mail>
 		<privacy_policy>This is governed by the Privacy Act 2020.</privacy_policy>
 	</control>
 
-	<!-- Lockout: Australia under 16 -->
-	<control name="lockout" age_threshold="16" regions="AU">
-		<message>Under the Online Safety Amendment (Social Media Minimum Age) Act 2024, in Australia, the minimum age to use social media is 16. You are not yet of age.</message>
-		<privacy_policy>This is governed by the Online Safety Amendment (Social Media Minimum Age) Act 2024.</privacy_policy>
+	<!-- Parental Consent: Australia under 16 -->
+	<control name="parental_consent" age_threshold="16" regions="AU">
+		<mail>In line with promoting online safety for young users in Australia under the Online Safety Act 2021, parental consent is required for users under the age of 16.</mail>
+		<privacy_policy>This is guided by the Online Safety Act 2021.</privacy_policy>
 	</control>
 
 	<!-- COPPA compliant: US specific, 13 and under -->
@@ -29,16 +47,22 @@
 		<privacy_policy>This is governed by the Children's Online Privacy Protection Act (COPPA).</privacy_policy>
 	</control>
 
-	<!-- GDPR compliant: EU specific, 16 and under -->
-	<control name="parental_consent" age_threshold="16" regions="AL,AD,AT,BY,BE,BA,BG,HR,CY,CZ,DK,DD,EE,FO,FI,FR,DE,GI,GR,GG,HU,IS,IM,IT,JE,LV,LI,LT,LU,MK,MT,FX,MD,MC,ME,NL,NO,PL,PT,RO,RU,SM,RS,CS,SK,SI,ES,SJ,SE,CH,UA,SU,GB,VA,AX,XK">
-		<mail>Under the General Data Protection Regulation (GDPR), we require parental consent for users under the age of 16.</mail>
-		<privacy_policy>This is governed by the General Data Protection Regulation (GDPR).</privacy_policy>
-	</control>
-
 	<!-- PIPEDA compliant: Canada specific, 13 or under -->
 	<control name="parental_consent" age_threshold="13" regions="CA">
 		<mail>Under the Personal Information Protection and Electronic Documents Act (PIPEDA) consent is required for users under 13.</mail>
 		<privacy_policy>This is governed by the Personal Information Protection and Electronic Documents Act (PIPEDA).</privacy_policy>
+	</control>
+
+	<!-- GDPR compliant: EU specific, 16 and under -->
+	<control name="parental_consent" age_threshold="16" regions="AT,BE,BG,HR,CY,CZ,DK,EE,FI,DE,GR,HU,IT,LV,LI,LT,LU,MT,NL,NO,PL,PT,RO,SK,SI,ES,SE,IS">
+		<mail>Under the General Data Protection Regulation (GDPR), we require parental consent for users under the age of 16.</mail>
+		<privacy_policy>This is governed by the General Data Protection Regulation (GDPR).</privacy_policy>
+	</control>
+
+	<!-- UK specific: Parental consent under 16 -->
+	<control name="parental_consent" age_threshold="16" regions="GB">
+		<mail>Under UK data protection laws (UK GDPR) and in consideration of the Online Safety Act 2023, we require parental consent for users under the age of 16.</mail>
+		<privacy_policy>This is governed by UK data protection laws, including the UK GDPR, and principles from the Online Safety Act 2023.</privacy_policy>
 	</control>
 
 	<!-- LGPD compliant: Brazil specific, 16 or under -->
@@ -51,6 +75,18 @@
 	<control name="parental_consent" age_threshold="18" regions="JP">
 		<mail>Under the Act on the Protection of Personal Information (APPI) consent is required for users under 18.</mail>
 		<privacy_policy>This is governed by the Act on the Protection of Personal Information (APPI).</privacy_policy>
+	</control>
+
+	<!-- India: Parental consent under 18 -->
+	<control name="parental_consent" age_threshold="18" regions="IN">
+		<mail>Under India's Digital Personal Data Protection Act, 2023, verifiable parental consent is required for users under the age of 18.</mail>
+		<privacy_policy>This is governed by the Digital Personal Data Protection Act, 2023.</privacy_policy>
+	</control>
+
+	<!-- South Korea: Parental consent under 14 -->
+	<control name="parental_consent" age_threshold="14" regions="KR">
+		<mail>Under South Korea's ICT Network Act, parental consent is required for users under the age of 14.</mail>
+		<privacy_policy>This is governed by the Act on Promotion of Information and Communications Network Utilization and Information Protection, etc. (ICT Network Act).</privacy_policy>
 	</control>
 
 	<!-- Default parental consent -->
