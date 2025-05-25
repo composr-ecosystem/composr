@@ -119,7 +119,7 @@ There are many protocols that work on the communications already established, in
  - [b]FTP[/b] -- for uploading and downloading files (sometimes via a web browser, although using special FTP software is better)
  - [b]ICMP[/b] -- for 'pinging', among other things (a 'ping' is the Internet equivalent to shouting out a 'are you there')
  - [b]Telnet[/b] -- for logging into another computer across the Internet and typing in commands for it (the old operating systems that the Internet developed around are heavily based on the typing in of commands rather than just using a mouse -- don't expect to be able to telnet to a Windows computer)
- - [b]Skype[/b] -- this is just one example of many protocols that aren't really standard and shared conventions, but rather ones designed by a single software manufacturer wholly for the purposes of their own software
+ - [b]Skype[/b] (deprecated) -- this is just one example of many protocols that aren't really standard and shared conventions, but rather ones designed by a single software manufacturer wholly for the purposes of their own software
 
 I'm not going to go into the details of any of these protocols because it's not really relevant unless you actually need to know it.
 

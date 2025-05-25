@@ -2387,12 +2387,14 @@ function cns_predefined_custom_field_details() : array
             'section' => '',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="http://twitter.com/{RAW*}" rel="me">{NAME*}</a>',
         ],
+        /* Shut down as of May 2025
         'im_skype' => [
             'type' => 'codename',
             'icon' => 'icons/links/skype',
             'section' => 'contact',
             'tempcode' => '<a title="{NAME*} {!LINK_NEW_WINDOW}" href="skype:{RAW*}?call">{NAME*}</a>',
         ],
+        */
         'im_jabber' => [
             'type' => 'codename',
             'icon' => 'icons/links/jabber',

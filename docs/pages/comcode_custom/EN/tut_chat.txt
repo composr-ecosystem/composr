@@ -225,7 +225,7 @@ For video chat it is therefore best just to use an established third-party infra
  - appear.in
  - Jitsi (requires a moderator to have a registered account)
  - Google Hangouts (you'd need to direct people to start a hangout)
- - Skype (ditto)
+ - Microsoft Teams
  - CometChat (they provide a video chat option on their Platinum Edition)
  - Zoom
  - Discord
