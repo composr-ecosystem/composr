@@ -17,6 +17,12 @@
 		<privacy_policy>This is governed by the Privacy Act 2020.</privacy_policy>
 	</control>
 
+	<!-- Lockout: Australia under 16 -->
+	<control name="lockout" age_threshold="16" regions="AU">
+		<message>Under the Online Safety Amendment (Social Media Minimum Age) Act 2024, in Australia, the minimum age to use social media is 16. You are not yet of age.</message>
+		<privacy_policy>This is governed by the Online Safety Amendment (Social Media Minimum Age) Act 2024.</privacy_policy>
+	</control>
+
 	<!-- COPPA compliant: US specific, 13 and under -->
 	<control name="parental_consent" age_threshold="13" regions="US">
 		<mail>Under the Children's Online Privacy Protection Act (COPPA), we require parental consent for users under the age of 13.</mail>
@@ -33,12 +39,6 @@
 	<control name="parental_consent" age_threshold="13" regions="CA">
 		<mail>Under the Personal Information Protection and Electronic Documents Act (PIPEDA) consent is required for users under 13.</mail>
 		<privacy_policy>This is governed by the Personal Information Protection and Electronic Documents Act (PIPEDA).</privacy_policy>
-	</control>
-
-	<!-- Australia: 15 or under -->
-	<control name="parental_consent" age_threshold="15" regions="AU">
-		<mail>Under Australian law consent is required for users under 15.</mail>
-		<privacy_policy>This is a general guideline in Australia as different jurisdictions enforce different age requirements.</privacy_policy>
 	</control>
 
 	<!-- LGPD compliant: Brazil specific, 16 or under -->
