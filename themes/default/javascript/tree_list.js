@@ -614,8 +614,9 @@
                         thatType = 'e';
                     }
 
+                    // TODO: Does not work yet at all for server IDs and also selects all children instead of the requested range
                     if (allLabels[i].getAttribute('id').substr(5 + this.name.length, thatType.length) === thatType) {
-                        thatSelectedId = (this.useServerId) ? allLabels[i].getAttribute('serverid') : allLabels[i].getAttribute('id').substr(7 + this.name.length);
+                        thatSelectedId = allLabels[i].getAttribute('id').substr(7 + this.name.length);
                         thatXmlNode = this.getElementByIdHack(thatSelectedId, thatType);
                         if ((thatXmlNode.getAttribute('selectable') === 'true') || (this.allNodesSelectable)) {
                             if ((i >= posLast) && (i <= posUs)) {
@@ -646,8 +647,10 @@
 
             if ((xmlNode.getAttribute('selectable') === 'true') || this.allNodesSelectable) {
                 var selectedAfter = selectedBefore;
+                var realSelected;
                 for (i = 0; i < selectedBefore.length; i++) {
-                    this.makeElementLookSelected($dom.$id(this.name + 'tsel_' + type + '_' + selectedBefore[i]), false);
+                    realSelected = this.getElementByIdHack(selectedBefore[i], type, null, this.useServerId);
+                    this.makeElementLookSelected($dom.$id(this.name + 'tsel_' + type + '_' + realSelected.getAttribute('id')), false);
                 }
                 if (!this.multiSelection || ((!event.ctrlKey && !event.metaKey && !event.altKey) && !assumeCtrl)) {
                     selectedAfter = [];
@@ -665,12 +668,14 @@
                         for (i = 0; i < anchors.length; i++) {
                             this.makeElementLookSelected(anchors[i], false);
                         }
+                        console.log(this.name + 'tsel_' + type + '_' + realSelectedId);
                         this.makeElementLookSelected($dom.$id(this.name + 'tsel_' + type + '_' + realSelectedId), true);
                     }
                 }
 
                 for (i = 0; i < selectedAfter.length; i++) {
-                    this.makeElementLookSelected($dom.$id(this.name + 'tsel_' + type + '_' + selectedAfter[i]), true);
+                    realSelected = this.getElementByIdHack(selectedAfter[i], type, null, this.useServerId);
+                    this.makeElementLookSelected($dom.$id(this.name + 'tsel_' + type + '_' + realSelected.getAttribute('id')), true);
                 }
 
                 var newVal = selectedAfter.join(',');
