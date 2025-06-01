@@ -619,7 +619,7 @@ class Module_admin_addons
 
         $to_import = get_param_string('to_import', null);
 
-        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_ADDON_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_homesite_addon', [], false, $to_import, false, null, true));
+        $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_ADDON_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_homesite_addon', [], false, $to_import, true, null, true));
 
         $field_set->attach(form_input_upload(do_lang_tempcode('UPLOAD'), do_lang_tempcode('DESCRIPTION_UPLOAD'), 'file', false, null, null, true, 'tar'));
 

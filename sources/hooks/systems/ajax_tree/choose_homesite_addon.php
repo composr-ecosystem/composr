@@ -86,7 +86,7 @@ class Hook_ajax_tree_choose_homesite_addon
 
         $matches = [];
 
-        $num_matches = preg_match_all('#<entry id="([0-9]+)" guid="([0-9a-fA-F\-]+)"[^<>]* title="([^"]+)"#', $file, $matches);
+        $num_matches = preg_match_all('#<entry id="([0-9]+)" serverid="([0-9a-fA-F\-]+)"[^<>]* title="([^"]+)"#', $file, $matches);
         for ($i = 0; $i < $num_matches; $i++) {
             $list->attach(form_input_list_entry(get_brand_base_url() . '/site/dload.php?id=' . urlencode($matches[2][$i]), in_array($matches[2][$i], $it_exp), $prefix . $matches[3][$i]));
         }
