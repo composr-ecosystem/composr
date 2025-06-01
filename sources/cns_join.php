@@ -161,7 +161,50 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
     require_code('cns_members_action');
     require_code('cns_members_action2');
 
+    // Load parental controls
+    require_code('cns_parental_controls');
+    $pc = load_parental_control_settings();
+
     // Read in data
+
+    require_code('temporal2');
+    list($dob_year, $dob_month, $dob_day) = post_param_date_components('birthday');
+    if (($dob_year === null) || ($dob_month === null) || ($dob_day === null)) {
+        if (member_field_is_required(null, 'dob', null, null, $adjusted_config_options)) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'birthday'));
+        }
+
+        $dob_day = null;
+        $dob_month = null;
+        $dob_year = null;
+    }
+    $reveal_age = post_param_integer('reveal_age', 0);
+
+    $timezone = post_param_string('timezone', null);
+    if ($timezone === null) {
+        if (member_field_is_required(null, 'timezone_offset', null, null, $adjusted_config_options)) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'timezone'));
+        }
+
+        $timezone = get_users_timezone();
+    }
+
+    require_code('locations');
+    $region = post_param_region('region', '');
+    if ($region == '') {
+        if (member_field_is_required(null, 'region', null, null, $adjusted_config_options)) {
+            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'region'));
+        }
+
+        $region = get_region();
+    }
+
+    // Run a lockout check to see if this member is allowed to create an account given the provided information
+    $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));
+    $lockout_info = $pc->run('lockout', $age, $region, ['check_join' => true]);
+    if ($lockout_info !== null) {
+        warn_exit($lockout_info['message']);
+    }
 
     if ($username === null) {
         $username = post_param_string('username', false, INPUT_FILTER_POST_IDENTIFIER);
@@ -219,38 +262,6 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
         /*PSEUDO-HOOK: cns_join_actual referrals*/
 
         $GLOBALS['FORUM_DB']->query_update('f_invites', ['i_taken' => 1], ['i_email_address' => $email_address, 'i_taken' => 0], '', 1);
-    }
-
-    require_code('temporal2');
-    list($dob_year, $dob_month, $dob_day) = post_param_date_components('birthday');
-    if (($dob_year === null) || ($dob_month === null) || ($dob_day === null)) {
-        if (member_field_is_required(null, 'dob', null, null, $adjusted_config_options)) {
-            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'birthday'));
-        }
-
-        $dob_day = null;
-        $dob_month = null;
-        $dob_year = null;
-    }
-    $reveal_age = post_param_integer('reveal_age', 0);
-
-    $timezone = post_param_string('timezone', null);
-    if ($timezone === null) {
-        if (member_field_is_required(null, 'timezone_offset', null, null, $adjusted_config_options)) {
-            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'timezone'));
-        }
-
-        $timezone = get_users_timezone();
-    }
-
-    require_code('locations');
-    $region = post_param_region('region', '');
-    if ($region == '') {
-        if (member_field_is_required(null, 'region', null, null, $adjusted_config_options)) {
-            warn_exit(do_lang_tempcode('NO_PARAMETER_SENT', 'region'));
-        }
-
-        $region = get_region();
     }
 
     $language = post_param_string('language', user_lang());
@@ -390,10 +401,6 @@ function cns_join_actual(string $declarations_made = '', bool $captcha_if_enable
 
     // Save declarations
     $GLOBALS['FORUM_DRIVER']->set_custom_field($member_id, 'agreed_declarations', $declarations_made);
-
-    // Load parental controls
-    require_code('cns_parental_controls');
-    $pc = load_parental_control_settings();
 
     // Run parental consent checks and notification when necessary
     $age = to_epoch_interval_index(utctime_to_usertime(time()), 'years', utctime_to_usertime(cms_gmmktime(0, 0, 0, $dob_month, $dob_day, $dob_year)));

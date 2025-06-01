@@ -31,7 +31,7 @@ The larger the agency, the more the jobs roles can be split up, the larger the h
 You will need to decide what software you are going to use internally. Standardising is important so that people are working consistently and efficiently. You'll also need to budget as not all software is available in a good [acronym="Free and Open Source Software"]FOSS[/acronym] form.
 
 Here are some areas to consider, and suggestions:
- - Internal chat (e.g. Skype, HipChat, IRC)
+ - Internal chat (e.g. Discord, Signal, HipChat, IRC)
  - Sharing files (e.g. Dropbox)
  - Writing documents (e.g. Microsoft Office, LibreOffice, Zoho Docs, Google Docs) -- sadly, no Open Source tool can currently match Microsoft Office in terms of stability, ease of use, and performance
  - Source code control system (e.g. Git, Bitbucket)

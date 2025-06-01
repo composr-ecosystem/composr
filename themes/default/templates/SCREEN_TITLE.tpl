@@ -14,7 +14,7 @@
 					{+START,LOOP,AWARDS}
 						<li>
 							<strong>{AWARD_TYPE*}</strong>
-							<span>{!AWARD_ON,{$DATE*,1,1,1,{AWARD_TIMESTAMP}}}</span>
+							<span>{!AWARD_ON,{$DATE*,{AWARD_TIMESTAMP},1,1}}</span>
 						</li>
 					{+END}
 				</ul>

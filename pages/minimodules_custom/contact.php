@@ -88,7 +88,7 @@ $decision_tree = [
                     'Go to the community forum',
                     'Report an issue or request a feature',
                     'Send some general feedback',
-                    'Contribute Composr code',
+                    'Contribute Composr code / implement a tracker issue',
                     'Submit a non-bundled addon or theme',
                     'Make a partnership inquiry',
                     'Report a spam attack on my Composr site',
@@ -104,7 +104,7 @@ $decision_tree = [
             ['service_type',  'Go to the community forum',                 build_url(['page' => ''], 'forum')],
             ['service_type',  'Report an issue or request a feature',      build_url(['page' => 'report-issue'], '')],
             ['service_type',  'Send some general feedback',                build_url(['page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Feedback'], get_module_zone('tickets'))],
-            ['service_type',  'Contribute Composr code',                   'contribute_code'],
+            ['service_type',  'Contribute Composr code / implement a tracker issue',                   'contribute_code'],
             ['service_type',  'Submit a non-bundled addon or theme',       'addon'],
             ['service_type',  'Make a partnership inquiry',                build_url(['page' => 'tickets', 'type' => 'ticket', 'ticket_type' => 'Partnership'], get_module_zone('tickets'))],
             ['service_type',  'Report a spam attack on my Composr site',   'spam_attack'],
@@ -118,11 +118,13 @@ $decision_tree = [
 
 There are 3 ways to contribute code to Composr:
 [list=\"1\"]
-[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . CMS_REPOS_URL . "[/url]. It is also a good idea to [url=\"create an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url] to reference your changes and merge request.
-[*] Post a patch [url=\"in an issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker/bug_report_page.php[/url].
+[*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . CMS_REPOS_URL . "[/url]. Reference a tracker issue ID if you are implementing [url=\"something from the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker[/url] (e.g. for tracker issue 0, \"MANTIS-0\").
+[*] Post your patch as a note / comment [url=\"to an existing issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker[/url]. [page=\"_SEARCH:report_issue\" target=\"_blank\"]Create a tracker issue[/page] first if an issue does not exist yet.
 [*] Make a non-bundled theme or addon. For this, please see our [page=\":addon_submission\"]addon submission guidelines[/page].
 [/list]
 For contributions to any of the bundled addons we may need a standard dual-copyright agreement signing. We'll get in touch regarding that if necessary.
+
+Contributions will award you points, achievements, and recognition in the change logs. After contributing several times, we may grant you additional access on the tracker so you can manage issues on your own.
 
 Also ask us if you want to be listed as one of the [page=\"site:stars\"]Composr developers[/page] after making your contribution.",
         'previous' => 'start',

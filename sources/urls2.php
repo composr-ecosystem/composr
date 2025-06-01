@@ -387,6 +387,7 @@ function _fixup_protocolless_urls(string $in) : string
         return 'https://' . $in; // Fix it
     }
     // Rule 2: // If we have no slashes and we don't recognise a file type then they've probably just entered a domain name- thus we have an absolute URL.
+    // TODO: should we use the safelist file extensions configuration instead of hard-coding the list?
     if ((preg_match('#^[^/]+$#', $in) != 0) && (preg_match('#\.(php|htm|asp|jsp|png|jpg|jpe|txt|pdf|odt|ods|odp|doc|mdb|xls|xml|rss|ppt|svg|gif|psd|rtf|bmp|avi|mpg|mpe|webm|mp4|mov|wmv|ram|rm|asf|ra|wma|wav|mp3|ogg|torrent|csv|ttf|tar|gz|rar|bz2)#', $in) == 0)) {
         return 'https://' . $in . '/'; // Fix it
     }

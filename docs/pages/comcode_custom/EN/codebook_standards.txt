@@ -451,14 +451,14 @@ Create a file and use [tt]require[/tt] or [tt]require_once[/tt] instead of using
 | Security, performance
 | Product development only
 | Manually
-| Using eval is hackerish and prone to security issues. Additionally, eval code does not utilise PHP's built-in cache engines. When compiling together PHP code to execute, consider creating temporary PHP files in the [tt]_compiled[/tt] directory and using [tt]require[/tt] or [tt]require_once[/tt] on them. Make sure if you do that you use a fast file hash check so you only save when the code has changed. Additionally, you should use file locking both on save and before requiring to prevent compilation dog-piling. Note that Composr's built-in code override system and require_once already does this.
+| Using eval is hackerish and prone to security issues. Additionally, eval code does not utilise PHP's built-in cache engines. When compiling together PHP code to execute, consider creating temporary PHP files in the [tt]_compiled[/tt] directory and using [tt]require[/tt] or [tt]require_once[/tt] on them. Make sure if you do that you use a fast file hash check so you only save when the code has changed. Additionally, you should use file locking both on save and before requiring to prevent compilation dog-piling. Note that Composr's built-in code override system and the [tt]require_code[/tt] function already does this.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Long running requests should be tasks[/color]
 | Stability, performance
 | All development
 | Manually
-| If a page request may take more than 30 seconds to complete, it should be codified as a task so that it can execute out of the task queue in an orderly manner.
+| If a page request may take more than 15 seconds to complete, it should be codified as a task so that it can execute out of the task queue in an orderly manner.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Make your code robust against accessed deleted content[/color]
@@ -472,7 +472,7 @@ Create a file and use [tt]require[/tt] or [tt]require_once[/tt] instead of using
 | Consistency
 | Composr development +
 | Code Quality Checker
-| Use [tt]underlining_for_names[/tt] in PHP variables, PHP function names, PHP arrays, database tables, database fields, and filenames. Not for JavaScript or CSS though.
+| Use [tt]underlining_for_names[/tt] in PHP variables, PHP function names, PHP arrays, database tables, database fields, and filenames (including Comcode pages). Not for JavaScript or CSS though.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [tt]UPPER_CASE[/tt] should be used for globals and constants
@@ -702,11 +702,11 @@ Use the correct redirection APIs
 | Web API calls must log their errors and send an error notification (usually both via [tt]cms_error_log[/tt]), or pass back their errors via exceptions or reference parameters (then the callers must do said logging/notification). This implies to call [tt]cms_http_request[/tt] with [tt]trigger_error[/tt] as false, so that errors don't result in insta-exit (most APIs should be designed to gracefully handle errors rather than exiting anyway). We need to do this because API failure should not go unnoticed.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Do not e-mail the developers[/color]
+[color="red"]Do not allow user errors to be reported to Telemetry[/color]
 | Stability
 | Composr development +
 | Manually
-| Web API errors should not result in anything that would send an error e-mail to the developers (e.g. [tt]fatal_exit[/tt]). We do not want to be spammed when people mess up their key configuration or exceed quota.
+| Errors which are the fault of a web visitor or web master and not the software should not send a report to the homesite through Telemetry (e.g. [tt]fatal_exit[/tt]). We do not want to be spammed when people mess up their key configuration or exceed quota.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Write automated tests[/color]
@@ -744,7 +744,7 @@ All files must be associated with an addon
 | Modularity
 | Product development only
 | Automated test [tt]first_tests/modularisation[/tt]
-| Every file intended to be distributed with Composr must be registered in one addon, installation / uninstallation / integrity-scans. To do this list it in the obvious position within one of the [tt]sources/hooks/systems/addon_registry[/tt] files. If it is a PHP file it should have a matching [tt]@package[/tt] line at the top of the file.
+| Every file intended to be distributed with Composr must be registered in one addon, installation / uninstallation / integrity-scans. To do this list it in the obvious position within one of the [tt]sources/hooks/systems/addon_registry[/tt] files. If it is a PHP file it should have a matching [tt]@package[/tt] line at the top of the file. The release build addon has a tool to help fix most issues automatically: Admin Zone > Tools > Release tools: Fix addon file modularisation.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Manage any interdependencies between addons[/color]
@@ -897,10 +897,10 @@ Use [tt]build_url[/tt]'s [tt]$skip_keep[/tt] parameter for e-mailed Comcode
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Fix broken user input[/color]
-| Usability: Users often miss out [tt]http://[/tt]
+| Usability: Users often miss out [tt]https://[/tt]
 | All development
 | Manually
-| If you write functionality that accepts URLs into the system via a form interface then use the [tt]remove_url_mistakes[/tt] function to make sure the URLs start [tt]http://[/tt] (users will often miss it out). It should add that on the front if the URL does not already contain [tt]://[/tt].
+| If you write functionality that accepts URLs into the system via a form interface then use the [tt]remove_url_mistakes[/tt] function to make sure the URLs start [tt]https://[/tt] (users will often miss it out). It should add that on the front if the URL does not already contain [tt]://[/tt].
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Avoid relative paths
@@ -997,11 +997,11 @@ Be type-strict
 | Create database indexes if you regularly query a table using non-key field(s).
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
-[color="red"]Use the most appropriate Composr database field types[/color]
-| Consistency: higher-level meta functions can work
+Use the most appropriate Composr database field names and types
+| Consistency: higher-level meta functions can work, stability
 | All development
-| Manually
-| When you define database schemas via [tt]create_table[/tt] use the closest Composr field type you can. For example, make use of [tt]AUTO_LINK[/tt] and [tt]TIME[/tt] and [tt]USER[/tt] rather than always using [tt]INTEGER[/tt]. Use [tt]URLPATH[/tt] for URLs. This will help Composr understand its own database better (which it does need to do in some situations such as broken URL scanning). If a field needs to support Comcode, define it as [tt]SHORT_TRANS__COMCODE[/tt] or [tt]LONG_TRANS__COMCODE[/tt] (never run [tt]comcode_to_tempcode[/tt] on-the-fly).
+| Manually, Automated test [tt]async_tests/__database_fields[/tt] can help if the table is already installed
+| When you define database schemas via [tt]create_table[/tt] use the closest Composr field type you can and ensure proper field names. For example, make use of [tt]AUTO_LINK[/tt] and [tt]TIME[/tt] and [tt]USER[/tt] rather than always using [tt]INTEGER[/tt]. Use [tt]URLPATH[/tt] for URLs. Make sure columns with type [tt]IP[/tt] contain [tt]ip_address[/tt] in the name. And so on. This will help Composr understand its own database better (which it does need to do in some situations such as broken URL scanning). If a field needs to support Comcode, define it as [tt]SHORT_TRANS__COMCODE[/tt] or [tt]LONG_TRANS__COMCODE[/tt] (never run [tt]comcode_to_tempcode[/tt] on-the-fly). Check the [tt]async_tests/__database_fields[/tt] automated test (read the comments and the code) for assistance.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Be careful about key fields[/color]
@@ -1522,7 +1522,7 @@ Most lang strings support HTML, some do not: be aware
 Don't use the name "Composr", use the phrase "the software"
 | Debranding
 | Product development only
-| Automated test [tt]async_tests/lang_spelling[/tt]
+| Automated test [tt]async_tests/lang_spelling[/tt], Automated test [tt]sync_tests/__debrand_epic[/tt]
 | 
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
@@ -1587,9 +1587,8 @@ Don't define binary options in negative terms
 Do not use problematic language
 | Social equity
 | Composr development +
-| Manually
-| Instead of saying "blacklist", say "blocklist" or "exclusion-list" or "deny-list". Instead of saying "whitelist", say "safelist" or "inclusion-list" or "allow-list". This is to reduce subconcious suggestion that black=bad and white=good.
-|}
+| Manually, Automated test [tt]async_tests/lang_spelling[/tt] can help
+| Instead of saying "blacklist", say "blocklist" or "exclusion-list" or "deny-list". Instead of saying "whitelist", say "safelist" or "inclusion-list" or "allow-list". This is to reduce subconcious suggestion that black=bad and white=good. Instead of saying "master", say "primary" or "parent" because it is more concise. Instead of saying "lame", say "generic" or "inconclusive" because it is more concise.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 When referring to the site rules, say "rules (Terms of Service)" rather than just "rules" or "Terms of Service"
@@ -1597,6 +1596,7 @@ When referring to the site rules, say "rules (Terms of Service)" rather than jus
 | Product development only
 | Automated test [tt]async_tests/lang_spelling[/tt]
 | This standard is only required for language string files. The Setup Wizard features a corporate "Terms of Service" template. When selected (or the value of [tt]use_tos_lang[/tt] is set to '1'), Composr should change use of the word "Rules" to "Terms of Service" automatically.
+|}
 
 Respect the King of England ;), but also do not confuse Americans...
 {|
@@ -2408,20 +2408,20 @@ Provide addon screenshots
 | Manually
 | If you include some third party code/API you must update:
  - [tt]docs/LICENSE.md[/tt] (this file is shown when users install)
- - [tt]sources_custom/third_party_code.php[/tt] (general list of files)
- - [tt]phpdoc.dist.xml[/tt] (if appropriate, PHPDoc generation)
+ - [tt]sources/global.php[/tt]: [tt]list_untouchable_*[/tt] functions
  - [tt]data/maintenance_sheet.csv[/tt] (if appropriate, non-maintained systems)
  - [tt]data_custom/third_party_code.csv[/tt] (spreadsheet of SDKs/libraries used, except very tiny pieces of third-party code we've fully integrated)
  - [tt]data_custom/third_party_apis.csv[/tt] (spreadsheet of APIs used, except those covered by [tt]third_party_code.csv[/tt])
  - [tt].eslintignore[/tt] (files for ESLint to ignore)
+ - [tt].gitignore[/tt] (files for Git to ignore)
  - [tt].phpcs[/tt] (files for PHP_CodeSniffer to ignore)
 
 Some general advice regarding (re)integrating libraries:
- - When getting from GitHub, we generally use the latest 'Release' rather than latest clone, but it varies -- and the version number is whatever is given, even if fixes were made since it was changed
+ - When getting from GitHub / GitLab, we generally use the latest 'Release' rather than latest clone, but it varies -- and the version number is whatever is given, even if fixes were made since it was changed
  - When running Composer to download dependencies: For the "No composer.json in current directory, do you want to use the one at" questions, answer 'N'
  - We don't try and force third party libraries to work with ocProducts PHP type strictness, instead we disable/reenable it around library calls
- - Often you'll need to open up [tt]_tests/index.php?id=unit_tests%2Fstandard_dir_files&debug=1[/tt] to generate [tt]index.html[/tt] and [tt].htaccess[/tt] files, as many projects do not ship these files
- - Run [tt]find some_dir -type f | sort[/tt] find the new file list for the [tt]addon_registry[/tt] hook
+ - Often you'll need to open up the Automated test [tt]sync_tests/standard_dir_files[/tt] with [tt]debug=1[/tt] to generate [tt]index.html[/tt] and [tt].htaccess[/tt] files, as many projects do not ship these files
+ - Run [tt]find some_dir -type f | sort[/tt] find the new file list for the [tt]addon_registry[/tt] hook. If you have release tools, you could also use Admin Zone > Tools > Release tools: Fix addon file modularisation.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Update maintenance sheet[/color]
@@ -2453,27 +2453,28 @@ Some general advice regarding (re)integrating libraries:
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Use standardised commit messages
-| So that the tracker and Git are bound together. Also so that typos don't generally happen in Git commit messages, given all the custom text is in the tracker issue.
+| Consistency
 | Composr development
 | Git hooks
-| The message for any commit on a stable branch must start with either "Fixed MANTIS-<tracker-ID>" or "Implementing MANTIS-<tracker-ID>" or "Implemented MANTIS-<tracker-ID>" or "Security fix for MANTIS-<tracker-ID>" or "New build" (for updating metadata files around a new release) or "Merge branch" (for a merge). Multiple commits may reference the same tracker issue. When doing a clone get the hooks working via [tt]git config core.hooksPath git-hooks; chmod +x git-hooks/*[/tt] (Linux/Mac OS -- perform whatever equivalent action for Windows). When fixing bugs you can use the "push bugfix" Admin Zone module to automatically create appropriate Git commits, tracker issues, and hotfixes. Note that this guideline does not apply for alpha branches, as commits tend to be more chaotic when major project reworkings are under way, and the commit log is also going to be under less scrutiny.
+| The message for any commit on a stable branch must start with either "Fixed MANTIS-<tracker-ID>" or "Implementing MANTIS-<tracker-ID>" or "Implemented MANTIS-<tracker-ID>" or "Security fix for MANTIS-<tracker-ID>" or "New build" (for updating metadata files around a new release) or "Merge branch" (for a merge). Multiple commits may reference the same tracker issue. When doing a clone get the hooks working via [tt]git config core.hooksPath git-hooks; chmod +x git-hooks/*[/tt] (Linux/Mac OS -- perform whatever equivalent action for Windows). When fixing bugs you can use the "push bugfix" Admin Zone module to automatically create appropriate Git commits, tracker issues, and hotfixes. Note that this guideline does not apply for alpha branches, as commits tend to be more chaotic when major project reworkings are under way, and the commit log is also going to be under less scrutiny. This is so that the tracker and Git are bound together. Also so that typos don't generally happen in Git commit messages, given all the custom text is in the tracker issue.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Granular commits[/color]
-| Changelogs are auto-generated from Git history for new releases.
+| Communication
 | Composr development
 | Manually
-| Any commit on a stable branch should fix one issue only (tip: [url="use the Git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-files-changes-in-git[/url] if a file contains changes that should be made across multiple commits).
+| Any commit on a stable branch should fix one issue only (tip: [url="use the Git patch technique"]https://stackoverflow.com/questions/1085162/commit-only-part-of-a-files-changes-in-git[/url] if a file contains changes that should be made across multiple commits). This is because changelogs are auto-generated from Git history for new releases.
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 [color="red"]Use temporary branches and commit regularly[/color]
-| [list="1"]
-[*] Entanglements occur when multiple developments are happening in parallel (changes to the same files), which is unavoidable when working over an extended period of time. The isolation capabilities of branches makes things much more manageable with only the small overhead of creating and merging these branches.
-[*] Being able to make regular commits is useful for many reasons, but if it's not on a branch it looks like a messy chain of consciousness scattered within a wider sea of other work. The aforementioned reasons include getting backups, delineating (logging) clear steps within the development, and being able to share your progress with others at relatively stable stopping points.
-[/list]
+| Stability, collaboration
 | Composr development
 | Manually
 | If working on something for extended periods of time (days or longer), use a Git branch for it. That branch may or may not be pushed upstream, this is your choice depending on whether collaboration is required while it is developed as a separate branch. By the way, it's your personal choice whether to use merge or rebase.
+[list="1"]
+[*] Entanglements occur when multiple developments are happening in parallel (changes to the same files), which is unavoidable when working over an extended period of time. The isolation capabilities of branches makes things much more manageable with only the small overhead of creating and merging these branches.
+[*] Being able to make regular commits is useful for many reasons, but if it's not on a branch it looks like a messy chain of consciousness scattered within a wider sea of other work. The aforementioned reasons include getting backups, delineating (logging) clear steps within the development, and being able to share your progress with others at relatively stable stopping points.
+[/list]
 |-
 | [size="0.8"]{$INC,cs_count,1})[/size]
 Appropriate branch naming

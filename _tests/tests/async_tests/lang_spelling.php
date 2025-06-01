@@ -254,6 +254,12 @@ class lang_spelling_test_set extends cms_test_case
         if (preg_match('#\b(?:lame|Lame)\b#', $string) != 0) {
             $ob->assertTrue(false, 'The word \'lame\' was used in ' . $path . '. If talking about the encoder, this should be changed to \'LAME\'. Otherwise, this should be changed to a more concise term such as \'generic\', \'general\', \'legacy\', or \'unreliable\'.');
         }
+        if (stripos($string, 'blacklist') !== false) {
+            $ob->assertTrue(false, 'The word \'blacklist\' was used in ' . $path . '. This should be changed to \'blocklist\'.');
+        }
+        if (stripos($string, 'whitelist') !== false) {
+            $ob->assertTrue(false, 'The word \'whitelist\' was used in ' . $path . '. This should be changed to \'safelist\'.');
+        }
 
         // No space or hyphen wanted (we want our canonical way)
         if (

@@ -40,30 +40,6 @@ class Hook_ajax_tree_choose_download
         require_code('downloads');
         require_code('global4');
 
-        if ((!is_numeric($id)) && ($id != '')) { // This code is actually for the homesite, for the addon directory
-            $_id = null;
-            if (substr($id, 0, 8) == 'Version ') {
-                $id_float = floatval(substr($id, 8));
-                do {
-                    $str = 'Version ' . float_to_raw_string($id_float, 2, true);
-                    $parent = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('category') => 'Addons']);
-                    if ($parent === null) {
-                        break;
-                    }
-                    $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => $parent, $GLOBALS['SITE_DB']->translate_field_ref('category') => $str]);
-                    if ($_id === null) {
-                        $id_float -= 0.1;
-                    }
-                } while (($_id === null) && ($id_float > 0.0));
-            } else {
-                $_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('category') => $id]);
-            }
-            if ($_id === null) {
-                warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'download_category'));
-            }
-            $id = strval($_id);
-        }
-
         $only_owned = array_key_exists('only_owned', $options) ? (($options['only_owned'] === null) ? null : intval($options['only_owned'])) : null;
         $shun = array_key_exists('shun', $options) ? $options['shun'] : null;
         $editable_filter = array_key_exists('editable_filter', $options) ? ($options['editable_filter']) : false;
@@ -149,7 +125,17 @@ class Hook_ajax_tree_choose_download
                         $description_html = do_template('DOWNLOAD_AND_IMAGES_SIMPLE_BOX', ['_GUID' => 'a273f4beb94672ee44bdfdf06bf328c8', 'DESCRIPTION' => $description_html, 'IMAGES' => $_out]);
                     }
 
-                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
+                    // dload.php needs GUID for security reasons if Commandr is installed
+                    $extra_out = '';
+                    if (addon_installed('commandr')) {
+                        require_code('resource_fs');
+                        $actual_id = find_guid_via_id('download', strval($eid));
+                        if ($actual_id !== null) {
+                            $extra_out = ' guid="' . xmlentities($actual_id) . '"';
+                        }
+                    }
+
+                    $out .= '<entry id="' . xmlentities(strval($eid)) . '"' . $extra_out . ' description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
                 }
                 continue;
             }
