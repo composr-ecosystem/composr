@@ -126,16 +126,16 @@ class Hook_ajax_tree_choose_download
                     }
 
                     // dload.php needs GUID for security reasons if Commandr is installed
-                    $extra_out = '';
+                    $server_id = strval($_id);
                     if (addon_installed('commandr')) {
                         require_code('resource_fs');
-                        $actual_id = find_guid_via_id('download', strval($eid));
-                        if ($actual_id !== null) {
-                            $extra_out = ' guid="' . xmlentities($actual_id) . '"';
+                        $guid = find_guid_via_id('download', strval($eid));
+                        if ($guid !== null) {
+                            $server_id = $guid;
                         }
                     }
 
-                    $out .= '<entry id="' . xmlentities(strval($eid)) . '"' . $extra_out . ' description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
+                    $out .= '<entry id="' . xmlentities(strval($eid)) . '" serverid="' . xmlentities($server_id) . '" description="' . xmlentities(strip_comcode($description)) . '" description_html="' . xmlentities($description_html->evaluate()) . '" title="' . xmlentities($etitle) . '" selectable="true"></entry>' . "\n";
                 }
                 continue;
             }
