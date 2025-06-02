@@ -117,14 +117,16 @@ function download_map(int $realm, int $sx, int $sy)
     $y_rooms = $y_max - $y_min + 1;
 
     // Create image
+    require_code('images');
+
     $width = $border_size * 2 + $room_size * $x_rooms;
     $height = $border_size * 2 + $room_size * $y_rooms;
     $my_img = imagecreate($width, $height);
-    $bgcolor = imagecolorallocate($my_img, 0xff, 0xff, 0xff); // Map background colour
-    $cucolor = imagecolorallocate($my_img, 0x00, 0xff, 0x00); // Current Room colour
-    $rmcolor = imagecolorallocate($my_img, 0xdd, 0xdd, 0xdd); // Room colour
-    $txcolor = imagecolorallocate($my_img, 0x00, 0x00, 0xff); // Text colour
-    $wlcolor = imagecolorallocate($my_img, 0xff, 0x00, 0x00); // Wall colour
+    $bgcolor = cms_imagecolorallocate($my_img, 0xff, 0xff, 0xff); // Map background colour
+    $cucolor = cms_imagecolorallocate($my_img, 0x00, 0xff, 0x00); // Current Room colour
+    $rmcolor = cms_imagecolorallocate($my_img, 0xdd, 0xdd, 0xdd); // Room colour
+    $txcolor = cms_imagecolorallocate($my_img, 0x00, 0x00, 0xff); // Text colour
+    $wlcolor = cms_imagecolorallocate($my_img, 0xff, 0x00, 0x00); // Wall colour
     imagefill($my_img, 0, 0, $bgcolor);
 
     // Load font

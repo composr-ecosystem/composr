@@ -94,6 +94,8 @@ class Block_main_custom_gfx
             $map['data'] = do_lang('FILL_IN_DATA_PARAM');
         }
 
+        require_code('images');
+
         // Cache to auto_thumbs
         $thumb_path = get_custom_file_base() . '/uploads/auto_thumbs/' . $cache_id . '.png';
         if ((!file_exists($thumb_path)) || (get_option('is_on_block_cache') == '0')) {
@@ -118,7 +120,7 @@ class Block_main_custom_gfx
             imagealphablending($img, true);
             imagesavealpha($img, true);
 
-            $colour = imagecolorallocate($img, hexdec(substr($_color, 0, 2)), hexdec(substr($_color, 2, 2)), hexdec(substr($_color, 4, 2)));
+            $colour = cms_imagecolorallocate($img, hexdec(substr($_color, 0, 2)), hexdec(substr($_color, 2, 2)), hexdec(substr($_color, 4, 2)));
 
             $pos_y = intval(array_key_exists('y', $map) ? $map['y'] : '16');
 

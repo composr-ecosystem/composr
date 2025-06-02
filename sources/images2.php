@@ -587,12 +587,14 @@ function _convert_image(string $from, string &$to, ?int $width, ?int $height, ?i
 
     // Set the background if we have one
     if (($thumb_options !== null) && ($red !== null)) {
+        require_code('images');
+
         $dest = imagecreatetruecolor($width, $height);
         imagealphablending($dest, false);
         if ((function_exists('imagecolorallocatealpha')) && ($using_alpha)) {
             $back_col = imagecolorallocatealpha($dest, $red, $green, $blue, 127 - intval(floatval($alpha) / 2.0));
         } else {
-            $back_col = imagecolorallocate($dest, $red, $green, $blue);
+            $back_col = cms_imagecolorallocate($dest, $red, $green, $blue);
         }
         imagefilledrectangle($dest, 0, 0, $width, $height, $back_col);
         if (function_exists('imagesavealpha')) {
