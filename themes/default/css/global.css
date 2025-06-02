@@ -5233,7 +5233,7 @@ ul.associated-links-block-group {
 		vertical-align: middle;
 
 		/*1px tolerance for rounding errors during zooming*/
-		width: 87px;
+		width: 120px;
 		height: 37px;
 	}
 

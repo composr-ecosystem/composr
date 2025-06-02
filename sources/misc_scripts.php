@@ -95,6 +95,8 @@ function gd_text_script()
         return;
     }
 
+    require_code('images');
+
     header('X-Robots-Tag: noindex');
 
     $text = get_param_string('text', false, INPUT_FILTER_GET_COMPLEX);
@@ -190,9 +192,9 @@ function gd_text_script()
     if (preg_match('#^[\dA-F]{6}$#i', $fg_color) == 0) {
         $fg_color = '000000';
     }
-    $color = imagecolorallocate($img, hexdec(substr($fg_color, 0, 2)), hexdec(substr($fg_color, 2, 2)), hexdec(substr($fg_color, 4, 2)));
+    $color = cms_imagecolorallocate($img, hexdec(substr($fg_color, 0, 2)), hexdec(substr($fg_color, 2, 2)), hexdec(substr($fg_color, 4, 2)));
     if (!has_ttf()) {
-        $trans = imagecolorallocate($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)));
+        $trans = cms_imagecolorallocate($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)));
         imagefill($img, 0, 0, $trans);
         imagecolortransparent($img, $trans);
         if ($direction == 'horizontal') {
@@ -204,7 +206,7 @@ function gd_text_script()
         if (function_exists('imagecolorallocatealpha')) {
             $trans = imagecolorallocatealpha($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)), 127);
         } else {
-            $trans = imagecolorallocate($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)));
+            $trans = cms_imagecolorallocate($img, hexdec(substr($trans_color, 0, 2)), hexdec(substr($trans_color, 2, 2)), hexdec(substr($trans_color, 4, 2)));
         }
         imagefilledrectangle($img, 0, 0, $width, $height, $trans);
         require_code('character_sets');

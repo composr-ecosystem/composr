@@ -1131,20 +1131,6 @@ function imagealphablending($image, bool $blendmode) : bool
 }
 
 /**
- * Allocate a color for an image.
- *
- * @param  resource $image The image handle
- * @param  integer $red Red component (0-255)
- * @param  integer $green Green component (0-255)
- * @param  integer $blue Blue component (0-255)
- * @return ~integer Combined colour identifier (false: could not allocate)
- */
-function imagecolorallocate($image, int $red, int $green, int $blue)
-{
-    return 0;
-}
-
-/**
  * Allocate a color for an image, with an alpha-component.
  *
  * @param  resource $image The image handle
@@ -5137,6 +5123,7 @@ output_reset_rewrite_vars
 crypt
 mktime
 gmmktime
+imagecolorallocate
 
 Disabled due to incompatibilities between the minimum supported PHP version for the software and the mainstream PHP versions...
 (generally, we use a cms_* wrapper for legacy)

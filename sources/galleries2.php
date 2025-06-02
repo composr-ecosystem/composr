@@ -1514,20 +1514,24 @@ function find_gallery_watermarks(string $gallery) : ?array
  */
 function _watermark_corner($source, string $watermark_url, int $x, int $y)
 {
-    if ($watermark_url != '') {
-        $watermark_path = get_custom_file_base() . '/' . rawurldecode($watermark_url);
-        $watermark = cms_imagecreatefrom($watermark_path);
-        if ($watermark !== false) {
-            imagecolortransparent($watermark, imagecolorallocate($watermark, 255, 0, 255));
-            if ($x == 1) {
-                $x = imagesx($source) - imagesx($watermark);
-            }
-            if ($y == 1) {
-                $y = imagesy($source) - imagesy($watermark);
-            }
-            imagecopy($source, $watermark, $x, $y, 0, 0, imagesx($watermark), imagesy($watermark));
-            imagedestroy($watermark);
+    if ($watermark_url == '') {
+        return;
+    }
+
+    require_code('images');
+
+    $watermark_path = get_custom_file_base() . '/' . rawurldecode($watermark_url);
+    $watermark = cms_imagecreatefrom($watermark_path);
+    if ($watermark !== false) {
+        imagecolortransparent($watermark, cms_imagecolorallocate($watermark, 255, 0, 255));
+        if ($x == 1) {
+            $x = imagesx($source) - imagesx($watermark);
         }
+        if ($y == 1) {
+            $y = imagesy($source) - imagesy($watermark);
+        }
+        imagecopy($source, $watermark, $x, $y, 0, 0, imagesx($watermark), imagesy($watermark));
+        imagedestroy($watermark);
     }
 }
 

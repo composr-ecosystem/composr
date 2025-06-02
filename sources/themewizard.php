@@ -1551,6 +1551,8 @@ function _re_hue_image__raster(string $path, int $seed_h, int $seed_s, int $seed
         warn_exit(do_lang_tempcode('CORRUPT_FILE', escape_html($path)), false, true);
     }
 
+    require_code('images');
+
     imagepalettetotruecolor($image);
 
     $width = imagesx($image);
@@ -1573,7 +1575,7 @@ function _re_hue_image__raster(string $path, int $seed_h, int $seed_s, int $seed
             if (function_exists('imagecolorallocatealpha')) {
                 $target_colour = imagecolorallocatealpha($image, $new_colour_r, $new_colour_g, $new_colour_b, $a);
             } else {
-                $target_colour = imagecolorallocate($image, $new_colour_r, $new_colour_g, $new_colour_b);
+                $target_colour = cms_imagecolorallocate($image, $new_colour_r, $new_colour_g, $new_colour_b);
             }
             imagesetpixel($image, $x, $y, $target_colour);
         }
@@ -1644,6 +1646,8 @@ function generate_recoloured_image($path, string $colour_a_orig, string $colour_
     /*$colour_a_new = $colour_a_orig;  For testing: a null conversion
     $colour_b1_new = $colour_b1_orig;
     $colour_b2_new = $colour_b2_orig;*/
+
+    require_code('images');
 
     $colour_a_orig = str_replace('#', '', $colour_a_orig);
     $colour_b1_orig = str_replace('#', '', $colour_b1_orig);
@@ -1779,7 +1783,7 @@ function generate_recoloured_image($path, string $colour_a_orig, string $colour_
             if (function_exists('imagecolorallocatealpha')) {
                 $target_colour = imagecolorallocatealpha($image, $new_colour_r, $new_colour_g, $new_colour_b, $existing_colour_a);
             } else {
-                $target_colour = imagecolorallocate($image, $new_colour_r, $new_colour_g, $new_colour_b);
+                $target_colour = cms_imagecolorallocate($image, $new_colour_r, $new_colour_g, $new_colour_b);
             }
             imagesetpixel($image, $x, $y, $target_colour);
         }
@@ -1810,6 +1814,7 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
     require_code('character_sets');
     require_code('files');
     require_code('themes2');
+    require_code('images');
 
     if ($theme === null) {
         $theme = $GLOBALS['SITE_DB']->query_select_value('zones', 'zone_theme', ['zone_name' => '']);
@@ -1923,7 +1928,7 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
     imagedestroy($im_logo);
 
     // Set user configured color
-    $text_colour = imagecolorallocate($im_canvas, hexdec(substr($colour, 0, 2)), hexdec(substr($colour, 2, 2)), hexdec(substr($colour, 4, 2)));
+    $text_colour = cms_imagecolorallocate($im_canvas, hexdec(substr($colour, 0, 2)), hexdec(substr($colour, 2, 2)), hexdec(substr($colour, 4, 2)));
 
     if ($logo_type !== 'small_white') {
         // Override user configured color with $THEMEWIZARD_COLOR "box_title_background" if available
@@ -1934,7 +1939,7 @@ function generate_logo(string $name, ?string $font_choice = null, ?string $colou
         }
         $matches = [];
         if (preg_match('#\{\$THEMEWIZARD_COLOR,\#([a-f0-9][a-f0-9])([a-f0-9][a-f0-9])([a-f0-9][a-f0-9]),site_name_text_color,#i', $css_file, $matches) != 0) {
-            $text_colour = imagecolorallocate($im_canvas, hexdec($matches[1]), hexdec($matches[2]), hexdec($matches[3]));
+            $text_colour = cms_imagecolorallocate($im_canvas, hexdec($matches[1]), hexdec($matches[2]), hexdec($matches[3]));
         }
     }
 

@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: shell_exec|imagecreatefromwebp|imagecreatefrombmp*/
+/*EXTRA FUNCTIONS: shell_exec|imagecreatefromwebp|imagecreatefrombmp|imagecolorallocate*/
 
 /**
  * Standard code module initialisation function.
@@ -802,7 +802,7 @@ function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = 
             $temp = imagecreate($width, $height);
             imagecopy($temp, $image, 0, 0, 0, 0, $width, $height);
             imagetruecolortopalette($image, true, 255);
-            $transparent = imagecolortransparent($image, imagecolorallocate($image, 255, 0, 255));
+            $transparent = imagecolortransparent($image, cms_imagecolorallocate($image, 255, 0, 255));
             for ($y = 0; $y < $height; $y++) {
                 for ($x = 0; $x < $width; $x++) {
                     $color_index = imagecolorat($temp, $x, $y);
@@ -837,6 +837,33 @@ function cms_imagesave($image, string $path, ?string $ext = null, bool $lossy = 
     }
 
     return $test;
+}
+
+/**
+ * Safe GD image colour allocation.
+ *
+ * @param  resource $image Image resource
+ * @param  integer $red RGB red value to allocate
+ * @param  integer $green RGB green value to allocate
+ * @param  integer $blue RGB blue value to allocate
+ * @return integer Colour identifier
+ */
+function cms_imagecolorallocate($image, int $red, int $green, int $blue) : int
+{
+    // Check if we already allocated this colour
+    $color = imagecolorexact($image, $red, $green, $blue);
+    if ($color != -1) {
+        return $color;
+    }
+
+    // Try allocating the colour
+    $color = imagecolorallocate($image, $red, $green, $blue);
+    if ($color !== false) {
+        return $color;
+    }
+
+    // We cannot allocate the colour; use the closest available one instead
+    return imagecolorclosest($image, $red, $green, $blue);
 }
 
 /**

@@ -666,7 +666,8 @@ function png_compress(string $path, bool $lossy = false)
     // Try as 8-bit...
 
     if ($has_alpha) {
-        $alphabg = imagecolorallocate($img, 255, 0, 255);
+        require_code('images');
+        $alphabg = cms_imagecolorallocate($img, 255, 0, 255);
         imagecolortransparent($img, $alphabg);
         for ($y = 0; $y < $height; $y++) {
             for ($x = 0; $x < $width; $x++) {
