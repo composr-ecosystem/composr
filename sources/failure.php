@@ -676,13 +676,19 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     }
 
     $url = $_SERVER['REQUEST_URI'];
+    $post = json_encode($_POST);
 
-    // Prevent accidental lock-out by, for example, a rogue AJAX script on Composr repeating the request several times quickly
-    $_test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) AS recent_hacks FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND risk_score>0', [
-        'reason' => $reason, // No tolerance if they triggered a different type of hack
-        'ip' => $ip, // No tolerance if they changed IP addresses
-        'date_and_time' => (time() - 3), // Allow a very modest 3 seconds grace; we don't want to be too tolerant in case it's a DoS attack
-        'user_agent' => cms_mb_substr(get_browser_string(), 0, 255), // No tolerance if they changed devices
+    // Allow a very conservative grace period if virtually the same hack attack was triggered within the last 3 seconds
+    $_test = $GLOBALS['SITE_DB']->query_parameterised('SELECT COUNT(*) AS recent_hacks FROM {prefix}hackattack WHERE ' . db_string_equal_to('reason', '{reason}') . ' AND ' . db_string_equal_to('ip', '{ip}') . ' AND date_and_time>={date_and_time} AND ' . db_string_equal_to('user_agent', '{user_agent}') . ' AND ' . db_string_equal_to('url', '{url}') . ' AND ' . db_string_equal_to('data_post', '{data_post}') . ' AND risk_score>0', [
+        // Grace period of 3 seconds; conservative in case this is a DDoS attack
+        'date_and_time' => (time() - 3),
+
+        // Conditions: if any of these are different, we treat as a separate (rather than repeated) hack attack, and therefore it does not get a grace
+        'reason' => $reason,
+        'ip' => $ip,
+        'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
+        'url' => cms_mb_substr($url, 0, 255),
+        'data_post' => $post,
     ]);
     $test = $_test[0]['recent_hacks'];
     if ($test > 0) {
@@ -698,8 +704,6 @@ function _log_hack_attack_and_exit(string $reason, string $reason_param_a = '', 
     if ((array_key_exists('FORUM_DRIVER', $GLOBALS)) && (function_exists('get_member')) && ($GLOBALS['FORUM_DRIVER']->is_super_admin(get_member()))) {
         $count = 0;
     }
-
-    $post = json_encode($_POST);
 
     $new_row = [
         'user_agent' => cms_mb_substr(get_browser_string(), 0, 255),
