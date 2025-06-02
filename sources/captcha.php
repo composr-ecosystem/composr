@@ -137,20 +137,130 @@ function captcha_script()
  */
 function captcha_image(string $code_needed) : array
 {
+    // Use basic (fallback) CAPTCHA if noise was disabled
+    if (get_option('captcha_noise') != '1') {
+        return _captcha_image_fallback($code_needed);
+    }
+
+    require_code('images');
+
+    $characters = strlen($code_needed);
+    $font_size = 14;
+    $padding = 6;
+    $letter_spacing = 3;
+
+    // Load in available fonts
+    $font_dir_custom = get_custom_file_base() . '/data_custom/fonts/';
+    $font_dir_standard = get_custom_file_base() . '/data/fonts/';
+    $available_fonts = [];
+    if (is_dir($font_dir_custom)) {
+        $available_fonts = array_merge($available_fonts, glob($font_dir_custom . '*.ttf'));
+    }
+    if (is_dir($font_dir_standard)) {
+        $available_fonts = array_merge($available_fonts, glob($font_dir_standard . '*.ttf'));
+    }
+    if (empty($available_fonts)) { // Use fallback if no fonts found
+        return _captcha_image_fallback($code_needed);
+    }
+
+    // Calculate image dimensions dynamically based on TTF
+    $width = $padding * 2;
+    $max_char_height = 0;
+    for ($i = 0; $i < $characters; $i++) {
+        $font_path = $available_fonts[array_rand($available_fonts)];
+        $bbox = imagettfbbox($font_size, 0, $font_path, $code_needed[$i]);
+        if ($bbox) {
+            $width += intval(($bbox[2] - $bbox[0]) + $letter_spacing);
+            $char_height = intval($bbox[1] - $bbox[7]);
+            if ($char_height > $max_char_height) {
+                $max_char_height = $char_height;
+            }
+        } else { // Fallback if font metrics fail for some reason
+            $width += intval($font_size + $letter_spacing);
+            if ($font_size * 2 > $max_char_height) {
+                $max_char_height = $font_size * 2;
+            }
+        }
+    }
+    $height = $max_char_height + $padding * 2;
+
+    // Minimums
+    if ($height < 37) $height = 37;
+    if ($width < 87) $width = 87;
+
+    // Create background
+    $img = imagecreate($width, $height);
+    $black = cms_imagecolorallocate($img, 0, 0, 0);
+    imagefill($img, 0, 0, $black);
+
+    // Render each character
+    $x = intval($padding);
+    for ($i = 0; $i < $characters; $i++) {
+        $font_path = $available_fonts[array_rand($available_fonts)];
+        $angle = mt_rand(-15, 15);
+        $char_font_size = $font_size + mt_rand(-2, 2);
+        $char = $code_needed[$i];
+
+        $bbox = imagettfbbox($char_font_size, $angle, $font_path, $char);
+        $char_width = intval($bbox[2] - $bbox[0]);
+        $char_height = intval($bbox[1] - $bbox[7]);
+
+        // Calculate y position to center characters roughly
+        $y = intval(($height / 2) + ($char_height / 2) + mt_rand(-5, 5));
+
+        // Add a shadow
+        $shadow_color = cms_imagecolorallocate($img, mt_rand(100, 180), mt_rand(100, 180), mt_rand(100, 180));
+        imagettftext($img, $char_font_size, $angle + mt_rand(-5,5), $x + mt_rand(-2,2), $y + mt_rand(-2,2), $shadow_color, $font_path, $char);
+
+        // Main character
+        $text_color = cms_imagecolorallocate($img, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
+        imagettftext($img, $char_font_size, $angle, $x, $y, $text_color, $font_path, $char);
+
+        $x += $char_width + $letter_spacing;
+    }
+
+    // Add line noise
+    for ($l = 0; $l < 5; $l++) {
+        $line_color = cms_imagecolorallocate($img, mt_rand(150, 220), mt_rand(150, 220), mt_rand(150, 220));
+        imageline($img, mt_rand(0, $width), mt_rand(0, $height), mt_rand(0, $width), mt_rand(0, $height), $line_color);
+    }
+
+    // Add pixel noise
+    for ($n = 0; $n < intval($width * $height * 0.04); $n++) {
+        $noise_color = cms_imagecolorallocate($img, mt_rand(150, 220), mt_rand(150, 220), mt_rand(150, 220));
+        imagesetpixel($img, mt_rand(0, $width -1), mt_rand(0, $height -1), $noise_color);
+    }
+
+    return [$img, $width, $height];
+ }
+
+/**
+ * Fallback image CAPTCHA generation.
+ * This is called by captcha_image when noise is disabled or no TTF fonts are available.
+ *
+ * @param  string $code_needed The code
+ * @return array A tuple: the image CAPTCHA, the width, the height
+ *
+ * @ignore
+ */
+function _captcha_image_fallback(string $code_needed) : array
+{
+    require_code('images');
+
     // Write basic, using multiple fonts with random Y-position offsets
     $characters = strlen($code_needed);
     $fonts = [];
     $width = 20;
     for ($i = 0; $i < max(1, $characters); $i++) {
-        $font = mt_rand(4, 5); // 1 is too small
+        $font = 5;
         $fonts[] = $font;
         $width += imagefontwidth($font) + 2;
         $height = imagefontheight($font) + 20;
     }
     $img = imagecreate($width, $height);
-    $black = imagecolorallocate($img, 0, 0, 0);
-    $off_black = imagecolorallocate($img, mt_rand(1, 45), mt_rand(1, 45), mt_rand(1, 45));
-    $white = imagecolorallocate($img, 255, 255, 255);
+    $black = cms_imagecolorallocate($img, 0, 0, 0);
+    $off_black = cms_imagecolorallocate($img, mt_rand(1, 45), mt_rand(1, 45), mt_rand(1, 45));
+    $white = cms_imagecolorallocate($img, 255, 255, 255);
     imagefill($img, 0, 0, $black);
     $x = 10;
     foreach ($fonts as $i => $font) {
@@ -168,16 +278,16 @@ function captcha_image(string $code_needed) : array
         $x += imagefontwidth($font) + 2;
     }
 
-    // Add some noise
+    // Add some noise if enabled
     if (get_option('captcha_noise') == '1') {
         $tricky_remap = [];
         $tricky_remap[$black] = [];
         $tricky_remap[$off_black] = [];
         $tricky_remap[$white] = [];
         for ($i = 0; $i <= 5; $i++) {
-            $tricky_remap['!' . strval($black)][] = imagecolorallocate($img, 0 + mt_rand(0, 15), 0 + mt_rand(0, 15), 0 + mt_rand(0, 15));
+            $tricky_remap['!' . strval($black)][] = cms_imagecolorallocate($img, 0 + mt_rand(0, 15), 0 + mt_rand(0, 15), 0 + mt_rand(0, 15));
             $tricky_remap['!' . strval($off_black)][] = $off_black;
-            $tricky_remap['!' . strval($white)][] = imagecolorallocate($img, 255 - mt_rand(0, 145), 255 - mt_rand(0, 145), 255 - mt_rand(0, 145));
+            $tricky_remap['!' . strval($white)][] = cms_imagecolorallocate($img, 255 - mt_rand(0, 145), 255 - mt_rand(0, 145), 255 - mt_rand(0, 145));
         }
         $noise_amount = 0.02;//0.04;
         for ($i = 0; $i < intval($width * $height * $noise_amount); $i++) {
@@ -447,12 +557,8 @@ function generate_captcha() : ?string
     $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'captchas WHERE ' . $where);
 
     // Create code
-    $choices = ['3', '4', '6', '7', '9', 'A', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'R', 'T', 'W', 'X', 'Y'];
-    $si_code = '';
-    for ($i = 0; $i < 6; $i++) {
-        $choice = mt_rand(0, count($choices) - 1);
-        $si_code .= $choices[$choice]; // NB: In ASCII code all the chars in $choices are 10-99 (i.e. 2 digit)
-    }
+    require_code('crypt');
+    $si_code = cms_strtoupper_ascii(get_secure_random_string(6, CRYPT_BASE32));
 
     // Store code
     $GLOBALS['SITE_DB']->query_insert('captchas', ['si_session_id' => $session, 'si_time' => time(), 'si_code' => $si_code]);
