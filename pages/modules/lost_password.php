@@ -334,7 +334,7 @@ class Module_lost_password
             warn_exit(do_lang_tempcode('INCORRECT_PASSWORD_RESET_CODE'));
         }
         $correct_code_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code_time');
-        if ($correct_code_time < time() - 60 * 60 * intval(get_option('password_reset_minutes'))) {
+        if ($correct_code_time < (time() - 60 * intval(get_option('password_reset_minutes')))) {
             warn_exit(do_lang_tempcode('RESET_CODE_EXPIRED', escape_html(display_time_period(60 * intval(get_option('password_reset_minutes'))))));
         }
 

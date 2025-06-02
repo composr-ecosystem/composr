@@ -158,12 +158,22 @@ function has_lost_password_error(int $member_id) : ?object
 function generate_and_save_password_reset_code(string $password_reset_process, int $member_id) : string
 {
     require_code('crypt');
+
     $code = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code'); // Re-use existing code if possible, so that overlapping reset e-mails don't cause chaos
+    $session_id = '';
+
     if ($code != '') {
         if ($password_reset_process == 'ultra') {
             list($code, $session_id) = explode('__', $code);
         }
+
+        // If the code expired, treat as if we have no code to begin with so we generate a new one below
+        $code_time = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_change_code_time');
+        if ($code_time < (time() - 60 * intval(get_option('password_reset_minutes')))) {
+            $code = '';
+        }
     }
+
     if (($code == '') || ($password_reset_process == 'ultra') && ($session_id != get_session_id())) {
         $code = get_secure_random_string();
         if ($password_reset_process == 'ultra') {
