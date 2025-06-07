@@ -317,7 +317,9 @@ function _captcha_image_fallback(string $code_needed) : array
  */
 function captcha_audio(string $code_needed) : string
 {
-    $data = '';
+    $combined_audio_data_segments = [];
+    $first_file_header_info = null;
+
     for ($i = 0; $i < strlen($code_needed); $i++) {
         $char = cms_strtolower_ascii($code_needed[$i]);
 
@@ -325,33 +327,109 @@ function captcha_audio(string $code_needed) : string
         if (!file_exists($file_path)) {
             $file_path = get_file_base() . '/data/sounds/' . $char . '.wav';
         }
-        $myfile = fopen($file_path, 'rb');
-        if ($i != 0) {
-            fseek($myfile, 44);
-        } else {
-            $data = fread($myfile, 44);
+
+        if (!is_readable($file_path)) {
+            continue; // Skip if file is not readable
         }
-        $_data = fread($myfile, filesize($file_path));
-        for ($j = 0; $j < strlen($_data); $j++) {
-            if (get_option('captcha_noise') == '1') {
-                $amp_mod = mt_rand(-2, 2);
-                $_data[$j] = chr(min(255, max(0, ord($_data[$j]) + $amp_mod)));
+
+        $file_content = @file_get_contents($file_path);
+        if ($file_content === false || strlen($file_content) < 44) {
+            continue; // Skip if file is empty or too short for a WAV header
+        }
+
+        if ($first_file_header_info === null) {
+            // Parse header of the first valid file to get audio format details
+            $header = substr($file_content, 0, 44);
+
+            // Basic WAV header validation
+            if (substr($header, 0, 4) != 'RIFF' || substr($header, 8, 4) != 'WAVE' || substr($header, 12, 4) != 'fmt ') {
+                // Not a valid WAV file or unsupported format, skip or handle error
+                // For CAPTCHA, we might expect all files to be valid and consistent.
+                // If the first one is bad, we might not be able to proceed.
+                return ''; // Or throw an exception / log error
             }
+
+            // Extract necessary format details
+            // Bytes 20-21: AudioFormat (v) - should be 1 for PCM
+            // Bytes 22-23: NumChannels (v)
+            // Bytes 24-27: SampleRate (V)
+            // Bytes 34-35: BitsPerSample (v)
+            $header_parts = unpack('vaudio_format/vnum_channels/Vsample_rate/Vbyte_rate/vblock_align/vbits_per_sample', substr($header, 20, 16)); // Read from byte 20 onwards
+
+            if ($header_parts['audio_format'] != 1) {
+                // Not PCM, which is what we expect and can easily handle
+                return ''; // Or throw an exception / log error
+            }
+
+            $first_file_header_info = [
+                'num_channels'    => $header_parts['num_channels'],
+                'sample_rate'     => $header_parts['sample_rate'],
+                'bits_per_sample' => $header_parts['bits_per_sample'],
+            ];
+
+            $num_channels    = $first_file_header_info['num_channels'];
+            $sample_rate     = $first_file_header_info['sample_rate'];
+            $bits_per_sample = $first_file_header_info['bits_per_sample'];
+            $byte_rate        = $sample_rate * $num_channels * ($bits_per_sample / 8);
+            $block_align      = $num_channels * ($bits_per_sample / 8);
+        }
+
+        // Audio data typically starts after the 44-byte header
+        $char_audio_data_raw = substr($file_content, 44);
+
+        // Apply noise to this character's audio data
+        $noised_segment_data = '';
+        $raw_len = strlen($char_audio_data_raw);
+        for ($k = 0; $k < $raw_len; $k++) {
+            $current_original_byte_char = $char_audio_data_raw[$k];
+            $byte_to_append = $current_original_byte_char;
+
             if (get_option('captcha_noise') == '1') {
-                if (($j != 0) && (mt_rand(0, 10) == 1)) {
-                    $data .= $_data[$j - 1];
+                if (($k != 0) && (mt_rand(0, 16) == 1)) {
+                    // Append the original previous byte from the current character's raw audio
+                    $noised_segment_data .= chr(mt_rand(0, 255));
+                } else {
+                    $amp_mod = mt_rand(-5, 5);
+                    $byte_to_append = chr(min(255, max(0, ord($byte_to_append) + $amp_mod)));
+                    $noised_segment_data .= $byte_to_append;
                 }
             }
-            $data .= $_data[$j];
         }
-        fclose($myfile);
+
+        $combined_audio_data_segments[] = $noised_segment_data;
     }
 
-    // Fix up header
-    $data = substr_replace($data, pack('V', strlen($data) - 8), 4, 4);
-    $data = substr_replace($data, pack('V', strlen($data) - 44), 40, 4);
+    if ($first_file_header_info === null) {
+        return ''; // No valid sound files were processed
+    }
 
-    return $data;
+    $final_audio_data = implode('', $combined_audio_data_segments);
+    if (empty($final_audio_data)) {
+        return '';
+    }
+
+    // Construct a new WAV header
+    $sub_chunk_2_size = strlen($final_audio_data);
+    $chunk_size       = 36 + $sub_chunk_2_size; // The RIFF chunk size
+
+    $header = pack(
+        'A4Va4A4VvvVVvvA4V',
+        'RIFF',
+        $chunk_size,
+        'WAVE',
+        'fmt ', // Sub-chunk1 ID
+        16,     // Sub-chunk1 Size (16 for PCM)
+        1,      // AudioFormat (1 for PCM)
+        $num_channels,
+        $sample_rate,
+        intval(round($byte_rate)), // ByteRate
+        intval(round($block_align)), // BlockAlign
+        $bits_per_sample,
+        'data', // Sub-chunk2 ID
+        $sub_chunk_2_size
+    );
+
+    return $header . $final_audio_data;
 }
 
 /**
