@@ -26,40 +26,31 @@ class password_strength_test_set extends cms_test_case
         $email_address = 'bob@example.com';
 
         $expects = [
-            // Score 1 tests
-            '' => 1,
-            'aaa' => 1,
-            'XxXxXxXxXxXxXxXxXxXxXxXxXxXxXxXx' => 1,
-            'useruseruseruseruseruseruseruseruseruser' => 1,
-            '1234567890' => 1,
-
-            // Score 1 tainted tests
+            // Test tainted passwords
             'theU$ERname' => 1,
             'bob@example.com' => 1,
 
-            // Sequential strengths with intentional passwords test
-            'abc123' => 1,
-            'abcd123' => 2,
-            'abcD123' => 3,
-            '@bcD123' => 4,
-            '@bcD1234' => 5,
-            '@bcDe1234' => 6,
-            '@bcDef1234$' => 7,
-            '@bcDefG1234$' => 8,
-            '@bcDefGH1234$6' => 9,
-            '@bcDefGH1234$67' => 10,
+            // Special tests
+            '' => 1, // Empty
+            'abCIYZ' => 2, // Test that abc subtracts 1
+            'sjh876BR' => 2, // Test that 876 subtracts 2
 
-            // Sequential strengths with random passwords test
-            'p' => 1,
-            'Ca0L' => 2,
-            'm.X7%' => 3,
-            'BCI-u=q' => 4,
-            '&dkXouA(' => 5,
-            'q11&SPNgyJ' => 6,
-            'dx+F,Y1tG0b' => 7,
-            'OXE9iNmjM1!K' => 8,
-            'dfyALhO)Eh3b78V' => 9,
-            '64_WpFYiBQd4Ka\'M0' => 10,
+            // Special tests: repeat character deductions
+            'CCCCC^jk9I6c&h8cE' => 7,
+            'CCCCCcCc9I6c&h8cE' => 4,
+            'CCCCCCCCCCCcCcC1#' => 1,
+
+            // Random passwords test
+            'T' => 1,
+            'oWbE' => 2,
+            '0LR1wp' => 3,
+            'R9=.K~C' => 4,
+            '3n21Q;Xi' => 5,
+            'Aw7HUQ%;6~' => 6,
+            '_GWfe^t2E;-' => 7,
+            'qDLp02xKy8@a7' => 8,
+            'ypEWDE8s0G8082e5' => 9,
+            'fxg%xo~?9J`8Y3|E' => 10,
         ];
 
         require_code('spelling');
