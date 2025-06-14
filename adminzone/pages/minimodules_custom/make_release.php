@@ -211,6 +211,8 @@ function phase_1()
                     $change_label = $parts[2];
                     $git_id = $parts[0];
                     $matches = array();
+                    // Disabled; we moved the tracker to composr.app but still use compo.sr for the homesite in v10
+                    /*
                     if (preg_match('#MANTIS-(\d+)#', $change_label, $matches) != 0) {
                         $tracker_id = $matches[1];
                         if ($tracker_id != '0') {
@@ -219,6 +221,7 @@ function phase_1()
                             $dig_deep = true; // Somehow an ID was zero, so we need to search tracker for what this may have been
                         }
                     } else {
+                    */
                         // In Git only
                         $__changes[$git_id] = $change_label;
                         if (!in_array($parts[1], $git_authors)) {
@@ -229,7 +232,7 @@ function phase_1()
                         if (preg_match($regexp, $change_label) == 0) {
                             $dig_deep = true; // We want to search tracker for what this may have been
                         }
-                    }
+                    //}
                 }
             }
 
