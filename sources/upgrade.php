@@ -428,6 +428,8 @@ function upgrade_script()
                         $i++;
                         echo '<!-- Looking at ' . escape_html($upgrade_file['path']) . ' (' . strval($i) . ' / ' . strval($cnt) . ') -->';
 
+                        $is_directory = (substr($upgrade_file['path'], -1) == '/');
+
                         // Skip over these, from manual installer package (which may be used for an upgrade)
                         if ($upgrade_file['path'] == '_config.php') {
                             continue;
@@ -452,22 +454,34 @@ function upgrade_script()
                         }
 
                         $found = null;
-                        if (substr($upgrade_file['path'], -1) != '/') {
-                            // Is this an addon file?
-                            foreach ($addon_contents as $addon_name => $addon_files) {
-                                // See if this is the addon for the file
-                                $addon_file_path = $upgrade_file['path'];
-                                if (in_array($addon_file_path, $addon_files)) {
-                                    $found = $addon_name;
-                                    break;
+                        foreach ($addon_contents as $addon_name => $addon_files) {
+                            // Skip addons we are not going to extract
+                            if (!in_array($addon_name, $addons_wanted)) {
+                                continue;
+                            }
+
+                            // See if the addon has any files located within this directory. If so, we want to ensure this directory is created
+                            if ($is_directory) {
+                                foreach ($addon_files as $addon_file) {
+                                    if (strpos($addon_file, $upgrade_file['path']) === 0) {
+                                        $found = $addon_name;
+                                        break;
+                                    }
                                 }
+                                continue;
+                            }
+
+                            // See if this file belongs to the addon
+                            if (in_array($upgrade_file['path'], $addon_files)) {
+                                $found = $addon_name;
+                                break;
                             }
                         }
 
                         // Install if it's a file listed within addon contents
                         //  (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
-                        if (($found !== null) && (in_array($found, $addons_wanted))) {
-                            if (substr($upgrade_file['path'], -1) == '/') {
+                        if ($found !== null) {
+                            if ($is_directory) {
                                 if (!$dry_run) {
                                     afm_make_directory($upgrade_file['path'], false, true);
                                 }
@@ -481,6 +495,8 @@ function upgrade_script()
                                             afm_make_directory(dirname($upgrade_file['path']), false, true);
                                         }
                                         afm_make_file($upgrade_file['path'], $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                                    } else {
+                                        $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
                                     }
 
                                     echo do_lang('U_EXTRACTING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
@@ -489,7 +505,7 @@ function upgrade_script()
                         }
 
                         // Record to copy the file into our archived addon (if it exists) so that addon is kept up-to-date
-                        if (substr($upgrade_file['path'], -1) != '/') {
+                        if (!$is_directory) {
                             if ((!is_null($found)) && (file_exists(get_file_base() . '/imports/addons/' . $found . '.tar'))) {
                                 $files_for_tar_updating[$found][$upgrade_file['path']] = array($upgrade_file['mode'], $upgrade_file['mtime']);
                             }
@@ -2455,7 +2471,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
     $templates_rename = array();
     $templates_borked = array();
 
-    if (false) {
+    if (false) { // FUDGE
         $css_recognition_string = '2004-2011'; // Must be defined. Ensures theme is right version.
 
         $css_replace__multi_match = array(
@@ -2494,8 +2510,13 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
         return array($errors, array());
     }
 
+    $landscape = [];
+    $seed = '';
+    $dark = null;
+    $colours = null;
     if (addon_installed('themewizard')) {
         require_code('themewizard');
+
         $seed = find_theme_seed($theme);
         $dark = find_theme_dark($theme);
         list($colours, $landscape) = calculate_theme($seed, 'default', 'equations', 'colours', $dark);
