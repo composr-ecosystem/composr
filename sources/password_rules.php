@@ -29,9 +29,7 @@
  */
 function test_password(string $password, string $username = '', string $email_address = '', ?int $dob = null) : int
 {
-    // Take out completely insecure elements from the password so that they won't contribute to the scoring...
-
-    // Tainted strings based on something a hacker may know
+    // Remove tainted strings based on something a hacker may know
     $tainted_strings_source = [];
     if ($username != '') {
         $tainted_strings_source[cms_mb_strtoupper($username)] = 3;
@@ -85,57 +83,70 @@ function test_password(string $password, string $username = '', string $email_ad
         }
     }
 
-    // Return 1 for the strength immediately if there is no password.
-    if ($password == '') {
+    $len = cms_mb_strlen($password);
+
+    // If filtering made the remaining password empty, it's very weak.
+    if ($len == 0) {
         return 1;
     }
 
-    $strength = 0.5;
-
-    // Consider numbers
-    if (preg_match('#[0-9]#', $password) == 1) {
-        $strength += 1.0;
+    // Calculate character pool size for entropy calculation
+    $pool_size = 0;
+    $has_lower = (preg_match('/[a-z]/', $password) != 0);
+    $has_upper = (preg_match('/[A-Z]/', $password) != 0);
+    $has_digit = (preg_match('/[0-9]/', $password) != 0);
+    $has_symbol = (preg_match('/[^a-zA-Z0-9]/', $password) != 0);
+    if ($has_lower) {
+        $pool_size += 26;
+    }
+    if ($has_upper) {
+        $pool_size += 26;
+    }
+    if ($has_digit) {
+        $pool_size += 10;
+    }
+    if ($has_symbol) {
+        $pool_size += 32; // Approximation for common symbols
     }
 
-    // Consider lower case letters
-    if (preg_match('#[a-z]#', $password) == 1) {
-        $strength += 2.6;
+    // Initial strength based on entropy
+    if ($pool_size == 0) {
+        // This case implies the password consists of characters not in the common sets, or the regex missed something.
+        $entropy = floatval($len);
+    } else {
+        $entropy = $len * log($pool_size, 2);
+    }
+    $strength = ($entropy / 10);
+
+    // Strength penalty for repeating characters
+    $lower_password_for_consecutive = cms_mb_strtolower($password);
+    if ($len > 1) {
+        for ($i = 1; $i < $len; $i++) {
+            if ($lower_password_for_consecutive[$i] == $lower_password_for_consecutive[$i - 1]) {
+                $strength--;
+            }
+        }
     }
 
-    // Consider upper case letters
-    if (preg_match('#[A-Z]#', $password) == 1) {
-        $strength += 2.6;
+    // Strength penalty for simple sequential letters (3+ chars, e.g., "abc", "cba")
+    $lower_password_for_sequence = cms_mb_strtolower($password);
+    $alpha_sequences = ['abc', 'bcd', 'cde', 'def', 'efg', 'fgh', 'ghi', 'hij', 'ijk', 'jkl', 'klm', 'lmn', 'mno', 'nop', 'opq', 'pqr', 'qrs', 'rst', 'stu', 'tuv', 'uvw', 'vwx', 'wxy', 'xyz'];
+    foreach ($alpha_sequences as $seq) {
+        if ((strpos($lower_password_for_sequence, $seq) !== false) || (strpos($lower_password_for_sequence, strrev($seq)) !== false)) {
+            $strength--;
+        }
     }
 
-    // Consider special characters
-    if (preg_match('#[^a-zA-Z0-9]#', $password) == 1) {
-        $strength += 3.3;
+    // Strength penalty for simple sequential numbers (3+ chars, e.g., "123", "321")
+    $num_sequences = ['012', '123', '234', '345', '456', '567', '678', '789'];
+    foreach ($num_sequences as $seq) {
+        if ((strpos($password, $seq) !== false) || (strpos($password, strrev($seq)) !== false)) {
+            $strength -= 2; // Strength cannot exceed 3
+        }
     }
 
-    // The strengths above all add up to 10. Calculations below will modulate the strength according to additional factors.
-
-    // Factor password length
-    $length = cms_mb_strlen($password);
-    $chars = preg_split('#(.)#', $password, -1, PREG_SPLIT_DELIM_CAPTURE);
-    $num_unique_chars = count(array_unique($chars));
-
-    // Reduce strength on a percentage when characters are not unique.
-    $strength *= (floatval($num_unique_chars) / floatval($length));
-
-
-    // Multiply strength score depending on password length
-    $strength *= ($length / 16);
-
-    // Clamp the strength to be a number 1-10...
-    $strength_final = intval($strength);
-
-    if ($strength_final < 1) {
-        $strength_final = 1;
-    }
-    if ($strength_final > 10) {
-        $strength_final = 10;
-    }
-    return $strength_final;
+    // Ensure strength is within 1-10 range
+    return intval(max(1.0, min(10.0, $strength)));
 }
 
 /**

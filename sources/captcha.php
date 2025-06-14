@@ -184,11 +184,11 @@ function captcha_image(string $code_needed) : array
     }
     $height = $max_char_height + $padding * 2;
 
-    // Minimums
+    // Minimums for the image
     if ($height < 37) $height = 37;
     if ($width < 87) $width = 87;
 
-    // Create background
+    // Create black background
     $img = imagecreate($width, $height);
     $black = cms_imagecolorallocate($img, 0, 0, 0);
     imagefill($img, 0, 0, $black);
@@ -196,36 +196,38 @@ function captcha_image(string $code_needed) : array
     // Render each character
     $x = intval($padding);
     for ($i = 0; $i < $characters; $i++) {
+        // Randomise some things to make guessing harder
         $font_path = $available_fonts[array_rand($available_fonts)];
         $angle = mt_rand(-15, 15);
         $char_font_size = $font_size + mt_rand(-2, 2);
         $char = $code_needed[$i];
 
+        // Create a TTF box for the character
         $bbox = imagettfbbox($char_font_size, $angle, $font_path, $char);
         $char_width = intval($bbox[2] - $bbox[0]);
         $char_height = intval($bbox[1] - $bbox[7]);
 
-        // Calculate y position to center characters roughly
-        $y = intval(($height / 2) + ($char_height / 2) + mt_rand(-5, 5));
+        // Calculate y position to center characters roughly, but add a random deviation so characters throw off image recognition
+        $y = intval(($height / 2) + ($char_height / 2) + mt_rand(-10, 10));
 
-        // Add a shadow
+        // Add a random colour shadow
         $shadow_color = cms_imagecolorallocate($img, mt_rand(100, 180), mt_rand(100, 180), mt_rand(100, 180));
         imagettftext($img, $char_font_size, $angle + mt_rand(-5,5), $x + mt_rand(-2,2), $y + mt_rand(-2,2), $shadow_color, $font_path, $char);
 
-        // Main character
+        // Render the actual character with a random colour
         $text_color = cms_imagecolorallocate($img, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
         imagettftext($img, $char_font_size, $angle, $x, $y, $text_color, $font_path, $char);
 
         $x += $char_width + $letter_spacing;
     }
 
-    // Add line noise
+    // Add some random lines
     for ($l = 0; $l < 5; $l++) {
         $line_color = cms_imagecolorallocate($img, mt_rand(150, 220), mt_rand(150, 220), mt_rand(150, 220));
         imageline($img, mt_rand(0, $width), mt_rand(0, $height), mt_rand(0, $width), mt_rand(0, $height), $line_color);
     }
 
-    // Add pixel noise
+    // Add random pixels
     for ($n = 0; $n < intval($width * $height * 0.04); $n++) {
         $noise_color = cms_imagecolorallocate($img, mt_rand(150, 220), mt_rand(150, 220), mt_rand(150, 220));
         imagesetpixel($img, mt_rand(0, $width -1), mt_rand(0, $height -1), $noise_color);
@@ -247,7 +249,7 @@ function _captcha_image_fallback(string $code_needed) : array
 {
     require_code('images');
 
-    // Write basic, using multiple fonts with random Y-position offsets
+    // Write basic, using multiple built-in fonts with random Y-position offsets
     $characters = strlen($code_needed);
     $fonts = [];
     $width = 20;
@@ -313,7 +315,7 @@ function _captcha_image_fallback(string $code_needed) : array
  * Create an audio CATCHA.
  *
  * @param  string $code_needed The code
- * @return string the audio CAPTCHA
+ * @return string the audio CAPTCHA data
  */
 function captcha_audio(string $code_needed) : string
 {
@@ -323,42 +325,34 @@ function captcha_audio(string $code_needed) : string
     for ($i = 0; $i < strlen($code_needed); $i++) {
         $char = cms_strtolower_ascii($code_needed[$i]);
 
-        $file_path = get_file_base() . '/data_custom/sounds/' . $char . '.wav';
+        $file_path = get_file_base() . '/data_custom/sounds/captcha/' . $char . '.wav';
         if (!file_exists($file_path)) {
-            $file_path = get_file_base() . '/data/sounds/' . $char . '.wav';
+            $file_path = get_file_base() . '/data/sounds/captcha/' . $char . '.wav';
         }
 
         if (!is_readable($file_path)) {
-            continue; // Skip if file is not readable
+            continue; // Not a readable file
         }
 
-        $file_content = @file_get_contents($file_path);
+        $file_content = cms_file_get_contents_safe($file_path);
         if ($file_content === false || strlen($file_content) < 44) {
-            continue; // Skip if file is empty or too short for a WAV header
+            continue; // Invalid WAV file
         }
 
         if ($first_file_header_info === null) {
-            // Parse header of the first valid file to get audio format details
+            // Parse header of the first valid file to get audio format details; this assumes all WAV files for CAPTCHA have the same sample / bit rates
             $header = substr($file_content, 0, 44);
 
             // Basic WAV header validation
             if (substr($header, 0, 4) != 'RIFF' || substr($header, 8, 4) != 'WAVE' || substr($header, 12, 4) != 'fmt ') {
-                // Not a valid WAV file or unsupported format, skip or handle error
-                // For CAPTCHA, we might expect all files to be valid and consistent.
-                // If the first one is bad, we might not be able to proceed.
-                return ''; // Or throw an exception / log error
+                continue;
             }
 
-            // Extract necessary format details
-            // Bytes 20-21: AudioFormat (v) - should be 1 for PCM
-            // Bytes 22-23: NumChannels (v)
-            // Bytes 24-27: SampleRate (V)
-            // Bytes 34-35: BitsPerSample (v)
-            $header_parts = unpack('vaudio_format/vnum_channels/Vsample_rate/Vbyte_rate/vblock_align/vbits_per_sample', substr($header, 20, 16)); // Read from byte 20 onwards
+            // Extract necessary format details from the header
+            $header_parts = unpack('vaudio_format/vnum_channels/Vsample_rate/Vbyte_rate/vblock_align/vbits_per_sample', substr($header, 20, 16));
 
             if ($header_parts['audio_format'] != 1) {
-                // Not PCM, which is what we expect and can easily handle
-                return ''; // Or throw an exception / log error
+                continue; // Not PCM compliant
             }
 
             $first_file_header_info = [
@@ -374,26 +368,27 @@ function captcha_audio(string $code_needed) : string
             $block_align      = $num_channels * ($bits_per_sample / 8);
         }
 
-        // Audio data typically starts after the 44-byte header
+        // Skip the header for audio data
         $char_audio_data_raw = substr($file_content, 44);
 
-        // Apply noise to this character's audio data
         $noised_segment_data = '';
         $raw_len = strlen($char_audio_data_raw);
         for ($k = 0; $k < $raw_len; $k++) {
             $current_original_byte_char = $char_audio_data_raw[$k];
             $byte_to_append = $current_original_byte_char;
 
+            // Apply some noise if enabled
             if (get_option('captcha_noise') == '1') {
+                // For 1 out of 32 bytes, use a random byte to produce a static effect; otherwise, randomly modulate the actual audio byte
                 if (($k != 0) && (mt_rand(0, 16) == 1)) {
-                    // Append the original previous byte from the current character's raw audio
-                    $noised_segment_data .= chr(mt_rand(0, 255));
+                    $byte_to_append = chr(mt_rand(0, 255));
                 } else {
-                    $amp_mod = mt_rand(-5, 5);
+                    $amp_mod = mt_rand(-3, 3);
                     $byte_to_append = chr(min(255, max(0, ord($byte_to_append) + $amp_mod)));
-                    $noised_segment_data .= $byte_to_append;
                 }
             }
+
+            $noised_segment_data .= $byte_to_append;
         }
 
         $combined_audio_data_segments[] = $noised_segment_data;
@@ -405,30 +400,30 @@ function captcha_audio(string $code_needed) : string
 
     $final_audio_data = implode('', $combined_audio_data_segments);
     if (empty($final_audio_data)) {
-        return '';
+        return ''; // No valid sound files were processed
     }
 
     // Construct a new WAV header
     $sub_chunk_2_size = strlen($final_audio_data);
-    $chunk_size       = 36 + $sub_chunk_2_size; // The RIFF chunk size
-
+    $chunk_size       = 36 + $sub_chunk_2_size;
     $header = pack(
         'A4Va4A4VvvVVvvA4V',
         'RIFF',
         $chunk_size,
         'WAVE',
-        'fmt ', // Sub-chunk1 ID
-        16,     // Sub-chunk1 Size (16 for PCM)
-        1,      // AudioFormat (1 for PCM)
+        'fmt ',
+        16,
+        1,
         $num_channels,
         $sample_rate,
-        intval(round($byte_rate)), // ByteRate
-        intval(round($block_align)), // BlockAlign
+        intval(round($byte_rate)),
+        intval(round($block_align)),
         $bits_per_sample,
-        'data', // Sub-chunk2 ID
+        'data',
         $sub_chunk_2_size
     );
 
+    // Return a PCM-compliant WAV file
     return $header . $final_audio_data;
 }
 

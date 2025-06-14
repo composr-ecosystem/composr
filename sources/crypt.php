@@ -203,7 +203,7 @@ function get_secure_random_password(?int $strength = null, string $username = ''
         / (Conflicts with member CSV exports and imports)
         $ (bcrypt hash symbol)
     */
-    $special = str_split('!@#%^&*+=-_?.,:;()|~`\'"'); // <> is ignored as it is XML, [] is ignored as it is Comcode, and {} is ignored as it is Tempcode
+    $special = str_split('!@#%^&*+=-_?.,:;()|~`\'"');
 
     $password = [];
     $min_characters = intval(get_option('minimum_password_length'));
