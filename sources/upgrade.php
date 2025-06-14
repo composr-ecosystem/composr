@@ -503,7 +503,7 @@ function upgrade_script()
                                         }
                                         afm_make_file($upgrade_file['path'], $file_data['data'], ($file_data['mode'] & 0002) != 0);
                                     } else {
-                                        $metadata['todo'][] = [$upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0];
+                                        $data['todo'][] = array($upgrade_file['path'], $upgrade_file['mtime'], $offset + 512, $upgrade_file['size'], ($upgrade_file['mode'] & 0002) != 0);
                                     }
 
                                     echo do_lang('U_EXTRACTING_MESSAGE', escape_html($upgrade_file['path'])) . '<br />';
@@ -2517,7 +2517,7 @@ function upgrade_theme($theme, $from_version, $to_version, $test_run = true)
         return array($errors, array());
     }
 
-    $landscape = [];
+    $landscape = array();
     $seed = '';
     $dark = null;
     $colours = null;
