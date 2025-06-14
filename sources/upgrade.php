@@ -322,18 +322,25 @@ function upgrade_script()
                     $must_restart = false;
                     foreach ($immediately_upgrade as $path => $restart) {
                         $file_data = tar_get_file($upgrade_resource, $path);
-                        if ($file_data !== null) {
-                            if ($popup_simple_extract) {
-                                if (is_file(get_file_base() . '/' . $path) && (cms_file_get_contents_safe(get_file_base() . '/' . $path) == $file_data['data'])) {
-                                    continue;
-                                }
-                            }
+                        if ($file_data === null) {
+                            continue;
+                        }
 
-                            afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
-                            echo do_lang('U_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
-                            if ($restart) {
-                                $must_restart = true;
+                        if ($dry_run) {
+                            continue;
+                        }
+
+                        if ($popup_simple_extract) {
+                            if (is_file(get_file_base() . '/' . $path) && (cms_file_get_contents_safe(get_file_base() . '/' . $path) == $file_data['data'])) {
+                                continue;
                             }
+                        }
+
+                        afm_make_file($path, $file_data['data'], ($file_data['mode'] & 0002) != 0);
+                        echo do_lang('U_EXTRACTING_MESSAGE', escape_html($path)) . '<br />';
+
+                        if ($restart) {
+                            $must_restart = true;
                         }
                     }
                     if ($must_restart) {
