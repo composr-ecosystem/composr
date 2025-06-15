@@ -1213,9 +1213,9 @@ function _download_latest_data_ip_country()
 function _download_latest_data_no_banning()
 {
     $urls = [
-        'http://www.iplists.com/google.txt',
-        'http://www.iplists.com/misc.txt',
-        'http://www.iplists.com/non_engines.txt',
+        'https://www.iplists.com/google.txt',
+        'https://www.iplists.com/misc.txt',
+        'https://www.iplists.com/non_engines.txt',
         'https://www.cloudflare.com/ips-v4',
         'https://www.cloudflare.com/ips-v6',
         'https://www.gstatic.com/ipranges/goog.json',
