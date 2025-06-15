@@ -487,3 +487,41 @@ function register_site_telemetry(bool $skip_creation = false) : bool
 
     return true;
 }
+
+/**
+ * Establish a guest session ID with the homesite and return it.
+ *
+ * @param  boolean $get_hashed Whether to get the hashed session ID instead of the actual one
+ * @return ?ID_TEXT The session ID (null: error)
+ */
+function get_brand_session(bool $get_hashed = true) : ?string
+{
+    // HACKHACK: You must un-comment the 'session_id' line in the endpoints hook cms_homesite/telemetry if you want raw session IDs; not returned by default for security.
+    // Prepare request to the homesite
+    $__payload = [
+        'version' => cms_version_pretty(),
+        'request' => 'get_session',
+    ];
+    $_payload = encrypt_data_telemetry(serialize($__payload));
+    $payload = json_encode($_payload);
+    $post = ['data' => $payload];
+    $url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/get_session';
+
+    // Make the request
+    $data = cms_http_request($url, ['post_params' => $post, 'timeout' => 6.0, 'trigger_error' => false]);
+    if (($data->message != '200') || ($data->data === null)) {
+        return null;
+    }
+
+    // Parse response
+    $http_result = @json_decode($data->data, true);
+    if (($http_result === false) || ($http_result['success'] === false)) {
+        return null;
+    }
+
+    if ($get_hashed) {
+        return $http_result['response_data']['session_id_hashed'];
+    }
+
+    return $http_result['response_data']['session_id'];
+}

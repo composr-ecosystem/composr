@@ -668,6 +668,9 @@ class Module_admin_addons
 
         require_code('uploads');
         require_code('global4');
+        require_code('telemetry');
+
+        $homesite_session = get_brand_session(true);
 
         $url_map = ['page' => '_SELF', 'type' => 'multi_action'];
 
@@ -676,6 +679,9 @@ class Module_admin_addons
         foreach ($_urls as $i => $url) {
             if (is_numeric($url) || (looks_like_guid($url))) {
                 $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($url);
+                if ($homesite_session !== null) {
+                    $_POST['url'] .= '&for_session=' . $homesite_session;
+                }
             } else {
                 $_POST['url'] = $url; // In case it was submitted in array form, which is possible on some UAs (based on an automated bug report)
             }

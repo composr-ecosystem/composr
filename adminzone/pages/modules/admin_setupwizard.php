@@ -452,6 +452,7 @@ class Module_admin_setupwizard
     {
         require_code('addons2');
         require_lang('addons');
+        require_code('telemetry');
 
         $post_url = build_url(['page' => '_SELF', 'type' => 'step5'], '_SELF');
         $text = do_lang_tempcode('SETUPWIZARD_4_DESCRIBE');
@@ -461,6 +462,8 @@ class Module_admin_setupwizard
         $addons_installed = find_installed_addons();
         $_addons_not_installed = find_available_addons(false, false);
         $addons_not_installed = list_to_map('name', $_addons_not_installed);
+
+        $homesite_session = get_brand_session(true);
 
         $fields = [];
         $fields_advanced = '';
@@ -616,9 +619,15 @@ class Module_admin_setupwizard
                 $remote_addons = find_remote_addons();
                 $_mentioned_addon = titleify($mentioned_addon);
                 if (array_key_exists($_mentioned_addon, $remote_addons)) {
-                    $id = $remote_addons[$_mentioned_addon];
                     require_code('uploads');
+
+                    $id = $remote_addons[$_mentioned_addon];
+
                     $_POST['url'] = get_brand_base_url() . '/site/dload.php?id=' . strval($id);
+                    if ($homesite_session !== null) {
+                        $_POST['url'] .= '&for_session=' . $homesite_session;
+                    }
+
                     get_url('url', 'file', 'imports/addons', OBFUSCATE_NEVER, CMS_UPLOAD_ANYTHING, false, '', '', true); // Download it
                 }
             }
@@ -1211,8 +1220,8 @@ class Module_admin_setupwizard
                     'minimum' => '0',
                     'low' => '0',
                     'medium' => '0',
-                    'high' => '90',
-                    'extreme' => '30',
+                    'high' => '365',
+                    'extreme' => '90',
                 ],
                 'minimum_password_length' => [
                     'minimum' => '0',
@@ -1274,7 +1283,7 @@ class Module_admin_setupwizard
                     'minimum' => '1',
                     'low' => '1',
                     'medium' => '1',
-                    'high' => '0',
+                    'high' => '1',
                     'extreme' => '0',
                 ],
                 'url_monikers_enabled' => [

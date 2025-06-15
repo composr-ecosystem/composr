@@ -236,6 +236,8 @@ function load_version_download_rows() : array
         return $download_rows;
     }
 
+    $download_rows = [];
+
     // Get the main releases category
     $download_category = brand_name() . ' Releases';
     $releases_category_id = $GLOBALS['SITE_DB']->query_select_value_if_there('download_categories', 'id', ['parent_id' => db_get_first_id(), $GLOBALS['SITE_DB']->translate_field_ref('category') => $download_category]);

@@ -208,7 +208,7 @@ function captcha_image(string $code_needed) : array
         $char_height = intval($bbox[1] - $bbox[7]);
 
         // Calculate y position to center characters roughly, but add a random deviation so characters throw off image recognition
-        $y = intval(($height / 2) + ($char_height / 2) + mt_rand(-10, 10));
+        $y = intval(($height / 2) + ($char_height / 2) + mt_rand(-8, 8));
 
         // Add a random colour shadow
         $shadow_color = cms_imagecolorallocate($img, mt_rand(100, 180), mt_rand(100, 180), mt_rand(100, 180));

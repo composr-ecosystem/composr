@@ -14,8 +14,15 @@
  * @package    cms_homesite
  */
 
-/* Returns triple: PATH or null if critical error, null or error string if error */
-function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons_in_upgrader = null)
+/**
+ * Make a personal upgrader, and get its path.
+ *
+ * @param  ?string $from_version_dotted The version we are upgrading from (null: current version)
+ * @param  string $to_version_dotted The version we are upgrading to
+ * @param  ?array $addons_in_upgrader Addons we want to include in the upgrader file (null: none)
+ * @return array The path to the upgrader or null if error, the error or null if no error
+ */
+function make_upgrade_get_path(?string $from_version_dotted, string $to_version_dotted, ?array $addons_in_upgrader = null) : array
 {
     $err = null;
 
@@ -72,20 +79,20 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
             }
 
             // LEGACY: Cannot upgrade <11.alpha4 to 11.beta or higher; must first upgrade to 11.alpha4
-            if ((strpos($from_version_pretty, '11 alpha') === 0) && ($from_version_pretty != '11 alpha4') && (strpos($to_version_pretty, '11 alpha') === false)) {
+            if ((strpos($from_version_pretty, '11 alpha') === 0) && ($from_version_pretty !== '11 alpha4') && (strpos($to_version_pretty, '11 alpha') === false)) {
                 return [null, 'You need to upgrade to 11 alpha4 first before upgrading to a later release. This is because changes made in the upgrader will corrupt your site if you immediately skip 11 alpha4. Please go to <a href="https://composr.app/news/view/releases/composr-11-alpha4.htm?blog=0">this news article</a> (Make a Composr upgrader box) to upgrade to 11 alpha4. After upgrading fully to 11 alpha4, run the upgrader again normally, and you should be able to then upgrade to the latest release.'];
             }
         }
     }
 
-    if (get_base_url() == 'https://compo.sr' || get_base_url() == 'https://www.compo.sr') {
+    if (get_base_url() == 'https://compo.sr' || get_base_url() == 'https://www.compo.sr') { // LEGACY
         if ($b > 10) {
             $url = hyperlink('https://composr.app', 'Composr.app', true, true);
             $err = 'Compo.sr does not host version 11+. Instead, please go to ' . $url->evaluate();
             return [null, $err];
         }
     }
-    if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') {
+    if (get_base_url() == 'https://composr.app' || get_base_url() == 'https://www.composr.app') { // LEGACY
         if ($b == 10) {
             $url = hyperlink('https://compo.sr', 'Compo.sr', true, true);
             $err = 'Composr.app does not host version 10. Instead, please go to ' . $url->evaluate();
@@ -262,8 +269,10 @@ function make_upgrade_get_path($from_version_dotted, $to_version_dotted, $addons
     @rename($build_path_tmp, $build_path);
     sync_file($build_path);
 
-    // Clean up
+    // Clean up, to preserve space
     @deldir_contents($wip_path, false, true);
+    @deldir_contents($old_base_path, false, true);
+    @deldir_contents($new_base_path, false, true);
 
     cms_set_time_limit($old_limit);
 
@@ -292,7 +301,7 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
             $contents = cms_file_get_contents_safe($new_base_path . '/' . $dir . $file, FILE_READ_UNIXIFIED_TEXT);
             if (($old_base_path === null) || (strpos($dir, '/addon_registry') !== false) || (!file_exists($old_base_path . '/' . $pretend_dir . '/' . $file)) || ($contents != cms_file_get_contents_safe($old_base_path . '/' . $pretend_dir . '/' . $file, FILE_READ_UNIXIFIED_TEXT))) {
                 if ($addons_in_upgrader !== null) {
-                    $addon_name = find_file_addon($new_base_path, $dir . $file);
+                    $addon_name = find_file_addon($dir . $file);
                     if ($addon_name === null) {
                         continue;
                     }
@@ -310,19 +319,38 @@ function make_upgrader_do_dir($build_path, $new_base_path, $old_base_path, $addo
     closedir($dh);
 }
 
-function find_file_addon($new_base_path, $file)
+/**
+ * Given a relative file path, find the name of the addon in which it belongs.
+ * You should first call _find_helper if not already done so.
+ *
+ * @param  URLPATH $file The relative file path
+ * @return ?string The name of the addon in which the file belongs (null: not found)
+ */
+function find_file_addon(string $file) : ?string
 {
     global $CACHE_FROM_PATHS;
     return isset($CACHE_FROM_PATHS[$file]) ? $CACHE_FROM_PATHS[$file] : null;
 }
 
-function find_addon_files($new_base_path, $addon_name)
+/**
+ * Given an addon name, return its files.
+ * You should first call _find_helper if not already done so.
+ *
+ * @param  ID_TEXT $addon_name The name of the addon
+ * @return array Array of files belonging to the addon
+ */
+function find_addon_files(string $addon_name) : array
 {
     global $CACHE_FROM_ADDONS;
     return isset($CACHE_FROM_ADDONS[$addon_name]) ? $CACHE_FROM_ADDONS[$addon_name] : [];
 }
 
-function _find_helper($new_base_path)
+/**
+ * Load in addon file cache into globals.
+ *
+ * @param string $new_base_path The base directory path to the new version of the software
+ */
+function _find_helper(string $new_base_path)
 {
     global $CACHE_FROM_PATHS, $CACHE_FROM_ADDONS;
     $CACHE_FROM_PATHS = [];

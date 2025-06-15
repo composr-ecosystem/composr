@@ -8708,6 +8708,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_TELEMETRY_STATUS
         DOC_PARENTAL_CONTROLS
         STOPPED_BY_ANTISPAM_SUBSTRING
+        UPGRADER_LOGIN_INFO_GENERATE_UPGRADER
     ')));
 
     $non_admin_files = [
