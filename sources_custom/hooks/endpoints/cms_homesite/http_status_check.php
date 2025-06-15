@@ -57,8 +57,8 @@ class Hook_endpoint_cms_homesite_http_status_check
             if ($result === '200') {
                 break;
             }
-            if (php_function_allowed('usleep')) {
-                usleep(5000000);
+            if (php_function_allowed('sleep')) {
+                sleep(5);
             }
         }
 
