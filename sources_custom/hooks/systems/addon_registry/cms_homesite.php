@@ -245,6 +245,7 @@ This addon does not contain the homesite install code and the overall site and t
             'uploads/website_specific/cms_homesite/upgrades/tar_build/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tars/index.html',
             'sources_custom/hooks/systems/contentious_overrides/cms_homesite.php',
+            'sources_custom/hooks/systems/cron/upgrade_cleanup.php',
         ];
     }
 

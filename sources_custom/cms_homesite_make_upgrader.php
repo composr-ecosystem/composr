@@ -269,8 +269,10 @@ function make_upgrade_get_path(?string $from_version_dotted, string $to_version_
     @rename($build_path_tmp, $build_path);
     sync_file($build_path);
 
-    // Clean up
+    // Clean up, to preserve space
     @deldir_contents($wip_path, false, true);
+    @deldir_contents($old_base_path, false, true);
+    @deldir_contents($new_base_path, false, true);
 
     cms_set_time_limit($old_limit);
 
