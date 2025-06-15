@@ -108,7 +108,7 @@ PHP;
         $show_indicators = !empty($map['show_indicators']);
         $show_scroll_down = !empty($map['show_scroll_down']);
         $interval = isset($map['interval']) ? strval(intval($map['interval']) * 1000) : null;
-        $check_perms = isset($map['check']) ? !empty($map['check']) : true;
+        $check_perms = isset($map['check']) ? ($map['check'] != '0') : true;
         $sort = !empty($map['sort']) ? $map['sort'] : 'recent ASC';
 
         // Check if the gallery exists

@@ -469,6 +469,9 @@ function add_banner(string $name, string $imgurl, string $title_text, string $ca
     }
 
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'banner', 'content_id' => $name, 'region' => $region]);
     }
 
@@ -599,6 +602,9 @@ function edit_banner(string $old_name, string $name, string $imgurl, string $tit
 
     $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'banner', 'content_id' => $old_name]);
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'banner', 'content_id' => $name, 'region' => $region]);
     }
 
