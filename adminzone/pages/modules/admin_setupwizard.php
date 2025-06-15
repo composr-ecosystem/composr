@@ -1220,8 +1220,8 @@ class Module_admin_setupwizard
                     'minimum' => '0',
                     'low' => '0',
                     'medium' => '0',
-                    'high' => '90',
-                    'extreme' => '30',
+                    'high' => '365',
+                    'extreme' => '90',
                 ],
                 'minimum_password_length' => [
                     'minimum' => '0',
@@ -1283,7 +1283,7 @@ class Module_admin_setupwizard
                     'minimum' => '1',
                     'low' => '1',
                     'medium' => '1',
-                    'high' => '0',
+                    'high' => '1',
                     'extreme' => '0',
                 ],
                 'url_monikers_enabled' => [

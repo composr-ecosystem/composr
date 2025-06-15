@@ -88,8 +88,8 @@ Generally, we recommend the following security level depending on your use case:
 | Never
 | Never
 | Never
-| 90 days
-| 30 days
+| 1 year (365 days)
+| 1 quarter (90 days)
 |-
 | Minimum password length
 | None
@@ -144,7 +144,7 @@ Generally, we recommend the following security level depending on your use case:
 | On
 | On
 | On
-| Off
+| On
 | Off
 |-
 | Brute force threshold
