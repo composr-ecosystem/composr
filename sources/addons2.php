@@ -147,6 +147,8 @@ function create_addon(string $file, array $files, string $addon_name, string $in
 
     $max_mtime = 0;
 
+    $files_to_include = [];
+
     foreach ($files as $val) {
         if ($val == 'addon.inf') {
             continue;
@@ -171,6 +173,7 @@ function create_addon(string $file, array $files, string $addon_name, string $in
                 $max_mtime = $mtime;
             }
             tar_add_file($tar, $val, $themed_version, $mode, $mtime, true);
+            $files_to_include[] = filter_naughty($val);
         } else {
             if (!file_exists($full)) {
                 continue;
@@ -182,6 +185,7 @@ function create_addon(string $file, array $files, string $addon_name, string $in
                 $max_mtime = $mtime;
             }
             tar_add_file($tar, $val, $full, $mode, $mtime, true);
+            $files_to_include[] = filter_naughty($val);
 
             $full = $file_base . '/' . filter_naughty($val) . '.editfrom';
             if (file_exists($full)) {
@@ -221,9 +225,10 @@ function create_addon(string $file, array $files, string $addon_name, string $in
         'dependencies' => $dependencies,
         'min_cms_version' => $min_cms_version,
         'max_cms_version' => $max_cms_version,
+        'files' => implode("\n", $files_to_include),
     ];
     foreach ($settings as $setting_name => $setting_value) {
-        $addon_inf .= $setting_name . '="' . str_replace("\n", '\n', str_replace('"', '\'', $setting_value)) . '"' . "\n";
+        $addon_inf .= $setting_name . '="' . str_replace(["\n", '"'], ['\n', '\''], $setting_value) . '"' . "\n";
     }
     tar_add_file($tar, 'addon.inf', $addon_inf, 0644, time());
 
