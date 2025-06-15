@@ -332,6 +332,7 @@ function upgrader_output_login(?string $message = null)
     $l_login_info = do_lang('UPGRADER_LOGIN_INFO');
     $l_login_info_pass_forget = do_lang('UPGRADER_LOGIN_INFO_PASS_FORGET');
     $l_login_forgot_password_q = do_lang('UPGRADER_LOGIN_FORGOT_PASSWORD_Q');
+    $l_login_info_generate_upgrader = do_lang('UPGRADER_LOGIN_INFO_GENERATE_UPGRADER');
     if ($message !== null) {
         echo '<p><strong>' . $message . '</strong></p>';
     }
@@ -378,6 +379,16 @@ function upgrader_output_login(?string $message = null)
     <p>
         <button class=\"btn btn-primary btn-scr menu--site-meta--user-actions--login\" type=\"submit\">{$_login_icon} {$l_login}</button>
     </p>
+    ";
+
+    if ($from_version !== null) {
+        echo "<p>
+            {$l_login_info_generate_upgrader}
+        </p>
+        ";
+    }
+
+    echo "
     </form>
     ";
 
@@ -503,9 +514,12 @@ function upgrader_menu_screen() : string
     if ($news_id !== null) {
         require_code('files');
         $fetch_url = get_brand_base_url() . '/data/endpoint.php/cms_homesite/release_details/' . strval($news_id) . '/?from_version=' . urlencode($from_version);
-        $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 30.0]);
+        $news = http_get_contents($fetch_url, ['convert_to_internal_encoding' => true, 'timeout' => 60.0, 'trigger_error' => false]);
 
-        $_details = @json_decode($news, true);
+        $_details = null;
+        if ($news !== null) {
+            $_details = @json_decode($news, true);
+        }
         if (($_details !== null) && ($_details['success'])) {
             $details = $_details['response_data'];
 
