@@ -258,7 +258,6 @@ foreach ($all_downloads_to_add as $i => $d) {
         if (array_key_exists(0, $_last_version)) {
             $last_version = $_last_version[0];
             if ($last_version['id'] != $all_downloads_to_add[$i]['download_id']) {
-                $map['out_mode_id'] = $all_downloads_to_add[$i]['download_id'];
                 $GLOBALS['SITE_DB']->query_update('download_downloads', ['out_mode_id' => $all_downloads_to_add[$i]['download_id']], ['id' => $last_version['id']], '', 1);
             }
         }
@@ -307,6 +306,11 @@ if ($news_id === null) {
 }
 $urls['News: ' . $news_title] = static_evaluate_tempcode(build_url(['page' => 'news', 'type' => 'view', 'id' => $news_id], get_module_zone('news'), [], false, false, true));
 
+// Add this new version to the tracker
+
+require_code('mantis');
+ensure_version_exists_in_tracker($version_dotted);
+
 // Set 'fixed in' in tracker for any issues referenced
 
 $issues_found = [];
@@ -346,6 +350,3 @@ foreach ($urls as $_link_title => $link_url) {
     echo '<li><a href="' . escape_html($link_url) . '">' . $link_title . '</a></li>';
 }
 echo '</ul>';
-
-require_code('mantis');
-ensure_version_exists_in_tracker($version_dotted);

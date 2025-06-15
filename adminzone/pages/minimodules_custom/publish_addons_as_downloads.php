@@ -58,7 +58,7 @@ if ($version_branch === null) {
 }
 
 if (post_param_integer('confirm', 0) == 0) {
-    $preview = 'Publish addon TARs (exports/addons, or uploads/downloads, in that order of priority) to category <kbd>' . escape_html($target_cat) . '</kbd>, version branch <kbd>' . escape_html($version_branch) . '</kbd>? Note, this particular installation of the software should be fully up-to-date, and all installed non-bundled addons should be up-to-date (e.g. their addon registry hooks) before proceeding. Otherwise, wrong / outdated information may be extracted and used on the downloads.';
+    $preview = 'Publish addon TARs (exports/addons, or uploads/downloads, in that order of priority) to category <kbd>' . escape_html($target_cat) . '</kbd>, version branch <kbd>' . escape_html($version_branch) . '</kbd>? Note, the homesite should be fully up-to-date with the latest version of the software, and all installed non-bundled addons should be up-to-date (e.g. their addon registry hooks) before proceeding. Otherwise, wrong / outdated information may be extracted and used on the downloads.';
     $title = get_screen_title('Publish addons as downloads', false);
     $url = get_self_url(false, false);
     return do_template('CONFIRM_SCREEN', ['_GUID' => '06eba6d4c63652892ec737c96ccaf3fa', 'TITLE' => $title, 'PREVIEW' => $preview, 'FIELDS' => form_input_hidden('confirm', '1'), 'URL' => $url]);
