@@ -509,8 +509,6 @@ function get_brand_session(bool $get_hashed = true) : ?string
 
     // Make the request
     $data = cms_http_request($url, ['post_params' => $post, 'timeout' => 6.0, 'trigger_error' => false]);
-    var_dump($data);
-    exit;
     if (($data->message != '200') || ($data->data === null)) {
         return null;
     }
