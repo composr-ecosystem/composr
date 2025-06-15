@@ -107,7 +107,12 @@ function find_country_name_from_iso(?string $iso) : ?string
  */
 function find_region_name_from_iso(?string $iso) : ?string
 {
+    if ($iso === null) {
+        return null;
+    }
+
     global $ISO_CODES;
+
     $subdivision = $ISO_CODES->getSubdivisions()->getByCode($iso);
     if ($subdivision === null) {
         return null;
@@ -557,6 +562,8 @@ function post_param_regions(string $stub, $default, int $filters = INPUT_FILTER_
     $i = 0;
     $values = [];
     $countries_included = [];
+
+    // Parse POSTed values
     do {
         $tmp_name = $stub . '_' . strval($i);
 
@@ -565,22 +572,35 @@ function post_param_regions(string $stub, $default, int $filters = INPUT_FILTER_
         if (($_value === null) && ($i == 0)) {
             return '';
         }
-        if (!cms_empty_safe($_value)) {
+        if (!cms_empty_safe($_value) && ($_value != '')) {
             $_value = cms_strtoupper_ascii($_value);
 
-            // Integrity check; make sure the region / country code is valid. If not, ignore it but attach a message.
-            if ((find_region_name_from_iso($_value) !== null) || (find_country_name_from_iso($_value) !== null)) {
-                $values[] = $_value;
-
-                if (strpos($_value, '-') === false) {
-                    $countries_included[] = $_value;
-                }
-            } else {
-                attach_message(do_lang_tempcode('NOT_VALID_REGION_COUNTRY', escape_html($_value)), 'warn');
-            }
+            $values[] = $_value;
         }
         $i++;
     } while ($_value !== null);
+
+    // If we did not specify any regions, but there is a default, consider the default
+    if ((count($values) == 0) && ($default !== null) && ($default !== false)) {
+        $values = explode("\n", $default);
+    }
+
+    // Integrity check: remove invalid region codes (and give a warning)
+    foreach ($values as $i => $value) {
+        if (($value == STRING_MAGIC_NULL) || ($value == STRING_MAGIC_NULL_BASE64)) {
+            unset($values[$i]);
+            continue;
+        }
+
+        if ((find_region_name_from_iso($value) !== null) || (find_country_name_from_iso($value) !== null)) {
+            if (strpos($value, '-') === false) {
+                $countries_included[] = $value;
+            }
+        } else {
+            unset($values[$i]);
+            attach_message(do_lang_tempcode('NOT_VALID_REGION_COUNTRY', escape_html($value)), 'warn');
+        }
+    }
 
     // Clean out regions that belong in the same countries as full country codes provided
     foreach ($values as $i => $value) {

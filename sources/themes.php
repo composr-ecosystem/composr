@@ -147,7 +147,7 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
                             $missing = !is_file(get_custom_file_base() . '/' . rawurldecode($url)) && !is_file(get_file_base() . '/' . rawurldecode($url));
                         }
                         if ($missing) {
-                            $url = '';
+                            $url = null;
 
                             // Dynamic fixup possible?
                             if ($theme != 'default') {

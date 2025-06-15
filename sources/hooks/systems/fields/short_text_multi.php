@@ -171,7 +171,7 @@ class Hook_fields_short_text_multi
             if (($_value === null) && ($i == 0)) {
                 return $editing ? STRING_MAGIC_NULL : '';
             }
-            if (!cms_empty_safe($_value)) {
+            if (!cms_empty_safe($_value) && ($_value != '')) {
                 if ($value != '') {
                     $value .= "\n";
                 }

@@ -870,6 +870,9 @@ function add_image($title, string $cat, $description, string $url, int $validate
     $id = $GLOBALS['SITE_DB']->query_insert('images', $map, true);
 
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'image', 'content_id' => strval($id), 'region' => $region]);
     }
 
@@ -1028,6 +1031,9 @@ function edit_image(int $id, string $title, string $cat, string $description, st
 
     $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'image', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'image', 'content_id' => strval($id), 'region' => $region]);
     }
 
@@ -1206,6 +1212,9 @@ function add_video(string $title, string $cat, string $description, string $url,
     $id = $GLOBALS['SITE_DB']->query_insert('videos', $map, true);
 
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
 
@@ -1350,6 +1359,9 @@ function edit_video(int $id, string $title, string $cat, string $description, st
 
     $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'video', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'video', 'content_id' => strval($id), 'region' => $region]);
     }
 

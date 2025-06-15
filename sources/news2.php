@@ -353,6 +353,9 @@ function add_news(string $title, string $news, ?string $author = null, int $vali
     $GLOBALS['SITE_DB']->query_update('news', insert_lang_comcode_attachments('news_article', 2, $news_article, 'news', strval($id)), ['id' => $id], '', 1);
 
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'news', 'content_id' => strval($id), 'region' => $region]);
     }
 
@@ -539,6 +542,9 @@ function edit_news(int $id, string $title, string $news, string $author, int $va
 
     $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'news', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'news', 'content_id' => strval($id), 'region' => $region]);
     }
 

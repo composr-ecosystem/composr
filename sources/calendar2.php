@@ -147,6 +147,9 @@ function add_calendar_event(int $type, string $recurrence, ?int $recurrences, in
     $GLOBALS['SITE_DB']->query_update('calendar_events', $comcode_lang_map, ['id' => $id], '', 1);
 
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'event', 'content_id' => strval($id), 'region' => $region]);
     }
 
@@ -349,6 +352,9 @@ function edit_calendar_event(int $id, ?int $type, string $recurrence, ?int $recu
 
     $GLOBALS['SITE_DB']->query_delete('content_regions', ['content_type' => 'event', 'content_id' => strval($id)]);
     foreach ($regions as $region) {
+        if (trim($region) == '') {
+            continue;
+        }
         $GLOBALS['SITE_DB']->query_insert('content_regions', ['content_type' => 'event', 'content_id' => strval($id), 'region' => $region]);
     }
 

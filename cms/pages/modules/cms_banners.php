@@ -457,6 +457,7 @@ class Module_cms_banners extends Standard_crud_module
     public function add_actualisation() : array
     {
         require_code('temporal2');
+        require_code('locations');
 
         $name = post_param_string('banner_codename');
         $caption = post_param_string('caption');
@@ -471,7 +472,7 @@ class Module_cms_banners extends Standard_crud_module
         $validation_time = post_param_date_components_utc('validation_time');
         $b_type = post_param_string('b_type');
         $b_types = isset($_POST['b_types']) ? $_POST['b_types'] : [];
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        $regions = explode("\n", post_param_regions('regions', ''));
         $title_text = post_param_string('title_text', '');
 
         $this->donext_type = $b_type;
@@ -528,6 +529,7 @@ class Module_cms_banners extends Standard_crud_module
     public function edit_actualisation(string $id) : ?object
     {
         require_code('temporal2');
+        require_code('locations');
 
         $orig_submitter = $GLOBALS['SITE_DB']->query_select_value_if_there('banners', 'submitter', ['name' => $id]);
         if ($orig_submitter === null) {
@@ -540,7 +542,7 @@ class Module_cms_banners extends Standard_crud_module
         $validation_time = post_param_date_components_utc('validation_time');
         $b_type = post_param_string('b_type');
         $b_types = isset($_POST['b_types']) ? $_POST['b_types'] : [];
-        $regions = isset($_POST['regions']) ? $_POST['regions'] : [];
+        $regions = explode("\n", post_param_regions('regions', STRING_MAGIC_NULL));
 
         $this->donext_type = $b_type;
 
