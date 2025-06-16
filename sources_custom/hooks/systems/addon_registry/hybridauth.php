@@ -497,7 +497,6 @@ And also Instagram...
             'lang_custom/EN/hybridauth.ini',
             'sources_custom/blocks/main_hybridauth_admin_atoms.php',
             'sources_custom/cns_field_editability.php',
-            'sources_custom/cns_members.php',
             'sources_custom/hooks/systems/actionlog/hybridauth.php',
             'sources_custom/hooks/systems/addon_registry/hybridauth.php',
             'sources_custom/hooks/systems/config/google_allow_signups.php',
