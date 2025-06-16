@@ -6,9 +6,6 @@
 {+START,IF_PASSED,WARNING_DETAILS}
 	{WARNING_DETAILS}
 {+END}
-{+START,IF_PASSED,WARNING_DETAILS}
-	{WARNING_DETAILS}
-{+END}
 
 <p>
 	Use this page to download translations direct from the translation platform (Transifex).<br />
