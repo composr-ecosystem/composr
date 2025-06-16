@@ -349,12 +349,14 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
             warn_exit(do_lang_tempcode('HYBRIDAUTH_NO_EMAIL_ADDRESS', escape_html($provider)));
         }
 
+        // We actually want to allow changing schemes on existing accounts, but attach a message about that
         $existing_scheme = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_password_compat_scheme', ['m_email_address' => $email_address]);
         if (($existing_scheme !== null) && ($existing_scheme !== $provider)) {
             if (is_hybridauth_special_type($existing_scheme)) {
-                warn_exit(do_lang_tempcode('HYBRIDAUTH_CONFLICTING_ACCOUNT_PROVIDER', escape_html($provider), escape_html($existing_scheme), escape_html($email_address)));
+                attach_message(do_lang_tempcode('HYBRIDAUTH_CONFLICTING_ACCOUNT_PROVIDER', escape_html($provider), escape_html($existing_scheme), escape_html($email_address)), 'notice');
+            } else {
+                attach_message(do_lang_tempcode('HYBRIDAUTH_CONFLICTING_ACCOUNT_NATIVE', escape_html($provider), escape_html($email_address)), 'warn');
             }
-            warn_exit(do_lang_tempcode('HYBRIDAUTH_CONFLICTING_ACCOUNT_NATIVE', escape_html($provider), escape_html($email_address)));
         }
     }
 
