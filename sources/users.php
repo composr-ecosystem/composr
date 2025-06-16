@@ -364,6 +364,11 @@ function enforce_temporary_passwords(int $member_id)
         return;
     }
 
+    // Allow logging out
+    if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
+        return;
+    }
+
     require_code('users_active_actions');
     _enforce_temporary_passwords($member_id);
 }
@@ -405,6 +410,11 @@ function enforce_declarations(int $member_id)
         return;
     }
 
+    // Allow logging out
+    if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
+        return;
+    }
+
     // No need to enforce declarations if there aren't any configured
     if (trim(preg_replace('#\n+#', "\n", get_option('join_declarations'))) == '') {
         return;
@@ -443,6 +453,11 @@ function enforce_parental_controls(int $member_id)
 
     // If we are SUed into another member, do not enforce
     if (($GLOBALS['IS_ACTUALLY_ADMIN']) && (get_param_string('keep_su', null) !== null)) {
+        return;
+    }
+
+    // Allow logging out
+    if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
         return;
     }
 
