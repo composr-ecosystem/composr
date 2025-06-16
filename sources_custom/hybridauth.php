@@ -349,9 +349,9 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
             warn_exit(do_lang_tempcode('HYBRIDAUTH_NO_EMAIL_ADDRESS', escape_html($provider)));
         }
 
-        // We actually want to allow changing schemes on existing accounts, but attach a message about that
+        // We actually want to allow changing schemes on existing accounts, but attach a message about that if we can
         $existing_scheme = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'm_password_compat_scheme', ['m_email_address' => $email_address]);
-        if (($existing_scheme !== null) && ($existing_scheme !== $provider)) {
+        if (($existing_scheme !== null) && ($existing_scheme !== $provider) && (function_exists('attach_message'))) {
             if (is_hybridauth_special_type($existing_scheme)) {
                 attach_message(do_lang_tempcode('HYBRIDAUTH_CONFLICTING_ACCOUNT_PROVIDER', escape_html($provider), escape_html($existing_scheme), escape_html($email_address)), 'notice');
             } else {
@@ -406,13 +406,18 @@ function hybridauth_handle_authenticated_account($provider, $user_profile)
     set_session_id('');
 
     // See if they have logged in before - i.e. have a synched account
-    $member_rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_password_compat_scheme' => $provider, 'm_pass_hash_salted' => $id], 'ORDER BY m_join_time DESC,id DESC', 1);
+    if (get_option('one_per_email_address') == '1') {
+        $member_rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_email_address' => $email_address], 'ORDER BY m_join_time DESC,id DESC', 1);
+    } else {
+        $member_rows = $GLOBALS['FORUM_DB']->query_select('f_members', ['*'], ['m_password_compat_scheme' => $provider, 'm_pass_hash_salted' => $id], 'ORDER BY m_join_time DESC,id DESC', 1);
+    }
     if (array_key_exists(0, $member_rows)) {
         $member_row = $member_rows[0];
+        $member_id = $member_row['id'];
         if (is_guest($member_row['id'])) {
             $member_row = null;
+            $member_id = null;
         }
-        $member_id = $member_row['id'];
     } else {
         $member_id = null;
         $member_row = null;
