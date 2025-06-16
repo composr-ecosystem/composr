@@ -258,6 +258,9 @@ function handle_active_login(string $username)
  */
 function handle_active_logout()
 {
+    // Must be done first because we need to know the current member
+    handle_active_logout__login_providers(get_member());
+
     // Kill cookie
     $GLOBALS['FORUM_DRIVER']->eat_login_cookie();
 
@@ -271,6 +274,22 @@ function handle_active_logout()
     if (get_forum_type() == 'cns') {
         require_code('users_active_actions');
         cms_setcookie('last_visit', strval(time()), true);
+    }
+}
+
+/**
+ * Log out of applicable third-party providers.
+ *
+ * @param  MEMBER $member_id The member to log out
+ */
+function handle_active_logout__login_providers(int $member_id)
+{
+    require_code('zones');
+    $hooks = find_all_hook_obs('systems', 'login_providers', 'Hook_login_provider_');
+    foreach ($hooks as $ob) {
+        if (method_exists($ob, 'logout')) {
+            $ob->logout($member_id, $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme'));
+        }
     }
 }
 
@@ -403,6 +422,7 @@ function delete_session(string $session)
 
 /**
  * Delete a session by member ID.
+ * Caution: this does not log the member out of third-party providers.
  *
  * @param  MEMBER $member_id The member ID whose sessions should be deleted
  * @param  ?ID_TEXT $except_session A session to not delete (null: no filter)

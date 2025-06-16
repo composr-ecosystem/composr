@@ -1114,6 +1114,9 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             }
         } else {
             $update['m_password_compat_scheme'] = $password_compat_scheme;
+
+            require_code('users_active_actions');
+            handle_active_logout__login_providers($member_id);
         }
 
         // Process some update code depending on our scheme
@@ -1124,6 +1127,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             case 'plain': // Do not allow; force to bcrypt for security
             case 'md5': // Do not allow; force to bcrypt for security
                 $update['m_password_compat_scheme'] = 'bcrypt';
+                handle_active_logout__login_providers($member_id);
             case 'bcrypt':
             case 'bcrypt_temporary':
             case 'bcrypt_expired':

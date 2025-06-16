@@ -816,6 +816,7 @@ class Module_admin_cns_members
                 // Security: Invalidate the session and prevent the member from logging in
                 require_code('users_active_actions');
                 delete_session_by_member_id($member_id);
+                handle_active_logout__login_providers($member_id);
                 $GLOBALS['FORUM_DB']->query_update('f_members', ['m_password_compat_scheme' => 'pending_deletion'], ['id' => $member_id]);
             }
         }

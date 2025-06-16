@@ -663,7 +663,6 @@ And also Instagram...
             'sources_custom/hybridauth_admin.php',
             'sources_custom/hybridauth_admin_storage.php',
             'sources_custom/users.php',
-            'sources_custom/users_active_actions.php',
             'themes/default/css_custom/_hybridauth_button.css',
             'themes/default/css_custom/hybridauth.css',
             'themes/default/templates_custom/BLOCK_MAIN_HYBRIDAUTH_ADMIN_ATOMS.tpl',

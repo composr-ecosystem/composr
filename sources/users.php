@@ -311,6 +311,7 @@ function get_member(bool $quick_only = false) : int
     $GETTING_MEMBER = false;
 
     // We call this to ensure any HTTP-auth specific code has a chance to run
+    // TODO: Not elegant; find another way to do this
     is_httpauth_login();
 
     if ($member_id !== null) {
