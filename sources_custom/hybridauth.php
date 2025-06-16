@@ -469,7 +469,7 @@ function hybridauth_create_authenticated_account($provider, $id, $email_address,
 
     // Actualiser...
 
-    // If there's a conflicting username, we may need to change it  [we don't do in code branch above, as cns_member_external_linker_ask already handles it]
+    // If there's a conflicting username, we may need to change it [we don't do in code branch above, as cns_member_external_linker_ask already handles it]
     $username = process_username_discriminator($username);
 
     // Check RBL's/stopforumspam
@@ -492,56 +492,97 @@ function hybridauth_update_authenticated_account($provider, $id, $member_row, $e
 {
     $member_id = $member_row['id'];
 
-    $update_map = [];
-
     // Email
+    $u_email_address = null;
     if (get_option('hybridauth_sync_email') == '1') {
         if (!empty($email_address)) {
-            $update_map['m_email_address'] = $email_address;
+            $u_email_address = $email_address;
         }
     }
 
     // Username
+    $u_username = null;
     if (get_option('hybridauth_sync_username') == '1') {
         $test = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_members', 'id', ['m_username' => $username]);
         if ($test === null) { // Make sure there's no conflict yet the name has changed
-            $update_map['m_username'] = $username;
+            $u_username = $username;
         }
     }
 
     // Avatar/photos
+    $u_avatar_url = null;
     if (get_option('hybridauth_sync_avatar') == '1') {
         if (!empty($photo_url)) {
             $test = $member_row['m_avatar_url'];
             if (($test == '') || (!url_is_local($test)) || (substr($test, 0, strlen(get_custom_base_url()) + 1) != get_custom_base_url() . '/')) {
-                $update_map['m_avatar_url'] = $photo_url;
+                $u_avatar_url = $photo_url;
             }
 
             $test = $member_row['m_photo_url'];
             if (($test == '') || (!url_is_local($test)) || (substr($test, 0, strlen(get_custom_base_url()) + 1) != get_custom_base_url() . '/')) {
-                $update_map['m_photo_url'] = $photo_url;
+                $u_avatar_url = $photo_url;
             }
         }
     }
 
     // Language
+    $u_language = null;
     if ((!empty($language)) && (does_lang_exist($language)) && ($member_row['m_language'] == '')) {
-        $update_map += ['m_language' => $language];
+        $u_language = $language;
     }
 
     // DOB
+    $u_dob_day = null;
+    $u_dob_month = null;
+    $u_dob_year = null;
     if (($dob_day !== null) && ($dob_month !== null) && ($dob_year !== null) && ($member_row['m_dob_day'] === null)) {
-        $update_map += ['m_dob_day' => $dob_day, 'm_dob_month' => $dob_month, 'm_dob_year' => $dob_year];
+        $u_dob_day = $dob_day;
+        $u_dob_month = $dob_month;
+        $u_dob_year = $dob_year;
     }
 
     // Run update
-    $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['m_password_compat_scheme' => $provider, 'm_pass_hash_salted' => $id], '', 1);
-
-    // Caching
-    if ((array_key_exists('m_username', $update_map)) && ($username != $member_row['m_username'])) {
-        require_code('cns_members_action2');
-        update_member_username_caching($member_id, $username);
-    }
+    require_code('cns_members_action2');
+    cns_edit_member(
+        $member_id,
+        $u_username,
+        $id,
+        $u_email_address,
+        null,
+        $u_dob_day,
+        $u_dob_month,
+        $u_dob_year,
+        null,
+        null,
+        null,
+        $u_language,
+        null,
+        null,
+        null,
+        $u_avatar_url,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        false,
+        $provider,
+        '',
+        null,
+        true
+    );
 
     return $member_id;
 }
