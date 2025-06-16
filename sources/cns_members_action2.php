@@ -1076,6 +1076,8 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
 
     $old_email_address = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_email_address');
     $old_username = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_username');
+    $old_password_hashed = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_pass_hash_salted');
+    $old_password_compat_scheme = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
 
     // Check for invalid or used e-mails
     if ($check_correctness) {
@@ -1417,7 +1419,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
     // E-mail and notify to inform of sensitive changes (username, password, e-mail, or phone number)
     $username_changed = ($username !== null) && ($username !== $old_username);
     $email_address_changed = ($email_address !== null) && ($email_address !== $old_email_address);
-    $password_changed = ($password !== null);
+    $password_changed = (array_key_exists('m_pass_hash_salted', $update)) && ($update['m_pass_hash_salted'] != $old_password_hashed);
     $phone_number_changed = ($custom_fields !== null) && ($phone_number_field !== null) && ($phone_number !== null) && ($old_phone_number !== $phone_number);
     if (($username_changed || $email_address_changed || $password_changed || $phone_number_changed)) {
         $current_username = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
