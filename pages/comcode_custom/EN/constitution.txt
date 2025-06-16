@@ -162,8 +162,9 @@ Effective after the first stable release of Composr CMS version 11, a vote [i]mu
  - The change is small and would be implemented as a patch release
  - The change pertains to a non-bundled addon / theme (except if bundling a non-bundled addon, or un-bundling a bundled addon)
   - In this case, the author of the addon has full governing jurisdiction over their addon and not the Composr community at large
- - The change pertains to the tutorials (except when changing a Composr standard, e.g. the codebook)
- - The feature request has been sponsored via points or financial donations, and a sponsorship amount has been listed on the issue by a core developer, and the total amount of sponsorships satisfies the sponsorship amount listed on the issue
+ - The change pertains to the tutorials (except when changing a Composr standard, e.g. the codebook; this requires a vote)
+ - The feature request has been sponsored via a financial contribution (e.g. a client is paying a developer to implement the feature)
+ - The feature request lists a sponsorship amount and has received enough sponsor points to meet the amount
 
 A vote [i]may[/i] be conducted for other reasons, such as issues or suggestions raised by the Composr community, but it is not required unless requested by the person who brought it up.
 

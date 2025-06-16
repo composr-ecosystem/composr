@@ -78,6 +78,7 @@ Here are the highlights of our major versions over the years:
 
 [title="2"]Composr CMS[/title]
 [surround]
+[media width="150" description="Composr CMS (v11) logo" float="right"]uploads/website_specific/cms_homesite/logos/composr_full_logo_11.png[/media]
 [media width="150" description="Composr CMS (v10) logo" float="right"]uploads/website_specific/cms_homesite/logos/composr_full_logo.png[/media]
 [list]
 [*][b]v10[/b] [i](January 2016)[/i]
