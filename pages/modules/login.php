@@ -292,6 +292,7 @@ class Module_login
 
     /**
      * The actualiser for logging out.
+     * Actually, the true actualiser is located in handle_logins.
      *
      * @return Tempcode The UI
      */

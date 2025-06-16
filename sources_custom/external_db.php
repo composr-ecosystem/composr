@@ -135,6 +135,9 @@ function external_db_user_sync(int $member_id, array $record)
     //      This code has been originally written with the intent of providing a stepping stone, so we are not all that concerned about synching stuff back
     //      You could of course edit the other system to re-sync with Composr upon login
 
+    require_code('users_active_actions');
+    handle_active_logout__login_providers($member_id);
+
     $GLOBALS['FORUM_DB']->query_update('f_members', $update_map, ['id' => $member_id], '', 1);
 }
 

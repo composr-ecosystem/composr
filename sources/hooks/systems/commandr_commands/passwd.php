@@ -45,6 +45,7 @@ class Hook_commandr_command_passwd
             return ['', '', '', do_lang('NO_CNS')];
         }
 
+        require_code('users_active_action');
         require_code('cns_members_action');
         require_code('cns_members_action2');
 
@@ -74,6 +75,8 @@ class Hook_commandr_command_passwd
             $update['m_pass_salt'] = get_secure_random_string(32, CRYPT_BASE64); // Prevent rainbow table attacks by changing the salt
             $update['m_pass_hash_salted'] = ratchet_hash($parameters[0], $update['m_pass_salt']);
         }
+
+        handle_active_logout__login_providers($member_id);
 
         $GLOBALS['FORUM_DB']->query_update('f_members', $update, ['id' => $member_id], '', 1);
         return ['', '', do_lang('SUCCESS'), ''];
