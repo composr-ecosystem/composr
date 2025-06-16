@@ -217,10 +217,13 @@ class Hook_profiles_tabs_edit_settings
                 $sensitive_change_alert = true;
             }
 
-            if ($password !== null) { // Changing password? Also generate a new salt
+            // Changing password? Also generate a new salt, and force scheme to bcrypt to disassociate from third-party auth
+            if ($password !== null) {
                 $salt = '';
+                $password_compat_scheme = 'bcrypt';
             } else {
                 $salt = null;
+                $password_compat_scheme = null;
             }
 
             cns_edit_member(
@@ -258,7 +261,7 @@ class Hook_profiles_tabs_edit_settings
                 $probation_expiration_time, // probation_expiration_time
                 null, // is perm_banned
                 true, // Check correctness
-                null, // Password scheme
+                $password_compat_scheme, // Password scheme (force to bcrypt to disassociate external authorizations if password was provided)
                 $salt, // Salt
                 null, // Join time
                 $sensitive_change_alert // Email on sensitive changes

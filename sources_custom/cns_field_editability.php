@@ -37,8 +37,12 @@ function cns_field_editable(string $field_name, string $special_type) : bool
                     }
                     break;
 
+                // Actually, we want to allow changing password to disassociate the account from Hybridauth
+                /*
                 case 'password':
                     return false;
+                    break;
+                */
 
                 case 'email':
                     if (get_option('hybridauth_sync_email') == '1') {
