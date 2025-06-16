@@ -1,40 +1,42 @@
-﻿[semihtml]<h1 class="screen-title" itemprop="name"><a id="title--CommunitySites"></a> Community Site Showcase</h1>
+﻿[title]Community Site Showcase[/title]
+These are some of the Composr CMS v11 sites which have opted in to be featured on composr.app. If you would like your site to be featured, select the applicable option in step 2 when installing your Composr site. Or, if you already installed your site, you can change your setting in the Admin Zone > Setup > Configuration > Privacy / legal compliance options.
 
-<p>These are some of the sites who have opted in to be featured on composr.app. If you would like your site to be featured, select the applicable option in step 2 when installing your Composr site. Or, if you already installed your site, you can change your setting in the Admin Zone > Setup > Configuration > Privacy / legal compliance options.</p>
+This does not immediately put your site in the showcase; the Board Members must first review your site for compliance before it is listed.
 
-<p>Please be aware of the following:</p>
+[box="Disclaimers"]
+We are not responsible for the content of these sites, and we do not regularly monitor for their content or even if they still work (but please report broken or problematic sites by clicking the screenshot and then, on the catalogue entry page at the bottom, click "Report This").
 
-<ul>
-	<li>We are not responsible for the content of these sites, and we do not regularly monitor for their content or even if they still work (but please report broken or problematic sites by clicking the screenshot and then, on the catalogue entry page at the bottom, click "Report This").</li>
-	<li>The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app nor the community.</li>
-	<li>Composr CMS makes it easy for anyone to make any kind of website. You may find sites here without professional designs or with controversial topics.
-	<ul>
-		<li>
-			That being said, we do apply a level of moderation for our site showcase as we do not want to feature content which could get us in trouble. If your site contains any of the following, we probably will not feature it even if you opt in:
-			<ul>
-				<li>Selling, distribution, or purchasing of illegal content, products, or services</li>
-				<li>Viruses, trojans, malware, spyware, ransomware, adware, spam, or scams / phishing attacks (whether intentional or not; make sure your ads aren't doing this!)</li>
-				<li>Copyright, trademark, or intellectual property infringement</li>
-				<li>Pornography, violence, or any content not appropriate for a general audience</li>
-				<li>Hate speech (direct threats or plans of harm to others)</li>
-				<li>Patently offensive content (e.g. would offend the average person), such as bigotry, significant blasphemy, or significant profanity</li>
-				<li>Anything that would significantly impede on the user experience (e.g. excessive advertising)</li>
-				<li>Deliberate spreading of false or misleading information without a clear disclaimer of such</li>
-			</ul>
-		</li>
-		<li>
-			Additionally, we may not feature your site if any of the following hold true:
-			<ul>
-				<li>Your base URL redirects to another URL (you should update the base URL in your <kbd>_config.php</kbd> instead of making a redirection)</li>
-				<li>Your site is closed (until we see that it is open) or it has a lot of bugs</li>
-				<li>You did not opt in to be featured through your Admin Zone or installer, or you turned telemetry off (we cannot prove you own the site otherwise)</li>
-				<li>You are not running your site under SSL/TLS (HTTPS) or you do not have a valid certificate</li>
-			</ul>
-		</li>
-	</ul>
-	</li>
-</ul>
+The views and opinions expressed on these sites do not reflect the views and opinions of Composr CMS / composr.app nor the community.
 
-<p>[block param="3" display_type="GRID" sorting="1" max="12" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]</p>
+Composr CMS makes it easy for anyone to make any kind of website. You may find sites here without professional designs or with controversial topics.
+[/box]
 
-<p>[block]main_comcode_page_children[/block]</p>[/semihtml]
+[block param="3" display_type="GRID" sorting="1" max="12" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+
+[title="2"]Compliance Requirements[/title]
+Sites containing any of the following types of content anywhere on it are not likely to be featured:
+ - Selling, distribution, or purchasing of illegal content, products, or services
+ - Viruses, trojans, malware, spyware, ransomware, adware, spam, or scams / phishing attacks (whether intentional or not; make sure your ads aren't doing this!)
+ - Copyright, trademark, or intellectual property infringement
+ - Anything that would significantly impede on the user experience (e.g. excessive advertising, lots of bugs, a broken theme)
+ - Deliberate spreading of false or misleading information without a clear disclaimer of such
+ - Hate speech (direct threats or plans of harm to specific individuals or groups)
+
+Sites containing any of the following types of content without proper restrictions put in place will not likely get featured:
+ - Pornography, violence, or any content not appropriate for children
+  - This must be restricted so that age verification is required to see it (not just a prompt, but an actual verification process)
+ - Patently offensive content (e.g. would offend the average person), such as bigotry, significant blasphemy, or significant profanity
+  - This should not be visible to anyone viewing as a guest
+
+Additionally, sites must comply with the following to be featured:
+ - Your site must be running Composr CMS version 11, and you must have opted in your site to be featured in your [page="_SEARCH:tut_telemetry"]telemetry settings[/page]
+ - Your configured Composr base URL must not redirect to another URL
+  - if it does, update your base URL in [tt]_config.php[/tt] and then turn your [page="_SEARCH:tut_telemetry"]telemetry settings[/page] off and back on to update our site
+ - Your site must be open to the public and not in a "coming soon" state
+  - Requiring log-in to view most of the site is acceptable; the point is that we can view the site and log in
+ - Your site must be running under HTTPS (SSL/TLS encryption)
+
+[title="2"]Not Seeing Your Site?[/title]
+Feel free to contact a [page="_SEARCH:board_members"]Board Member[/page] if you opted in for your site to be featured but do not see it listed after a week.
+
+[block]main_comcode_page_children[/block]

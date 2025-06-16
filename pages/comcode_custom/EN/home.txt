@@ -24,13 +24,13 @@ Composr is embraced by a wide variety of industries, from Fortune-100 companies,
 [*][abbr="Supports HTML5 and XHTML markup"]HTML5[/abbr], [abbr="Full design flexibility using templating and CSS3"]CSS3[/abbr], [abbr="Acclaimed accessibility, including WCAG and ATAG compliance (for the default themes)"]WCAG[/abbr]
 |}
 
-[block param="5" member_based="0" display_slides="0" display_summaries="3" display_briefs="5" blogs="0" zone="_SEARCH" title="Latest v11 News" show_in_full="0" no_links="0" attach_to_url_filter="0" render_if_empty="1" start="0" pagination="0" as_guest="0" optimise="0" check="1" render_mode="grid" slider_interval="6000" news_articles_per_slide="3"]main_news[/block]
+[block param="5" member_based="0" display_slides="0" display_summaries="3" display_briefs="5" blogs="0" zone="_SEARCH" title="Latest News" show_in_full="0" no_links="0" attach_to_url_filter="0" render_if_empty="1" start="0" pagination="0" as_guest="0" optimise="0" check="1" render_mode="grid" slider_interval="6000" news_articles_per_slide="3"]main_news[/block]
 
 [title="2"]Get an Early Preview of Composr CMS v11[/title]
 Check out these sites running Composr CMS v11 who opted in to be featured:
 
 [block param="3" sorting="0" max="12" start="0" pagination="1" as_guest="0" check="0"]main_cc_embed[/block]
 
-You can opt-in (or out) to have your v11 site featured when installing (on step 2) or in your configuration in the Admin Zone > Setup > Configuration > Privacy / legal compliance options. See the [page="_SEARCH:community-sites"]site showcase[/page] for more information.
+If you have a Composr CMS v11 site, you can opt-in (or out) to have it featured when installing (on step 2) or in your configuration in the Admin Zone > Setup > Configuration > Privacy / legal compliance options. See the [page="_SEARCH:community-sites"]site showcase[/page] for more information.
 
-Remember, version 11 is still in beta. We do not recommend running it in production unless you know what you are doing and are aware of the responsibilities and implications (especially security and stability).
+Remember, version 11 is still in beta. We do not recommend running it in production unless you are aware of the responsibilities and implications (e.g. you will probably have some bugs which could affect operations or even corrupt data, and v11 might have undetected security issues).
