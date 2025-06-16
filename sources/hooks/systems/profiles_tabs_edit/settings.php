@@ -211,11 +211,6 @@ class Hook_profiles_tabs_edit_settings
             }
 
             $old_groups = $GLOBALS['FORUM_DRIVER']->get_members_groups($member_id_of);
-            if (($member_id_viewing == $member_id_of) || ((has_privilege($member_id_viewing, 'member_maintenance')) && (post_param_integer('sensitive_change_alert', 0) == 0))) {
-                $sensitive_change_alert = false;
-            } else {
-                $sensitive_change_alert = true;
-            }
 
             // Changing password? Also generate a new salt, and force scheme to bcrypt to disassociate from third-party auth
             if ($password !== null) {
@@ -264,7 +259,7 @@ class Hook_profiles_tabs_edit_settings
                 $password_compat_scheme, // Password scheme (force to bcrypt to disassociate external authorizations if password was provided)
                 $salt, // Salt
                 null, // Join time
-                $sensitive_change_alert // Email on sensitive changes
+                true // Email on sensitive changes
             );
 
             // Run form handlers for editing profile

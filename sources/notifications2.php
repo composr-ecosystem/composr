@@ -188,13 +188,8 @@ function notifications_ui(int $member_id_of) : object
         }
 
         // Treat as a high-impact change and send an e-mail alert if any changes were made
-        if ((get_member() == $member_id_of) || ((has_privilege(get_member(), 'member_maintenance')) && (post_param_integer('sensitive_change_alert', 0) == 0))) {
-            $sensitive_change_alert = false;
-        } else {
-            $sensitive_change_alert = true;
-        }
         if ($changes_made) {
-            _dispatch_notifications_notification($member_id_of, $sensitive_change_alert);
+            _dispatch_notifications_notification($member_id_of, true);
         }
     }
 
