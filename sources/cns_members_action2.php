@@ -852,7 +852,6 @@ function cns_get_member_fields_settings(bool $mini_mode = true, string $special_
                 }
 
                 $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '03452238c372edd0b11c11a05feb6267', 'TITLE' => do_lang_tempcode('ACTIONS')]));
-                $fields->attach(form_input_tick(do_lang_tempcode('SENSITIVE_CHANGE_ALERT'), do_lang_tempcode('DESCRIPTION_SENSITIVE_CHANGE_ALERT'), 'sensitive_change_alert', true));
             }
         }
 
