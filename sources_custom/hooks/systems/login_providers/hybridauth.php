@@ -43,12 +43,7 @@ class Hook_login_provider_hybridauth
             return $member_id;
         }
 
-        // Try logging in
-        if (
-            (($member_id === null) || (is_guest($member_id))) && // Is a guest
-            (!running_script('hybridauth')) && // Not running the hybridauth script
-            ((get_page_name() == 'join') || ((currently_logging_in()) && (get_param_string('type', 'browse') != 'logout'))) // On a login screen (except logout)
-        ) {
+        if ((($member_id === null) || (is_guest($member_id))) && (!running_script('hybridauth')) && (get_page_name() == 'join') || (currently_logging_in())) {
             require_code('hybridauth');
             require_lang('hybridauth');
 
@@ -68,9 +63,12 @@ class Hook_login_provider_hybridauth
 
                     $success = $adapter->isConnected();
                     if ($success) {
-                        $userProfile = $adapter->getUserProfile();
-
-                        $member_id = hybridauth_handle_authenticated_account($provider, $userProfile);
+                        if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
+                            $adapter->disconnect();
+                        } else {
+                            $userProfile = $adapter->getUserProfile();
+                            $member_id = hybridauth_handle_authenticated_account($provider, $userProfile);
+                        }
                     }
                 } catch (Exception $e) {
                     $adapter->disconnect();
@@ -87,51 +85,5 @@ class Hook_login_provider_hybridauth
         }
 
         return $member_id;
-    }
-
-    /**
-     * Standard logout provider hook.
-     *
-     * @param  MEMBER $member_id The member to be logged out
-     * @param  ID_TEXT $compat_scheme The compat scheme to be logged out
-     */
-    public function logout(int $member_id, string $compat_scheme)
-    {
-        if (!addon_installed('hybridauth')) {
-            return;
-        }
-
-        // Cannot log other members out in Hybridauth; can only log ourselves out
-        if ($member_id != get_member(true)) {
-            return;
-        }
-
-        require_code('hybridauth');
-
-        $is_hybridauth_account = is_hybridauth_special_type($compat_scheme);
-        if (!$is_hybridauth_account) {
-            return;
-        }
-
-        $before_type_strictness = ini_get('ocproducts.type_strictness');
-        cms_ini_set('ocproducts.type_strictness', '0');
-        $before_xss_detect = ini_get('ocproducts.xss_detect');
-        cms_ini_set('ocproducts.xss_detect', '0');
-
-        $hybridauth = initiate_hybridauth();
-
-        try {
-            $adapter = $hybridauth->getAdapter($compat_scheme);
-            $adapter->disconnect();
-        } catch (Hybridauth\Exception $e) {
-            // Silent failure
-        }
-
-        if ($before_type_strictness !== false) {
-            cms_ini_set('ocproducts.type_strictness', $before_type_strictness);
-        }
-        if ($before_xss_detect !== false) {
-            cms_ini_set('ocproducts.xss_detect', $before_xss_detect);
-        }
     }
 }

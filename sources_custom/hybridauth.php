@@ -645,3 +645,15 @@ function hybridauth_log_in_authenticated_account($member_id)
     require_code('users_inactive_occasionals');
     create_session($member_id, 1, (isset($_COOKIE[get_member_cookie() . '_invisible'])) && ($_COOKIE[get_member_cookie() . '_invisible'] == '1')); // This will mark it as confirmed
 }
+
+/**
+ * Find whether a member is bound to Hybridauth authentication.
+ *
+ * @param  MEMBER $member_id The member
+ * @return boolean The answer
+ */
+function cns_is_hybridauth_member(int $member_id) : bool
+{
+    $scheme = $GLOBALS['CNS_DRIVER']->get_member_row_field($member_id, 'm_password_compat_scheme');
+    return is_hybridauth_special_type($scheme);
+}
