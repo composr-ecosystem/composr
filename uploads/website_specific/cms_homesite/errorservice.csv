@@ -15,11 +15,11 @@ Lost connection to MySQL server,MySQL was not able to serve a Composr database r
 MySQL server has gone away,MySQL was not able to serve a Composr database request.,"There are three likely possible causes:
 1) The MySQL server is overloaded
 2) The web server is overloaded
-3) You have a particularly large amount of data (less likely)",Contact your webhost or MySQL configuration.
-Got packet bigger than 'max_allowed_packet' bytes,MySQL was not able to serve a particularly large Composr database request.,It is likely you're trying to insert a very large amount of data into a Composr entry.,Consider breaking your data over a number of separate entries / queries.
+3) You have a particularly large amount of data (less likely)",Contact your webhost or MySQL configuration. Note that Composr usually tries to establish the connection again a few times. So it is unusual if you get this error and probably points to a problem.
+Got packet bigger than 'max_allowed_packet' bytes,MySQL was not able to serve a particularly large Composr database request.,It is likely you're trying to insert a very large amount of data into a Composr entry.,"Consider breaking your data over a number of separate entries / queries in the code. If this happened in core Composr code, and your max_allowed_packet is greater than or equal to 16M, then please report it to the tracker."
 Can't connect to local MySQL server through socket,Composr cannot connect to the MySQL database.,"It is likely that either:
 1) MySQL is no longer running on the server.
-2) The MySQL server is (no longer) running on the same physical server as your web server (""""localhost"""").","If you have just moved/installed your website then you likely entered the wrong database hostname. Your webhost, or webhosting control panel, likely provides documentation indicating what the correct setting is.
+2) The MySQL server is (no longer) running on the same physical server as your web server (""localhost"").","If you have just moved/installed your website then you likely entered the wrong database hostname. Your webhost, or webhosting control panel, likely provides documentation indicating what the correct setting is.
 
 Otherwise, contact your webhost."
 Can't connect to MySQL server on xxx,Composr cannot connect to the MySQL database.,"It is likely that either:
@@ -36,19 +36,20 @@ Access denied for user xxx,"Composr cannot connect to the MySQL server with the 
 1) You have configured Composr to use the wrong MySQL username and/or password.
 2) The MySQL username and/or password you configured have been changed or removed.
 3) You have moved your website to a new web server and not correctly updated the Composr configuration and/or set up your database.
-4) If your MySQL server and web server are different physical machines it is important MySQL is configured to allow connections from the web server machine (or all machines) [i]for your configured username[/i]. This is not the default configuration.","If you have just moved/installed your website then you likely entered the wrong username/password. Your webhosting control panel likely provides documentation an interface where you can configure MySQL usernames and password. Note that on some webhosts you enter a username but it gets given a prefix - if this is the case it should be indicated in the webhosting control panel.
+4) If your MySQL server and web server are different physical machines it is important MySQL is configured to allow connections from the web server machine (or all machines) [i]for your configured username[/i]. This is not the default configuration.
+5) The authentication scheme was recently changed on the database server and the passwords were not updated to match the new scheme.","If you have just moved/installed your website then you likely entered the wrong username/password. Your webhosting control panel likely provides documentation an interface where you can configure MySQL usernames and password. Note that on some webhosts you enter a username but it gets given a prefix - if this is the case it should be indicated in the webhosting control panel.
 
 If you have recently changed your MySQL username/password or moved web servers you can edit your configured 'Installation Options'. Call up the '/config_editor.php' script (by URL) and log in to it. You can update your configuration from there.
 
 If your MySQL server and web server are different physical machines then you will need to either change that situation, or make some changes to your MySQL credentials. It may be as simple as choosing to allow 'Any host' to make connections. Some webhosting control panels allow you to change these settings."
-Access denied for user xxx to database xxx,Composr cannot connect to the MySQL database with the configured username and password.,"You are likely using correct settings to connect to your database, but MySQL has not been configured correctly.",Make sure that the username you have configured has access to the database you have configured. You will be able to do this from your webhosting control panel or a tool such as PhpMyAdmin. You could also do this through raw SQL (consult the MySQL documentation). This is not automatic even if the username and database name are the same.
+Access denied for user xxx to database xxx,Composr cannot connect to the MySQL database with the configured username and password.,"While the given username and password is correct, that user does not have privileges to access the database.",Make sure that the username you have configured has access to the database you have configured. You will be able to do this from your webhosting control panel or a tool such as PhpMyAdmin. You could also do this through raw SQL (consult the MySQL documentation). This is not automatic even if the username and database name are the same.
 Unknown database xxx,The configured database that Composr should use is not present on the MySQL server.,"This could happen for a number of reasons:
 1) You have configured Composr to use the wrong MySQL database.
 2) The MySQL database you configured has been renamed or removed.
 3) You have moved your website to a new web server and not correctly updated the Composr configuration and/or set up your database.","If you have just moved/installed your website then you likely entered the wrong database name. Your webhosting control panel likely provides documentation an interface where you can manage your MySQL databases. Note that on some webhosts you enter a database name but it gets given a prefix - if this is the case it should be indicated in the webhosting control panel.
 You can edit your configured 'Installation Options'. Call up the '/config_editor.php' script (by URL) and log in to it. You can update your configuration from there."
-The PHP XML extension on your server is needed to use this feature,"Composr is trying to work with [abbr=""""eXtensible Markup Language""""]XML[/abbr] but your web server is not capable of doing it in the standard way.",The web server's PHP configuration does not enable the 'XML' extension. It is usually enabled by default.,"Consult with your webhost, choose a different webhost, or configure your PHP settings to enable the XML extension (and restart)."
-The PHP FTP extension on your server is needed to use this feature,Composr is trying to write some files and it does not have access to them.,"To access files for writing Composr needs the server to be configured as 'suEXEC' or it needs to be able to use an [abbr=""""File Transfer Protocol""""]FTP[/abbr] connection to do the work. Neither of these options are available.
+The PHP XML extension on your server is needed to use this feature,"Composr is trying to work with [abbr=""eXtensible Markup Language""]XML[/abbr] but your web server is not capable of doing it in the standard way.",The web server's PHP configuration does not enable the 'XML' extension. It is usually enabled by default.,"Consult with your webhost, choose a different webhost, or configure your PHP settings to enable the XML extension (and restart)."
+The PHP FTP extension on your server is needed to use this feature,Composr is trying to write some files and it does not have access to them.,"To access files for writing Composr needs the server to be configured as 'suEXEC' or it needs to be able to use an [abbr=""File Transfer Protocol""]FTP[/abbr] connection to do the work. Neither of these options are available.
 
 [i]Note that this advice is not relevant for Windows servers.[/i]","Consult with your webhost. Let them know you need either:
  - PHP to have the FTP extensions enabled, and an FTP server to be running
@@ -59,30 +60,30 @@ The TAR file xxx is corrupt,"You tried to use a corrupted TAR file, such as a co
 A block file is missing: xxx,You have referenced a file that does not exist.,It is likely you used the Comcode or Tempcode block tag but you used the name of a block that is non-existent. It is also possible you referenced a real block but then later uninstalled the addon that contains that block.,"Correct the name of the block referenced, or remove the appropriate Comcode or Tempcode, or reinstall the block (or addon) in the Admin Zone > Structure > Addons > Module management."
 A template file is missing: xxx,Some Composr code referenced a file that does not exist.,"It is likely the file did not upload correctly when you installed/upgraded, or you mistyped the name of the template.","You can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 A language file for language xxx is missing: xxx,"Some Composr code, or a template, referenced a file that does not exist.","It is likely the file did not upload correctly when you installed/upgraded, or you mistyped the name of the language file, or the file does not exist for that particular language pack.","You can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 A source code file is missing: xxx,Some Composr code referenced a file that does not exist.,"It is likely the file did not upload correctly when you installed/upgraded, or you mistyped the name of the file.","You can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 A text file for language is missing: xxx,Some Composr code referenced a file that does not exist.,It is likely the file did not upload correctly when you installed/upgraded.,"You can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 A language string is missing: xxx,"Some Composr code, or a template, referenced a language string that does not exist.","If you have recently edited a template you may have accidentally created the problem by referencing a non-existent language string, or a language string that isn't in a file that gets loaded where the template is used. Language strings are referenced in templates like [tt]{!EXAMPLE}[/tt].
 
 Otherwise, it is possible a language file did not fully upload when you upgraded/installed.","If you recognise that the error might stem from a template change you have made then fix your language string reference. You may also need to clear the language and template caches under Admin Zone > Tools > Cleanup tools.
 
 Otherwise you can use the 'Integrity checker' option within the upgrader to find a list of all corrupt files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 "A parameter, xxx, is referenced in the template, xxx, but not passed",A template referenced a parameter that the template is not actually given from the source code (or referring template).,"If you have recently edited a template you may have accidentally created the problem by referencing a non-existent parameter. Parameters are referenced in templates like [tt]{EXAMPLE}[/tt] and different templates receive different parameters (e.g. do_template in PHP code). You may have copy&pasted some code from one template into another and not realised it was not compatible.
 
 Otherwise, you may have found a bug. It is possible that the software may neglect to pass a parameter in certain usages of a template. No errors of this type are left unfixed, but it is a common problem.",If you recognise that the error might stem from a template change you have made then fix your template. Otherwise submit an issue to the tracker so it can be fixed.
 The requested resource does not exist,"A resource (usually a piece of content or a category of content) is being referenced or linked to by name/identifier, but there is no such resource.","Common causes include:
 1) If you delete something and then use your back button to try and access what you just deleted.
 2) If you follow a link to something that has since been deleted.
-3) A search engine bot is crawling your site and checking for resources (the bot should correct itself for ones that it finds missing).
+3) A search engine bot is crawling your site and checking for resources (the bot should correct itself for ones that it finds missing; but some problematic bots might not).
 
 It is also possible that there is some form of corruption in the database. For example, an entry says it is in a category that doesn't actually exist.","Fix any invalid links if applicable, or set up a URL redirect to point that link somewhere else.
 
@@ -90,12 +91,18 @@ If you believe you have found a bug in the software, report it to the issue trac
 The requested resource (xxx) does not exist,"A resource (usually a piece of content or a category of content) is being referenced or linked to by name/identifier, but there is no such resource.","Common causes include:
 1) If you delete something and then use your back button to try and access what you just deleted.
 2) If you follow a link to something that has since been deleted.
-3) A search engine bot is crawling your site and checking for resources (the bot should correct itself for ones that it finds missing).
+3) A search engine bot is crawling your site and checking for resources (the bot should correct itself for ones that it finds missing; but some problematic bots might not).
 
 It is also possible that there is some form of corruption in the database. For example, an entry says it is in a category that doesn't actually exist.","Fix any invalid links if applicable, or set up a URL redirect to point that link somewhere else.
 
 If you believe you have found a bug in the software, report it to the issue tracker."
-Table 'xxx' is marked as crashed and ,There is a corrupt MySQL database table. Composr needs this table to function.,"Something outside the control of Composr caused this error, such as a hard disk fault, a power surge, a power cut, the forced termination of a PHP process, or a forced computer reset.","Your webhost will almost certainly provide a webhosting control panel with a tool called 'phpMyAdmin' (it may be called something else, such as 'Database management').
+"A resource, xxx, requested within some Comcode (the xxx tag) does not exist","A resource (usually a piece of content or a category of content) is being referenced or linked to by name/identifier in a Comcode tag, but there is no such resource.","You or someone else is referencing some resource within a Comcode tag, but that resource was later deleted or moved. Or, there was a typo.","Fix any invalid Comcode tags if applicable.
+
+If you believe you have found a bug in the software, report it to the issue tracker."
+"A link was posted here (xxx tag, xxx) but it appears to be a broken link","A URL is being referenced or linked to in a Comcode tag, but the URL is broken or cannot be accessed.","You or someone else is referencing a URL within a Comcode tag, but the URL is broken. Or, there was a typo.","Fix any invalid Comcode tags if applicable. Note that URLs which redirect to other URLs (including redirecting http to https) will also trigger this error; you should update old URLs with the new one.
+
+If you believe you have found a bug in the software, report it to the issue tracker."
+Table 'xxx' is marked as crashed,There is a corrupt MySQL database table. Composr needs this table to function.,"Something outside the control of Composr caused this error, such as a hard disk fault, a power surge, a power cut, the forced termination of a PHP process, or a forced computer reset.","Your webhost will almost certainly provide a webhosting control panel with a tool called 'phpMyAdmin' (it may be called something else, such as 'Database management').
 1) Access / Log in to this tool
 2) Make sure you are in the database that Composr uses
 3) Tick (check) the table referenced in the error message.
@@ -111,12 +118,12 @@ A symbol was not properly closed,There is a mistake in a template or some Comcod
 You have gone to a URL which requires,A Composr screen was loaded up incorrectly.,"It is likely you tried to access a screen via pure URL that was supposed to be the targeted for posted form data. This can happen if you press enter in the address bar of a results screen, click back and do not choose to 'resend posted data', or bookmark a results screen.",Don't access the screen in this way.
 "You did not provide an upload, or you tried to upload a file that exceeds the file-size limit",A required upload was not provided or was too large.,It is possible that you did attach a file but it was larger than the server can accept for its 'max_post_size' setting and therefore resulted in all posted data for the request being lost.,"Check your system limits.
 
-You can find more about setting the PHP 'max_post_size' option in the [page=""""docs:faq""""]FAQ[/page]."
+You can find more about setting the PHP 'max_post_size' option in the [page=""docs:faq""]FAQ[/page]."
 Cannot read from xxx,A file is missing or could not be read.,"It is likely the file did not upload correctly when you installed/upgraded.
 
 It is also possible the permissions are incorrect for the file, but this is unlikely (by default files always have read permissions for everybody).","You can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 "A critical parameter, xxx, was missing ",An invalid URL was used.,"It is likely part of a URL was missing. The URL was to a real Composr page, but it required some parameters that were not passed. For example, linking to the Composr page/screen-type for viewing downloads without specifying what download to view within the URL.
 
 Some web spiders (automatic programs that read websites) can cause these errors because they will try and guess URLs based on other URLs.
@@ -129,15 +136,15 @@ Alternatively (and less likely), your server may be redirecting the domain you'r
 {+END}
 [/codebox]
 
-but the directive 'EXAMPLE' must actually exist. There are [page=""""docs:tut_tempcode""""]only a few defined[/page].",Only reference valid directives. Either correct or remove the offending code.
-A symbol is missing: xxx,"A template, or some Comcode, referenced a symbol that does not exist.","It is likely you made a template change incorrectly. Symbols are referenced like [tt]{$EXAMPLE}[/tt], but 'EXAMPLE' must actually exist. The following [page=""""docs:tut_tempcode""""]are defined[/page].",Only reference valid symbols. Either correct or remove the offending code.
+but the directive 'EXAMPLE' must actually exist. There are [page=""docs:tut_tempcode""]only a few defined[/page].",Only reference valid directives. Either correct or remove the offending code.
+A symbol is missing: xxx,"A template, or some Comcode, referenced a symbol that does not exist.","It is likely you made a template change incorrectly. Symbols are referenced like [tt]{$EXAMPLE}[/tt], but 'EXAMPLE' must actually exist. The following [page=""docs:tut_tempcode""]are defined[/page].",Only reference valid symbols. Either correct or remove the offending code.
 "No such theme image, xxx","A template, or some Comcode, referenced an image that does not exist.","It is likely the file did not upload correctly when you installed/upgraded.
 
 Alternatively, you may have edited some Comcode or a template to refer to an image incorrectly.","This might be a cache issue. Clear your caches (especially theme image and template caches) in the Admin Zone > Tools > Cleanup tools.
 
 If this does not work, you can use the 'Integrity checker' option within the upgrader to find a list of all missing files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are missing you need to upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 A category (xxx) that doesn't exist is being referenced,"A category is being referenced or linked to by name/identifier, but there is no such category.","Common causes include:
 1) If you delete a category and then use your back button to try and access what you just deleted.
 2) If you follow a link to a category that has since been deleted.
@@ -182,7 +189,7 @@ Any kind of variable (parameter, symbol, language reference, or directive) must 
 
 You can use the 'Integrity checker' option within the upgrader to find a list of all corrupt files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are corrupt you need to re-upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are corrupt you need to re-upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 No directive type specified in xxx,A template is corrupt.,"The template was edited incorrectly.
 
 Tempcode directives must specify a directive type. E.g. [tt]{+START,EXAMPLE}[/tt] is a directive of type 'EXAMPLE'.
@@ -214,18 +221,18 @@ In other words, anomalous spaces or symbols will cause this problem.","If you ha
 
 You can use the 'Integrity checker' option within the upgrader to find a list of all corrupt files. You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 
-Once you have identified which files are corrupt you need to re-upload them. Download the manual installer from the [page=""""site:downloads""""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client (or by some other means if you prefer)."
+Once you have identified which files are corrupt you need to re-upload them. Download the manual installer from the [page=""site:downloads""]Composr website[/page] that corresponds to your version, and then upload the files using an [abbr=""File Transfer Protocol""]FTP[/abbr] client (or by some other means if you prefer)."
 "Brace/directive mismatch: too many closes, or closed one that was not open in xxx on line xxx",A template is corrupt.,"The file has been edited incorrectly. Every [tt]{+START,...}[/tt] needs a corresponding [tt]{+END}[/tt].",Correct the template with the error. If you can't because the template editor itself shows the error then open up Composr using the default theme and safe mode by appending [tt]&keep_safe_mode=1&keep_theme=default[/tt] to a URL then browsing to the editor as normal (or [tt]?keep_safe_mode=1&keep_theme=default[/tt] if the URL you are adding to it doesn't have any parameters on yet). The Setup Wizard asked you to bookmark the safe mode URL so you may find it in your bookmarks if you're struggling.
 You tried to upload a file xxx which was larger than the maximum allowed size (xxx bytes),You tried to upload a file that was too large,"The file is larger than either:
  - the PHP 'post_max_size' setting
  - the PHP 'upload_max_filesize' setting
  - the website's setting for the maximum file size
  - the website's setting for the maximum image size (if it is an image)
- - your remaining quota space","Go to the Admin Zone, then the Setup section, then the Configuration icon, then the Security options, then the 'Upload' section. You will see the PHP and website settings laid out here. If you need the PHP options changed you can likely use the [tt].user.ini[/tt] file to do it -- see the [page=""""docs:faq""""]FAQ[/page].
+ - your remaining quota space","Go to the Admin Zone, then the Setup section, then the Configuration icon, then the Security options, then the 'Upload' section. You will see the PHP and website settings laid out here. If you need the PHP options changed you can likely use the [tt].user.ini[/tt] file to do it -- see the [page=""docs:faq""]FAQ[/page].
 
 It is unlikely you are being affected by a quota restriction, as by-default staff do not have any quota restrictions. You can see quotas when editing usergroups."
 A page (xxx) was referenced that does not exist,"A page was accessed by name, but there is no such page.",It is likely the page once existed but does not exist any more.,"Check the zone directory inside all html/comcode/modules sub-directories to see if it exists. Change/remove any broken links. Add URL redirects from broken links elsewhere if necessary."
-Error detected with respect to the upload of a file: unknown error,An error occurred when uploading a file.,The cause of the problem is unknown.,Try again.
+Error detected with respect to the upload of a file: unknown error,An error occurred when uploading a file.,The cause of the problem is unknown.,Try again or contact your webhost.
 Error detected with respect to the upload of a file: the uploaded file was only partially uploaded,An error occurred when uploading a file.,There was a transmission error. This could be due to a network interruption.,"Please try again. If it keeps happening, your connection might be getting terminated due to size restrictions or other issues. You may need to diagnose your network or the network of the server."
 "Error detected with respect to the upload of a file: no file was selected, or a missing file was chosen ",A file was expected but was not received.,"You likely referred to an attachment via Comcode ([tt][attachment]new_1[/attachment][/tt]), but no file was actually attached.","This error is usually safe to ignore, but be aware when copying & pasting Comcode that references yet-unattached attachments, you would need to choose to re-attach the file also.
 
@@ -237,7 +244,7 @@ Error detected with respect to the upload of a file: the uploaded file is too la
  - the PHP 'upload_max_filesize' setting
  - the website's setting for the maximum file size
  - the website's setting for the maximum image size (if it is an image)
- - your remaining quota space","Go to the Admin Zone, then the Setup section, then the Configuration icon, then the Security options, then the 'Upload' section. You will see the PHP and website settings laid out here. If you need the PHP options changed you can likely use the [tt].user.ini[/tt] file to do it -- see the [page=""""docs:faq""""]FAQ[/page].
+ - your remaining quota space","Go to the Admin Zone, then the Setup section, then the Configuration icon, then the Security options, then the 'Upload' section. You will see the PHP and website settings laid out here. If you need the PHP options changed you can likely use the [tt].user.ini[/tt] file to do it -- see the [page=""docs:faq""]FAQ[/page].
 
 It is unlikely you are being affected by a quota restriction, as by-default staff do not have any quota restrictions. You can see quotas when editing usergroups."
 The uploaded file (xxx) could not be moved to its target destination (xxx),The server could not put your uploaded file where it needs to be.,"This could be caused by a number of problems:
@@ -249,7 +256,7 @@ You can access the upgrader by calling up the '/upgrader.php' URL on your site.
 If you still have not been able to solve the problem contact your webhost and ask them to investigate for you."
 Cannot write to xxx. File permissions for it (or the directory it is in) have not been set correctly,The server could not edit/create a file/directory.,Your file permissions aren't correct.,"There are tools in the upgrader script to check and repair permissions. 
 You can access the upgrader by calling up the '/upgrader.php' URL on your site."
-Cannot create a directory xxx. This file should have existed anyway,A directory was needed but missing. Composr tried to create it but failed.,This happens often when people upload a new language pack without adding it first by starting a translation via the language tools in the Style section of the Admin Zone.,"Create the directory manually via an [abbr=""""File Transfer Protocol""""]FTP[/abbr] client, or some other file management tool if you prefer."
+Cannot create a directory xxx. This file should have existed anyway,A directory was needed but missing. Composr tried to create it but failed.,This happens often when people upload a new language pack without adding it first by starting a translation via the language tools in the Style section of the Admin Zone.,"Create the directory manually via an [abbr=""File Transfer Protocol""]FTP[/abbr] client, or some other file management tool if you prefer."
 Cannot create a xxx file. File permissions for the xxx directory likely have not been set correctly.,The server could not create a file.,Your file permissions aren't correct.,"There are tools in the upgrader script to check and repair permissions.
 You can access the upgrader by calling up the '/upgrader.php' URL on your site."
 Could not save. Are you out of disk space or quota space? The file failed to save in a temporary directory,Composr failed to create a temporary file.,"It is likely either:

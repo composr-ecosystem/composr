@@ -181,6 +181,7 @@ This addon does not contain the homesite install code and the overall site and t
             'lang_custom/EN/cms_homesite.ini',
             'pages/minimodules_custom/contact.php',
             'pages/minimodules_custom/licence.php',
+            'pages/modules_custom/common_errors.php',
             'pages/modules_custom/telemetry.php',
             'site/pages/comcode_custom/EN/maintenance_status.txt',
             'site/pages/minimodules_custom/themeing_changes.php',
@@ -195,6 +196,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/endpoints/cms_homesite/errorservice.php',
             'sources_custom/hooks/endpoints/cms_homesite/forum_posts.php',
             'sources_custom/hooks/endpoints/cms_homesite/forum_topics.php',
+            'sources_custom/hooks/endpoints/cms_homesite/get_session.php',
             'sources_custom/hooks/endpoints/cms_homesite/http_status_check.php',
             'sources_custom/hooks/endpoints/cms_homesite/index.html',
             'sources_custom/hooks/endpoints/cms_homesite/newsletter.php',
@@ -208,7 +210,9 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/modules/admin_import/cms_merge.php',
             'sources_custom/hooks/modules/admin_stats/cms_homesite.php',
             'sources_custom/hooks/systems/addon_registry/cms_homesite.php',
+            'sources_custom/hooks/systems/contentious_overrides/cms_homesite.php',
             'sources_custom/hooks/systems/cron/cmsusers.php',
+            'sources_custom/hooks/systems/cron/upgrade_cleanup.php',
             'sources_custom/hooks/systems/health_checks/gitlab.php',
             'sources_custom/hooks/systems/page_groupings/cms_homesite.php',
             'sources_custom/hooks/systems/privacy/cms_homesite.php',
@@ -244,8 +248,6 @@ This addon does not contain the homesite install code and the overall site and t
             'uploads/website_specific/cms_homesite/upgrades/sample_data/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tar_build/index.html',
             'uploads/website_specific/cms_homesite/upgrades/tars/index.html',
-            'sources_custom/hooks/systems/contentious_overrides/cms_homesite.php',
-            'sources_custom/hooks/systems/cron/upgrade_cleanup.php',
         ];
     }
 
