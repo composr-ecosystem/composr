@@ -13,7 +13,7 @@
  * @package    meta_toolkit
  */
 
-function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null, $keep_config = false)
+function do_install_to($database, $username, $password, $table_prefix, $safe_mode, $forum_driver = 'cns', $board_path = null, $forum_base_url = null, $database_forums = null, $username_forums = null, $password_forums = null, $extra_settings = [], $do_index_test = true, $db_type = null, $keep_config = false, &$backup_path = null)
 {
     if ($db_type === null) {
         $db_type = get_db_type();
@@ -32,8 +32,14 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         }
     }
 
-    copy(get_file_base() . '/_config.php', get_file_base() . '/_config.php.bak');
-    fix_permissions(get_file_base() . '/_config.php.bak');
+    // Back up the config file
+    $backup_time = time();
+    if ($backup_path === null) {
+        $backup_path = get_file_base() . '/exports/file_backups/_config.php.' . strval($backup_time) . '_';
+        $backup_path .= substr(md5(random_bytes(13)), 0, 13);
+    }
+    copy(get_file_base() . '/_config.php', $backup_path);
+    fix_permissions($backup_path);
 
     clearstatcache(true, get_file_base() . '/_config.php');
 
@@ -64,9 +70,10 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
         }
     }
 
+    // Revert config
     if (!$keep_config) {
         @unlink(get_file_base() . '/_config.php');
-        @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php');
+        @rename($backup_path, get_file_base() . '/_config.php');
 
         clearstatcache(true, get_file_base() . '/_config.php');
     }

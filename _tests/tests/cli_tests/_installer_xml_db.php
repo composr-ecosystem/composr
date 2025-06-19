@@ -18,7 +18,7 @@
 /*
 Note that this test installs Composr to a new database ON TOP your dev install, using a new _config.php file.
 The test installs using the root MySQL user, and whatever is defined in your $SITE_INFO['mysql_root_password'] (or blank).
-Your _config.php file is backed up to _config.php.bak in case the test fails and leaves you with a broken install.
+Your _config.php file is backed up to exports/file_backups in case the test fails and leaves you with a broken install.
 If the test fails, make sure to manually revert _config.php before re-running it.
 */
 

@@ -137,7 +137,7 @@ _meta_tree
 *test.png
 /info.php
 /_config.php
-/_config.php.bak.*
+/_config.php.bak*
 /uploads/*/*
 !/uploads/*/index.html
 !/uploads/*/.htaccess

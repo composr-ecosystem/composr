@@ -2009,21 +2009,24 @@ if (appengine_is_live()) {
 
     // ---
 
-    // If a _config.php file already exists, copy it to _config.php.bak.timestamp
+    // If a _config.php file already exists, back it up
     $current_config = cms_file_get_contents_safe($config_path);
     if ($current_config) {
-        $backup_config_file = $config_path . '.bak.' . strval(time());
-        $success_status = cms_file_put_contents_safe($backup_config_file, $current_config, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
-        if (!$success_status) {
-            warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($backup_config_file)));
+        $backup_path = get_file_base() . '/exports/file_backups/' . $config_file . '.' . strval(time()) . '_';
+        $backup_path .= substr(md5(random_bytes(13)), 0, 13);
+        $copied_ok = cms_file_put_contents_safe($backup_path, $current_config, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
+        if ($copied_ok === false) {
+            warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($backup_path)));
         }
     }
 
+    // Create our new config file
     $success_status = cms_file_put_contents_safe($config_path, $config_contents, FILE_WRITE_FAILURE_SILENT | FILE_WRITE_FIX_PERMISSIONS);
     if (!$success_status) {
         warn_exit(do_lang_tempcode('INSTALL_WRITE_ERROR', escape_html($config_file)));
     }
 
+    // Now, use it
     require get_file_base() . '/' . $config_file;
 
     global $FILE_ARRAY, $DIR_ARRAY;

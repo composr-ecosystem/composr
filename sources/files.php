@@ -671,8 +671,8 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
         // Authorisation files
         ['google.*\.html', ''],
 
-        // Configuration backups
-        ['_config\.php\.bak\.*', ''],
+        // LEGACY: Configuration backups
+        ['_config\.php\.bak*', ''],
     ];
 
     $ignore_filename_patterns = [ // Case insensitive; we'll use this only when we *need* directories that would match to be valid

@@ -70,7 +70,7 @@ RedirectMatch 404 /\.git
 <FilesMatch "^_config\.php$">
     Require all denied
 </FilesMatch>
-<FilesMatch "^_config\.php\.bak\.">
+<FilesMatch "^_config\.php\.bak">
     Require all denied
 </FilesMatch>
 
