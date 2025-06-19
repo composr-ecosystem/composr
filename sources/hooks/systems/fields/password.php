@@ -86,7 +86,10 @@ class Hook_fields_password
      */
     public function render_field_value(array &$field, $ev, int $i, ?array $only_fields, ?string $table = null, ?int $id = null, ?string $id_field = null, ?string $field_id_field = null, ?string $url_field = null, ?int $submitter = null, $ev_pure = null)
     {
-        return do_lang_tempcode('FIELD_PASSWORD_VIEW_ON_EDIT'); // Do not render passwords; they are sensitive information.
+        if (function_exists('do_lang_tempcode')) {
+            return do_lang_tempcode('FIELD_PASSWORD_VIEW_ON_EDIT'); // Do not render passwords; they are sensitive information.
+        }
+        return '*****';
     }
 
     // ======================
