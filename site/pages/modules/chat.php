@@ -697,8 +697,7 @@ class Module_chat
 
         $your_name = $GLOBALS['FORUM_DRIVER']->get_username(get_member());
         if (is_guest()) {
-            require_code('crypt');
-            $your_name .= '-' . substr(str_replace(['/', '+', '='], ['_', '-', ''], base64_encode(get_ip_address() . get_site_salt())), 0, 8);
+            $your_name = generate_guest_chat_name(get_ip_address());
         }
 
         $messages_php = find_script('messages');
