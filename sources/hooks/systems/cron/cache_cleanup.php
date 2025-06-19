@@ -71,7 +71,7 @@ class Hook_cron_cache_cleanup
         $directories = [
             'caches/http' => [1000, 5000],
             //'caches/lang' => [1000, 5000], // Not necessary; this does not infinitely grow
-            'caches/persistent' => [2000, 10000],
+            'caches/persistent' => [10000, 25000],
             'caches/self_learning' => [1000, 5000],
             //'caches/static' => [2000, 10000], // We did this separately above by staleness
             'uploads/auto_thumbs' => [2000, 10000], // These can be re-built upon request

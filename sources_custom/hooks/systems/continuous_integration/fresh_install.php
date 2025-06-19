@@ -42,6 +42,9 @@ class Hook_ci_fresh_install
         require_code('install_headless');
         cms_extend_time_limit(TIME_LIMIT_EXTEND__SLOW);
 
+        // We need to use a path we will know for later in the testing
+        $backup_path = get_file_base() . '/exports/file_backups/_config.php.ci.bak';
+
         $success = do_install_to(
             $database,
             $username,
@@ -57,7 +60,8 @@ class Hook_ci_fresh_install
             [],
             true,
             get_db_type(),
-            true
+            true,
+            $backup_path
         );
 
         if (!$success) {
@@ -66,9 +70,6 @@ class Hook_ci_fresh_install
             }
             throw new Exception('Failed to install a fresh Composr CMS installation for continuous integration.');
         }
-
-        // The installer test will overwrite this if we do not use a different name
-        @rename(get_file_base() . '/_config.php.bak', get_file_base() . '/_config.php.ci.bak');
 
         // Copy recommended.htaccess to .htaccess
         $htaccess = cms_file_get_contents_safe(get_file_base() . '/recommended.htaccess', FILE_READ_LOCK);
@@ -145,7 +146,7 @@ class Hook_ci_fresh_install
         }
 
         // Load in our backup config file before reset
-        $config_file_path = get_file_base() . '/_config.php.ci.bak';
+        $config_file_path = get_file_base() . '/exports/file_backups/_config.php.ci.bak';
         $config_file = cms_file_get_contents_safe($config_file_path, FILE_READ_LOCK);
 
         // We also need to load in the ci_queue.bin file
@@ -160,6 +161,7 @@ class Hook_ci_fresh_install
         require_code('files');
         cms_file_put_contents_safe(get_file_base() . '/_config.php', $config_file); // bak file now becomes the main file
         cms_file_put_contents_safe(CI_COMMIT_QUEUE_PATH, $commit_queue);
+        @unlink($config_file_path);
 
         // Also copy recommended.htaccess back to .htaccess
         $htaccess = cms_file_get_contents_safe(get_file_base() . '/recommended.htaccess', FILE_READ_LOCK);

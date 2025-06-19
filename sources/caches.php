@@ -159,7 +159,7 @@ class Self_learning_cache
         $this->bucket_name = $bucket_name;
         $dir = get_custom_file_base() . '/caches/self_learning';
         //$this->path = $dir . '/' . filter_naughty(str_replace(['/', '\\', ':'], ['__', '__', '__'], $bucket_name)) . '.gcd'; Windows has a 260 character path limit, so we can't do it this way
-        $this->path = $dir . '/' . filter_naughty(md5($bucket_name)) . '.gcd';
+        $this->path = $dir . '/' . cms_base64_encode($bucket_name, true, true) . '.gcd';
         $this->load();
     }
 
@@ -554,18 +554,6 @@ function erase_persistent_cache()
         closedir($d);
     }
 
-    $path = get_custom_file_base() . '/caches/persistent';
-    if (is_dir($path)) {
-        $d = opendir($path);
-        while (($e = readdir($d)) !== false) {
-            if (substr($e, -4) == '.gcd') {
-                // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
-                @unlink(get_custom_file_base() . '/caches/persistent/' . $e);
-            }
-        }
-        closedir($d);
-    }
-
     erase_static_cache();
 
     require_code('files');
@@ -580,6 +568,22 @@ function erase_persistent_cache()
     if ($PERSISTENT_CACHE === null) {
         return;
     }
+
+    // We do not set expiry on the filesystem based cache, so clear it in case we switch to it later
+    if (!is_a($PERSISTENT_CACHE, 'Persistent_caching_filesystem')) {
+        $path = get_custom_file_base() . '/caches/persistent';
+        if (is_dir($path)) {
+            $d = opendir($path);
+            while (($e = readdir($d)) !== false) {
+                if (substr($e, -4) == '.gcd') {
+                    // Ideally we'd lock while we delete, but it's not stable (and the workaround would be too slow for our efficiency context). So some people reading may get errors while we're clearing the cache. Fortunately this is a rare op to perform.
+                    @unlink(get_custom_file_base() . '/caches/persistent/' . $e);
+                }
+            }
+            closedir($d);
+        }
+    }
+
     $PERSISTENT_CACHE->flush();
 }
 
@@ -705,7 +709,7 @@ function find_cache_on(string $codename) : ?array
  */
 function get_cache_entry(string $codename, string $cache_identifier, int $special_cache_flags = CACHE_AGAINST_DEFAULT, int $ttl = 10000, bool $tempcode = false, bool $caching_via_cron = false, array $map = [])
 {
-    $det = [$codename, $cache_identifier, md5($cache_identifier), $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map];
+    $det = [$codename, $cache_identifier, hash('sha256', $cache_identifier), $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map];
 
     global $SMART_CACHE;
     $test = (get_page_name() == 'admin_addons'/*special case*/) ? [] : $SMART_CACHE->get('blocks_needed');
@@ -763,7 +767,7 @@ function get_cache_signature_details(?int $special_cache_flags, ?int &$staff_sta
             }
 
             if (strlen($groups_cache) > 255) {
-                $groups_cache = md5($groups_cache);
+                $groups_cache = hash('sha256', $groups_cache);
             }
 
             $groups = $groups_cache;
@@ -817,9 +821,9 @@ function _get_cache_entries(array $dets) : array
 
         $sql .= ' AND (1=0';
         foreach ($dets as $det) {
-            list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
+            list($codename, $cache_identifier, $cache_identifier_hash, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-            $sz = serialize([$codename, $md5_cache_identifier, $special_cache_flags]);
+            $sz = serialize([$codename, $cache_identifier_hash, $special_cache_flags]);
             if (isset($cache[$sz])) { // Already cached
                 $rets[] = $cache[$sz];
                 continue;
@@ -827,7 +831,7 @@ function _get_cache_entries(array $dets) : array
 
             $sql .= ' OR ';
 
-            $sql .= db_string_equal_to('cached_for', $codename) . ' AND ' . db_string_equal_to('identifier', $md5_cache_identifier);
+            $sql .= db_string_equal_to('cached_for', $codename) . ' AND ' . db_string_equal_to('identifier', cms_base64_encode($cache_identifier, false, true, true));
 
             $staff_status = null;
             $member_id = null;
@@ -875,9 +879,9 @@ function _get_cache_entries(array $dets) : array
 
     // Iterate over each requested entry to get it
     foreach ($dets as $det) {
-        list($codename, $cache_identifier, $md5_cache_identifier, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
+        list($codename, $cache_identifier, $cache_identifier_hash, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
 
-        $sz = serialize([$codename, $md5_cache_identifier, $special_cache_flags]);
+        $sz = serialize([$codename, $cache_identifier_hash, $special_cache_flags]);
         if (isset($cache[$sz])) { // Already cached
             $rets[] = $cache[$sz];
             continue;
@@ -893,7 +897,7 @@ function _get_cache_entries(array $dets) : array
             $lang = null;
             get_cache_signature_details($special_cache_flags, $staff_status, $member_id, $groups, $is_bot, $timezone, $theme, $lang);
 
-            $cache_row = persistent_cache_get(['CACHE', $codename, $md5_cache_identifier, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone]);
+            $cache_row = persistent_cache_get(['CACHE', $codename, $cache_identifier_hash, $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone]);
 
             if ($cache_row === null) { // No
                 if ($caching_via_cron) {
@@ -911,7 +915,7 @@ function _get_cache_entries(array $dets) : array
         } else {
             $cache_row = null;
             foreach ($cache_rows as $_cache_row) {
-                if ($_cache_row['cached_for'] == $codename && $_cache_row['identifier'] == $md5_cache_identifier) {
+                if ($_cache_row['cached_for'] == $codename && $_cache_row['identifier'] == $cache_identifier_hash) {
                     $cache_row = $_cache_row;
                     break;
                 }

@@ -86,7 +86,7 @@ PHP;
 
         require_code('feedback');
 
-        $block_id = md5(serialize($map));
+        $block_id = get_block_id($map);
         $submitted = ((post_param_integer('_comment_form_post', 0) == 1) && (post_param_string('_block_id', '') == $block_id));
 
         $self_url = build_url(['page' => '_SELF'], '_SELF', [], true, false, true);

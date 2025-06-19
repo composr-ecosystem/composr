@@ -147,14 +147,14 @@ END;
             $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'calendar_events e LEFT JOIN ' . $prefix . 'translate t on e.e_content=t.id WHERE e_type=1 ORDER BY e.id');
             if ($r !== false) {
                 while (($row = mysqli_fetch_assoc($r)) !== null) {
-                    $results .= "Cronjob: {$row['id']}=" . md5($row['text_original']) . "\n";
+                    $results .= "Cronjob: {$row['id']}=" . hash('sha256', $row['text_original']) . "\n";
                 }
             }
         } else {
             $r = mysqli_query($db, 'SELECT * FROM ' . $prefix . 'calendar_events e WHERE e_type=1 ORDER BY e.id');
             if ($r !== false) {
                 while (($row = mysqli_fetch_assoc($r)) !== null) {
-                    $results .= "Cronjob: {$row['id']}=" . md5($row['e_content']) . "\n";
+                    $results .= "Cronjob: {$row['id']}=" . hash('sha256', $row['e_content']) . "\n";
                 }
             }
         }

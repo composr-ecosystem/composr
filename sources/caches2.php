@@ -63,7 +63,7 @@ function _delete_cache_entry($cached_for, ?array $identifier = null, ?int $membe
 
         $where .= db_string_equal_to('cached_for', $_cached_for);
         if ($_identifier !== null) {
-            $where .= ' AND ' . db_string_equal_to('identifier', md5(serialize($_identifier)));
+            $where .= ' AND ' . db_string_equal_to('identifier', cms_base64_encode(serialize($_identifier), false, true, true));
         }
         if ($member_id !== null) {
             $where .= ' AND the_member=' . strval($member_id);
@@ -163,7 +163,7 @@ function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $
 
     if ($GLOBALS['PERSISTENT_CACHE'] !== null) {
         $pcache = ['dependencies' => $dependencies, 'date_and_time' => time(), 'the_value' => $cache];
-        persistent_cache_set(['CACHE', $codename, md5($cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone], $pcache, false, $ttl * 60);
+        persistent_cache_set(['CACHE', $codename, hash('sha256', $cache_identifier), $lang, $theme, $staff_status, $member_id, $groups, $is_bot, $timezone], $pcache, false, $ttl * 60);
     } else {
         $GLOBALS['SITE_DB']->query_delete(
             'cache',
@@ -171,7 +171,7 @@ function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $
                 'lang' => $lang,
                 'the_theme' => $theme,
                 'cached_for' => $codename,
-                'identifier' => md5($cache_identifier),
+                'identifier' => cms_base64_encode($cache_identifier, false, true, true),
             ]
         );
         $GLOBALS['SITE_DB']->query_insert(
@@ -188,7 +188,7 @@ function set_cache_entry(string $codename, int $ttl, string $cache_identifier, $
                 'lang' => $lang,
                 'the_theme' => $theme,
                 'cached_for' => $codename,
-                'identifier' => md5($cache_identifier),
+                'identifier' => cms_base64_encode($cache_identifier, false, true, true),
             ],
             false,
             true

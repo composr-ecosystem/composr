@@ -237,7 +237,7 @@ function static_cache(int $mode)
 
     // Work out cache path (potentially will search a few places, based on priority)
     $url = static_cache_current_url();
-    $_fast_cache_path = (function_exists('get_custom_file_base') ? get_custom_file_base() : $GLOBALS['FILE_BASE']) . '/caches/static/' . md5($url);
+    $_fast_cache_path = (function_exists('get_custom_file_base') ? get_custom_file_base() : $GLOBALS['FILE_BASE']) . '/caches/static/' . cms_base64_encode($url, true, true);
     $param_sets = [
         [
             'non_bot' => ($mode & STATIC_CACHE__FAST_SPIDER) == 0,

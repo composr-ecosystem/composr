@@ -1154,7 +1154,7 @@ class Module_galleries
 
         list($url_sort, $dir) = $this->get_sort_order();
 
-        $slideshow_id = substr(md5(serialize([$query_cat, $url_sort, $dir, $days, $image_select, $video_select, $probe_type, $probe_id])), 0, 6);
+        $slideshow_id = substr(md5(serialize([$query_cat, $url_sort, $dir, $days, $image_select, $video_select, $probe_type, $probe_id])), 0, 8);
 
         $extra_where = ' AND ' . $this->generate_gallery_contents_selectcode($query_cat);
         $max = intval(get_option('gallery_entries_carousel_per_page'));

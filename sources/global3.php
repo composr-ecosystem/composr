@@ -5981,3 +5981,58 @@ function clear_infinite_loop_iterations(string $codename, ?array $args = null)
 
     unset($CHECK_FOR_INFINITE_LOOP[$codename][$hash]);
 }
+
+/**
+ * Encode a string using base64, but with additional options.
+ *
+ * @param  LONG_TEXT $data The data to encode
+ * @param  boolean $url_safe Whether to output base64url format instead, which is URL (parameters only) and file safe
+ * @param  boolean $hashed Whether to hash $data with SHA-256 first before encoding
+ * @param  boolean $salted Whether to salt the data for SHA-256 hashing using the site salt; ignored if $hashed is false
+ * @return SHORT_TEXT The base64 or base64url data
+ */
+function cms_base64_encode(string $data, bool $url_safe = false, bool $hashed = false, bool $salted = false) : string
+{
+    if ($hashed === true) {
+        if ($salted === true) {
+            require_code('crypt');
+            $data .= get_site_salt();
+        }
+
+        $data = hash('sha256', $data, true);
+    }
+
+    $data = base64_encode($data);
+
+    if ($url_safe) {
+        $data = str_replace(['/', '+', '='], ['_', '-', ''], $data);
+    }
+
+    return $data;
+}
+
+/**
+ * Encode a string into base64url (base64 which is URL and file friendly).
+ * This is just a shortcut for cms_base64_encode. Be aware of case sensitivity and only use this in parameters.
+ *
+ * @param  LONG_TEXT $data The data to decode
+ * @return string The decoded data
+ */
+function base64url_encode(string $data) : string
+{
+    return cms_base64_encode($data, true);
+}
+
+/**
+ * Decode a URL-safe base64 encoded string.
+ *
+ * @param  LONG_TEXT $data The data to decode
+ * @return string The decoded data
+ */
+function base64url_decode(string $data) : string
+{
+    $data = str_replace(['_', '-'], ['/', '+'], $data);
+    $data .= '=';
+
+    return base64_decode($data);
+}

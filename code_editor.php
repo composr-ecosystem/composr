@@ -466,7 +466,7 @@ END;
         // Make backup
         if (file_exists($save_path)) {
             $backup_path = $save_path . '.' . strval(time()) . '_';
-            $backup_path .= substr(md5(random_bytes(13)), 0, 13);
+            $backup_path .= str_replace(['/', '+', '='], ['_', '-', ''], base64_encode(random_bytes(16)));
             $c_success = @copy($save_path, $backup_path);
             if ($c_success !== false) {
                 ce_sync_file($backup_path);

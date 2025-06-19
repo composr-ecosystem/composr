@@ -30,7 +30,7 @@ function chat_poller()
     $message_id = get_param_integer('message_id', -1);
     $event_id = get_param_integer('event_id', -1);
 
-    $hash_filename = 'chat_last_full_check_' . @substr(md5(serialize([$_COOKIE, $_SERVER['REMOTE_ADDR']])), 0, 2) . '.bin'; // 1 in 1296 chance of conflict with another user - good enough!
+    $hash_filename = 'chat_last_full_check_' . strval(crc32(serialize([$_COOKIE, $_SERVER['REMOTE_ADDR']]))) . '.bin'; // 1 in a couple billion chance of conflict with another user - good enough!
 
     if (
         ((file_exists(get_custom_file_base() . '/data_custom/modules/chat/' . $hash_filename)) && (filemtime(get_custom_file_base() . '/data_custom/modules/chat/' . $hash_filename) >= time() - intval(floatval(CHAT_ACTIVITY_PRUNE) / 2.0))) && // If we've done a check within CHAT_ACTIVITY_PRUNE/2 seconds don't try again unless something is new (we do need to allow pruning to happen sometimes)

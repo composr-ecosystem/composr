@@ -2194,14 +2194,14 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     $temp_tpl = do_template('WARNING_BOX', ['_GUID' => '422658aee3c0eea77ad85d8621af742b', 'WARNING' => do_lang_tempcode('comcode:CORRUPT_ATTACHMENT')]);
                     break;
                 }
-                $md5 = md5(substr($file, 0, 30));
-                $original_filename = array_key_exists('filename', $attributes) ? $attributes['filename'] : ($md5 . '.bin');
+                $file_hash = cms_base64_encode($file, true, true, true);
+                $original_filename = array_key_exists('filename', $attributes) ? $attributes['filename'] : ($file_hash . '.bin');
                 if (get_file_extension($original_filename) != 'bin') {
                     require_code('files2');
                     check_extension($original_filename, true);
-                    $new_filename = $md5 . '.' . get_file_extension($original_filename) . '.bin';
+                    $new_filename = $file_hash . '.' . get_file_extension($original_filename) . '.bin';
                 } else {
-                    $new_filename = $md5 . '.' . get_file_extension($original_filename);
+                    $new_filename = $file_hash . '.' . get_file_extension($original_filename);
                 }
                 require_code('files');
                 $path = get_custom_file_base() . '/uploads/attachments/' . $new_filename;
@@ -2313,8 +2313,8 @@ function _do_tags_comcode(string $tag, array $attributes, $embed, bool $comcode_
                     if (is_image($original_filename, IMAGE_CRITERIA_WEBSAFE | IMAGE_CRITERIA_GD_READ | IMAGE_CRITERIA_GD_WRITE, has_privilege($source_member, 'comcode_dangerous'))) {
                         require_code('images');
                         $ext = '.' . get_file_extension($original_filename);
-                        $md5 = md5(substr($original_filename, 0, 30));
-                        $thumb_path = get_custom_file_base() . '/uploads/attachments_thumbs/' . $md5 . $ext;
+                        $file_hash = cms_base64_encode($original_filename, true, true, true);;
+                        $thumb_path = get_custom_file_base() . '/uploads/attachments_thumbs/' . $file_hash . $ext;
                         $attributes['thumb_url'] = convert_image($url, $thumb_path, null, null, intval(get_option('thumb_width')), true, null, false, true);
 
                         if ($db->is_forum_db()) {

@@ -81,7 +81,7 @@ class Block_main_contact_simple
         $email_optional = array_key_exists('email_optional', $map) ? (intval($map['email_optional']) == 1) : true;
         $support_attachments = array_key_exists('attachments', $map) ? (intval($map['attachments']) == 1) : false;
 
-        $block_id = md5(serialize($map));
+        $block_id = get_block_id($map);
 
         // Submission...
 

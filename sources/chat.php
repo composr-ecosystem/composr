@@ -677,7 +677,10 @@ function _chat_messages_script_ajax(int $room_id, bool $backlog = false, ?int $m
  */
 function generate_guest_chat_name(string $ip_address) : string
 {
-    return do_lang('GUEST') . '-' . substr(md5($ip_address), 0, 5);
+    require_code('crypt');
+
+    // This prevents guessing IP addresses based on unsalted hashes
+    return do_lang('GUEST') . '-' . substr(cms_base64_encode(get_ip_address(), true, true, true), 0, 8);
 }
 
 /**

@@ -430,7 +430,7 @@ function do_set()
     global $FILE_BASE;
     $config_file = '_config.php';
     $backup_path = $FILE_BASE . '/exports/file_backups/' . $config_file . '.' . strval(time()) . '_';
-    $backup_path .= substr(md5(random_bytes(13)), 0, 13);
+    $backup_path .= str_replace(['/', '+', '='], ['_', '-', ''], base64_encode(random_bytes(16)));
     $copied_ok = @copy($FILE_BASE . '/' . $config_file, $backup_path);
     @chmod($backup_path, 0600);
     if ($copied_ok !== false) {

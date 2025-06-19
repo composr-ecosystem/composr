@@ -4473,15 +4473,7 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
-        $fuzz = cms_strtoupper_ascii(md5(uniqid(strval(mt_rand(0, mt_getrandmax())), true)));
-
-        return '{'
-            . substr($fuzz, 0, 8) . '-'
-            . substr($fuzz, 8, 4) . '-'
-            . substr($fuzz, 12, 4) . '-'
-            . substr($fuzz, 16, 4) . '-'
-            . substr($fuzz, 20, 12)
-            . '}';
+        return '{' . generate_guid() . '}';
     }
 
     /**
