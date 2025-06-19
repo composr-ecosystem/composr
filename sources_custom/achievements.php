@@ -85,7 +85,7 @@ class Achievements_loader
         // Try cache first but only if not requesting errors
         if ($show_errors === false) {
             require_code('caches');
-            $cache = get_cache_entry('achievements_xml', md5(serialize($cache_id)), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
+            $cache = get_cache_entry('achievements_xml', serialize($cache_id), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
             if ($cache !== null) {
                 $this->achievements = $cache;
 
@@ -293,7 +293,7 @@ class Achievements_loader
         // Save to cache, but only if the XML was valid
         if ($this->is_xml_valid()) {
             require_code('caches2');
-            set_cache_entry('achievements_xml', (60 * 60), md5(serialize($cache_id)), $this->achievements, CACHE_AGAINST_NOTHING_SPECIAL);
+            set_cache_entry('achievements_xml', (60 * 60), serialize($cache_id), $this->achievements, CACHE_AGAINST_NOTHING_SPECIAL);
         }
     }
 

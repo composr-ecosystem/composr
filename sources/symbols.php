@@ -7132,10 +7132,7 @@ function ecv_SESSION(string $lang, array $escaped, array $param) : string
  */
 function ecv_SESSION_HASHED(string $lang, array $escaped, array $param) : string
 {
-    require_code('crypt');
-    $salt = get_site_salt();
-
-    $value = md5(get_session_id() . $salt);
+    $value = cms_base64_encode(get_session_id(), true, true, true);
 
     if (!empty($escaped)) {
         apply_tempcode_escaping($escaped, $value);

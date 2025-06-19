@@ -124,7 +124,7 @@ PHP;
         $subject_prefix = array_key_exists('subject_prefix', $map) ? $map['subject_prefix'] : '';
         $subject_suffix = array_key_exists('subject_suffix', $map) ? $map['subject_suffix'] : '';
 
-        $block_id = md5(serialize($map));
+        $block_id = get_block_id($map);
 
         // Submission...
 

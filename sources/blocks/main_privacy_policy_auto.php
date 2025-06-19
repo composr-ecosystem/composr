@@ -152,7 +152,7 @@ PHP;
 
         sort_maps_by($cookies, 'NAME');
 
-        $hash = md5(serialize($hash_data));
+        $hash = hash('sha256', serialize($hash_data));
         $previous_hash = get_value('privacy_policy_auto__hash', null, true);
         if ($hash !== $previous_hash) {
             set_value('privacy_policy_auto__hash', $hash, true);

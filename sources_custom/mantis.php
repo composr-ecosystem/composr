@@ -301,7 +301,7 @@ function upload_to_tracker_issue(int $tracker_id, $upload) : int
 
     require_code('cms_homesite');
 
-    $disk_filename = md5(serialize($upload));
+    $disk_filename = md5(uniqid('', true));
     $save_path = get_custom_file_base() . '/tracker/uploads/' . $disk_filename;
     move_uploaded_file($upload['tmp_name'], $save_path);
     fix_permissions($save_path);

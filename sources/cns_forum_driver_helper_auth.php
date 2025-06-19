@@ -203,7 +203,7 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
                 case 'none':
                     require_code('crypt');
-                    if (!hash_equals(md5(get_site_salt() . $row['m_pass_hash_salted']), $password_mixed)) {
+                    if (!hash_equals(cms_base64_encode($row['m_pass_hash_salted'], true, true, true), $password_mixed)) {
                         cms_eatcookie(get_member_cookie());
                         cms_eatcookie(get_pass_cookie());
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode

@@ -357,7 +357,8 @@ function get_unsubscribe_hash(string $hash) : string
         require_code('crypt');
         return ratchet_hash($hash, 'xunsub');
     */
-    return md5(('xunsub' . get_site_salt()) . md5($hash));
+
+    return cms_base64_encode('xunsub' . $hash, true, true, true);
 }
 
 /**

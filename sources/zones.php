@@ -1158,7 +1158,7 @@ function get_block_id(array $map) : string
     unset($map['ttl']);
     unset($map['start']);
     unset($map['max']);
-    return substr(md5(serialize($map)), 0, 6);
+    return substr(cms_strtolower_ascii(cms_base64_encode(serialize($map), true, true, true)), 0, 8);
 }
 
 /**

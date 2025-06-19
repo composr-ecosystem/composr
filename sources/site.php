@@ -1378,7 +1378,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     }
 
     // Work out cache path on disk
-    $fast_cache_path = get_custom_file_base() . '/caches/static/' . md5($url);
+    $fast_cache_path = get_custom_file_base() . '/caches/static/' . cms_base64_encode($url, true, true);
     $fast_cache_path_failover_mode = $fast_cache_path;
     $bot_type = get_bot_type();
     if ($bot_type === null) {
@@ -1393,7 +1393,7 @@ function save_static_caching($out, string $mime_type = 'text/html') : bool
     }
     $fast_cache_path_failover_mode .= '__failover_mode';
 
-    // Save
+    // Save (TODO: Seems hard-coded update time of 5 hours should be using configuration instead)
     if (!is_file($fast_cache_path . $file_extension) || filemtime($fast_cache_path . $file_extension) < time() - 60 * 60 * 5) {
         write_static_cache_file($fast_cache_path . $file_extension, $static_cache, true);
     }

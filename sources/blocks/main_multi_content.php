@@ -220,7 +220,7 @@ PHP;
         $root = @cms_empty_safe($map['root']) ? get_param_integer('keep_' . $content_type . '_root', null) : intval($map['root']);
 
         if ($lifetime !== null) {
-            $block_cache_id = md5(serialize($map));
+            $block_cache_id = get_block_id($map);
         }
 
         // Read content object

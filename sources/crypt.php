@@ -68,7 +68,7 @@ function ratchet_hash_verify(string $password, string $salt, string $pass_hash_s
         if (strpos($pass_hash_salted, '$') === 0) {
             $passed = password_verify($salt . $password, $pass_hash_salted);
         } else {
-            $passed = hash_equals($pass_hash_salted, md5($salt . $password));
+            $passed = hash_equals($pass_hash_salted, md5($salt . $password)); // TODO: use SHA-256
         }
     }
 
@@ -306,8 +306,8 @@ function get_secure_v1_guid(?float $time_at = null) : string
     $time_mid = substr($time_hex, 4, 4);
     $time_high_and_version = dechex((hexdec(substr($time_hex, 0, 4)) & 0x0FFF) | 0x1000); // Apply version 1
 
-    // MD5 the site salt and use the first 12 characters as the node ID
-    $node = substr(md5(get_site_salt()), 0, 12);
+    // SHA-256 the site salt and use the first 12 characters as the node ID
+    $node = substr(hash('sha256', get_site_salt()), 0, 12);
     $node[0] = dechex(hexdec($node[0]) & 1);
 
     // Assemble the GUID

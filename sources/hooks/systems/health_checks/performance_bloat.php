@@ -166,9 +166,11 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
 
         require_code('files2');
 
+        // Checks by directory file size
         $mb = 1024 * 1024;
         $directories = [
             'caches/static' => 2048,
+            'caches/http' => 256,
             'caches/lang' => 128,
             'caches/persistent' => 256,
             'caches/self_learning' => 256,
@@ -187,7 +189,7 @@ class Hook_health_check_performance_bloat extends Hook_Health_Check
             }
         }
 
-        // Recursive checks
+        // Recursive checks by file count
         $directories = [
             'uploads/incoming' => 100,
             'temp' => 100,

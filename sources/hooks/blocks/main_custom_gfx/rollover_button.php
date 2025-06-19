@@ -46,7 +46,7 @@ class Hook_main_custom_gfx_rollover_button
             return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img1']));
         }
 
-        $cache_id_1 = 'rollover1_' . md5(serialize($map));
+        $cache_id_1 = 'rollover1_' . get_block_id($map);
         $url_1 = $block->_do_image($cache_id_1, $map, $img_path_1);
         if (is_object($url_1)) {
             return $url_1;
@@ -60,7 +60,7 @@ class Hook_main_custom_gfx_rollover_button
             return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img2']));
         }
 
-        $cache_id_2 = 'rollover2_' . md5(serialize($map));
+        $cache_id_2 = 'rollover2_' . get_block_id($map);
         $url_2 = $block->_do_image($cache_id_2, $map, $img_path_2);
         if (is_object($url_2)) {
             return $url_2;

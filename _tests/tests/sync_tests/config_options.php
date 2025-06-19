@@ -536,6 +536,7 @@ class config_options_test_set extends cms_test_case
         $this->assertTrue(array_keys($categories_found) === array_keys($categories), 'Missing: ' . implode(', ', array_diff(array_keys($categories_found), array_keys($categories))));
     }
 
+    // LEGACY: Should be removed in future versions
     public function testConfigHashClashes()
     {
         $hashes = [];

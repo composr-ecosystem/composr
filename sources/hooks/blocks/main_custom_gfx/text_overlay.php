@@ -46,7 +46,7 @@ class Hook_main_custom_gfx_text_overlay
             return do_lang_tempcode('NO_SUCH_THEME_IMAGE', escape_html($map['img']));
         }
 
-        $cache_id = 'text_overlay_' . md5(serialize($map));
+        $cache_id = 'text_overlay_' . get_block_id($map);
         $url = $block->_do_image($cache_id, $map, $img_path);
         if (is_object($url)) {
             return $url;

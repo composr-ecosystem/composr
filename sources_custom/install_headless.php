@@ -36,7 +36,7 @@ function do_install_to($database, $username, $password, $table_prefix, $safe_mod
     $backup_time = time();
     if ($backup_path === null) {
         $backup_path = get_file_base() . '/exports/file_backups/_config.php.' . strval($backup_time) . '_';
-        $backup_path .= substr(md5(random_bytes(13)), 0, 13);
+        $backup_path .= substr(hash('sha256', random_bytes(13)), 0, 13);
     }
     copy(get_file_base() . '/_config.php', $backup_path);
     fix_permissions($backup_path);

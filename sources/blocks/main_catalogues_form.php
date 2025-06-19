@@ -100,7 +100,7 @@ class Block_main_catalogues_form
 
         $guid = isset($map['guid']) ? $map['guid'] : '6092b1533f549abe94a764d88d89c66b';
 
-        $block_id = md5(serialize($map));
+        $block_id = get_block_id($map);
 
         // Submission...
         if (post_param_string('_block_id', '') == $block_id) {

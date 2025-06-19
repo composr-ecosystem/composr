@@ -2007,6 +2007,7 @@ function max(...$args)
 
 /**
  * Calculate the md5 hash of a string.
+ * Not recommended for any type of security.
  *
  * @param  string $str String to hash
  * @return string Hashed result

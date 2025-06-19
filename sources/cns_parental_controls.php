@@ -101,7 +101,7 @@ class Parental_controls_loader
         // Try cache (but only if not showing errors)
         if (!$show_errors) {
             require_code('caches');
-            $cache = get_cache_entry('cns_parental_controls', md5(serialize($cache_id)), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
+            $cache = get_cache_entry('cns_parental_controls', serialize($cache_id), CACHE_AGAINST_NOTHING_SPECIAL, (60 * 60));
             if ($cache !== null) {
                 $this->options = $cache['options'];
                 $this->controls = $cache['controls'];
@@ -183,7 +183,7 @@ class Parental_controls_loader
 
         // Cache the data
         require_code('caches2');
-        set_cache_entry('cns_parental_controls', (60 * 60), md5(serialize($cache_id)), ['options' => $this->options, 'controls' => $this->controls], CACHE_AGAINST_NOTHING_SPECIAL);
+        set_cache_entry('cns_parental_controls', (60 * 60), serialize($cache_id), ['options' => $this->options, 'controls' => $this->controls], CACHE_AGAINST_NOTHING_SPECIAL);
     }
 
     /**
