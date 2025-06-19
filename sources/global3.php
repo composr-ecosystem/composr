@@ -5987,7 +5987,7 @@ function clear_infinite_loop_iterations(string $codename, ?array $args = null)
  *
  * @param  LONG_TEXT $data The data to encode
  * @param  boolean $url_safe Whether to output base64url format instead, which is URL (parameters only) and file safe
- * @param  boolean $hashed Whether to hash $data with SHA-256 first before encoding
+ * @param  boolean $hashed Whether to hash $data with SHA-256 first and then encode the hash
  * @param  boolean $salted Whether to salt the data for SHA-256 hashing using the site salt; ignored if $hashed is false
  * @return SHORT_TEXT The base64 or base64url data
  */
@@ -5996,10 +5996,10 @@ function cms_base64_encode(string $data, bool $url_safe = false, bool $hashed = 
     if ($hashed === true) {
         if ($salted === true) {
             require_code('crypt');
-            $data .= get_site_salt();
+            $data = hash_hmac('sha256', $data, get_site_salt(), true);
+        } else {
+            $data = hash('sha256', $data, true);
         }
-
-        $data = hash('sha256', $data, true);
     }
 
     $data = base64_encode($data);
