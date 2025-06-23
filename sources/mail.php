@@ -1264,34 +1264,32 @@ abstract class Mail_dispatcher_base
         if (!is_valid_email_address($staff_address)) { // Required for security
             $staff_address = '';
         }
+        if ($to_emails === null) {
+            $to_emails = [$staff_address];
+        }
 
-        if ($to_emails !== null) {
-            foreach ($to_emails as $key => $email) {
-                // Remove addresses which either unsubscribed or had a bounce-back in the last 8 weeks
-                if (!can_email_address($email)) {
-                    $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
+        // Run some filters on our list of addresses
+        foreach ($to_emails as $key => $email) {
+            // Remove addresses which either unsubscribed or had a bounce-back in the last 8 weeks
+            if (!can_email_address($email)) {
+                $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
+
+                unset($to_emails[$key]);
+                continue;
+            }
+
+            // Unless priority is critical (1), remove addresses of banned members
+            if ($this->priority != 1) {
+                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
+                if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
+                    $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
 
                     unset($to_emails[$key]);
                     continue;
                 }
-
-                // Unless priority is critical (1), remove addresses of banned members
-                if ($this->priority != 1) {
-                    $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
-                    if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
-                        $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
-
-                        unset($to_emails[$key]);
-                        continue;
-                    }
-                }
             }
         }
 
-        // To e-mail (an array)
-        if ($to_emails === null) {
-            $to_emails = [$staff_address];
-        }
         $to_emails_new = [];
         foreach ($to_emails as $_to_email) {
             escape_header($_to_email);
