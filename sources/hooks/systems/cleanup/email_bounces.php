@@ -45,7 +45,7 @@ class Hook_cleanup_email_bounces
      */
     public function run() : object
     {
-        $GLOBALS['SITE_DB']->query_select('email_bounces');
+        $GLOBALS['SITE_DB']->query_delete('email_bounces');
 
         return new Tempcode();
     }
