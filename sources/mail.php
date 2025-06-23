@@ -1265,23 +1265,25 @@ abstract class Mail_dispatcher_base
             $staff_address = '';
         }
 
-        // Filter e-mails to which we are not allowed to send
-        foreach ($to_emails as $key => $email) {
-            if (!can_email_address($email)) {
-                $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
-
-                unset($to_emails[$key]);
-            }
-        }
-
-        // Filter our e-mails of banned members
-        if ($this->priority != 1 && $to_emails !== null) {
+        if ($to_emails !== null) {
             foreach ($to_emails as $key => $email) {
-                $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
-                if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
-                    $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
+                // Remove addresses which either unsubscribed or had a bounce-back in the last 8 weeks
+                if (!can_email_address($email)) {
+                    $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
 
                     unset($to_emails[$key]);
+                    continue;
+                }
+
+                // Unless priority is critical (1), remove addresses of banned members
+                if ($this->priority != 1) {
+                    $member_id = $GLOBALS['FORUM_DRIVER']->get_member_from_email_address($email);
+                    if (($member_id !== null) && ($GLOBALS['FORUM_DRIVER']->is_banned($member_id))) {
+                        $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
+
+                        unset($to_emails[$key]);
+                        continue;
+                    }
                 }
             }
         }
