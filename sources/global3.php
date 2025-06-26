@@ -5615,8 +5615,9 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
         return true;
     }*/
 
-    // Not allowed to set cookies; user rejected them
-    if (!allowed_cookies() && ($value != '')) {
+    // User rejected cookies; eat the existing cookie and bail out
+    if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false)) {
+        cms_eatcookie($name);
         return false;
     }
 
