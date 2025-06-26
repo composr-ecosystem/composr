@@ -715,6 +715,8 @@ class Hook_addon_registry_core
             'data_custom/execute_temp.php.bundle',
             'data_custom/failed_mail/.htaccess',
             'data_custom/failed_mail/index.html',
+            'data_custom/profiler/.htaccess',
+            'data_custom/profiler/index.html',
             'data_custom/firewall_rules.txt',
             'data_custom/images/.htaccess',
             'data_custom/images/index.html',
