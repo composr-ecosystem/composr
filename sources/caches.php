@@ -461,7 +461,7 @@ function persistent_cache_get($key, ?int $min_cache_date = null)
     if ($test !== null) {
         return $test;
     }
-    /*if (!is_a($PERSISTENT_CACHE, 'Persistent_caching_filecache')) {  Server-wide bad idea
+    /*if (!is_a($PERSISTENT_CACHE, 'Persistent_caching_filesystem')) {  Server-wide bad idea
         $test = $PERSISTENT_CACHE->get(('cms' . float_to_raw_string(cms_version_number())) . serialize($key), $min_cache_date); // And last we'll try server-wide
     }*/
     return $test;
@@ -485,7 +485,7 @@ function persistent_cache_set($key, $data, bool $server_wide = false, ?int $expi
         $expire_secs = $server_wide ? 0 : (60 * 60);
     }
 
-    /*if (is_a($PERSISTENT_CACHE, 'Persistent_caching_filecache')) {   Server-wide bad idea
+    /*if (is_a($PERSISTENT_CACHE, 'Persistent_caching_filesystem')) {   Server-wide bad idea
         $server_wide = false;
     }*/
     $server_wide = false;
@@ -521,10 +521,25 @@ function persistent_cache_delete($key, bool $substring = false)
         }
     } else {
         $PERSISTENT_CACHE->delete(get_file_base() . serialize($key));
-        /*if (!is_a($PERSISTENT_CACHE, 'Persistent_caching_filecache')) {  Server-wide bad idea
+        /*if (!is_a($PERSISTENT_CACHE, 'Persistent_caching_filesystem')) {  Server-wide bad idea
             $PERSISTENT_CACHE->delete('cms' . float_to_raw_string(cms_version_number()) . serialize($key));
         }*/
     }
+}
+
+/**
+ * Get the name of the class for the active persistent cache.
+ *
+ * @return ?ID_TEXT The class name of the persistent cache being used (null: persistent cache is disabled)
+ */
+function persistent_cache_type() : ?string
+{
+    global $PERSISTENT_CACHE;
+    if ($PERSISTENT_CACHE === null) {
+        return null;
+    }
+
+    return get_class($PERSISTENT_CACHE);
 }
 
 /**

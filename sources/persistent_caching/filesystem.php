@@ -80,7 +80,7 @@ class Persistent_caching_filesystem
             return null;
         }
         if ($min_cache_date !== null) { // Code runs here as we know file exists at this point
-            if (filemtime(get_custom_file_base() . '/caches/persistent/' . cms_base64_encode($key, true, true) . '.gcd') < $min_cache_date) {
+            if (filemtime($path) < $min_cache_date) {
                 return null;
             }
         }

@@ -550,6 +550,7 @@ function erase_comcode_page_cache()
             $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['string_index' => $row['string_index']]);
         }
     } while (!empty($rows));
+
     erase_persistent_cache();
 
     pop_query_limiting();

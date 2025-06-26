@@ -270,14 +270,19 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
 
     static $zbmf_cache = null;
     if ($zbmf_cache === null) {
-        $zbmf_cache = function_exists('persistent_cache_get') ? persistent_cache_get('ZBMF_CACHE') : [];
-        if ($zbmf_cache === null) {
+        if (function_exists('persistent_cache_type') && (persistent_cache_type() !== 'Persistent_caching_filesystem')) {
+            $zbmf_cache = persistent_cache_get('ZBMF_CACHE');
+        } else {
             $zbmf_cache = [];
         }
     }
 
     if (isset($zbmf_cache[$path])) {
         return $zbmf_cache[$path];
+    }
+
+    if ($zbmf_cache === null) {
+        $zbmf_cache = [];
     }
 
     if ($relative) {
@@ -305,7 +310,7 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
                 if (@is_file($site_equiv)) {
                     $ret = $relative ? ('site/' . $stripped) : $site_equiv;
                     $zbmf_cache[$path] = $ret;
-                    if (function_exists('persistent_cache_set')) {
+                    if (function_exists('persistent_cache_type') && (persistent_cache_type() !== 'Persistent_caching_filesystem')) {
                         persistent_cache_set('ZBMF_CACHE', $zbmf_cache);
                     }
                     return $ret;
@@ -315,7 +320,7 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
     }
 
     $zbmf_cache[$path] = $path;
-    if (function_exists('persistent_cache_set')) {
+    if (function_exists('persistent_cache_type') && (persistent_cache_type() !== 'Persistent_caching_filesystem')) {
         persistent_cache_set('ZBMF_CACHE', $zbmf_cache);
     }
     return $path;
