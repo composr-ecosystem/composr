@@ -62,7 +62,7 @@ Composr supports a "persistent cache" that can store any arbitrary PHP data (e.g
 The persistent cache is implemented in 3 ways, and one of them is used, or none if it is not enabled (by default it isn't):
 1) via a supported persistent cache PHP extension
 2) via the memcached server daemon combined with the above (requires either memcache or memcached PHP extension to access it)
-3) via file writing
+3) via file writing (recommended only as a last resort)
 
 The usage of the cache is very simple. You can:
  - read a named (nameable by any data structure, like an array) entry ([tt]persistent_cache_get[/tt])

@@ -712,6 +712,7 @@ function find_cache_on(string $codename) : ?array
 
 /**
  * Find the cached result of what is named by codename and the further constraints.
+ * This will use persistent cache if enabled, else the database.
  *
  * @param  ID_TEXT $codename The codename to check for caching
  * @param  LONG_TEXT $cache_identifier The further restraints (a serialized map)
@@ -807,6 +808,7 @@ function get_cache_signature_details(?int $special_cache_flags, ?int &$staff_sta
 
 /**
  * Ability to do multiple get_cache_entry at once, for performance reasons.
+ * This will use persistent cache if enabled, else the database.
  *
  * @param  array $dets An array of tuples of parameters (as per get_cache_entry, almost)
  * @return array Array of results

@@ -68,8 +68,8 @@ class Persistent_caching_filesystem
     {
         if ($key != 'PERSISTENT_CACHE_OBJECTS'/*this key is too volatile with concurrency*/) {
             global $PC_FC_CACHE;
-            if (($min_cache_date === null) && (isset($PC_FC_CACHE[$key]))) {
-                return $PC_FC_CACHE[$key];
+            if (isset($PC_FC_CACHE[$key]) && (($min_cache_date === null) || ($PC_FC_CACHE[$key][0] >= $min_cache_date))) {
+                return $PC_FC_CACHE[$key][1];
             }
         }
 
@@ -94,7 +94,7 @@ class Persistent_caching_filesystem
             $ret = null;
         }
 
-        $PC_FC_CACHE[$key] = $ret;
+        $PC_FC_CACHE[$key] = [filemtime($path), $ret];
 
         return $ret;
     }
@@ -109,8 +109,11 @@ class Persistent_caching_filesystem
      */
     public function set(string $key, $data, int $flags = 0, ?int $expire_secs = null)
     {
+        static $scheduled_dumped = false;
+        static $scheduled_dump_by_key = [];
+
         global $PC_FC_CACHE;
-        $PC_FC_CACHE[$key] = $data;
+        $PC_FC_CACHE[$key] = [time(), $data];
 
         if ($key !== 'PERSISTENT_CACHE_OBJECTS') {
             // Update list of persistent-objects
@@ -121,10 +124,39 @@ class Persistent_caching_filesystem
             }
         }
 
-        require_code('files');
-        $path = get_custom_file_base() . '/caches/persistent/' . cms_base64_encode($key, true, true) . '.gcd';
-        $to_write = serialize($data);
-        cms_file_put_contents_safe($path, $to_write, FILE_WRITE_FIX_PERMISSIONS);
+        // Optimisation: Defer saving to disk to decrease I/O
+        if ($scheduled_dumped === false) {
+            // First, try an all-around schedule to save everything in the cache when we shut down
+            $scheduled_dumped = cms_register_shutdown_function_if_available(function () {
+                global $PC_FC_CACHE;
+
+                require_code('files');
+
+                foreach ($PC_FC_CACHE as $key => $data) {
+                    $path = get_custom_file_base() . '/caches/persistent/' . cms_base64_encode($key, true, true) . '.gcd';
+                    $to_write = serialize($data[1]);
+                    cms_file_put_contents_safe($path, $to_write, FILE_WRITE_FIX_PERMISSIONS);
+                }
+            });
+
+            // If that did not work, schedule saving the individual key instead (executing immediately if we cannot)
+            if (($scheduled_dumped === false) && (!isset($scheduled_dump_by_key[$key]))) {
+                $scheduled_dump_by_key[$key] = cms_register_shutdown_function_safe(function () use ($key) {
+                    global $PC_FC_CACHE;
+
+                    // It's possible we later deleted this key which wouldn't delete the schedule
+                    if (!isset($PC_FC_CACHE[$key])) {
+                        return;
+                    }
+
+                    require_code('files');
+
+                    $path = get_custom_file_base() . '/caches/persistent/' . cms_base64_encode($key, true, true) . '.gcd';
+                    $to_write = serialize($PC_FC_CACHE[$key][1]);
+                    cms_file_put_contents_safe($path, $to_write, FILE_WRITE_FIX_PERMISSIONS);
+                });
+            }
+        }
     }
 
     /**
