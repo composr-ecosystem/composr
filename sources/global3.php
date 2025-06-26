@@ -4001,8 +4001,8 @@ function get_bot_type(?string $agent = null) : ?string
 }
 
 /**
- * Determine whether the user's browser supports cookies or not.
- * Unfortunately this function will only return true once a user has been to the site more than once... the software will set a cookie, and if it perseveres, that indicates cookies work.
+ * Determine whether the user's browser supports cookies or not, and they accepted cookies through cookie consent.
+ * Unfortunately this will not return true until the next page hit after they accept cookies.
  *
  * @return boolean Whether the user has definitely got cookies
  */
@@ -4019,15 +4019,37 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
         return false;
     }*/
 
+    if (!allowed_cookies()) {
+        $has_cookies_cache = false;
+        return false;
+    }
+
     if (isset($_COOKIE['has_cookies'])) {
         $has_cookies_cache = true;
         return true;
     }
     if (running_script('index')) {
-        cms_setcookie('has_cookies', '1', false, false);
+        $result = cms_setcookie('has_cookies', '1', false, false);
+        $has_cookies_cache = $result;
+        return $result;
     }
+
     $has_cookies_cache = false;
     return false;
+}
+
+/**
+ * Whether the current user explicitly allowed cookies in the cookie consent notice.
+ *
+ * @return boolean Whether cookies were allowed
+ */
+function allowed_cookies() : bool
+{
+    if (!isset($_COOKIE['cookieconsent_ESSENTIAL']) || ($_COOKIE['cookieconsent_ESSENTIAL'] != 'ALLOW')) {
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -5593,6 +5615,11 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
         return true;
     }*/
 
+    // Not allowed to set cookies; user rejected them
+    if (!allowed_cookies() && ($value != '')) {
+        return false;
+    }
+
     static $cache = [];
     $sz = serialize([$name, $value, $session, $httponly]);
     if (isset($cache[$sz])) {
@@ -5987,7 +6014,7 @@ function clear_infinite_loop_iterations(string $codename, ?array $args = null)
  *
  * @param  LONG_TEXT $data The data to encode
  * @param  boolean $url_safe Whether to output base64url format instead, which is URL (parameters only) and file safe
- * @param  boolean $hashed Whether to hash $data with SHA-256 first before encoding
+ * @param  boolean $hashed Whether to hash $data with SHA-256 first and then encode the hash
  * @param  boolean $salted Whether to salt the data for SHA-256 hashing using the site salt; ignored if $hashed is false
  * @return SHORT_TEXT The base64 or base64url data
  */
@@ -5996,10 +6023,10 @@ function cms_base64_encode(string $data, bool $url_safe = false, bool $hashed = 
     if ($hashed === true) {
         if ($salted === true) {
             require_code('crypt');
-            $data .= get_site_salt();
+            $data = hash_hmac('sha256', $data, get_site_salt(), true);
+        } else {
+            $data = hash('sha256', $data, true);
         }
-
-        $data = hash('sha256', $data, true);
     }
 
     $data = base64_encode($data);

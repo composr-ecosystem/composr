@@ -235,10 +235,7 @@ function _build_keep_post_fields(array $exclude = [], bool $force_everything = f
  */
 function _url_to_filename(string $url_full) : string
 {
-    require_code('crypt');
-
-    $_new_name = hash_hmac('sha256', $url_full, get_site_salt(), true);
-    $new_name = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($_new_name));
+    $new_name = cms_base64_encode($url_full, true, true, true);
 
     $ext = get_file_extension($url_full);
     if ($ext != '') {

@@ -97,7 +97,7 @@ function reprocess_url(string $url, string $operation_base_url) : string
     }
 
     // Were we asked to set any cookies?
-    if ($url_bits['host'] == get_base_url_hostname()) {
+    if (allowed_cookies() && ($url_bits['host'] == get_base_url_hostname())) {
         foreach ($http_result->new_cookies as $cookie_key => $cookie_parts) {
             setcookie(
                 $cookie_key,

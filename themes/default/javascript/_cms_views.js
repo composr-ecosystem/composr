@@ -1062,10 +1062,11 @@
         }
 
         // Cookie Consent plugin by Osano - https://www.osano.com/cookieconsent
-        if ($cms.configOption('cookie_notice') && ($cms.runningScript() === 'index') && ($dom.$('meta[http-equiv="Refresh"]') === null) && (window.parent === window)) {
+        if (($cms.runningScript() === 'index') && ($dom.$('meta[http-equiv="Refresh"]') === null) && (window.parent === window)) {
             $cms.requireJavascript('cookie_consent').then(function () {
                 var cookieConsentOptions = {
                     cookie: {
+                        name: 'cookieconsent',
                         path: $cms.getCookiePath(),
                         domain: $cms.getCookieDomain(),
                     },
@@ -1076,16 +1077,18 @@
                     theme: 'block',
                     content: {
                         message: $util.format('{!COOKIE_NOTICE;}', [$cms.getSiteName()]),
-                        dismiss: '{!INPUTSYSTEM_OK;}',
                         link: '{!READ_MORE;}',
                         href: pageLinkPrivacy,
+                        allow: '{!ALLOW_COOKIES;}',
+                        dismiss: '{!DENY_COOKIES;}', // e.g. deny cookies
                     },
+                    revokable: true,
+                    type: 'opt-in', // Required by GDPR
                 };
 
                 if ($cms.getCountry()) {
                     cookieConsentOptions['law'] = {
                         countryCode: $cms.getCountry(),
-                        regionalLaw: false, // "If false, then we only enable the pop-up if the country has the cookie law. We ignore all other country specific rules."
                     };
                 }
 

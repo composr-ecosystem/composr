@@ -542,6 +542,11 @@
      * @param numDays
      */
     $cms.setCookie = function setCookie(cookieName, cookieValue, numDays) {
+        var cookieConsent = $cms.readCookie('cookieconsent_ESSENTIAL');
+        if ((!cookieConsent || (cookieConsent !== 'ALLOW')) && (cookieValue !== '')) {
+            return;
+        }
+
         var expires = new Date(),
             output;
 
