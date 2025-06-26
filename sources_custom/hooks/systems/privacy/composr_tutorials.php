@@ -102,7 +102,8 @@ class Hook_privacy_composr_tutorials extends Hook_privacy_base
 
                 log_it('DELETE_TUTORIAL', strval($row['id']), $row['t_title']);
 
-                @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
+                require_code('caches');
+                delete_cache_entry('tutorials');
                 break;
 
             default:
