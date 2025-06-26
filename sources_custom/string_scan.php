@@ -3491,7 +3491,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONFIG_OPTION_comments_to_show_in_thread
         CONFIG_OPTION_complex_privacy_options
         CONFIG_OPTION_complex_uploader
-        CONFIG_OPTION_cookie_notice
         CONFIG_OPTION_website_activity_store_time
         PRIVILEGE_avoid_captcha
         WEBSITE_ACTIVITY_STORE_TIME
@@ -4104,7 +4103,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_DOMAIN_MUST_START_DOT
         COOKIE_DOMAIN_TEXT
         COOKIE_EXAMPLE
-        COOKIE_NOTICE_OPTION
+        COOKIE_NOTICE
         COOKIE_PASSWORD
         COOKIE_PASSWORD_EXAMPLE
         COOKIE_PASSWORD_TEXT
@@ -9357,7 +9356,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         CONTINUE_SHOPPING
         CONTRACT
         COOKIES_AS_GUEST
-        COOKIE_NOTICE
         COPY_EXISTING_POLL
         CORRECT
         CORRECT_ANSWER
@@ -12316,6 +12314,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         STANDING_DANGER_IP_TEXT_2
         STANDING_RESTRICTIONS_SUBMIT_BAN
         TASK_QUEUE_BACKED_UP
+        ALLOW_COOKIES
+        DENY_COOKIES
     ')));
 
     // Remove blank lines

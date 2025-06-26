@@ -2602,6 +2602,7 @@ function set_exception_handler($exception_handler)
 
 /**
  * Send a cookie.
+ * TODO: Should remove this and prefer cms_setcookie for GDPR compliance.
  *
  * @sets_output_state
  *
