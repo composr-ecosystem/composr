@@ -1066,6 +1066,7 @@
             $cms.requireJavascript('cookie_consent').then(function () {
                 var cookieConsentOptions = {
                     cookie: {
+                        name: 'cookieconsent',
                         path: $cms.getCookiePath(),
                         domain: $cms.getCookieDomain(),
                     },

@@ -4045,7 +4045,7 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
  */
 function allowed_cookies() : bool
 {
-    if (!isset($_COOKIE['cookieconsent_status_ESSENTIAL']) || ($_COOKIE['cookieconsent_status_ESSENTIAL'] != 'ALLOW')) {
+    if (!isset($_COOKIE['cookieconsent_ESSENTIAL']) || ($_COOKIE['cookieconsent_ESSENTIAL'] != 'ALLOW')) {
         return false;
     }
 

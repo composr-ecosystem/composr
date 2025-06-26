@@ -542,7 +542,7 @@
      * @param numDays
      */
     $cms.setCookie = function setCookie(cookieName, cookieValue, numDays) {
-        var cookieConsent = $cms.readCookie('cookieconsent_status_ESSENTIAL');
+        var cookieConsent = $cms.readCookie('cookieconsent_ESSENTIAL');
         if ((!cookieConsent || (cookieConsent !== 'ALLOW')) && (cookieValue !== '')) {
             return;
         }
