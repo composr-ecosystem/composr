@@ -4001,8 +4001,8 @@ function get_bot_type(?string $agent = null) : ?string
 }
 
 /**
- * Determine whether the user's browser supports cookies or not.
- * Unfortunately this function will only return true once a user has been to the site more than once... the software will set a cookie, and if it perseveres, that indicates cookies work.
+ * Determine whether the user's browser supports cookies or not, and they accepted cookies through cookie consent.
+ * Unfortunately this will not return true until the next page hit after they accept cookies.
  *
  * @return boolean Whether the user has definitely got cookies
  */
@@ -4019,15 +4019,37 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
         return false;
     }*/
 
+    if (!allowed_cookies()) {
+        $has_cookies_cache = false;
+        return false;
+    }
+
     if (isset($_COOKIE['has_cookies'])) {
         $has_cookies_cache = true;
         return true;
     }
     if (running_script('index')) {
-        cms_setcookie('has_cookies', '1', false, false);
+        $result = cms_setcookie('has_cookies', '1', false, false);
+        $has_cookies_cache = $result;
+        return $result;
     }
+
     $has_cookies_cache = false;
     return false;
+}
+
+/**
+ * Whether the current user explicitly allowed cookies in the cookie consent notice.
+ *
+ * @return boolean Whether cookies were allowed
+ */
+function allowed_cookies() : bool
+{
+    if (!isset($_COOKIE['cookieconsent_status_ESSENTIAL']) || ($_COOKIE['cookieconsent_status_ESSENTIAL'] != 'ALLOW')) {
+        return false;
+    }
+
+    return true;
 }
 
 /**
@@ -5592,6 +5614,11 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
     /*if (($GLOBALS['DEV_MODE']) && (running_script('index')) && (get_forum_type() == 'cns') && (get_param_integer('keep_debug_has_cookies', 0) == 0) && ($name != 'has_referers')) {    Annoying, and non-cookie support is very well tested by now
         return true;
     }*/
+
+    // Not allowed to set cookies; user rejected them
+    if (!allowed_cookies() && ($value != '')) {
+        return false;
+    }
 
     static $cache = [];
     $sz = serialize([$name, $value, $session, $httponly]);

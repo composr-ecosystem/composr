@@ -237,20 +237,20 @@ function get_country(?int $member_id = null) : ?string
         $member_id = get_member();
     }
 
-    if (($member_id !== null) && !is_guest($member_id)) {
+    if (!is_guest($member_id)) {
+        // First, check the country CPF. If filled in, return it as the country.
         $country = get_cms_cpf('country', $member_id);
         if ((!empty($country)) && (strpos($country, '|') === false)) {
             return $country;
         }
-    }
 
-    if ($member_id === null) {
-        $ip = get_ip_address();
-    } else {
+        // No CPF? We are using geolocation by IP
         $ip = $GLOBALS['FORUM_DRIVER']->get_member_ip($member_id);
         if ($ip === null) {
             $ip = '127.0.0.1';
         }
+    } else {
+        $ip = get_ip_address();
     }
 
     $country = geolocate_ip($ip);

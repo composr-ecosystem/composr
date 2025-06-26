@@ -138,7 +138,6 @@ class Hook_addon_registry_core_privacy
             'sources/blocks/main_privacy_policy_auto.php',
             'sources/hooks/systems/addon_registry/core_privacy.php',
             'sources/hooks/systems/config/bottom_show_privacy_link.php',
-            'sources/hooks/systems/config/cookie_notice.php',
             'sources/hooks/systems/config/days_to_keep__banned_access_log.php',
             'sources/hooks/systems/config/days_to_keep__cron_log.php',
             'sources/hooks/systems/config/days_to_keep__debug_fs_log.php',
