@@ -155,6 +155,11 @@ class Persistent_caching_filesystem
                     $to_write = serialize($PC_FC_CACHE[$key][1]);
                     cms_file_put_contents_safe($path, $to_write, FILE_WRITE_FIX_PERMISSIONS);
                 });
+
+                // If we executed immediately, we must make sure it can execute again if the value changes
+                if ($scheduled_dump_by_key[$key] === false) {
+                    unset($scheduled_dump_by_key[$key]);
+                }
             }
         }
     }
