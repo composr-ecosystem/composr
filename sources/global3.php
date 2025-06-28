@@ -5618,7 +5618,6 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
     // User rejected cookies; eat the existing cookie and bail out
     if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false)) {
         cms_eatcookie($name);
-        unset($_COOKIE[$name]);
         return false;
     }
 
@@ -5678,97 +5677,27 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 }
 
 /**
- * Try to delete a cookie from within the site's cookie environment.
- * This function runs many different cookie combinations to try and effectively delete it.
+ * Deletes a cookie (if it exists), from within the site's cookie environment.
  *
  * @param  string $name The name of the cookie
+ * @return boolean The result of the PHP setcookie command
  */
-function cms_eatcookie(string $name)
+function cms_eatcookie(string $name) : bool
 {
     $expire = time() - 100000; // Note the negative number must be greater than 13*60*60 to account for maximum timezone difference
 
-    $cookie_path = get_cookie_path();
-    $cookie_domain = get_cookie_domain();
+    // Try and remove other potentials
+    @setcookie($name, '', $expire, '', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '', '');
+    @setcookie($name, '', $expire, '/', '');
 
-    // Hostname variations
-    $hostnames = [
-        $cookie_domain,
-        preg_replace('#^www\.#', '', get_request_hostname()),
-        'www.' . preg_replace('#^www\.#', '', get_request_hostname()),
-        '',
-    ];
-
-    // Path variations
-    $paths = [$cookie_path, '/', ''];
-
-    // Try to delete the cookie with various common parameters
-    foreach ($hostnames as $domain) {
-        // Try __Host- (httponly) prefix first; this requires a '/' path, so we can do this outside the for loop for paths
-        @setcookie($name, '', $expire, '/', $domain, true, true);
-        if (version_compare(PHP_VERSION, '7.3.0', '>=')) { // LEGACY
-            @setcookie($name, '', [
-                'expires' => $expire,
-                'path' => '/',
-                'domain' => $domain,
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Lax',
-            ]);
-            @setcookie($name, '', [
-                'expires' => $expire,
-                'path' => '/',
-                'domain' => $domain,
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => 'Strict',
-            ]);
-        }
-
-        foreach ($paths as $path) {
-            // Standard cookie deletion attempts
-            @setcookie($name, '', $expire, $path, $domain);
-
-            // __Secure- prefix
-            @setcookie($name, '', $expire, $path, $domain, true, false);
-
-            // Attempt with SameSite attribute explicitly set to 'Lax' and 'Strict'
-            if (version_compare(PHP_VERSION, '7.3.0', '>=')) { // LEGACY
-                @setcookie($name, '', [
-                    'expires' => $expire,
-                    'path' => $path,
-                    'domain' => $domain,
-                    'secure' => false,
-                    'httponly' => false,
-                    'samesite' => 'Lax',
-                ]);
-                @setcookie($name, '', [
-                    'expires' => $expire,
-                    'path' => $path,
-                    'domain' => $domain,
-                    'secure' => false,
-                    'httponly' => false,
-                    'samesite' => 'Strict',
-                ]);
-                 @setcookie($name, '', [
-                    'expires' => $expire,
-                    'path' => $path,
-                    'domain' => $domain,
-                    'secure' => true,
-                    'httponly' => false,
-                    'samesite' => 'Lax',
-                ]);
-                @setcookie($name, '', [
-                    'expires' => $expire,
-                    'path' => $path,
-                    'domain' => $domain,
-                    'secure' => true,
-                    'httponly' => false,
-                    'samesite' => 'Strict',
-                ]);
-            }
-        }
-    }
+    // Delete standard potential
+    return @setcookie($name, '', $expire, get_cookie_path(), get_cookie_domain());
 }
+
 
 /**
  * Convert a parameter set from a an array (for PHP code) to a string (for templates).
