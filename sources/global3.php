@@ -5677,6 +5677,28 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 }
 
 /**
+ * Deletes a cookie (if it exists), from within the site's cookie environment.
+ *
+ * @param  string $name The name of the cookie
+ * @return boolean The result of the PHP setcookie command
+ */
+function cms_eatcookie(string $name) : bool
+{
+    $expire = time() - 100000; // Note the negative number must be greater than 13*60*60 to account for maximum timezone difference
+
+    // Try and remove other potentials
+    @setcookie($name, '', $expire, '', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '/', 'www.' . preg_replace('#^www\.#', '', get_request_hostname()));
+    @setcookie($name, '', $expire, '', '');
+    @setcookie($name, '', $expire, '/', '');
+
+    // Delete standard potential
+    return @setcookie($name, '', $expire, get_cookie_path(), get_cookie_domain());
+}
+
+/**
  * Convert a parameter set from a an array (for PHP code) to a string (for templates).
  *
  * @param  array $map The parameters / acceptable parameter pattern

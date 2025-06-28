@@ -37,7 +37,6 @@ class Hook_commandr_command_reset
             return ['', do_command_help('reset', ['h'], []), '', ''];
         }
 
-        require_code('users_active_actions');
         cms_eatcookie('commandr_dir');
         cms_eatcookie('commandr_state');
         cms_eatcookie('commandr_state_code');

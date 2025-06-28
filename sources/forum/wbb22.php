@@ -1033,7 +1033,6 @@ class Forum_driver_wbb22 extends Forum_driver_base
             return $out;
         }
 
-        require_code('users_active_actions');
         cms_eatcookie('cookiehash');
 
         $out['id'] = $row['userid'];
