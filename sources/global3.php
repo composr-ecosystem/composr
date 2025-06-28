@@ -5617,7 +5617,7 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 
     // User rejected cookies; eat the existing cookie and bail out
     if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false)) {
-        cms_eatcookie($name);
+        cms_setcookie($name, '', $session, $httponly, -14.0); // Cannot use cms_eatcookie
         return false;
     }
 
@@ -5630,7 +5630,7 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
     if ($days === null) {
         $days = get_cookie_days();
     }
-    $expires = ($session ? 0 : (time() + intval($days * 24.0 * 60.0 * 60.0)));
+    $expires = (($session && ($days >= 0.0)) ? 0 : (time() + intval($days * 24.0 * 60.0 * 60.0)));
 
     $path = get_cookie_path();
     if ($path == '') {
@@ -5697,7 +5697,6 @@ function cms_eatcookie(string $name) : bool
     // Delete standard potential
     return @setcookie($name, '', $expire, get_cookie_path(), get_cookie_domain());
 }
-
 
 /**
  * Convert a parameter set from a an array (for PHP code) to a string (for templates).
