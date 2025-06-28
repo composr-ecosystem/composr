@@ -191,7 +191,6 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
         $needs_rehash = false;
         if ($cookie_login) {
             require_code('users');
-            require_code('users_active_actions');
 
             switch ($password_compat_scheme) {
                 case 'pending_deletion': // Account is actually pending deletion in the task queue; we should bail on error

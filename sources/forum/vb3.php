@@ -1361,7 +1361,6 @@ class Forum_driver_vb3 extends Forum_driver_base
         }
 
         if (substr(get_member_cookie(), 0, 5) != 'cms__') {
-            require_code('users_active_actions');
             cms_eatcookie('sessionhash');
         }
 

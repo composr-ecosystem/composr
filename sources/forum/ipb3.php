@@ -1531,7 +1531,6 @@ class Forum_driver_ipb3 extends Forum_driver_base
 
         if (substr(get_member_cookie(), 0, 5) != 'cms__') {
             $pos = strpos(get_member_cookie(), 'member_id');
-            require_code('users_active_actions');
             cms_eatcookie(substr(get_member_cookie(), 0, $pos) . 'session_id');
         }
 

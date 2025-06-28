@@ -1601,7 +1601,6 @@ class Forum_driver_phpbb3 extends Forum_driver_base
         }
 
         $pos = strpos(get_member_cookie(), '_data:userid');
-        require_code('users_active_actions');
         if ($pos !== false) {
             cms_eatcookie(substr(get_member_cookie(), 0, $pos) . '_sid');
         }
