@@ -210,7 +210,7 @@ function handle_active_login(string $username)
             if ($invisible == 1) {
                 cms_setcookie(get_member_cookie() . '_invisible', '1');
             } else {
-                cms_eatcookie(get_member_cookie() . '_invisible');
+                cms_setcookie(get_member_cookie() . '_invisible', '');
             }
             $_COOKIE[get_member_cookie() . '_invisible'] = strval($invisible);
         }
@@ -470,7 +470,7 @@ function set_invisibility(bool $make_invisible = true)
         if ($make_invisible) {
             cms_setcookie(get_member_cookie() . '_invisible', '1');
         } else {
-            cms_eatcookie(get_member_cookie() . '_invisible');
+            cms_setcookie(get_member_cookie() . '_invisible', '');
         }
         $_COOKIE[get_member_cookie() . '_invisible'] = strval($make_invisible ? 1 : 0);
     }
