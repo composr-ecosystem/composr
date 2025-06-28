@@ -29,7 +29,7 @@
  */
 function _enforce_sessioned_url(string $url) : string
 {
-    if (get_bot_type() === null) {
+    if (get_bot_type() !== null) {
         return $url;
     }
 
@@ -55,7 +55,7 @@ function _enforce_sessioned_url(string $url) : string
 
     // Get hash back
     $url .= $hash;
-    $url = preg_replace('#\?kenested_cpf_spreadsheet_lists.phpep_session=\w+#', '', $url);
+    $url = preg_replace('#\?keep_session=\w+#', '', $url);
 
     // Possibly a nested URL too
     $url = preg_replace('#keep_session=\w+' . preg_quote(urlencode('&')) . '#', '', $url);
