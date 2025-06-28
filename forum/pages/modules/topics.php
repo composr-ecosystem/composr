@@ -1799,11 +1799,9 @@ class Module_topics
             $js_function_calls[] = ['newTopicFormChangeActionIfAddingPoll', ['add_poll_url' => $add_poll_url]];
             $hidden_fields->attach(form_input_hidden('csrf_token_preserve', '0'));
         }
-        if (count($options) == 1) {
-            $specialisation->attach(form_input_tick($options[0][0], $options[0][3], $options[0][1], $options[0][5], null, $options[0][2], $options[0][4]));
-        } else {
-            $specialisation2->attach(form_input_various_ticks($options, ''));
-        }
+
+        $specialisation2->attach(form_input_various_ticks($options, ''));
+
         if (!empty($moderation_options)) {
             $specialisation2->attach(form_input_various_ticks($moderation_options, '', null, do_lang_tempcode('MODERATION_OPTIONS')));
         }
@@ -2966,6 +2964,7 @@ class Module_topics
      *
      * @param  ?AUTO_LINK $forum_id The ID of the forum to which the poll is being added (null: it is a private topic)
      * @param  boolean $new_poll Whether we are making a new poll opposed to editing a poll
+     * @param  BINARY $topic_validated Whether the topic on which this poll is being created is validated
      * @param  SHORT_TEXT $question The poll question
      * @param  array $answers A list of current answers for the poll
      * @param  BINARY $is_private Whether it is a private poll (blind poll, where the results aren't visible until made public)
@@ -2980,7 +2979,7 @@ class Module_topics
      * @param  BINARY $point_weighting Whether votes will be weighed according to how many points voters have
      * @return Tempcode The Tempcode for the fields
      */
-    public function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
+    protected function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, int $validated = 1, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
     {
         require_lang('cns_polls');
         require_code('cns_polls_action3');
@@ -3062,7 +3061,7 @@ class Module_topics
             if ($new_poll && $_default_options['resultsHidden']) {
                 $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), true, true];
             } else {
-                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), false, $is_private == 1];
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), $_default_options['resultsHidden'], $is_private == 1];
             }
         }
 
@@ -3092,12 +3091,10 @@ class Module_topics
 
             if (!$new_poll) { // If we are editing a poll, keep the current poll closing time value
                 $actual_poll_closing_time = $poll_closing_time;
-            } elseif ($_default_options['votingPeriodHours'] === false) { // If the XML votingPeriodHours is false, do not allow setting a closing time
+            } elseif ((is_string($_default_options['votingPeriodHours'])) && (cms_strtolower_ascii($_default_options['votingPeriodHours']) == 'false')) { // If the XML votingPeriodHours is false, do not allow setting a closing time
                 $actual_poll_closing_time = null;
-            /* TODO
-            } elseif ($schedule !== null) { // If a topic scheduled time was provided, add votingPeriodHours to that
-                $actual_poll_closing_time = $schedule + intval(round(($_default_options['votingPeriodHours'] * 60 * 60)));
-            */
+            } elseif ($validated == 0) { // If the topic is not validated, do not provide a closing time yet; the closing time will be set once the topic is validated
+                $actual_poll_closing_time = null;
             } elseif ($topic_id !== null) { // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
@@ -3127,8 +3124,10 @@ class Module_topics
     {
         require_javascript('cns_forum');
 
+        $validated = 0;
         if ($topic_id === null) {
             $topic_id = get_param_integer('id', null);
+            $validated = post_param_integer('validated', post_param_integer('_validated', 0));
         }
 
         $forum_id = get_param_integer('forum_id', null);
@@ -3137,6 +3136,11 @@ class Module_topics
             $topic_poll_id = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_poll_id', ['id' => $topic_id]);
             if ($topic_poll_id) {
                 warn_exit(do_lang_tempcode('TOPIC_POLL_ALREADY_EXISTS'));
+            }
+
+            $validated = $GLOBALS['FORUM_DB']->query_select_value_if_there('f_topics', 't_validated', ['id' => $topic_id]);
+            if ($validated === null) { // Should never happen
+                $validated = 0;
             }
         }
 
@@ -3163,12 +3167,12 @@ class Module_topics
 
         url_default_parameters__enable();
         if (($topic_id === null) && ($forum_id === null)) {
-            $fields->attach($this->get_poll_form_fields(null, true));
+            $fields->attach($this->get_poll_form_fields(null, true, $validated));
         } else {
             if (($forum_id === null) && ($topic_id !== null)) {
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
             }
-            $fields->attach($this->get_poll_form_fields($forum_id, true));
+            $fields->attach($this->get_poll_form_fields($forum_id, true, $validated));
         }
         url_default_parameters__disable();
 
@@ -4048,7 +4052,8 @@ class Module_topics
         $vote_revocation = $poll_info['po_vote_revocation'];
         $guests_can_vote = $poll_info['po_guests_can_vote'];
         $point_weighting = $poll_info['po_point_weighting'];
-        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
+        $validated = $topic_info['t_validated'];
+        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $validated, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2ba9cf458b012ee8a12429cbc8b07993', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('ERASE_VOTES'), do_lang_tempcode('DESCRIPTION_ERASE_VOTES'), 'erase_votes', false));

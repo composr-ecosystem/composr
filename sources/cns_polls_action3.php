@@ -209,14 +209,14 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     // Enforce poll options
     if (is_string($default_options['resultsHidden']) && cms_strtolower_ascii($default_options['resultsHidden']) == 'true') {
         if ($poll_id === null) {
-            $is_private = true;
+            $is_private = 1;
         } else {
             $is_private = $poll_info['po_is_private'];
         }
     }
     if (is_string($default_options['votingEnabled']) && cms_strtolower_ascii($default_options['votingEnabled']) == 'true') {
         if ($poll_id === null) {
-            $is_open = true;
+            $is_open = 1;
         } else {
             $is_open = $poll_info['po_is_open'];
         }
@@ -245,13 +245,13 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
     if ($default_options['votingPeriodHours'] !== null) {
         if ($poll_id === null) {
             $actual_poll_closing_time = time();
+            $topic_validated = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_validated', ['id' => $topic_id]);
 
-            // If votingPeriodHours is false, do not allow setting a closing time
-            if ($default_options['votingPeriodHours'] === false) {
+            if ($default_options['votingPeriodHours'] === false) { // If votingPeriodHours is false, do not allow setting a closing time
                 $actual_poll_closing_time = null;
-
-            // If a topic ID was provided, add votingPeriodHours to t_cache_first_time
-            } elseif ($topic_id !== null) {
+            } elseif ($topic_validated == 0) { // If the topic is not yet validated, then use the existing closing time on the poll (or null if making a new one)
+                $actual_poll_closing_time = ($poll_id === null) ? null : $poll_info['po_closing_time'];
+            } else { // Add votingPeriodHours to t_cache_first_time
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);
                 if (!array_key_exists(0, $_topic_info)) {
                     warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'topic'));
@@ -259,10 +259,6 @@ function cns_validate_poll(int $topic_id, ?int $poll_id, array $answers, int &$i
                 $topic_info = $_topic_info[0];
 
                 $actual_poll_closing_time = $topic_info['t_cache_first_time'] + intval(round(($default_options['votingPeriodHours'] * 60 * 60)));
-
-            // Otherwise, add votingPeriodHours to the current time
-            } else {
-                $actual_poll_closing_time += intval(round(($default_options['votingPeriodHours'] * 60 * 60)));
             }
             $closing_time = $actual_poll_closing_time;
         } else {
@@ -383,4 +379,28 @@ function cns_validate_default_poll_options_xml(string $xml = '') : ?object
     }
 
     return null;
+}
+
+/**
+ * Set a topic poll's closing time according to default poll configuration on the forum.
+ * Call this after validating a topic with a poll on it.
+ *
+ * @param  AUTO_LINK $forum_id The ID of the forum in which the topic containing the poll exists
+ * @param  AUTO_LINK $poll_id The ID of the poll on which to set the closing time
+ */
+function cns_set_poll_closing_time(int $forum_id, int $poll_id)
+{
+    $default_poll_options = cns_get_default_poll_options($forum_id);
+
+    if (!is_numeric($default_poll_options['votingPeriodHours'])) {
+        return;
+    }
+
+    $current_closing_time = $GLOBALS['FORUM_DB']->query_select_value('f_polls', 'po_closing_time', ['id' => $poll_id]);
+    if ($current_closing_time !== null) {
+        return;
+    }
+
+    $poll_closing_time = time() + intval(round(($default_poll_options['votingPeriodHours'] * 60 * 60)));
+    $GLOBALS['FORUM_DB']->query_update('f_polls', ['po_closing_time' => $poll_closing_time], ['id' => $poll_id], '', 1);
 }
