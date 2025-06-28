@@ -86,8 +86,7 @@ The [tt]defaultPollOptions[/tt] root tag supports the following attributes:
  - [tt]votingEnabled[/tt] (boolean): If true, then all polls must have voting enabled upon creation. Otherwise, the topic author may decide.
  - [tt]votingPeriodHours[/tt] (number|false): 
   - If defined as a number, then all polls created in the forum will close voting after the defined number of hours. 
-   - If a topic scheduled time was provided, this will be the number of hours from the scheduled time. Otherwise, it is the number of hours from when the topic was created. 
-  - If defined as false, then setting a date to close voting will not be allowed. 
+   - If the topic is validated, this will be the number of hours from the moment the topic is created. Otherwise, this will be the number of hours from when the topic gets validated (either manually or through the set validation date/time). 
   - If not defined, then the topic author may define their own date to close voting if they wish.
  - [tt]requiresReply[/tt] (boolean): If true, then every poll created in the forum will require a topic reply. If false, then every poll created in the forum will not require a topic reply. If not defined, then the topic author may decide.
  - [tt]resultsHidden[/tt] (boolean): If true, then every poll created in the forum will require results be hidden (until a moderator unhides them) from members who voted. Otherwise, the topic author may decide.

@@ -368,7 +368,8 @@ class Module_cms_tutorials extends Standard_crud_module
         $mail = 'A new tutorial, [url="' . $title . '"]' . $url . '[/url], has been added by ' . $username . '.';
         dispatch_notification('tutorial_added', null, $subject, $mail);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
+        require_code('caches');
+        delete_cache_entry('tutorials');
 
         return [strval($id), null];
     }
@@ -418,7 +419,8 @@ class Module_cms_tutorials extends Standard_crud_module
 
         log_it('EDIT_TUTORIAL', strval($id), $title);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
+        require_code('caches');
+        delete_cache_entry('tutorials');
 
         return null;
     }
@@ -442,6 +444,7 @@ class Module_cms_tutorials extends Standard_crud_module
 
         log_it('DELETE_TUTORIAL', strval($id), $title);
 
-        @unlink(get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin');
+        require_code('caches');
+        delete_cache_entry('tutorials');
     }
 }

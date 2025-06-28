@@ -43,6 +43,7 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
     }
     $name = $info[0]['t_cache_first_title'];
     $forum_id = $info[0]['t_forum_id'];
+    $poll_id = $info[0]['t_poll_id'];
 
     require_code('cns_forums');
 
@@ -104,6 +105,12 @@ function cns_edit_topic(?int $topic_id, ?string $description = null, ?string $em
     }
     if ($validated !== null) {
         $update['t_validated'] = $validated;
+
+        // Also check if we need to activate the poll's end date according to default poll options
+        if ($poll_id !== null) {
+            require_code('cns_polls_action3');
+            cns_set_poll_closing_time($forum_id, $poll_id);
+        }
     }
     if ($pinned !== null) {
         $update['t_pinned'] = $pinned;

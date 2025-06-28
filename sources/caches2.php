@@ -123,6 +123,7 @@ function request_via_cron(string $codename, array $map, int $special_cache_flags
 
 /**
  * Put a result into the cache.
+ * This will use persistent cache if enabled, else the database.
  *
  * @param  MINIID_TEXT $codename The codename to check for caching
  * @param  integer $ttl The TTL of what is being cached in minutes

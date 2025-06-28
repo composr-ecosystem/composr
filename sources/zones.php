@@ -270,14 +270,19 @@ function zone_black_magic_filterer(string $path, bool $relative = false) : strin
 
     static $zbmf_cache = null;
     if ($zbmf_cache === null) {
-        $zbmf_cache = function_exists('persistent_cache_get') ? persistent_cache_get('ZBMF_CACHE') : [];
-        if ($zbmf_cache === null) {
+        if (function_exists('persistent_cache_get')) {
+            $zbmf_cache = persistent_cache_get('ZBMF_CACHE');
+        } else {
             $zbmf_cache = [];
         }
     }
 
     if (isset($zbmf_cache[$path])) {
         return $zbmf_cache[$path];
+    }
+
+    if ($zbmf_cache === null) {
+        $zbmf_cache = [];
     }
 
     if ($relative) {

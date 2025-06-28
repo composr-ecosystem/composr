@@ -16,8 +16,11 @@
 				<div class="various-ticks clearfix">
 				{+START,LOOP,OUT}
 					<div class="input-individual-tick">
-						<label for="i-{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input-tick"{+START,IF,{CHECKED}} checked="checked"{+END}{+START,IF,{DISABLED}} disabled="disabled"{+END} type="checkbox" id="i-{NAME*}" name="{NAME*}" value="{VALUE*}" />
+						<label for="i-{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input-tick"{+START,IF,{CHECKED}} checked="checked"{+END}{+START,IF,{DISABLED}} disabled="disabled"{+END} type="checkbox" id="i-{NAME*}" name="{+START,IF,{DISABLED}}disabled__{+END}{NAME*}" value="{VALUE*}" />
 						<span>{PRETTY_NAME*}</span></label>
+						{+START,IF,{DISABLED}}
+							<input type="hidden" name="{NAME*}" value="{VALUE*}" />
+						{+END}
 						<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
 						<input name="tick_on_form__{NAME*}" value="0" type="hidden" />
 					</div>
@@ -28,8 +31,11 @@
 				<div class="various-ticks-simple">
 					{+START,LOOP,OUT}
 						<p>
-							<label for="i-{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input-tick"{+START,IF,{CHECKED}} checked="checked"{+END}{+START,IF,{DISABLED}} disabled="disabled"{+END} type="checkbox" id="i-{NAME*}" name="{NAME*}" value="{VALUE*}" />
+							<label for="i-{NAME*}"><input title="{DESCRIPTION*}" tabindex="{TABINDEX*}" class="input-tick"{+START,IF,{CHECKED}} checked="checked"{+END}{+START,IF,{DISABLED}} disabled="disabled"{+END} type="checkbox" id="i-{NAME*}" name="{+START,IF,{DISABLED}}disabled__{+END}{NAME*}" value="{VALUE*}" />
 							<span>{PRETTY_NAME*}</span></label>
+							{+START,IF,{DISABLED}}
+								<input type="hidden" name="{NAME*}" value="{VALUE*}" />
+							{+END}
 							<input type="hidden" name="label_for__{NAME*}" value="{$STRIP_TAGS,{PRETTY_NAME*}}" />
 							<input name="tick_on_form__{NAME*}" value="0" type="hidden" />
 						</p>

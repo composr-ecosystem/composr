@@ -34,7 +34,11 @@ function init__tutorials()
 
 function list_tutorial_tags($skip_addons_and_specials = false)
 {
-    $tags = [];
+    static $tags = [];
+    if (count($tags) > 0) {
+        return $tags;
+    }
+
     $tutorials = list_tutorials();
 
     foreach ($tutorials as $tutorial) {
@@ -142,14 +146,17 @@ function list_tutorials_by($criteria, $tag = null)
 
 function list_tutorials()
 {
-    $tutorials = [];
+    require_code('caches');
 
-    $cache_path = get_custom_file_base() . '/uploads/website_specific/tutorial_sigs.bin';
-    if ((is_file($cache_path)) && (filemtime($cache_path) > time() - 60 * 60/*1hr cache*/) && (get_param_integer('keep_tutorial_test', 0) == 0)) {
-        return unserialize(cms_file_get_contents_safe($cache_path, FILE_READ_LOCK));
+    if (get_param_integer('keep_tutorial_test', 0) == 0) {
+        $tutorials = get_cache_entry('tutorials', serialize([]), CACHE_AGAINST_NOTHING_SPECIAL, 60);
+        if ($tutorials !== null) {
+            return $tutorials;
+        }
     }
 
     push_query_limiting(false);
+    cms_set_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
     $_tags = $GLOBALS['SITE_DB']->query_select('tutorials_external_tags', ['t_id', 't_tag']);
     $external = $GLOBALS['SITE_DB']->query_select('tutorials_external t', ['t.*', tutorial_sql_rating(db_cast('t.id', 'CHAR')), tutorial_sql_rating_recent(db_cast('t.id', 'CHAR')), tutorial_sql_likes(db_cast('t.id', 'CHAR')), tutorial_sql_likes_recent(db_cast('t.id', 'CHAR'))]);
@@ -176,8 +183,8 @@ function list_tutorials()
 
     //sort_maps_by($tutorials, 'title', false, true);    Breaks keys
 
-    require_code('files');
-    cms_file_put_contents_safe($cache_path, serialize($tutorials), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    require_code('caches2');
+    set_cache_entry('tutorials', 60, serialize([]), $tutorials, CACHE_AGAINST_NOTHING_SPECIAL);
 
     return $tutorials;
 }
@@ -229,6 +236,11 @@ function templatify_tutorial($metadata, $simple = false)
 
 function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
 {
+    static $metadata = [];
+    if (isset($metadata[$tutorial_name])) {
+        return $metadata[$tutorial_name];
+    }
+
     if (is_numeric($tutorial_name)) {
         // From database
 
@@ -250,7 +262,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
             $raw_tags[] = 'pinned';
         }
 
-        return [
+        $metadata[$tutorial_name] = [
             'name' => $tutorial_name,
 
             'url' => $db_row['t_url'],
@@ -273,6 +285,8 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
             'likes' => (($db_row['likes'] !== null) ? intval(round($db_row['likes'])) : null),
             'likes_recent' => (($db_row['likes_recent'] !== null) ? intval(round($db_row['likes_recent'])) : null),
         ];
+
+        return $metadata[$tutorial_name];
     }
 
     // From Git
@@ -353,7 +367,7 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
     }
     $difficulty_level = in_array('expert', $raw_tags) ? 'expert' : (in_array('novice', $raw_tags) ? 'novice' : 'regular');
 
-    return [
+    $metadata[$tutorial_name] = [
         'name' => $tutorial_name,
 
         'url' => static_evaluate_tempcode($url),
@@ -376,6 +390,8 @@ function get_tutorial_metadata($tutorial_name, $db_row = null, $tags = null)
         'likes' => $db_row['likes'],
         'likes_recent' => $db_row['likes_recent'],
     ];
+
+    return $metadata[$tutorial_name];
 }
 
 function tutorial_sql_rating($field)
