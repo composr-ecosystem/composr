@@ -1084,6 +1084,11 @@
                     },
                     revokable: true,
                     type: 'opt-in', // Required by GDPR
+                    onStatusChange: function onStatusChange(status, chosenBefore) {
+                        if (!this.hasConsented()) {
+                            
+                        }
+                    }
                 };
 
                 if ($cms.getCountry()) {

@@ -583,6 +583,12 @@
      * @returns {string}
      */
     $cms.readCookie = function readCookie(cookieName, defaultValue) {
+        // If cookies have not been consented, pretend no cookies are set even if there are old cookies remaining
+        var cookieConsent = $cms.readCookie('cookieconsent_ESSENTIAL');
+        if ((cookieName !== 'cookieconsent_ESSENTIAL') && (!cookieConsent || (cookieConsent !== 'ALLOW'))) {
+            return '';
+        }
+
         cookieName = strVal(cookieName);
         defaultValue = strVal(defaultValue);
 
