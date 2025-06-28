@@ -5672,7 +5672,7 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
     }
 
     if (($days < 0.0) || ($value == '')) {
-        unset($_COOKIE);
+        unset($_COOKIE[$name]);
     }
 
     $cache[$sz] = $output;
