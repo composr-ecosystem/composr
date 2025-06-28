@@ -37,10 +37,10 @@ class Hook_commandr_command_reset
             return ['', do_command_help('reset', ['h'], []), '', ''];
         }
 
-        cms_eatcookie('commandr_dir');
-        cms_eatcookie('commandr_state');
-        cms_eatcookie('commandr_state_code');
-        cms_eatcookie('commandr_state_lang');
+        cms_setcookie('commandr_dir', '');
+        cms_setcookie('commandr_state', '', true, false);
+        cms_setcookie('commandr_state_code', '', true, false);
+        cms_setcookie('commandr_state_lang', '', true, false);
         return ['', '', do_lang('SUCCESS'), ''];
     }
 }

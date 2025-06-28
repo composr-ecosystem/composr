@@ -5600,13 +5600,13 @@ function statistical_update_model(string $table, int $view_count) : int
 }
 
 /**
- * Create a cookie, inside the software's cookie environment.
+ * Create (or expire) a cookie, inside the software's cookie environment.
  *
  * @param  string $name The name of the cookie
- * @param  string $value The value to store in the cookie
+ * @param  string $value The value to store in the cookie (blank: delete the cookie)
  * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
  * @param  boolean $httponly Whether the cookie should not be readable by JavaScript
- * @param  ?float $days Days to store (null: default); not applicable for session cookies
+ * @param  ?float $days Days to store; not applicable for session cookies unless expiring it (null: default) (-14: expire the cookie)
  * @return boolean The result of the PHP setcookie command
  */
 function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = true, ?float $days = null) : bool
@@ -5617,7 +5617,7 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 
     // User rejected cookies; eat the existing cookie and bail out
     if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false) && ($value != '')) {
-        cms_setcookie($name, '', $session, $httponly, -14.0); // Cannot use cms_eatcookie
+        cms_setcookie($name, '', $session, $httponly, -14.0);
         return false;
     }
 
@@ -5671,6 +5671,10 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
         $_COOKIE[$name] = $value;
     }
 
+    if (($days < 0.0) || ($value == '')) {
+        unset($_COOKIE);
+    }
+
     $cache[$sz] = $output;
 
     return $output;
@@ -5678,6 +5682,7 @@ function cms_setcookie(string $name, string $value, bool $session = false, bool 
 
 /**
  * Deletes a cookie (if it exists), from within the site's cookie environment.
+ * This should rarely ever be used as it causes large headers and does not work on httpOnly, Secure, nor sameSite cookies. Use cms_setcookie instead.
  *
  * @param  string $name The name of the cookie
  * @return boolean The result of the PHP setcookie command
