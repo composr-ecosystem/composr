@@ -182,7 +182,7 @@ Keep in mind some caveats. For example, normally with Comcode when you separate 
 
 [title="2"]Syntax highlighting[/title]
 
-Composr supports syntax highlighting via [url="GeSHi"]http://qbnz.com/highlighter/[/url]. This operates using the normal [tt]code[/tt] and [tt]codebox[/tt] tags, adding support for GeSHi highlighter codes to the [tt]param[/tt] attribute of the tags. We maintain a non-bundled GeSHi addon that provides the necessary files.
+Composr supports syntax highlighting via [url="GeSHi"]https://qbnz.com/highlighter/[/url]. This operates using the normal [tt]code[/tt] and [tt]codebox[/tt] tags, adding support for GeSHi highlighter codes to the [tt]param[/tt] attribute of the tags. We maintain a non-bundled GeSHi addon that provides the necessary files.
 
 If you want to know how it looks, just look at the code as displayed throughout this documentation.
 
@@ -219,7 +219,7 @@ Or, a more practical example...
 [code="Comcode"]
 [menu="my_menu"]
 -Sample pages
- Example Page = http://example.com
+ Example Page = https://example.com
  Composr CMS = https://composr.app
 +Computer companies
  Amazon = https://amazon.com

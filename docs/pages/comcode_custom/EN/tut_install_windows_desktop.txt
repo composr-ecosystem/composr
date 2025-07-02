@@ -31,9 +31,9 @@ Installing Composr on WampServer:
 [title="3"]Further WAMP-style packages[/title]
 
 Here are a few more:
- - [url="EasyPHP"]http://www.easyphp.org/[/url]
+ - [url="EasyPHP"]https://www.easyphp.org/[/url]
  - [url="XAMPP"]https://www.apachefriends.org/index.html[/url]
- - [url="ampps"]http://www.ampps.com/[/url]
+ - [url="ampps"]https://www.ampps.com/[/url]
 
 We aren't in a position to tell you which is best at this time, we're just listing some options for you.
 
@@ -46,14 +46,14 @@ The first thing you will need is a web server.
 
 Depending on your version of Windows, you may have the Windows web server available to you (Internet Information Server).
 
-However we recommend that you just install Apache. Go to http://httpd.apache.org and download and install whichever Windows release you are comfortable with. The PHP folk recommend to avoid version 2, but if you are only running Composr locally for yourself, it doesn't matter. You may wish to enable [tt]mod_rewrite[/tt] in Apache.
+However we recommend that you just install Apache. Go to https://httpd.apache.org and download and install whichever Windows release you are comfortable with. The PHP folk recommend to avoid version 2, but if you are only running Composr locally for yourself, it doesn't matter. You may wish to enable [tt]mod_rewrite[/tt] in Apache.
 [/surround]
 
 [title="3"]PHP[/title]
 
 [surround]
 [media float="right" framed="0"]data_custom/images/docs/tut_install_windows_desktop/php.png[/media]
-Next you will need a copy of PHP installed. Go to [url="the PHP home site"]http://php.net[/url] and download and install the latest stable Windows release.
+Next you will need a copy of PHP installed. Go to [url="the PHP home site"]https://php.net[/url] and download and install the latest stable Windows release.
 
 Follow the instructions to get it integrated with your web server: these may be rather complex, but it would be self-defeating for us to try and re-write them for you.
 [/surround]
@@ -61,7 +61,7 @@ Follow the instructions to get it integrated with your web server: these may be 
 [title="3"]MySQL[/title]
 
 [media float="right" framed="0"]data_custom/images/docs/tut_install_windows_desktop/mysql.png[/media]
-Go to http://mysql.com/ and download and install the latest stable Windows release. MySQL comes with a powerful Windows installer, so configuring MySQL itself should be a walk in the park.
+Go to https://mysql.com/ and download and install the latest stable Windows release. MySQL comes with a powerful Windows installer, so configuring MySQL itself should be a walk in the park.
 
 Depending on your PHP installation, you may need to enable the [tt]mysql[/tt] PHP extension in the [tt]php.ini[/tt] file, and then to restart your web server. Also enable GD2 if it is not already enabled.
 
@@ -69,8 +69,8 @@ You will need to create a database for Composr. To do this you may either:
 [list]
 [*] simply create a sub-directory in the MySQL [tt]data[/tt] directory
 [*] do it using the mysql Windows tools, if you installed them
-[*] install [url="phpMyAdmin"]http://www.phpmyadmin.net/[/url] on-to your web server and use that
-[*] install a nice SQL manager such as [url="HeidiSQL"]http://www.heidisql.com/[/url]
+[*] install [url="phpMyAdmin"]https://www.phpmyadmin.net/[/url] on-to your web server and use that
+[*] install a nice SQL manager such as [url="HeidiSQL"]https://www.heidisql.com/[/url]
 [*] use the [tt]mysql.exe[/tt] command line program:
 
 (open a command prompt in the mysql bin directory)
@@ -121,10 +121,10 @@ Just run through the installer normally, and by the end you should have a workin
 
 [title="2"]See also[/title]
 
- - [url="Apache homesite"]http://httpd.apache.org/[/url]
- - [url="PHP homesite"]http://php.net/[/url]
- - [url="MySQL homesite"]http://mysql.com/[/url]
- - [url="phpMyAdmin"]http://www.phpmyadmin.net/[/url]
+ - [url="Apache homesite"]https://httpd.apache.org/[/url]
+ - [url="PHP homesite"]https://php.net/[/url]
+ - [url="MySQL homesite"]https://mysql.com/[/url]
+ - [url="phpMyAdmin"]https://www.phpmyadmin.net/[/url]
  - [page="_SEARCH:tut_install"]Installation[/page]
  - [page="_SEARCH:tut_install_windows_server]Installation on a Windows server[/page]
  - [page="_SEARCH:tut_sqlserver]Using SQL Server with Composr[/page]

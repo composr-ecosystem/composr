@@ -251,14 +251,14 @@ However, in actual reality, very skilled core developers with world-class skills
 
 Here are some links I've collected over the years that talk about website quotation, to help you get a balanced perspective:
 [list]
-[*] http://www.howmuchdoesawebsitecost.com/
-[*] http://web.archive.org/web/20160401082354/http://www.bigclick.com.au/blog/2009/04/05/is-web-development-expensive/
-[*] http://stackoverflow.com/questions/209170/how-much-does-it-cost-to-develop-an-iphone-application
+[*] https://www.howmuchdoesawebsitecost.com/
+[*] https://web.archive.org/web/20160401082354/https://www.bigclick.com.au/blog/2009/04/05/is-web-development-expensive/
+[*] https://stackoverflow.com/questions/209170/how-much-does-it-cost-to-develop-an-iphone-application
 [*] https://moz.com/blog/seo-pricing-costs-of-services
-[*] https://web.archive.org/web/20090614104212/http://www.atilus.com/webpost/what_does_a_website_cost//?what-does-a-website-cost/
-[*] http://www.outofwebsite.com/web-design-tips/tips/archives/planning-budget.html
-[*] http://www.pearsonified.com/2006/06/how_much_should_a_design_cost.php
-[*] https://web.archive.org/web/20150420035723/http://www.executionists.com/blog/cost-to-build-websites-2014/
+[*] https://web.archive.org/web/20090614104212/https://www.atilus.com/webpost/what_does_a_website_cost//?what-does-a-website-cost/
+[*] https://www.outofwebsite.com/web-design-tips/tips/archives/planning-budget.html
+[*] https://www.pearsonified.com/2006/06/how_much_should_a_design_cost.php
+[*] https://web.archive.org/web/20150420035723/https://www.executionists.com/blog/cost-to-build-websites-2014/
 [*] https://www.creativebloq.com/app-design/how-much-make-app-9134501
 [*] https://news.ycombinator.com/item?id=4505112
 [/list]

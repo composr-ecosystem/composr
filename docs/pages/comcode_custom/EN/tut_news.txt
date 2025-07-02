@@ -103,7 +103,7 @@ News entries may be in multiple news categories, but a user needs access to the 
 You may pin messages at the top of your site. Do this from Admin Zone > Setup > Site messaging.
 This is particularly useful in coordination with the news feature -- you'd add a news article then you'd link to it by placing a Comcode link in the Message, e.g.:
 [code="Comcode"]
-We have some scheduled down-time on Monday, see [url="our announcement"]http://example.com/site/news/view/3.htm[/url].
+We have some scheduled down-time on Monday, see [url="our announcement"]https://example.com/site/news/view/3.htm[/url].
 [/code]
 You have a number of controls for site messaging including scheduling the message to start and/or expire on a certain date and time, limiting to particular usergroups, or limiting where it is shown based on page-links.
 

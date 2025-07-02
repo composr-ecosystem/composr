@@ -308,7 +308,7 @@ If you are going to go down the SEO route, make sure that you have someone who w
  - Submitting to search engines:
   - [url="Submit to Bing via Bing Webmaster Tools"]https://www.bing.com/webmasters/about[/url]
   - [url="Submit to Google via Google Search Console"]https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap[/url]
- - [url="Sitemaps specification"]http://www.sitemaps.org/[/url]
+ - [url="Sitemaps specification"]https://www.sitemaps.org/[/url]
  - Webmaster tools:
   - [url="Google Search Console"]https://search.google.com/search-console[/url]
   - [url="Bing webmaster tools"]https://www.bing.com/webmasters/about/[/url]
@@ -323,7 +323,7 @@ If you are going to go down the SEO route, make sure that you have someone who w
   - [url="BuzzSumo"]https://buzzsumo.com/[/url]
   - [url="moz.com"]https://moz.com/[/url]
   - [url="The Hoth"]https://www.thehoth.com/[/url]
-  - [url="SharedCount"]http://www.sharedcount.com/[/url]
+  - [url="SharedCount"]https://www.sharedcount.com/[/url]
   - [url="Facebook Insights"]https://www.facebook.com/business/news/audience-insights[/url]
   - [url="SEO Site Checkup"]https://seositecheckup.com/[/url]
   - [url="WooRank"]https://www.woorank.com/[/url]

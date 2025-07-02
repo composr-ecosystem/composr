@@ -28,7 +28,7 @@ google_ad_width = 200;
 google_ad_height = 400;
 //-->
 </script>
-<script src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+<script src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
 </div>
 [/code]

@@ -141,7 +141,7 @@ Regarding point 3, I agree and disagree. He is correct to say there's a risk, bu
 
 [title="3"]Testing the security of a webhost[/title]
 
-If you don't have a well-configured server, anybody with an account on the server can mess with anybody else with your account. In other words, if someone wants to hack your site, they just need to sign up with the same webhost (assuming they only have one server, and many unfortunately do), or they just need to find any one single site on the server that is hackable (it's [url="http://www.yougetsignal.com/tools/web-sites-on-web-server/" target="_blank"]easy[/url] to find sites on the same server, and people are often running stuff that is very easy to hack).
+If you don't have a well-configured server, anybody with an account on the server can mess with anybody else with your account. In other words, if someone wants to hack your site, they just need to sign up with the same webhost (assuming they only have one server, and many unfortunately do), or they just need to find any one single site on the server that is hackable (it's [url="https://www.yougetsignal.com/tools/web-sites-on-web-server/" target="_blank"]easy[/url] to find sites on the same server, and people are often running stuff that is very easy to hack).
 
 There's a simple way you can test the security without needing a full understanding of LAMP (Linux/Apache/MySQL/PHP) configurations. Here's a very simple script that you can upload (just save it as [tt]filesystem_browser.php[/tt]):
 [code="PHP"]

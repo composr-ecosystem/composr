@@ -28,7 +28,7 @@ Invitations should not be used in conjunction with IM conversations -- they are 
 
 {| flex 50%:50%
 | [code="Comcode"][invite="Philip,Allen,Chris"]My Chatroom Name[/invite][/code]
-| [semihtml]<div class="box"><div class="box-inner">Jim has invited you to join them in General Chat<br /><ul class="actions-list" role="navigation"><li class="actions-list-strong"><a href="http://example.com">Join them</a></li></ul></div></div>[/semihtml]
+| [semihtml]<div class="box"><div class="box-inner">Jim has invited you to join them in General Chat<br /><ul class="actions-list" role="navigation"><li class="actions-list-strong"><a href="baseurl">Join them</a></li></ul></div></div>[/semihtml]
 |}
 
 [title="2"]New Rooms[/title]

@@ -57,7 +57,7 @@ It is often better to go through the process by hand, or to go over by hand to p
 
 This is where the auto-created [tt].editfrom[/tt] files are useful...
 
-First install a diff tool on your own desktop machine such as [url="WinMerge"]http://winmerge.org/[/url]. [url="Beyond Compare"]http://www.scootersoftware.com/[/url] (cross platform, commercial), [url="DiffMerge"]https://sourcegear.com/diffmerge/[/url] on Mac, and Kompare on Linux are similar.
+First install a diff tool on your own desktop machine such as [url="WinMerge"]https://winmerge.org/[/url]. [url="Beyond Compare"]https://www.scootersoftware.com/[/url] (cross platform, commercial), [url="DiffMerge"]https://sourcegear.com/diffmerge/[/url] on Mac, and Kompare on Linux are similar.
 
 Then download the themes directory from your server, to your own desktop machine.
 
@@ -81,7 +81,7 @@ Therefore using a diff tool you can locate what changes you need to make back in
 It is easier to do this on your desktop than trying to do it all directly through a web server / Composr's normal theme-editing user interface.
 
 Here is some documentation for Winmerge that explains how to use these kinds of tools (they're all very similar) a bit better:
-http://tour.winmerge.org/
+https://tour.winmerge.org/
 
 [title="2"]Our Themeing compatibility changes tool[/title]
 

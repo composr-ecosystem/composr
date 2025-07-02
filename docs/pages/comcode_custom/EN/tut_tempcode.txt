@@ -1025,7 +1025,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Stuff to append to a Composr URL for 'keep parameter' passing (Composr passes any parameters between screens if their names start <kbd>keep_</kbd>, and this symbol enables that). The first parameter should be '1' if you need to place this directly on the front of a URL. The second parameter should '1' if you need to always attach a session ID (i.e. if you are creating a link that might be used somewhere outside the current cookie context, e.g. to feed into a download manager)</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$EXTEND_URL,http://example.com/index.php?foo=a&bar=b}</td>
+			<td>{$EXTEND_URL,baseurl/index.php?foo=a&bar=b}</td>
 			<td>Add parameter(s) onto a URL, avoiding unreliable assumptions about how a URL is already structured (URL Schemes may cause a big diversity in the URLs Composr puts out). It puts <kbd>?</kbd> or <kbd>&amp;</kbd> before your parameter correctly based on an analysis of existing URL structure. It does not handle URL encoding of the appended parameter, which you should do first if applicable.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
@@ -1149,7 +1149,7 @@ These are advanced symbols, and mirror Composr's internal API. The parameters ar
 			<td>Find the URL to the favicon.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
-			<td>{$THUMBNAIL,http://example.com/pic.png,40x60,galleries}</td>
+			<td>{$THUMBNAIL,baseurl/pic.png,40x60,galleries}</td>
 			<td>Generate a thumbnail URL from another image URL. See below for advanced use.</td>
 		</tr>
 		<tr style="background: #DDFFDD">
@@ -2043,7 +2043,7 @@ Note that you cannot use directives for symbol parameters because directives con
 					<li>the CSS width</li>
 					<li>'|' separated list of options (meaning dependant upon templates interpretation)</li>
 					<li>'|' separated list of meta information (key|value|key|value|...) (e.g. [/html][tt]Name|Allen|Gender|Male|Country|USA[/tt][html])</li>
-					<li>'|' separated list of link information (linkhtml|...)  (e.g. [/html][tt]<a href="http://example.com/">Example</a>|<a href="https://duckduckgo.com/">Example</a>[/tt][html])</li>
+					<li>'|' separated list of link information (linkhtml|...)  (e.g. [/html][tt]<a href="baseurl/">Example</a>|<a href="https://duckduckgo.com/">Example</a>[/tt][html])</li>
 					<li>the links added to the top left of the box (Defaults to false)</li>
 				</ol>
 			</td>

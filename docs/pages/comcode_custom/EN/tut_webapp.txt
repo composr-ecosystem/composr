@@ -21,8 +21,8 @@ You know what a website is from an experience point-of-view: a site consists of 
 		<em>each page has a URL</em><br />
 		URLs actually encode a number of things that together provide all the information needed to retrieve a page from the world-wide-web. This isn't unlike real-world addresses, which usually need to include a human name, a house number and a post-code/ZIP code. The main two things a URL encodes are:
 		<ol>
-			<li>the computer a page is stored upon (a 'web server') &ndash; <strong>http://example.com</strong>/example.html</li>
-			<li>the name of the page on that computer &ndash; http://example.com<strong>/example.html</strong></li>
+			<li>the computer a page is stored upon (a 'web server') &ndash; <strong>baseurl</strong>/example.html</li>
+			<li>the name of the page on that computer &ndash; baseurl<strong>/example.html</strong></li>
 		</ol>
 		For a simple web-page, (2) is simply a filename that  the computer reads from its hard-disk and sends back.<br /><br />
 	</li>

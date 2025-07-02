@@ -228,7 +228,7 @@ Your choice of image file formats:
  - Use either [tt].png[/tt], [tt].jpg[/tt], or [tt].gif[/tt] files:
   - [tt].jpg[/tt] is usually the best choice for a logo, because the file size can be very low. Be aware though that the JPEG format is a 'lossy' format, i.e. the higher the compression, the lower the quality of the image. JPEG does not support transparency.
   - [tt].png[/tt] never loses quality, and also supports transparency -- but the sizes are a bit larger.
-  - [tt].gif[/tt] is only really a good idea if you need animation, which is unlikely for a logo. Soon will be able to do animation with [tt].png[/tt] via [url="APNG"]http://caniuse.com/#feat=apng[/url].
+  - [tt].gif[/tt] is only really a good idea if you need animation, which is unlikely for a logo. Soon will be able to do animation with [tt].png[/tt] via [url="APNG"]https://caniuse.com/#feat=apng[/url].
  - Do not ever try and use [tt].bmp[/tt] files with Composr, as they do not have proper compression, and are designed for Windows only.
 [/surround]
 
@@ -336,7 +336,7 @@ There are a couple caveats to using web requests:
 
 Alternatively, you can use an external service to call the [tt]data/cron_bridge.php[/tt] script by URL:
  - EasyCron provide direct instructions for Composr, and free and paid plans: https://www.easycron.com/cron-job-tutorials/how-to-set-up-cron-job-for-composr
- - Other free options are http://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and http://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
+ - Other free options are https://www.setcronjob.com/ (up to every 5 minutes but the schedule needs to be re-set every week) and https://www.onlinecronjobs.com/ (up to 5 jobs twice a day).
 
 Simply sign up and  add the URL i.e. [tt]http://yourbaseurl/data/cron_bridge.php[/tt] to the scheduler and set how often you want it to run.
 

@@ -22,7 +22,7 @@ You can turn on a CAPTCHA for feedback forms. I usually turn this on as it helps
 
 [title="2"]More Anti-Spammer options[/title]
 
-There is also support for [url="http://www.stopforumspam.com/"]http://www.stopforumspam.com/[/url], [url="https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage"]https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage[/url] and [url="http://www.projecthoneypot.org/account_login.php"]http://www.projecthoneypot.org/[/url] all of which can help in the constant battle against spammers.
+There is also support for [url="https://www.stopforumspam.com/"]https://www.stopforumspam.com/[/url], [url="https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage"]https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage[/url] and [url="https://www.projecthoneypot.org/account_login.php"]https://www.projecthoneypot.org/[/url] all of which can help in the constant battle against spammers.
 
 [title="2"]Creating an entry level user[/title]
 

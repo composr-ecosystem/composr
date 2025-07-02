@@ -27,7 +27,7 @@ The remaining duplicated ones are for pragmatic reasons, such as:
 3) [b]Human error[/b]. Reusing language strings [i]is[/i] one of the items on our standards checklist, but programmers are taxed with maintaining many standards so mistakes can happen. In fact there's a serious lack of skilled programmers who understand any of these kinds of peripheral issues so mistakes are very likely, and picking them all up in advance is very unlikely.
 4) We may feel that even if things are the same by default, users of Composr may want to introduce specific differences to make their websites more user-friendly.
 
-Fortunately [url="Transifex"]https://explore.transifex.com/composr/[/url] does [url="show suggestions"]http://docs.transifex.com/features/tm/[/url] as you go through translating. So if you've translated one, and another is the same, it should show that as a translation suggestion. Therefore Transifex largely mitigates these issues.
+Fortunately [url="Transifex"]https://explore.transifex.com/composr/[/url] does [url="show suggestions"]https://docs.transifex.com/features/tm/[/url] as you go through translating. So if you've translated one, and another is the same, it should show that as a translation suggestion. Therefore Transifex largely mitigates these issues.
 
 [title="2"]Reporting issues[/title]
 

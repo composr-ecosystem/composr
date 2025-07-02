@@ -16,7 +16,7 @@ Scheduling posts work by having the entry initially not validated, then it will 
 
 'Pinging' (in the context of blogging) refers to an automatic alert feature that some software (including Composr) has. When you write a news post the URL to the news post can automatically be given to one or more ping services (defined in Admin Zone > Setup > Configuration > Feature options). These ping services typically are blog search engines, and the ping action automatically tells the search engine to go and index your new article.
 
-A default service of [tt]http://pingomatic.com/ping/?title={title}&blogurl={url}&rssurl={rss}[/tt] is configured for you. This particular service is a ping relay service which takes your ping and relays it off to many other ping services for you. Most users therefore won't have a reason to add any additional ping services.
+A default service of [tt]https://pingomatic.com/ping/?title={title}&blogurl={url}&rssurl={rss}[/tt] is configured for you. This particular service is a ping relay service which takes your ping and relays it off to many other ping services for you. Most users therefore won't have a reason to add any additional ping services.
 
 The ping descriptors are just normal URLs, except you can put these three little placeholders in them which Composr will use to insert the specifics of any article being pinned:
 1) [tt]{title}[/tt] (which will become the title of the article)
@@ -121,10 +121,10 @@ Be aware that feeds may be filtered or empty depending on access permissions. Pa
 Composr itself provides two blocks that allow display of RSS and atom feeds in a news-like fashion (including feeds from other Composr sites, or any other site that provides them). HTTP-authentication is supported in the URL syntax.
 
 The [page="_SEARCH:tut_comcode"]Comcode[/page] syntax you should use to place the main block in a page is as follows:
-[code="Comcode"][block="http://example.com/feed.xml"]main_rss[/block][/code]
+[code="Comcode"][block="baseurl/feed.xml"]main_rss[/block][/code]
 
 You may also use the compressed version intended for the sides of pages:
-[code="Comcode"][block="http://example.com/feed.xml"]side_rss[/block][/code]
+[code="Comcode"][block="baseurl/feed.xml"]side_rss[/block][/code]
 [/surround]
 
 [box="Important security note"]
@@ -141,7 +141,7 @@ The nature of these feeds are such that they embed portions of HTML into your ow
 [s]If you want to merge or filter feeds, Yahoo Pipes is an absolutely fantastic tool. You basically tell it to look at a set of RSS feeds, give it some filters, and you get an RSS feed you can then plug into Composr.[/s]
 
 Yahoo Pipes no longer exists, but alternatives do:
-http://www.makeuseof.com/tag/12-best-yahoo-pipes-alternatives-look/
+https://www.makeuseof.com/tag/12-best-yahoo-pipes-alternatives-look/
 
 [title="2"]Trackbacks (advanced)[/title]
 
@@ -185,6 +185,6 @@ The default news archive screen shows just the news headlines. By adding [tt]:in
 
  - [page="_SEARCH:tut_news"]Releasing news & running a Blog[/page]
  - [page="_SEARCH:tut_comcode"]Comcode and the attachment system[/page]
- - [url="Feedly"]http://feedly.com/[/url]
+ - [url="Feedly"]https://feedly.com/[/url]
 
 {$SET,tutorial_tags,News,syndication_blocks,syndication,news_shared,news,core_feedback_features,Content,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Details on some of the more complex features available for news, including blogging and syndication.}[block]main_tutorial_rating[/block]

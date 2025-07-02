@@ -59,7 +59,7 @@ The default look of this block is plain, but advanced slider interfaces can be c
 
 The following image formats can be used:
  - [tt].jpg[/tt]/[tt].jpeg[/tt] -- highly compressed, but loses image accuracy. Great for photos because the accuracy loss is hard to notice for natural scenes.
- - [tt].png[/tt] -- well compressed, with no accuracy loss. My personal favourite choice if bandwidth is not generally constrained. Can also do animation too via [url="APNG"]http://caniuse.com/#feat=apng[/url].
+ - [tt].png[/tt] -- well compressed, with no accuracy loss. My personal favourite choice if bandwidth is not generally constrained. Can also do animation too via [url="APNG"]https://caniuse.com/#feat=apng[/url].
  - [tt].gif[/tt] -- useful if you need animation, but limited to 256 colours and poor compression. Generally a poor choice, use video or APNG instead.
  - [tt].webp[/tt] -- well compressed, with minimal to no accuracy loss. Has great animation and transparency support. This is an emerging image format and is starting to be preferred by some over PNG for web images (we struggle to say we prefer it just yet because it is not as mainstream as PNG, and not all image editors support it).
 

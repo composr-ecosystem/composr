@@ -61,7 +61,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-text-equivalent">1.1</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-text-equivalent">1.1</a>&nbsp;Provide
 				a text equivalent for every non-text element (e.g., via &quot;alt&quot;,
 				&quot;longdesc&quot;, or in element content). <em>This includes</em>:
 				images, graphical representations of text (including symbols, emoticons, and icons),
@@ -78,7 +78,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-color-convey">2.1</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-color-convey">2.1</a>&nbsp;Ensure
 				that all information conveyed with color is also available without
 				color, for example from context or markup.
 				</p>
@@ -90,7 +90,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-changes">4.1</a>&nbsp;Clearly
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-changes">4.1</a>&nbsp;Clearly
 				identify changes in the natural language of a document's text and
 				any text equivalents (e.g., captions).
 				</p>
@@ -101,7 +101,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-order-style-sheets">6.1</a>&nbsp;Organise
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-order-style-sheets">6.1</a>&nbsp;Organise
 				documents so they may be read without style sheets. For example,
 				when an HTML document is rendered without associated style sheets,
 				it must still be possible to read the document.
@@ -113,7 +113,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-dynamic-source">6.2</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-dynamic-source">6.2</a>&nbsp;Ensure
 				that equivalents for dynamic content are updated when the dynamic
 				content changes.
 				</p>
@@ -124,7 +124,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-flicker">7.1</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-flicker">7.1</a>&nbsp;Until
 				user agents allow users to control flickering, avoid causing the
 				screen to flicker.
 				</p>
@@ -137,7 +137,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-simple-and-straightforward">14.1</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-simple-and-straightforward">14.1</a>&nbsp;Use
 				the clearest and simplest language appropriate for a site's
 				content.
 				</p>
@@ -159,7 +159,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-redundant-server-links">1.2</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-redundant-server-links">1.2</a>&nbsp;Provide
 				redundant text links for each active region of a server-side image
 				map.
 				</p>
@@ -170,7 +170,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-client-side-maps">9.1</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-client-side-maps">9.1</a>&nbsp;Provide
 				client-side image maps instead of server-side image maps except
 				where the regions cannot be defined with an available geometric
 				shape.
@@ -193,7 +193,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-headers">5.1</a>&nbsp;For
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-headers">5.1</a>&nbsp;For
 				data tables, identify row and column headers.
 				</p>
 			</td>
@@ -203,7 +203,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-structure">5.2</a>&nbsp;For
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-structure">5.2</a>&nbsp;For
 				data tables that have two or more logical levels of row or column
 				headers, use markup to associate data cells and header cells.
 				</p>
@@ -225,7 +225,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-frame-titles">12.1</a>&nbsp;Title
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-frame-titles">12.1</a>&nbsp;Title
 				each frame to facilitate frame identification and navigation.
 				</p>
 			</td>
@@ -246,7 +246,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-scripts">6.3</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-scripts">6.3</a>&nbsp;Ensure
 				that pages are usable when scripts, applets, or other programmatic
 				objects are turned off or not supported. If this is not possible,
 				provide equivalent information on an alternative accessible page.
@@ -269,7 +269,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-auditory-descriptions">1.3</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-auditory-descriptions">1.3</a>&nbsp;Until
 				user agents can automatically read aloud the text equivalent of a
 				visual track, provide an auditory description of the important
 				information of the visual track of a multimedia presentation.
@@ -281,7 +281,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-synchronize-equivalents">1.4</a>&nbsp;For
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-synchronize-equivalents">1.4</a>&nbsp;For
 				any time-based multimedia presentation (e.g., a movie or
 				animation), synchronize equivalent alternatives (e.g., captions or
 				auditory descriptions of the visual track) with the presentation.
@@ -304,7 +304,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-alt-pages">11.4</a>&nbsp;If,
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-alt-pages">11.4</a>&nbsp;If,
 				after best efforts, you cannot create an accessible page, provide
 				a link to an alternative page that uses W3C technologies, is
 				accessible, has equivalent information (or functionality), and is
@@ -335,7 +335,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-color-contrast">2.2</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-color-contrast">2.2</a>&nbsp;Ensure
 				that foreground and background color combinations provide
 				sufficient contrast when viewed by someone having color deficits
 				or when viewed on a black and white screen. [Priority&nbsp;2 for
@@ -350,7 +350,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-use-markup">3.1</a>&nbsp;When
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-use-markup">3.1</a>&nbsp;When
 				an appropriate markup language exists, use markup rather than
 				images to convey information.
 				</p>
@@ -361,7 +361,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-grammar">3.2</a>&nbsp;Create
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-grammar">3.2</a>&nbsp;Create
 				documents that validate to published formal grammars.
 				</p>
 			</td>
@@ -371,7 +371,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-style-sheets">3.3</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-style-sheets">3.3</a>&nbsp;Use
 				style sheets to control layout and presentation.
 				</p>
 			</td>
@@ -381,7 +381,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-relative-units">3.4</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-relative-units">3.4</a>&nbsp;Use
 				relative rather than absolute units in markup language attribute
 				values and style sheet property values.
 				</p>
@@ -395,7 +395,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-logical-headings">3.5</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-logical-headings">3.5</a>&nbsp;Use
 				header elements to convey document structure and use them
 				according to specification.
 				</p>
@@ -406,7 +406,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-list-structure">3.6</a>&nbsp;Mark
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-list-structure">3.6</a>&nbsp;Mark
 				up lists and list items properly.
 				</p>
 			</td>
@@ -416,7 +416,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-quotes">3.7</a>&nbsp;Mark
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-quotes">3.7</a>&nbsp;Mark
 				up quotations. Do not use quotation markup for formatting effects
 				such as indentation.
 				</p>
@@ -428,7 +428,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-fallback-page">6.5</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-fallback-page">6.5</a>&nbsp;Ensure
 				that dynamic content is accessible or provide an alternative
 				presentation or page.
 				</p>
@@ -439,7 +439,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-blinking">7.2</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-blinking">7.2</a>&nbsp;Until
 				user agents allow users to control blinking, avoid causing content
 				to blink (i.e., change presentation at a regular rate, such as
 				turning on and off).
@@ -451,7 +451,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-no-periodic-refresh">7.4</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-no-periodic-refresh">7.4</a>&nbsp;Until
 				user agents provide the ability to stop the refresh, do not create
 				periodically auto-refreshing pages.
 				</p>
@@ -463,7 +463,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-no-auto-forward">7.5</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-no-auto-forward">7.5</a>&nbsp;Until
 				user agents provide the ability to stop auto-redirect, do not use
 				markup to redirect pages automatically. Instead, configure the
 				server to perform redirects.
@@ -475,7 +475,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-pop-ups">10.1</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-pop-ups">10.1</a>&nbsp;Until
 				user agents allow users to turn off spawned windows, do not cause
 				pop-ups or other windows to appear and do not change the current
 				window without informing the user.
@@ -489,7 +489,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-latest-w3c-specs">11.1</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-latest-w3c-specs">11.1</a>&nbsp;Use
 				W3C technologies when they are available and appropriate for a
 				task and use the latest versions when supported.
 				</p>
@@ -500,7 +500,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-deprecated">11.2</a>&nbsp;Avoid
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-deprecated">11.2</a>&nbsp;Avoid
 				deprecated features of W3C technologies.
 				</p>
 			</td>
@@ -510,7 +510,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-group-information">12.3</a>&nbsp;Divide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-group-information">12.3</a>&nbsp;Divide
 				large blocks of information into more manageable groups where
 				natural and appropriate.
 				</p>
@@ -521,7 +521,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-meaningful-links">13.1</a>&nbsp;Clearly
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-meaningful-links">13.1</a>&nbsp;Clearly
 				identify the target of each link.
 				</p>
 			</td>
@@ -531,7 +531,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-use-metadata">13.2</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-use-metadata">13.2</a>&nbsp;Provide
 				metadata to add semantic information to pages and sites.
 				</p>
 			</td>
@@ -541,7 +541,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-site-description">13.3</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-site-description">13.3</a>&nbsp;Provide
 				information about the general layout of a site (e.g., a site map
 				or table of contents).
 				</p>
@@ -552,7 +552,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-clear-nav-mechanism">13.4</a>&nbsp;Use
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-clear-nav-mechanism">13.4</a>&nbsp;Use
 				navigation mechanisms in a consistent manner.
 				</p>
 			</td>
@@ -573,7 +573,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-table-for-layout">5.3</a>&nbsp;Do
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-table-for-layout">5.3</a>&nbsp;Do
 				not use tables for layout unless the table makes sense when
 				linearized. Otherwise, if the table does not make sense, provide
 				an alternative equivalent (which may be a linearized version).
@@ -586,7 +586,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-layout">5.4</a>&nbsp;If
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-layout">5.4</a>&nbsp;If
 				a table is used for layout, do not use any structural markup for
 				the purpose of visual formatting.
 				</p>
@@ -608,7 +608,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-frame-longdesc">12.2</a>&nbsp;Describe
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-frame-longdesc">12.2</a>&nbsp;Describe
 				the purpose of frames and how frames relate to each other if it is
 				not obvious by frame titles alone.
 				</p>
@@ -630,7 +630,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-unassociated-labels">10.2</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-unassociated-labels">10.2</a>&nbsp;Until
 				user agents support explicit associations between labels and form
 				controls, for all form controls with implicitly associated labels,
 				ensure that the label is properly positioned.
@@ -646,7 +646,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-associate-labels">12.4</a>&nbsp;Associate
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-associate-labels">12.4</a>&nbsp;Associate
 				labels explicitly with their controls.
 				</p>
 			</td>
@@ -667,7 +667,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-operable-scripts">6.4</a>&nbsp;For
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-operable-scripts">6.4</a>&nbsp;For
 				scripts and applets, ensure that event handlers are input
 				device-independent.
 				</p>
@@ -679,7 +679,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-movement">7.3</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-avoid-movement">7.3</a>&nbsp;Until
 				user agents allow users to freeze moving content, avoid movement
 				in pages.
 				</p>
@@ -690,7 +690,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-directly-accessible">8.1</a>&nbsp;Make
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-directly-accessible">8.1</a>&nbsp;Make
 				programmatic elements such as scripts and applets directly
 				accessible or compatible with assistive technologies [Priority&nbsp;1
 				if functionality is important and not presented elsewhere,
@@ -703,7 +703,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-operable">9.2</a>&nbsp;Ensure
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-operable">9.2</a>&nbsp;Ensure
 				that any element that has its own interface can be operated in a
 				device-independent manner.
 				</p>
@@ -715,7 +715,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-device-independent-events">9.3</a>&nbsp;For
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-device-independent-events">9.3</a>&nbsp;For
 				scripts, specify logical event handlers rather than
 				device-dependent event handlers.
 				</p>
@@ -743,7 +743,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-expand-abbr">4.2</a>&nbsp;Specify
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-expand-abbr">4.2</a>&nbsp;Specify
 				the expansion of each abbreviation or acronym in a document where
 				it first occurs.
 				</p>
@@ -755,7 +755,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-lang">4.3</a>&nbsp;Identify
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-identify-lang">4.3</a>&nbsp;Identify
 				the primary natural language of a document.
 				</p>
 			</td>
@@ -765,7 +765,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-tab-order">9.4</a>&nbsp;Create
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-tab-order">9.4</a>&nbsp;Create
 				a logical tab order through links, form controls, and objects.
 				</p>
 			</td>
@@ -778,7 +778,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-shortcuts">9.5</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-keyboard-shortcuts">9.5</a>&nbsp;Provide
 				keyboard shortcuts to important links (including those in
 				client-side image maps), form controls, and groups of form
 				controls.
@@ -790,7 +790,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-divide-links">10.5</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-divide-links">10.5</a>&nbsp;Until
 				user agents (including assistive technologies) render adjacent
 				links distinctly, include non-link, printable characters
 				(surrounded by spaces) between adjacent links.
@@ -807,7 +807,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-content-preferences">11.3</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-content-preferences">11.3</a>&nbsp;Provide
 				information so that users may receive documents according to their
 				preferences (e.g., language, content type, etc.)
 				</p>
@@ -818,7 +818,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-nav-bar">13.5</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-nav-bar">13.5</a>&nbsp;Provide
 				navigation bars to highlight and give access to the navigation
 				mechanism.
 				</p>
@@ -829,7 +829,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-group-links">13.6</a>&nbsp;Group
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-group-links">13.6</a>&nbsp;Group
 				related links, identify the group (for user agents), and, until
 				user agents do so, provide a way to bypass the group.
 				</p>
@@ -841,7 +841,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-searches">13.7</a>&nbsp;If
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-searches">13.7</a>&nbsp;If
 				search functions are provided, enable different types of searches
 				for different skill levels and preferences.
 				</p>
@@ -853,7 +853,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-front-loading">13.8</a>&nbsp;Place
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-front-loading">13.8</a>&nbsp;Place
 				distinguishing information at the beginning of headings,
 				paragraphs, lists, etc.
 				</p>
@@ -864,7 +864,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-bundled-version">13.9</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-bundled-version">13.9</a>&nbsp;Provide
 				information about document collections (i.e., documents comprising
 				multiple pages.).
 				</p>
@@ -876,7 +876,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-skip-over-ascii">13.10</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-skip-over-ascii">13.10</a>&nbsp;Provide
 				a means to skip over multi-line ASCII art.
 				</p>
 			</td>
@@ -886,7 +886,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-icons">14.2</a>&nbsp;Supplement
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-icons">14.2</a>&nbsp;Supplement
 				text with graphic or auditory presentations where they will
 				facilitate comprehension of the page.
 				</p>
@@ -897,7 +897,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-consistent-style">14.3</a>&nbsp;Create
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-consistent-style">14.3</a>&nbsp;Create
 				a style of presentation that is consistent across pages.
 				</p>
 			</td>
@@ -919,7 +919,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-redundant-client-links">1.5</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-redundant-client-links">1.5</a>&nbsp;Until
 				user agents render text equivalents for client-side image map
 				links, provide redundant text links for each active region of a
 				client-side image map.
@@ -942,7 +942,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-summaries">5.5</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-table-summaries">5.5</a>&nbsp;Provide
 				summaries for tables.
 				</p>
 			</td>
@@ -954,7 +954,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-abbreviate-labels">5.6</a>&nbsp;Provide
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-abbreviate-labels">5.6</a>&nbsp;Provide
 				abbreviations for header labels.
 				</p>
 			</td>
@@ -969,7 +969,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 		</tr>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-linear-tables">10.3</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-linear-tables">10.3</a>&nbsp;Until
 				user agents (including assistive technologies) render side-by-side
 				text correctly, provide a linear text alternative (on the current
 				page or some other) for <em>all</em> tables that lay out text in
@@ -993,7 +993,7 @@ This section will detail Composr compliance with the guidelines, with any releva
 	<tbody>
 		<tr>
 			<td>
-				<p><a href="http://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-place-holders">10.4</a>&nbsp;Until
+				<p><a href="https://www.w3.org/TR/WAI-WEBCONTENT/wai-pageauth.html#tech-place-holders">10.4</a>&nbsp;Until
 				user agents handle empty controls correctly, include default,
 				place-holding characters in edit boxes and text areas.</p>
 			</td>
@@ -1133,8 +1133,8 @@ You will find a number of options in Admin Zone > Setup > Configuration > Access
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - https://achecker.achecks.ca/checker/index.php
  - [page="_SEARCH:atag"]Authoring Tool Accessibility Guidelines 2.0 - Composr version 10.0 compliance[/page]
- - [url="WAI specification"]http://www.w3.org/TR/WAI-WEBCONTENT/[/url]
- - [url="Popular accessibility validator"]http://wave.webaim.org/[/url]
+ - [url="WAI specification"]https://www.w3.org/TR/WAI-WEBCONTENT/[/url]
+ - [url="Popular accessibility validator"]https://wave.webaim.org/[/url]
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - https://www.bbc.co.uk/gel/features/how-to-design-for-accessibility
 

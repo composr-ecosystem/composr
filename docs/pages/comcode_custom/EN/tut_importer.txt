@@ -172,7 +172,7 @@ It is a [i]very[/i] advanced tool that is suitable only for programmers able to 
 
 The importer will try and establish what your [tt]GLOBAL_HTML_WRAP.tpl[/tt] template should be, but it cannot be perfect at this. It is also not able to extract panels or menus in a particularly clever way (they all go as static markup in the aforementioned template files), so you should consider your imported site as a base that will require some cleaning.
 
-If you do not have access to the files of your site, other than from the live server, you can download a website using the 'wget' tool. This tool exists on most Linux installs by default, but can also be installed for [url="Mac"]http://macappstore.org/wget/[/url] and [url="Windows"]http://gnuwin32.sourceforge.net/packages/wget.htm[/url].
+If you do not have access to the files of your site, other than from the live server, you can download a website using the 'wget' tool. This tool exists on most Linux installs by default, but can also be installed for [url="Mac"]https://macappstore.org/wget/[/url] and [url="Windows"]https://gnuwin32.sourceforge.net/packages/wget.htm[/url].
 You run wget using a command like:
 [code="Bash"]
 wget -nc -r <yoururl>

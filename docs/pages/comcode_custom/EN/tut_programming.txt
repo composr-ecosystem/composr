@@ -641,6 +641,6 @@ N/A is used to mark characters that have a special meaning.
  - [page="_SEARCH:tut_markup"]Guide to web technologies (including HTML, CSS, and JavaScript)[/page]
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]
  - [page="_SEARCH:codebook"]Code Book, contents and introduction[/page]
- - [url="PHP website"]http://www.php.net[/url]
+ - [url="PHP website"]https://www.php.net[/url]
 
 {$SET,tutorial_tags,Development,PHP,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,This huge tutorial serves as an introduction to programming, with a particular emphasis on PHP.}[block]main_tutorial_rating[/block]

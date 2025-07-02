@@ -138,12 +138,12 @@ The Internet uses IP addresses (often found via domain names) to identify resour
 A typical URL looks like this:
 [indent][tt]<protocol>://<domain-name_OR_ip-address>/<resource_identifier>[/tt][/indent]
 For example:
-[indent][tt]http://www.example.com/index.php[/tt][/indent]
+[indent][tt]https://www.example.com/index.php[/tt][/indent]
 That said that's not really a full URL, because occasionally URLs can be much more complex. For example:
 [indent][tt]<protocol>://<user>:<password>@<domain/ip>:<port>/<resource_identifier>[/tt][/indent]
 You can ignore the more complex example, because it's not really relevant for the purposes of this tutorial.
 
-HTTP is the core protocol for the web. This is why URLs usually start [tt]http://[/tt]. Web browsers almost always also support FTP, which is why some URLs may start [tt]ftp://[/tt].
+HTTP is the core protocol for the web. This is why URLs usually start [tt]https://[/tt]. Web browsers almost always also support FTP, which is why some URLs may start [tt]ftp://[/tt].
 
 Typically the 'resource identifier' is simply a file on the server computer. For example, [tt]mywebsite/index.html[/tt] would be a file on the server computer of the same path, stored underneath a special directory. On Windows the "[tt]\[/tt]" symbol is used to write out directory names, but as the web wasn't invented for Windows, the convention of the older operating systems is used.
 

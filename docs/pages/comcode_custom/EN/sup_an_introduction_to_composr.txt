@@ -7,7 +7,7 @@ I thought as my first Composr tutorial it would be beneficial to give a brief ov
 
 One of the advantages is that all of the main features of your Composr website will be coded in the same manner, which means making changes is easier to understand. Because all of the features are coded to the same standards, you can be more confident of the security of the software and its standards compliance.
 
-If you look at the [page=":vision"]standards & vision page on the Composr website[/page], it is clear to see that the developers are extremely committed to complying with web standards. Composr was the first CMS to be compliant with [url="https://dublincore.org/"]Dublin Core[/url] and [url="http://schema.org/"]schema.org[/url], and even went further to extend it to incorporate web 2.0 style data.
+If you look at the [page=":vision"]standards & vision page on the Composr website[/page], it is clear to see that the developers are extremely committed to complying with web standards. Composr was the first CMS to be compliant with [url="https://dublincore.org/"]Dublin Core[/url] and [url="https://schema.org/"]schema.org[/url], and even went further to extend it to incorporate web 2.0 style data.
 
 There is a huge amount of bundled addons which make up the most common components of most websites. The features which are included in Composr as standard are added because they are popular on a range of websites. Some of the key bundled features which may require third party addons when using other CMS include:
 [list]

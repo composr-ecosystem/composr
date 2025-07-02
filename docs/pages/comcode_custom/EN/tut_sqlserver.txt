@@ -95,7 +95,7 @@ Obviously replace [tt]192.168.0.22[/tt] with your actual database server, and re
 Version 7.2 is the minimum protocol version supported (consistent with Microsoft SQL Server 2005).
 Then run [tt]odbcinst -i -d -f tds.template[/tt]
 
-Full documentation is included in the [url="unixODBC manual"]http://www.unixodbc.org/doc/FreeTDS2.html[/url].
+Full documentation is included in the [url="unixODBC manual"]https://www.unixodbc.org/doc/FreeTDS2.html[/url].
 
 If you need to edit the template configuration later, you'll find it's just in an [tt]odbc.ini[/tt] file, e.g. [tt]/usr/local/etc/odbc.ini[/tt]. The driver configuration is in [tt]odbcinst.ini[/tt].
 
@@ -215,8 +215,8 @@ The main complexities of SQL Server support, for MySQL developers are:
 [title="2"]See also[/title]
 
  - https://www.microsoft.com/en-gb/sql-server/sql-server-editions-express
- - http://www.unixodbc.org/
- - http://www.freetds.org/
+ - https://www.unixodbc.org/
+ - https://www.freetds.org/
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]
  - [page="_SEARCH:tut_postgresql"]Using PostgreSQL with Composr[/page]
 

@@ -50,7 +50,7 @@ Remote Block Lists (RBLs) are a technique whereby Composr checks third-party lis
 
 [title="3"]{$IS_MAINTAINED,stop_forum_spam,Stop Forum Spam}[/title]
 
-We use the popular [url="Stop Forum Spam system"]http://www.stopforumspam.com/[/url] system to look for known spammers based upon IP address, username, and e-mail address. We also report who you identify as spammers, back to Stop Forum Spam.
+We use the popular [url="Stop Forum Spam system"]https://www.stopforumspam.com/[/url] system to look for known spammers based upon IP address, username, and e-mail address. We also report who you identify as spammers, back to Stop Forum Spam.
 
 [title="3"]Options[/title]
 

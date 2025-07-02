@@ -60,11 +60,11 @@ The first post in comment topics is a special 'spacer post'. This is necessary b
 It is very common for Composr users to install Composr with the forum base URL wrong. This can be easily corrected after installation by using the separate [tt]http://yourbaseurl/config_editor.php[/tt] script (the one where you need to enter the maintenance password you chose upon install to change the installation environment). Once this is done, it is necessary to clean the Comcode page cache (go to: Admin Zone > Tools > Cleanup tools).
 
 The forum base URL should not include a script name -- it should be a URL-prefix to your forums. For example,
- - [tt]http://forums.example.com[/tt] would be okay
- - [tt]http://example.com/forums[/tt] would also be okay
- - [tt]http://example.com/forum[/tt] (or any paths to an existing Composr zone) would probably not work because Composr has its own 'forum' zone; now if you had a redirect rule in place to redirect this to another site (e.g. the forum), then it would probably work (but the Composr forum zone cannot be accessed anymore)
- - [tt]http://forums.example.com/index.php[/tt] would not have been correct, as Composr won't be able to find emoticon image URLs by using this as a prefix (imagine [tt]http://forums.example.com/index.php/styles/emoticons/smile.png[/tt] -- clearly that would be wrong)
- - [tt]http://forums.example.com/[/tt] would technically work, but this would result in a double-slash in the URL
+ - [tt]forums.example.com[/tt] would be okay
+ - [tt]example.com/forums[/tt] would also be okay
+ - [tt]example.com/forum[/tt] (or any paths to an existing Composr zone) would probably not work because Composr has its own 'forum' zone; now if you had a redirect rule in place to redirect this to another site (e.g. the forum), then it would probably work (but the Composr forum zone cannot be accessed anymore)
+ - [tt]forums.example.com/index.php[/tt] would not have been correct, as Composr won't be able to find emoticon image URLs by using this as a prefix (imagine [tt]https://forums.example.com/index.php/styles/emoticons/smile.png[/tt] -- clearly that would be wrong)
+ - [tt]forums.example.com/[/tt] would technically work, but this would result in a double-slash in the URL
 
 [title="2"]Show forum within website[/title]
 [surround]

@@ -612,7 +612,7 @@ There is not much for us to say here. SAN storage would be configured as normal 
 Composr has no direct inbuilt S3 support, but this is intentional, because you do not need it. Assuming you have a Linux dedicated server or cloud instance, you may use the 'FUSE' system to make Composr upload directory/directories use S3.
 
 First you need to mount S3 storage to a directory, such as [tt]uploads/attachments[/tt], using a filesystem driver:
-http://tecadmin.net/mount-s3-bucket-centosrhel-ubuntu-using-s3fs/
+https://tecadmin.net/mount-s3-bucket-centosrhel-ubuntu-using-s3fs/
 You'll want to mount a subdirectory of your S3 storage rather than a root. I recommend you mirror the same basic filesystem structure as Composr, so that you are mapping subdirectories with equivalence.
 You'll need to rename [tt]uploads/attachments[/tt] to something else to do this, and then move the old contents of that directory back into the S3 version of it.
 
@@ -710,7 +710,7 @@ So, in this sample we can take more hits than at peak. But of course you need to
 It's quite a simplistic model, as things often burst, which means things queue up a bit, but also even out over time. Also if there's locking, such as a write operation locking a database table, things can queue, but that doesn't necessarily mean there'll be a high CPU cost -- it may just mean traffic is rearranged while locked requests wait a bit longer.
 
 If you are planning on using Amazon instances, you can resize them after-the-fact, but it's rather complex:
-http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-resize.html
 You effectively have to take it down, then get Amazon to shift over your hard disk image to where they need to put it for a larger instance.
 
 [title="2"]Diagnosing server slow-downs[/title]

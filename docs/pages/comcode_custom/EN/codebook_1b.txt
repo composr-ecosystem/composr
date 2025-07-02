@@ -519,7 +519,7 @@ This is not specific to Composr, but you will find a good 'diff' tool is essenti
  - If multiple developers conflict, you can sync changes.
  - Updating overridden lang files with typo-fixes from the main Composr.
  - A whole lot more!
-On Windows [url="WinMerge"]http://winmerge.org/?lang=en[/url] is a good tool, on Mac [url="DiffMerge"]https://sourcegear.com/diffmerge/[/url], and on Linux, Kompare. [url="Beyond Compare"]http://www.scootersoftware.com/[/url] is a better tool, and is cross platform -- but that requires a paid licence.
+On Windows [url="WinMerge"]https://winmerge.org/?lang=en[/url] is a good tool, on Mac [url="DiffMerge"]https://sourcegear.com/diffmerge/[/url], and on Linux, Kompare. [url="Beyond Compare"]https://www.scootersoftware.com/[/url] is a better tool, and is cross platform -- but that requires a paid licence.
 
 [title="3"]Member profile customisation[/title]
 

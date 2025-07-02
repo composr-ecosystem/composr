@@ -1,3 +1,3 @@
 [surround="feature-image"]
-[img="Shocking!"]http://farm5.staticflickr.com/4058/4553277701_32fefab169_b_d.jpg[/img]
+[img="Shocking!"]https://farm5.staticflickr.com/4058/4553277701_32fefab169_b_d.jpg[/img]
 [/surround]

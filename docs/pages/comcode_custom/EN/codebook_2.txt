@@ -82,7 +82,7 @@ If you are adding features to the standard Composr, you must make use of Theme W
 [title="3"]PNG images[/title]
 
 [media description="" width="250" float="right" framed="0"]data_custom/images/docs/codebook_2/png.png[/media]
-As a standard Composr uses 32-bit PNG files over other image types, unless animation is required ([tt].gif[/tt] used instead). Soon will be able to do animation too via [url="APNG"]http://caniuse.com/#feat=apng[/url] though.
+As a standard Composr uses 32-bit PNG files over other image types, unless animation is required ([tt].gif[/tt] used instead). Soon will be able to do animation too via [url="APNG"]https://caniuse.com/#feat=apng[/url] though.
 
 We use PNG files because they have the added advantage that they can be 'alpha-blended' for smooth, blended, visuals.
 
