@@ -8608,6 +8608,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMPILED_SCRIPTS
         DESCRIPTION_COMPILED_SCRIPTS
         INFINITE_LOOP_HALTED
+        _INFINITE_LOOP_HALTED
         NO_UPGRADE_FROM_DEV_BUILD
         INSTALLER_STEP_1_WELCOME
         WRONG_JOIN_MODULE_PERMISSIONS
@@ -8708,6 +8709,12 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_PARENTAL_CONTROLS
         STOPPED_BY_ANTISPAM_SUBSTRING
         UPGRADER_LOGIN_INFO_GENERATE_UPGRADER
+        DEDUP_MEMBERS
+        DESCRIPTION_PRUNE_DOWNLOAD_GALLERIES
+        FIELD_TYPE_region_multi
+        PP_MESSAGE
+        PRUNE_DOWNLOAD_GALLERIES
+        MODULE_TRANS_NAME_common_errors
     ')));
 
     $non_admin_files = [

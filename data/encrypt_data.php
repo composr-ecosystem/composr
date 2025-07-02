@@ -52,6 +52,6 @@ if (!is_file($FILE_BASE . '/sources/bootstrap.php')) {
 }
 require_once $FILE_BASE . '/sources/bootstrap.php';
 require_code__bootstrap('global');
-require_code('encryption');
+require_code('telemetry');
 
 encrypt_data_script();

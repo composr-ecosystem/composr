@@ -94,8 +94,8 @@ class tutorial_image_consistency_test_set extends cms_test_case
 
     public function testNoUnmatchedScreenshots()
     {
-        foreach (array_keys($this->images_referenced) as $x) {
-            $this->assertTrue(isset($this->images[$x]), 'Missing screenshot referenced in a doc: ' . $x);
+        foreach ($this->images_referenced as $tutorial_image => $doc) {
+            $this->assertTrue(isset($this->images[$tutorial_image]), 'Missing screenshot referenced in ' . $doc . ': ' . $tutorial_image);
         }
     }
 

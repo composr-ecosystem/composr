@@ -72,7 +72,7 @@ class privilege_existence_test_set extends cms_test_case
                         continue;
                     }
 
-                    $this->assertTrue(isset($privileges[$privilege]), 'Missing referenced privilege (.php): ' . $privilege);
+                    $this->assertTrue(isset($privileges[$privilege]), 'has_privilege called with an unknown privilege (' . $path . '): ' . $privilege);
 
                     $done_privileges[$privilege] = true;
                 }
@@ -96,7 +96,7 @@ class privilege_existence_test_set extends cms_test_case
                         }
                     }
 
-                    $this->assertTrue(isset($pages[$page]), 'Missing referenced page (.php): ' . $page);
+                    $this->assertTrue(isset($pages[$page]), 'has_[actual_]page_access called with missing page (' . $path . '): ' . $page);
 
                     $done_pages[$page] = true;
                 }
@@ -120,7 +120,7 @@ class privilege_existence_test_set extends cms_test_case
                         }
                     }
 
-                    $this->assertTrue(isset($pages[$page]), 'Missing referenced page (.php): ' . $page);
+                    $this->assertTrue(isset($pages[$page]), 'get_(page|module)_zone called with missing page or module (' . $path . '): ' . $page);
 
                     $done_pages[$page] = true;
                 }
@@ -137,7 +137,7 @@ class privilege_existence_test_set extends cms_test_case
                         continue;
                     }
 
-                    $this->assertTrue(isset($privileges[$privilege]), 'Missing referenced privilege (' . $file_type . '): ' . $privilege);
+                    $this->assertTrue(isset($privileges[$privilege]), '$HAS_PRIVILEGE called with missing privilege (' . $path . '): ' . $privilege);
 
                     $done_privileges[$privilege] = true;
                 }
@@ -150,7 +150,7 @@ class privilege_existence_test_set extends cms_test_case
                         continue;
                     }
 
-                    $this->assertTrue(isset($pages[$page]), 'Missing referenced page (' . $file_type . '): ' . $page);
+                    $this->assertTrue(isset($pages[$page]), '$HAS_[ACTUAL_]PAGE_ACCESS called with missing page (' . $path . '): ' . $page);
 
                     $done_pages[$page] = true;
                 }

@@ -39,6 +39,7 @@ class hooks_test_set extends cms_test_case
         // Remap the key prefix to the value prefix.
         $prefix_remaps = [
             'Hx_health_check_' => 'Hook_health_check_', // systems/health_checks; Hx_health_check is a Hook_health_check override
+            'Hx_import_' => 'Hook_import_', // modules/admin_import; Hx_import is a Hook_import override
         ];
 
         // Grab the hook files

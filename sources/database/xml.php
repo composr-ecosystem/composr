@@ -4473,6 +4473,8 @@ class Database_Static_xml extends DatabaseDriver
             }
         }
 
+        require_code('global4');
+
         return '{' . generate_guid() . '}';
     }
 

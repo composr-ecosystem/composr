@@ -28,7 +28,7 @@ class file_security_test_set extends cms_test_case
     public function testFilenameFixup()
     {
         $tests = [
-            // Not whitelisted
+            // Not safelisted
             'foo.example' => ['foo.example', false],
 
             // Files should be altered to remove double-file-extension

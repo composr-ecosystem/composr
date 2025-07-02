@@ -388,6 +388,7 @@ class CMSModerationWrite
 
         if (!addon_installed('cns_warnings')) {
             warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('600acc29f9905a0498e74de82229f2ec')));
+            return false;
         }
 
         require_code('cns_warnings');

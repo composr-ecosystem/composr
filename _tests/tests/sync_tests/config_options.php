@@ -154,7 +154,7 @@ class config_options_test_set extends cms_test_case
                 continue;
             }
 
-            $this->assertTrue(isset($hooks[$hook]), 'Missing referenced config option (.php): ' . $hook);
+            $this->assertTrue(isset($hooks[$hook]), 'Missing referenced config option (.php file): ' . $hook);
         }
 
         // Find unused

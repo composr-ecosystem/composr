@@ -45,7 +45,7 @@ class Hook_commandr_command_passwd
             return ['', '', '', do_lang('NO_CNS')];
         }
 
-        require_code('users_active_action');
+        require_code('users_active_actions');
         require_code('cns_members_action');
         require_code('cns_members_action2');
 

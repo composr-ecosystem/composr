@@ -159,6 +159,7 @@ class file_type_safelisting_test_set extends cms_test_case
                     'swf',
                     'tmp',
                     'crt',
+                    'rst',
 
                     // Composr types
                     'inf',
@@ -178,6 +179,12 @@ class file_type_safelisting_test_set extends cms_test_case
                 ])) {
                     continue;
                 }
+
+                // Skip third-party vendor files
+                if (strpos($path, '/vendor/') !== false) {
+                    continue;
+                }
+
                 if (in_array($path, [
                     'sources/webstandards.php',
                 ])) {

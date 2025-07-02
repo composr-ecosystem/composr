@@ -255,4 +255,4 @@ If you are not able to get e-mail working then it is almost certainly a result o
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - [url="Microsoft system for monitoring problems sending to its customers' e-mail"]https://sendersupport.olc.protection.outlook.com/pm/services.aspx[/url]
 
-{$SET,tutorial_tags,Configuration,core,Internet Technology,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Setting up e-mail servers can be complex with all the protocols/standards out there. Let's cut through the confusion.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Configuration,core,core_imap,Internet Technology,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Setting up e-mail servers can be complex with all the protocols/standards out there. Let's cut through the confusion.}[block]main_tutorial_rating[/block]

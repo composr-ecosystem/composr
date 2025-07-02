@@ -92,14 +92,11 @@ class Hook_endpoint_cms_homesite_gitlab_issues
                 // Escrow for the issue creator
                 escrow_points($GLOBALS['FORUM_DRIVER']->get_guest_id(), $member_id, $points, $reason, do_lang('GITLAB_ISSUE_AGREEMENT_CREATOR'), (time() * 60 * 60 * 24 * 90), 'gitlab-issue', strval($data['object_attributes']['id']), true, null);
 
-                $resolve_points = intval(get_option('gitlab_issue_resolve_points'));
+                $resolve_points = intval(get_option('gitlab_issue_points'));
                 if ($resolve_points > 0) {
                     // Escrow for the issue resolver
                     escrow_points($GLOBALS['FORUM_DRIVER']->get_guest_id(), null, $resolve_points, $reason, do_lang('GITLAB_ISSUE_AGREEMENT_RESOLVER'), (time() * 60 * 60 * 24 * 90), 'gitlab-issue', strval($data['object_attributes']['id']), true, null);
                 }
-
-                // Add a specialised note
-                gitlab_add_issue_note($data['object_attributes']['id'], do_lang('GITLAB_ISSUE_RESOLVE_NOTE', comcode_escape(build_url(['page' => 'sponsor_issue'], get_page_zone('sponsor_issue'))->evaluate())));
 
                 return ['success' => true];
 

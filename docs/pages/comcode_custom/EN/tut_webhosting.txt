@@ -197,7 +197,7 @@ For slightly faster performance the [tt]ctype[/tt] extension helps.
 
 Ideally e-mails should be sendable directly from PHP's own mail functionality. For this to work an SMTP server (or relay server) has to be available on the web server machine, or on Windows the PHP SMTP configuration needs to be filled in. Composr can connect to external SMTP servers but it is less elegant and perhaps more error prone than using a local server or relay.
 
-If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors). It is highly recommended you do this as your IP could get added to a spam blacklist for repeatedly sending e-mails to invalid addresses or addresses / domains that have blocked you.
+If you need to be able to easily remove 'bounce' e-mails from newsletter subscriber lists, you will need the PHP IMAP extension ([tt]imap[/tt]). If your IMAP server requires SSL (like gmail) then you will need to have IMAP-SSL support inside PHP (or you will get "invalid remote specification" errors). It is highly recommended you do this as your IP could get added to a spam blocklist for repeatedly sending e-mails to invalid addresses or addresses / domains that have blocked you.
 
 [title="4"]Very specific features[/title]
 

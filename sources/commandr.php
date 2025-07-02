@@ -1315,7 +1315,7 @@ class Virtual_shell
 
                 // ^ We use base64 encoding to work around inane modsecurity restrictions. We can't always work around modsecurity (GET/POST encoding would be too messy), but for cookies it is an easy win
             } else {
-                cms_setcookie('commandr_state', '', true, false, -14);
+                cms_setcookie('commandr_state', '', true, false, -14.0);
             }
         } else {
             // Fake the PHP evaluation, because it's prohibited by a shared install

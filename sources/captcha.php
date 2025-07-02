@@ -145,7 +145,7 @@ function captcha_image(string $code_needed) : array
     require_code('images');
 
     $characters = strlen($code_needed);
-    $font_size = 14;
+    $font_size = 14.0;
     $padding = 6;
     $letter_spacing = 3;
 
@@ -168,7 +168,7 @@ function captcha_image(string $code_needed) : array
     $max_char_height = 0;
     for ($i = 0; $i < $characters; $i++) {
         $font_path = $available_fonts[array_rand($available_fonts)];
-        $bbox = imagettfbbox($font_size, 0, $font_path, $code_needed[$i]);
+        $bbox = imagettfbbox($font_size, 0.0, $font_path, $code_needed[$i]);
         if ($bbox) {
             $width += intval(($bbox[2] - $bbox[0]) + $letter_spacing);
             $char_height = intval($bbox[1] - $bbox[7]);
@@ -177,16 +177,20 @@ function captcha_image(string $code_needed) : array
             }
         } else { // Fallback if font metrics fail for some reason
             $width += intval($font_size + $letter_spacing);
-            if ($font_size * 2 > $max_char_height) {
-                $max_char_height = $font_size * 2;
+            if (intval($font_size * 2.0) > $max_char_height) {
+                $max_char_height = intval($font_size * 2.0);
             }
         }
     }
     $height = $max_char_height + $padding * 2;
 
     // Minimums for the image
-    if ($height < 37) $height = 37;
-    if ($width < 87) $width = 87;
+    if ($height < 37) {
+        $height = 37;
+    }
+    if ($width < 87) {
+        $width = 87;
+    }
 
     // Create black background
     $img = imagecreate($width, $height);
@@ -198,8 +202,8 @@ function captcha_image(string $code_needed) : array
     for ($i = 0; $i < $characters; $i++) {
         // Randomise some things to make guessing harder
         $font_path = $available_fonts[array_rand($available_fonts)];
-        $angle = mt_rand(-15, 15);
-        $char_font_size = $font_size + mt_rand(-2, 2);
+        $angle = floatval(mt_rand(-15, 15));
+        $char_font_size = $font_size + floatval(mt_rand(-2, 2));
         $char = $code_needed[$i];
 
         // Create a TTF box for the character
@@ -212,7 +216,7 @@ function captcha_image(string $code_needed) : array
 
         // Add a random colour shadow
         $shadow_color = cms_imagecolorallocate($img, mt_rand(100, 180), mt_rand(100, 180), mt_rand(100, 180));
-        imagettftext($img, $char_font_size, $angle + mt_rand(-5,5), $x + mt_rand(-2,2), $y + mt_rand(-2,2), $shadow_color, $font_path, $char);
+        imagettftext($img, $char_font_size, ($angle + floatval(mt_rand(-5, 5))), ($x + mt_rand(-2, 2)), ($y + mt_rand(-2, 2)), $shadow_color, $font_path, $char);
 
         // Render the actual character with a random colour
         $text_color = cms_imagecolorallocate($img, mt_rand(200, 255), mt_rand(200, 255), mt_rand(200, 255));
@@ -234,7 +238,7 @@ function captcha_image(string $code_needed) : array
     }
 
     return [$img, $width, $height];
- }
+}
 
 /**
  * Fallback image CAPTCHA generation.

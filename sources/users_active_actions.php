@@ -205,7 +205,7 @@ function handle_active_login(string $username)
         $remember = post_param_integer('remember', 0, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES);
 
         // Create invisibility cookie
-        if ((array_key_exists(get_member_cookie() . '_invisible', $_COOKIE)/*i.e. already has cookie set, so adjust*/) || ($remember == 1)) {
+        if ((isset($_COOKIE[get_member_cookie() . '_invisible'])/*i.e. already has cookie set, so adjust*/) || ($remember == 1)) {
             $invisible = post_param_integer('login_invisible', 0, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES);
             if ($invisible == 1) {
                 cms_setcookie(get_member_cookie() . '_invisible', '1');

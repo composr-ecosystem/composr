@@ -114,23 +114,18 @@ class basic_code_formatting_test_set extends cms_test_case
                 if (in_array($ext, $file_types_spaces)) {
                     $this->assertTrue(!$contains_tabs, 'Tabs are in ' . $path . '; you should use spaced tabs instead.');
 
-                    // Uncomment to automatically fix tab issues. Then comment out and re-run the test again to confirm the fixes.
-                    /*
-                    if ($contains_tabs) {
+                    if ($this->debug && $contains_tabs) {
                         $c = str_replace("\t", '    ', $c);
                         cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
                     }
-                    */
                 } elseif (in_array($ext, $file_types_tabs)) {
                     $this->assertTrue(!$contains_spaced_tabs, 'Spaced tabs are in ' . $path . '; you should use tabs instead.');
 
                     // Uncomment to automatically fix tab issues. Then comment out and re-run the test again to confirm the fixes.
-                    /*
-                    if ($contains_spaced_tabs) {
+                    if ($this->debug && $contains_spaced_tabs) {
                         $c = str_replace('    ', "\t", $c);
                         cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
                     }
-                    */
                 }
             }
         }
@@ -169,12 +164,10 @@ class basic_code_formatting_test_set extends cms_test_case
                 $this->assertTrue($ok, 'Has trailing whitespace in ' . $path . '; grep for [ \t]+$');
 
                 // Uncomment this and run the test to automatically fix whitespace issues. Then, comment it out and re-run the test to confirm the fixes.
-                /*
-                if (!$ok) {
+                if ($this->debug && !$ok) {
                     $c = preg_replace('#[ \t]+$#m', '', $c);
                     cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
                 }
-                */
             }
         }
     }
@@ -272,21 +265,16 @@ class basic_code_formatting_test_set extends cms_test_case
                 $this->assertTrue($ok, 'Windows text format detected for ' . $path . '. This may be expected when using git for Windows. But make sure you commit and build in Linux/UNIX format.');
 
                 // Uncomment to automatically fix Windows newline issues. Then comment out and re-run the test again to confirm the fixes.
-                /*
-                if (!$ok) {
+                if ($this->debug && !$ok) {
                     $c = str_replace("\r", '', $c);
                     cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
                 }
-                */
 
                 if ($ext == 'svg') {
                     continue;
                 }
 
                 $num_line_breaks_total = substr_count($c, "\n");
-                if (($this->debug) && ($num_line_breaks_total == 1) && ($ext == 'tpl')) {
-                    var_dump('Single line template: ' . $path);
-                }
 
                 $num_term_breaks = strlen($c) - strlen(rtrim($c, "\n"));
 
@@ -301,12 +289,10 @@ class basic_code_formatting_test_set extends cms_test_case
                 $this->assertTrue($num_term_breaks == $expected_term_breaks, 'Wrong number of terminating line breaks (got ' . integer_format($num_term_breaks) . ', expects ' . integer_format($expected_term_breaks) . ') for ' . $path);
 
                 // Uncomment and run to automatically fix files with 0 terminating line breaks (does not fix files with > 1). Then comment and run again to confirm fixes.
-                /*
-                if (($expected_term_breaks == 1) && ($num_term_breaks == 0)) {
+                if (($this->debug) && ($expected_term_breaks == 1) && ($num_term_breaks == 0)) {
                     $c .= "\n";
                     cms_file_put_contents_safe($path, $c, FILE_WRITE_SYNC_FILE | FILE_WRITE_FIX_PERMISSIONS);
                 }
-                */
             }
         }
     }

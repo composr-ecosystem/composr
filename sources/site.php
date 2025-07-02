@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: fastcgi_finish_request*/
+
 /**
  * Standard code module initialisation function.
  *

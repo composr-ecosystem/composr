@@ -107,6 +107,7 @@ skip_files:
 - ^themes/default/templates_cached/.*
 - ^themes/admin/templates_cached/.*
 - ^_old/.*
+- ^_compiled/.*
 
 inbound_services:
 - mail

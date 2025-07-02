@@ -1086,7 +1086,7 @@
                     type: 'opt-in', // Required by GDPR
                     onStatusChange: function onStatusChange(status, chosenBefore) {
                         if (!this.hasConsented()) {
-                            
+
                         }
                     }
                 };

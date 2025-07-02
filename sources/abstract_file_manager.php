@@ -12,13 +12,13 @@
 
 */
 
-/*EXTRA FUNCTIONS: ftp_.**/
-
 /**
  * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
  * @package    core
  */
+
+/*EXTRA FUNCTIONS: ftp_.**/
 
 /*
 The abstract file manager allows easy and transparent file system maintenance, even when it has to be piped through FTP.

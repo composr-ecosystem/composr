@@ -1683,6 +1683,23 @@ function imagecopymerge($dst_im, $src_im, int $dst_x, int $dst_y, int $src_x, in
 }
 
 /**
+ * Draw an image between two points.
+ *
+ * @param  resource $image The GD image on which we are drawing the line
+ * @param  integer $x1 The starting X position of the line
+ * @param  integer $y1 The starting Y position of the line
+ * @param  integer $x2 The ending X position of the line
+ * @param  integer $y2 The ending Y position of the line
+ * @param  integer $color The imagecolorallocate index for this line
+ * @return boolean Whether the line was successfully drawn
+ *
+ */
+function imageline($image, int $x1, int $y1, int $x2, int $y2, int $color) : bool
+{
+    return false;
+}
+
+/**
  * Join array elements with a string.
  *
  * @param  string $glue The glue component (becomes a deliminator)
@@ -4375,16 +4392,6 @@ function hypot(float $x, float $y) : float
  * @return boolean Previous setting
  */
 function ignore_user_abort(bool $setting) : bool
-{
-    return true;
-}
-
-/**
- * If running CGI, tell PHP to finish the request stream.
- *
- * @return boolean Whether the finish request was successful
- */
-function fastcgi_finish_request() : bool
 {
     return true;
 }

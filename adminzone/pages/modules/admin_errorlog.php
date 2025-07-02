@@ -377,6 +377,7 @@ class Module_admin_errorlog
                 $log = implode("\n", $lines);
 
                 // Action URLs
+
                 $download_url = new Tempcode();
                 $clear_url = new Tempcode();
                 $add_url = new Tempcode();
@@ -391,6 +392,7 @@ class Module_admin_errorlog
                 // Template-ready
                 $logs[$filename] = [
                     'LOG' => $log,
+                    'DESCRIPTION' => new Tempcode(), // TODO
                     'DOWNLOAD_URL' => $download_url,
                     'CLEAR_URL' => $clear_url,
                     'DELETE_URL' => $delete_url,

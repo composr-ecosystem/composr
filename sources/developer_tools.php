@@ -420,9 +420,10 @@ function cms_verify_parameters_phpdoc(bool $dev_only = false)
  * @param  ID_TEXT $table The name of the table to generate dummy data
  * @param  boolean $allow_null Whether to randomly save null values in nullable columns (false: a value is always saved even if nullable unless explicitly defined in $forced_values)
  * @param  array $forced_values A map of fields => values that should be used instead of randomness
- * @return array Map of primary fields associated with the row created
+ * @param  boolean $return_only Whether to just return the row we would have added into the database instead of actually doing so
+ * @return array If $return_only is false, map of primary fields associated with the row created; otherwise, dummy db row which we did not actually add
  */
-function make_dummy_db_row(string $table, bool $allow_null = true, array $forced_values = []) : array
+function make_dummy_db_row(string $table, bool $allow_null = true, array $forced_values = [], bool $return_only = false) : array
 {
     $primary_map = [];
     $map = [];
@@ -566,6 +567,11 @@ function make_dummy_db_row(string $table, bool $allow_null = true, array $forced
                 $primary_map[$field] = $value_else;
             }
         }
+    }
+
+    // Whether we want to bail without actually adding to the database
+    if ($return_only) {
+        return $map;
     }
 
     // Create the record

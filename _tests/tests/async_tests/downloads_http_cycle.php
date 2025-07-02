@@ -62,7 +62,16 @@ class downloads_http_cycle_test_set extends cms_test_case
         if ($max_download_id === null) {
             return;
         }
-        $url = find_script('dload') . '?id=' . strval($max_download_id);
+
+        if (addon_installed('commandr')) {
+            require_code('resource_fs');
+            $guid = find_guid_via_id('download', strval($max_download_id));
+            $this->assertTrue(($guid !== null), 'Tried to find the download GUID from resource_fs but could not.');
+        } else {
+            $guid = strval($max_download_id);
+        }
+
+        $url = find_script('dload') . '?id=' . $guid;
         $result = cms_http_request($url, ['cookies' => [get_session_cookie() => $this->session_id]]);
         $this->assertTrue($result->data == cms_file_get_contents_safe(get_file_base() . '/data/images/donate.png', FILE_READ_LOCK));
         $this->assertTrue($result->download_mime_type == 'application/octet-stream', 'Wrong mime type, ' . $result->download_mime_type);
