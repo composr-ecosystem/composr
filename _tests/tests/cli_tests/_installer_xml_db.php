@@ -49,7 +49,7 @@ class _installer_xml_db_test_set extends cms_test_case
         require_code('install_headless');
         for ($i = 0; $i < 2; $i++) { // 1st trial is clean DB, 2nd trial is dirty DB
             $success = do_install_to($database, 'root', '', $table_prefix, false, 'cns', null, null, null, null, null, [], true, 'xml');
-            $this->assertTrue($success);
+            $this->assertTrue($success, 'Failed headless install on trial ' . strval($i + 1) . '. See the error log for more information.');
 
             if (!$success) {
                 break; // Don't do further trials if there's an error

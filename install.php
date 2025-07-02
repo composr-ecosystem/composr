@@ -1345,6 +1345,8 @@ function step_5() : object
     // Check database credentials / load DB connection
     $tmp = confirm_db_credentials(true);
 
+    include_cns();
+
     // Give warning if database contains data
     if (post_param_integer('confirm', 0) == 0) {
         $test = $tmp->query_select_value_if_there('db_meta', 'COUNT(*)', [], '', true);
@@ -1404,7 +1406,6 @@ function step_5() : object
         $log->attach(step_5_checks_b());
         $log->attach(step_5_uninstall());
         $log->attach(step_5_core());
-        include_cns();
         $log->attach(step_5_core_2());
     }
 

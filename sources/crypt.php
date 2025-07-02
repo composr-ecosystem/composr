@@ -143,6 +143,10 @@ function get_ratchet_cost(string $hash) : ?int
  */
 function get_site_salt() : string
 {
+    if (!function_exists('get_value')) {
+        return '';
+    }
+
     $site_salt = get_value('site_salt');
     if (($site_salt === null) || (strlen($site_salt) < 32)) {
         $site_salt = get_secure_random_string(32, CRYPT_BASE64);

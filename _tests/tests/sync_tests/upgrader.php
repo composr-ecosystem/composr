@@ -51,9 +51,14 @@ class upgrader_test_set extends cms_test_case
             require_code('make_release');
             require_code('cms_homesite');
 
-            // Make a build of our current install
-            $_POST['skip_data_files'] = '1';
-            make_installers();
+            // Make a build of our current install if one does not already exist
+            if (!is_dir(get_builds_path() . '/builds/' . $this->to_version)) {
+                $_GET['skip_quick'] = '0';
+                $_GET['skip_manual'] = '0';
+                $_GET['skip_bundled'] = '0';
+                $_GET['skip_mszip'] = '0';
+                make_installers();
+            }
 
             // Move build files to uploads/downloads
             $files = get_directory_contents(get_builds_path() . '/builds/' . $this->to_version, get_builds_path() . '/builds/' . $this->to_version);
