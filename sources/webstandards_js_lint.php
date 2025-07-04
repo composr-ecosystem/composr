@@ -26,7 +26,7 @@ No support for:
  - Full DOM REASON: not implemented on any browser. If however, conditional testing is used, the checker will let it pass
  - (Most) HTML attributes hardcoded into DOM objects  REASON: no reason to do it, and less compatible and clear than getAttribute
  - ";" insertion  REASON: very sloppy
- - New 'HTML5' APIs (not well supported yet)
+ - New 'HTML5' APIs (not well supported yet) TODO: It is now, so we should implement this
  - checking against argument types  REASON: JavaScript extension, but we could do. Not a lot of advantage, quite a lot of work
  - checking for locked  REASON: JavaScript extension, but we could do. Not a lot of advantage, quite a lot of work
 
@@ -834,6 +834,7 @@ function js_check_call(array $c, int $c_pos, ?string $class = null) : ?string
 
 /**
  * Check a variable.
+ * TODO: #6239 this needs to check for accidental assignment to browser globals like window. See https://www.youtube.com/watch?v=_xEWzr5mVfk .
  *
  * @param  array $variable The (possibly complex) variable
  * @param  boolean $reference Whether the variable is being used referentially (i.e. not being set)
