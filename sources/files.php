@@ -887,6 +887,10 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
             'execute_temp.php' => 'data_custom',
             '.user.ini' => '.*',
         ]);
+
+        $ignore_filename_and_dir_name_patterns = array_merge($ignore_filename_and_dir_name_patterns, [
+            ['(?!index\.html$)(?!\.htaccess$).*', '_compiled/.*'], // Access controllers for compiled PHP files
+        ]);
     }
 
     if (($bitmask & IGNORE_UNSHIPPED_VOLATILE) != 0) {
