@@ -51,6 +51,7 @@ require_code__bootstrap('global');
 require_code('files2');
 
 disable_php_memory_limit();
+cms_extend_time_limit(TIME_LIMIT_EXTEND__SLUGGISH);
 
 $mode = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 'reasonable';
 
