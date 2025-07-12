@@ -8556,7 +8556,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_TEMPLATE
         REPLY_TO
         SKIP_TICKET_CREATION
-        UPGRADER_NEW_ADDON_EXTRACTED
+        UPGRADER_NEW_ADDON
         UPGRADER_INTEGRITY_SCAN_2
         UPGRADER_SAFE_MODE_UPGRADE_ADDONS
         _UPGRADER_ADDON_MANAGEMENT
