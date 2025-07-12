@@ -5628,7 +5628,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_ADDON_MANAGEMENT
         UPGRADER_AUTO_HANDLE
         UPGRADER_BUGS
-        UPGRADER_CHECK_ALL
         UPGRADER_CHECK_PERMISSIONS
         UPGRADER_CHOICES
         UPGRADER_CLEAR_CACHES
@@ -8715,6 +8714,8 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         PP_MESSAGE
         PRUNE_DOWNLOAD_GALLERIES
         MODULE_TRANS_NAME_common_errors
+        WARNING_TOOK_TOO_LONG
+        WARNING_TOO_MANY
     ')));
 
     $non_admin_files = [
