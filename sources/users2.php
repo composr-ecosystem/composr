@@ -74,6 +74,10 @@ function member_is_online(int $member_id) : bool
  */
 function get_users_online(bool $longer_time, ?int $filter, int &$count) : ?array
 {
+    if (running_script('install') || running_script('upgrader')) {
+        return [];
+    }
+
     if (get_value('disable_member_tracking') === '1') {
         return [];
     }
