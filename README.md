@@ -18,8 +18,9 @@ Composr lets you decide how your site will look and behave. Features are plentif
 
  - [Website](https://www.composr.app)
  - [Full documentation](https://composr.app/docs)
- - [Git commit log](https://gitlab.com/composr-foundation/composr/activity)
+ - [Git commit log (GitLab)](https://gitlab.com/composr-foundation/composr/activity)
  - [News](https://composr.app/news.htm)
+ - [Composr Constitution](https://composr.app/constitution.htm)
  - [Composr Vision and Manifesto](https://composr.app/vision.htm)
 
 ## Resources ##
