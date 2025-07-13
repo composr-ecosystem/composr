@@ -402,11 +402,6 @@ function _upgrader_file_upgrade_screen() : string
         // Try to find this file or directory within an addon
         $found = null;
         foreach ($addon_contents as $addon_name => $addon_files) {
-            // Skip addons we are not going to extract
-            if (!in_array($addon_name, $addons_wanted)) {
-                continue;
-            }
-
             // See if the addon has any files located within this directory. If so, we want to ensure this directory is created
             if ($is_directory) {
                 foreach ($addon_files as $addon_file) {
@@ -425,9 +420,9 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
 
-        // Install if it matches an addon either on disk or in the TAR (and not part of an addon we uninstalled)
+        // Extract file if it matches an addon which we have installed or we want to install
         // (if we couldn't find the addon for it we have to assume a corrupt upgrade TAR and must skip the file)
-        if ($found !== null) {
+        if (($found !== null) && in_array($addon_name, $addons_wanted)) {
             if ($is_directory) {
                 if (!$dry_run) {
                     afm_make_directory($upgrade_file['path'], false, true);
@@ -451,7 +446,7 @@ function _upgrader_file_upgrade_screen() : string
             }
         }
 
-        // Record to copy the file into our archived addon (if it exists) so that addon is kept up-to-date
+        // Keep import TARs of addons up-to-date by logging to update the file later
         if (!$is_directory) {
             if (($found !== null) && (file_exists(get_file_base() . '/imports/addons/' . $found . '.tar'))) {
                 $files_for_tar_updating[$found][$upgrade_file['path']] = [$upgrade_file['mode'], $upgrade_file['mtime']];
@@ -474,7 +469,7 @@ function _upgrader_file_upgrade_screen() : string
         $files_current = [];
     }
 
-    // Copy it into our archived addon so that addon is kept up-to-date
+    // Update addon TAR files; we need to add/update existing files and remove old files
     foreach ($files_for_tar_updating as $found => $files) {
         if (!is_file(get_file_base() . '/imports/addons/' . $found . '.tar')) { // Nothing to do if an archive does not exist
             continue;
@@ -512,6 +507,7 @@ function _upgrader_file_upgrade_screen() : string
             }
             tar_close($old_addon_file);
 
+            // Now add updated and new files from the upgrade
             foreach ($files as $file_to_update => $_file_to_update) {
                 if (!$dry_run) {
                     list($file_to_update_mode, $file_to_update_mtime) = $_file_to_update;
@@ -524,6 +520,7 @@ function _upgrader_file_upgrade_screen() : string
                 $out .= do_lang('UPGRADER_PACKING_MESSAGE', escape_html($file_to_update)) . '<br />';
             }
 
+            // Remove old addon TAR and rename the new one
             if (!$dry_run) {
                 tar_close($new_addon_file);
 
