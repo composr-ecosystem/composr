@@ -667,6 +667,7 @@ class Hook_addon_registry_core_imap
         if ((($upgrade_major_minor === null) || ($upgrade_major_minor < 11.0)) || (($upgrade_patch === null) || ($upgrade_patch <= 0))) { // LEGACY
             require_code('files');
             deldir_contents(get_file_base() . '/sources_custom/imap', false, true);
+            @unlink(get_file_base() . '/sources_custom/hooks/systems/addon_registry/imap.php');
         }
     }
 }
