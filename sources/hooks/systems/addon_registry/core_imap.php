@@ -654,4 +654,19 @@ class Hook_addon_registry_core_imap
             'sources/imap/vendor/zbateson/stream-decorators/src/index.html',
         ];
     }
+
+    /**
+     * Install the addon.
+     *
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
+     */
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
+    {
+        // This addon used to be non-bundled as 'imap'; remove the old IMAP directory if it exists
+        if ((($upgrade_major_minor === null) || ($upgrade_major_minor < 11.0)) || (($upgrade_patch === null) || ($upgrade_patch <= 0))) { // LEGACY
+            require_code('files');
+            deldir_contents(get_file_base() . '/sources_custom/imap', false, true);
+        }
+    }
 }
