@@ -151,7 +151,6 @@ class Hook_addon_registry_core_database_drivers
             'sources/database/xml.php',
             'sources/hooks/systems/addon_registry/core_database_drivers.php',
             'sources/hooks/systems/cron/oracle.php',
-            'uploads/website_specific/xmldb/index.html',
         ];
     }
 }

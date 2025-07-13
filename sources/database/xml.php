@@ -451,16 +451,17 @@ class Database_Static_xml extends DatabaseDriver
     public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if ((strpos($db_name, '\\') === false) && (strpos($db_name, '/') === false)) {
-            $db_name = get_custom_file_base() . '/uploads/website_specific/xmldb/' . $db_name;
+            $db_dir = get_custom_file_base() . '/uploads/website_specific/xmldb';
+            $db_name = $db_dir . '/' . $db_name;
         }
         if (!file_exists($db_name)) { // Will create on first usage
             require_code('files');
+            require_code('files2');
 
-            mkdir($db_name, 0777, true);
-            fix_permissions($db_name);
-            sync_file($db_name);
-
-            cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            if (!is_dir($db_dir)) {
+                make_missing_directory($db_dir);
+            }
+            make_missing_directory($db_name);
         }
 
         return [$db_name];
