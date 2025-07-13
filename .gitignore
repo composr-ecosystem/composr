@@ -1,4 +1,5 @@
 ; Similar to stuff defined in sources/files.php, but defined in terms of what we want never to be in git
+/_tests/assets/keys.csv
 /_tests/codechecker/checker.ini
 /Icon?
 /cgi-bin
@@ -151,6 +152,7 @@ pages/html_custom/*/*.htm
 /data_custom/fonts/*.ttf
 /nbproject
 
-; VS Code
+; Code editors and IDEs
 settings.json
 /.buildpath
+/.settings
