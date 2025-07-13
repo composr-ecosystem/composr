@@ -124,7 +124,15 @@ function tar_get_directory(array &$resource, bool $tolerate_errors = false) : ?a
             $resource['end'] = $offset;
         } else {
             if (substr($header, 257, 5) == 'ustar') {
-                $path = str_replace('\\', '/', substr($header, 345, min(512, strpos($header, $chr_0, 345) - 345)) . substr($header, 0, min(100, strpos($header, $chr_0, 0))));
+                $prefix = substr($header, 345, min(155, strpos($header, $chr_0, 345) - 345));
+                $name = substr($header, 0, min(100, strpos($header, $chr_0, 0)));
+
+                if (!empty($prefix)) {
+                    $path = rtrim($prefix, '/') . '/' . ltrim($name, '/');
+                } else {
+                    $path = $name;
+                }
+                $path = str_replace('\\', '/', $path);
             } else {
                 $end_of_string = strpos($header, $chr_0, 0);
                 if ($end_of_string === false) {
