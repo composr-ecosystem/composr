@@ -208,6 +208,12 @@ function _upgrader_file_upgrade_screen() : string
         'data/upgrader2.php' => false,
         'sources/crypt_maintenance.php' => false,
     ];
+
+    // LEGACY: 11 beta8 fixed an issue in tar.php which sometimes strips path separator on large file names. We need the fix immediately.
+    if (cms_version_time() <= 1742491359) {
+        $immediately_upgrade['sources/tar.php'] = true;
+    }
+
     if (!$dry_run) {
         $must_restart = false;
         foreach ($immediately_upgrade as $path => $restart) {
