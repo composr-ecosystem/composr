@@ -36,6 +36,7 @@ function init__version()
 {
     if (!defined('CMS_REPOS_URL')) {
         define('CMS_REPOS_URL', 'https://gitlab.com/composr-foundation/composr');
+        define('CMS_REPOS_URL_MIRROR', 'https://github.com/composr-ecosystem/composr');
 
         define('VERSION_ALPHA', 'Alpha');
         define('VERSION_BETA', 'Beta');

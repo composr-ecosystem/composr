@@ -8,7 +8,7 @@ Composr CMS is proudly a Free and Open Source Software, or FOSS for short. This 
  - can distribute copies of the source code (including modified copies), and
  - can fork the Git repository to take Composr CMS in a different direction / make their own distro.
 
-The [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] allows anyone to view the full source code and development progress of the software. Anyone can also leave comments and make merge requests to contribute towards the code.
+The [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] and [url="GitHub repository"]{$CMS_REPOS_URL_MIRROR}[/url] allows anyone to view the full source code and development progress of the software. Anyone can also leave comments and make merge requests to contribute towards the code.
 [/surround]
 
 [contents]decimal,lower-alpha[/contents]
@@ -20,12 +20,12 @@ You can freely download Composr CMS and build whatever website you wish to build
 
 This is to say, however, that you are not free from the social and legal responsibilities and consequences. While we might not stop you from building a site selling illegal products, your local government might, and you could get arrested or fined for doing so. As another example, if you build an adult website, there are often some legal rules you must follow (such as age verification) to be in compliance and avoid getting penalised.
 
-With that being said, if there are ways you believe Composr CMS can be improved to better meet the legal requirements and needs in your area, please let us know by [page="site:report-issue"]making a feature request on the tracker[/page] or making a merge request on our [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] if you want to implement it yourself (please do keep in mind our [page="_SEARCH:codebook"]Coding Standards[/page] if you elect to implement it yourself and publish your implementation).
+With that being said, if there are ways you believe Composr CMS can be improved to better meet the legal requirements and needs in your area, please let us know by [page="site:report-issue"]making a feature request on the tracker[/page] or making a merge request on our [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] or [url="GitHub repository"]{$CMS_REPOS_URL_MIRROR}[/url] if you want to implement it yourself (please do keep in mind our [page="_SEARCH:codebook"]Coding Standards[/page] if you elect to implement it yourself and publish your implementation).
 
 [title="2"]2. The Freedom to View and Modify the Source Code[/title]
 The second pillar of FOSS is that users have the right to view the source code of the software in full and unobstructed, and they can modify it to their liking.
 
-The full source code of Composr CMS can be viewed on the [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url]. Additionally, when you download Composr, the entire source code is available to you and can be modified as you desire.
+The full source code of Composr CMS can be viewed on the [url="Composr Gitlab Repository"]{$CMS_REPOS_URL}[/url] or [url="GitHub repository"]{$CMS_REPOS_URL_MIRROR}[/url]. Additionally, when you download Composr, the entire source code is available to you and can be modified as you desire.
 
 The developers of Composr CMS take this pillar even further; we not-only allow you to modify the program to your liking, but we encourage it.
 

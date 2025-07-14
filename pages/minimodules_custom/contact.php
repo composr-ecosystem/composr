@@ -116,9 +116,10 @@ $decision_tree = [
         'title' => 'Contribute code',
         'text' => "Thanks, that's fantastic!
 
-There are 3 ways to contribute code to Composr:
+There are 4 ways to contribute code to Composr:
 [list=\"1\"]
 [*] Make a [url=\"merge request\" target=\"_blank\"]https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html[/url] on [url=\"GitLab\" target=\"_blank\"]" . CMS_REPOS_URL . "[/url]. Reference a tracker issue ID if you are implementing [url=\"something from the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker[/url] (e.g. for tracker issue 0, \"MANTIS-0\").
+[*] Make a [url=\"pull request\" target=\"_blank\"]https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests[/url] on [url=\"GitHub\" target=\"_blank\"]" . CMS_REPOS_URL_MIRROR . "[/url]. Reference a tracker issue ID if you are implementing [url=\"something from the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker[/url] (e.g. for tracker issue 0, \"MANTIS-0\").
 [*] Post your patch as a note / comment [url=\"to an existing issue on the tracker\" target=\"_blank\"]" . get_base_url() . "/tracker[/url]. [page=\"_SEARCH:report_issue\" target=\"_blank\"]Create a tracker issue[/page] first if an issue does not exist yet.
 [*] Make a non-bundled theme or addon. For this, please see our [page=\":addon_submission\"]addon submission guidelines[/page].
 [/list]
