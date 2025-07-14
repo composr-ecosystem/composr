@@ -1067,6 +1067,7 @@ function get_webservice_result($error_message) : ?string
 {
     return null; // TODO: is this necessary anymore with telemetry?
 
+    /*
     if (get_base_url_hostname() == parse_url(get_brand_base_url(), PHP_URL_HOST)) {
         return null; // Don't look up on itself if this is the homesite
     }
@@ -1143,6 +1144,7 @@ function get_webservice_result($error_message) : ?string
         ocp_mark_as_escaped($http_result['response_data']['matched_error']);
     }
     return $http_result['response_data']['matched_error'];
+    */
 }
 
 /**

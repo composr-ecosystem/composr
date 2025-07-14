@@ -91,32 +91,33 @@ function test_password(string $password, string $username = '', string $email_ad
     }
 
     // Calculate character pool size for entropy calculation
-    $pool_size = 0;
+    $pool_size = 0.0;
     $has_lower = (preg_match('/[a-z]/', $password) != 0);
     $has_upper = (preg_match('/[A-Z]/', $password) != 0);
     $has_digit = (preg_match('/[0-9]/', $password) != 0);
     $has_symbol = (preg_match('/[^a-zA-Z0-9]/', $password) != 0);
     if ($has_lower) {
-        $pool_size += 26;
+        $pool_size += 26.0;
     }
     if ($has_upper) {
-        $pool_size += 26;
+        $pool_size += 26.0;
     }
     if ($has_digit) {
-        $pool_size += 10;
+        $pool_size += 10.0;
     }
     if ($has_symbol) {
-        $pool_size += 32; // Approximation for common symbols
+        $pool_size += 32.0; // Approximation for common symbols
     }
 
     // Initial strength based on entropy
-    if ($pool_size == 0) {
+    $entropy = 0.0;
+    if ($pool_size == 0.0) {
         // This case implies the password consists of characters not in the common sets, or the regex missed something.
         $entropy = floatval($len);
     } else {
-        $entropy = $len * log($pool_size, 2);
+        $entropy = floatval($len * log($pool_size, 2.0));
     }
-    $strength = ($entropy / 10);
+    $strength = intval($entropy / 10.0);
 
     // Strength penalty for repeating characters
     $lower_password_for_consecutive = cms_mb_strtolower($password);

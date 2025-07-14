@@ -39,7 +39,7 @@ In addition to the above list, for larger websites built around a [acronym="Cont
 
 Google Analytics isn't necessarily all good. A discussion on positives and negatives is included in the [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page] tutorial.
 
-You can sign up for [url="Google Analytics here"]http://www.google.com/analytics[/url]. If you already have a Google account you can sign in, otherwise you can create a new account. In order to really explore the product it is advisable to sign up with your active website details. Upon signup a [i]Google Analytics[/i] tracking code will be generated for your website.
+You can sign up for [url="Google Analytics here"]https://www.google.com/analytics[/url]. If you already have a Google account you can sign in, otherwise you can create a new account. In order to really explore the product it is advisable to sign up with your active website details. Upon signup a [i]Google Analytics[/i] tracking code will be generated for your website.
 
 [title="3"]Google Analytics terminology[/title]
 
@@ -88,7 +88,7 @@ Now let's proceed to set this up in [i]Google Analytics[/i]. Follows is a walkth
 
 Let us create our two [i]goal[/i]. Here's how:
 [list="1"]
-[*] Log in to [url="Google Analytics"]http://www.google.com/analytics[/url][/*]
+[*] Log in to [url="Google Analytics"]https://www.google.com/analytics[/url][/*]
 
 [*] Click "Admin" from the menu options (on the top right)[/*]
 
@@ -129,7 +129,7 @@ Let us create our two [i]goal[/i]. Here's how:
 We will make a [i]content experiment[/i] that sees how different page versions affect the analytics for reaching our [i]goal[/i]. The response trends (effectiveness) can be evaluated analysis within [i]Google Analytics[/i].
 
 [list="1"]
-[*] Log into [url="Google Analytics"]http://www.google.com/analytics[/url][/*]
+[*] Log into [url="Google Analytics"]https://www.google.com/analytics[/url][/*]
 
 [*] Click "Reporting" from menu options listed on top right side[/*]
 
@@ -236,7 +236,7 @@ This extra code contextualises it to just the page we want it on, as we will be 
 
 We still need to serve users either the original or the variant somehow (our two "versions").
 
-Recall we used [tt]http://ocportal.com/home.htm[/tt] as original URL and [tt]http://ocportal.com/home.htm?version=2[/tt] as the variate URL.
+Recall we used [tt]https://ocportal.com/home.htm[/tt] as original URL and [tt]https://ocportal.com/home.htm?version=2[/tt] as the variate URL.
 
 In Composr, these two versions can be configured in a single Comcode page, [tt]home[/tt]. You can use Tempcode to create the two scenarios in the file.
 
@@ -244,7 +244,7 @@ Here is an example of a page:
 [code="Comcode"]
 [semihtml]
 {+START,IF,{$EQ,{$_GET,version,1},1}}
-	[staff_note]Shown for http://ocportal.com/home.htm or http://ocportal.com/home.htm?version=1[/staff_note]
+	[staff_note]Shown for https://ocportal.com/home.htm or https://ocportal.com/home.htm?version=1[/staff_note]
 
 	<p>We'd like you to make a donation:</p>
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -253,7 +253,7 @@ Here is an example of a page:
 		<input type="hidden" name="item_name" value="ocPortal friend" />
 		<input type="hidden" name="item_number" value="Website donation" />
 		<input type="hidden" name="currency_code" value="USD" />
-		<input type="hidden" name="return" value="http://ocportal.com/thankyou.htm" />
+		<input type="hidden" name="return" value="https://ocportal.com/thankyou.htm" />
 
 		<input type="image" name="submit" border="0" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="PayPal - The safer, easier way to pay online" />
 		<img alt="" border="0" width="1" height="1" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" />
@@ -261,7 +261,7 @@ Here is an example of a page:
 {+END}
 
 {+START,IF,{$EQ,{$_GET,version,1},2}}
-	[staff_note]Shown for http://ocportal.com/home.htm?version=2[/staff_note]
+	[staff_note]Shown for https://ocportal.com/home.htm?version=2[/staff_note]
 
 	<p>Donations help pay for our political campaign. Maybe you could help us out with a donation?</p>
 
@@ -271,7 +271,7 @@ Here is an example of a page:
 		<input type="hidden" name="item_name" value="ocPortal friend" />
 		<input type="hidden" name="item_number" value="Website donation" />
 		<input type="hidden" name="currency_code" value="USD" />
-		<input type="hidden" name="return" value="http://ocportal.com/thankyou.htm" />
+		<input type="hidden" name="return" value="https://ocportal.com/thankyou.htm" />
 
 		<input type="image" name="submit" border="0" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" alt="PayPal - The safer, easier way to pay online" />
 		<img alt="" border="0" width="1" height="1" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" />
@@ -361,7 +361,7 @@ To view the reports about the defined [i]experiments[/i], click on any of the li
 
 [title="2"]Suggestions for split tests[/title]
 
-Split testing is both a science and an art. [url="Here is a good resource"]http://www.quicksprout.com/2013/01/14/11-obvious-ab-tests-you-should-try/[/url] suggesting some possible ideas to get you going.
+Split testing is both a science and an art. [url="Here is a good resource"]https://www.quicksprout.com/2013/01/14/11-obvious-ab-tests-you-should-try/[/url] suggesting some possible ideas to get you going.
 
 To do split testing well you need to be willing to put the time in, and be willing to be mercilessly analytical in your thinking.
 
@@ -399,7 +399,7 @@ However, in a few very special cases we do think its best to pick one widespread
 In the interest of providing other options, here are some good alternative resources for you to consider:
  - Composr's own integrated stats addon
  - Hosted analytics tool:
-  - http://piwik.org/
+  - https://piwik.org/
  - Split testing tools:
   - [url="Visual Website Optimizer"]https://vwo.com/[/url]
   - [url="Optimizely"]https://www.optimizely.com/[/url]
@@ -417,7 +417,7 @@ In the interest of providing other options, here are some good alternative resou
 [title="2"]See also[/title]
 
  - [page="_SEARCH:tut_tempcode"]Tempcode programming[/page]
- - http://www.simplybusiness.co.uk/microsites/google-analytics-guide/
+ - https://www.simplybusiness.co.uk/microsites/google-analytics-guide/
  - https://moz.com/blog/absolute-beginners-guide-to-google-analytics
  - https://econsultancy.com/blog/66230-a-beginner-s-dictionary-of-google-analytics/
  - [page="_SEARCH:tut_statistics"]Statistics for your site (analytics)[/page]

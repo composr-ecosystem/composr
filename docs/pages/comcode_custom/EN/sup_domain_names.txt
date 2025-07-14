@@ -103,7 +103,7 @@ Note that for all the methods other than 'Use an HTML solution', it is necessary
 
 [title="2"]Finding out domain and DNS settings[/title]
 
-I recommend using http://www.dnsstuff.com/ to lookup settings for domain names. Use a "WHOIS Lookup" to find out:
+I recommend using https://www.dnsstuff.com/ to lookup settings for domain names. Use a "WHOIS Lookup" to find out:
  - The contact details for a domain
  - A domain's nameservers
  - Who the registrar is

@@ -185,7 +185,7 @@ As well as stock text, a proposal must (primarily) be speaking directly to the s
  - Phase break-down and payment schedule
  - Demonstrate good value and competitiveness
 
-Try and get the correct balance between detail and succinctness. The correct balance depends on [url="what a particular client appreciates"]http://psychology.wikia.com/wiki/Social_style[/url] -- so everything must be reviewed and tuned for the particular client you are writing a proposal for.
+Try and get the correct balance between detail and succinctness. The correct balance depends on [url="what a particular client appreciates"]https://psychology.wikia.com/wiki/Social_style[/url] -- so everything must be reviewed and tuned for the particular client you are writing a proposal for.
 
 Generally it is better to focus on quality rather than price. If a client is shopping based on price they probably will end up picking the vendor that gives a 30 minute phone call (and low quote) rather than the vendor spending 2 days writing a detailed proposal. You want to avoid low-grade work as it is impossible to break even on it when employing skilled staff.
 

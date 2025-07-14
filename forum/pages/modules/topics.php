@@ -2979,7 +2979,7 @@ class Module_topics
      * @param  BINARY $point_weighting Whether votes will be weighed according to how many points voters have
      * @return Tempcode The Tempcode for the fields
      */
-    protected function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, int $validated = 1, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
+    protected function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, int $topic_validated = 1, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
     {
         require_lang('cns_polls');
         require_code('cns_polls_action3');
@@ -3093,7 +3093,7 @@ class Module_topics
                 $actual_poll_closing_time = $poll_closing_time;
             } elseif ((is_string($_default_options['votingPeriodHours'])) && (cms_strtolower_ascii($_default_options['votingPeriodHours']) == 'false')) { // If the XML votingPeriodHours is false, do not allow setting a closing time
                 $actual_poll_closing_time = null;
-            } elseif ($validated == 0) { // If the topic is not validated, do not provide a closing time yet; the closing time will be set once the topic is validated
+            } elseif ($topic_validated == 0) { // If the topic is not validated, do not provide a closing time yet; the closing time will be set once the topic is validated
                 $actual_poll_closing_time = null;
             } elseif ($topic_id !== null) { // If a topic ID was provided, add votingPeriodHours to t_cache_first_time (in case we are editing a poll)
                 $_topic_info = $GLOBALS['FORUM_DB']->query_select('f_topics', ['*'], ['id' => $topic_id], '', 1);

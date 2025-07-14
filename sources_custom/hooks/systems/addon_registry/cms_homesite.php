@@ -218,6 +218,7 @@ This addon does not contain the homesite install code and the overall site and t
             'sources_custom/hooks/systems/privacy/cms_homesite.php',
             'sources_custom/hooks/systems/startup/cms_homesite__for_outdated_version.php',
             'sources_custom/hooks/systems/symbols/CMS_REPOS_URL.php',
+            'sources_custom/hooks/systems/symbols/CMS_REPOS_URL_MIRROR.php',
             'sources_custom/miniblocks/cms_homesite_download.php',
             'sources_custom/miniblocks/cms_homesite_featuretray.php',
             'sources_custom/miniblocks/cms_homesite_make_upgrader.php',

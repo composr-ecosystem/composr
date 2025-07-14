@@ -39,6 +39,7 @@
 	<exclude-pattern>vendor</exclude-pattern>
 	<exclude-pattern>*.js</exclude-pattern>
 	<exclude-pattern>*.css</exclude-pattern>
+	<exclude-pattern>_compiled</exclude-pattern>
 
 	<!-- Include the PSR-12 standard (https://www.php-fig.org/psr/psr-12/) -->
 	<!-- We only partially follow it (see notes in codebook_standards) -->
@@ -93,8 +94,5 @@
 
 		<exclude name="PSR12.Files.OpenTag.NotAlone" />
 		<!-- Composr header is more compact -->
-
-		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
-		<!-- PHP7.1+ only -->
 	</rule>
 </ruleset>

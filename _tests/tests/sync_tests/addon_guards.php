@@ -106,6 +106,10 @@ class addon_guards_test_set extends cms_test_case
             'Hook_sitemap_\w+' => 'is_active',
             'Hook_cdn_transfer_\w+' => 'is_enabled',
             'Hook_media_rendering_\w+' => 'recognises_url',
+
+            // Overrides
+            'Hx_import_\w+' => 'info',
+            'Mx_' => 'pre_run',
         ];
 
         // Function exceptions, defined as a regex of class::function (class is __global if none). Takes priority over class controllers.
@@ -146,6 +150,9 @@ class addon_guards_test_set extends cms_test_case
              // Complex return structures
             'Hook_health_check_\w+\:\:run',
             'Hook_preview_\w+\:\:applies',
+
+            // Overrides
+            'Hx_health_check_\w+\:\:run',
         ];
 
         $hooks_files = get_directory_contents(get_file_base() . '/sources/hooks', 'sources/hooks', null, true, true, ['php']);
@@ -351,6 +358,10 @@ class addon_guards_test_set extends cms_test_case
             'Hook_ecommerce_\w+' => 'is_available',
             'Module_admin_setupwizard' => 'has_themewizard_step', // Does not actually disable the class, but we use it in place of checking for the themewizard addon
             'Hook_rss_\w+' => 'has_access', // Careful! Make sure run is calling this.
+
+            // Overrides
+            'Hx_import_\w+' => 'info',
+            'Mx_\w+' => 'pre_run,run,run_start',
         ];
 
         // Map of path::class_name::function_name to an array of addons which we always consider guarded even if not explicitly defined

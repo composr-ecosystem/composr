@@ -65,7 +65,7 @@ All bundled languages packs are located in the [tt]lang[/tt] directory of Compos
 
 Language string codes that are in lower case are special strings, that should not be translated directly. These strings contain encoded information relating to the language pack. All these strings have documentation labels to explain what they do.
 
-For dates and times we use the PHP [url]http://php.net/manual/en/function.date.php[/url] function, except the following changes are made by Composr, except we automatically internationalise the results.
+For dates and times we use the PHP [url]https://php.net/manual/en/function.date.php[/url] function, except the following changes are made by Composr, except we automatically internationalise the results.
 
 [title="4"]Dates[/title]
 
@@ -342,7 +342,7 @@ Here are a few tips you may find useful:
 [*] You will probably want to test using the default [tt]test[/tt] user account rather than an admin account -- unless you really are intending to translate all the administrative strings too. By using a regular account you will not be distracted by unexpected untranslated administrative strings integrated into the user interface.
 [*] Sometimes you may need to find shorter ways of saying things due to lack of space in the design for a language that is using very long words -- you may need to use abbreviations, for example.
 [*] Sometimes you can best get the intention of a language string name, which is shown as the 'Key' name on Transifex.
-[*] You may wish to occasionally search the language [tt].ini[/tt] files in Composr. If you are on Windows [url="AstroGrep"]http://astrogrep.sourceforge.net/[/url] is a nice tool that supports Unicode.
+[*] You may wish to occasionally search the language [tt].ini[/tt] files in Composr. If you are on Windows [url="AstroGrep"]https://astrogrep.sourceforge.net/[/url] is a nice tool that supports Unicode.
 [/list]
 
 [title="3"]Downloading translations from Transifex[/title]

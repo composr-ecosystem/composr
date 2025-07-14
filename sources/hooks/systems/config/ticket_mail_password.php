@@ -54,7 +54,7 @@ class Hook_config_ticket_mail_password
      */
     public function get_default() : ?string
     {
-        if (!function_exists('imap_open') && !addon_installed('imap')) {
+        if (!function_exists('imap_open')) {
             return null;
         }
 

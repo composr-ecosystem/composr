@@ -1034,7 +1034,7 @@ Composr has a multi-faceted testing strategy as there is no perfect solution for
 For coding you'll want to use either an [acronym="Integrated Development Environment, an advanced code editing suite"]IDE[/acronym] or a text editor. IDEs are heavier but have more features.
 
 We love:
- - [url="CodeLobster"]http://www.codelobsteride.com/[/url]
+ - [url="CodeLobster"]https://www.codelobsteride.com/[/url]
  - [url="PhpStorm"]https://www.jetbrains.com/phpstorm/[/url]
  - [url="NetBeans"]https://netbeans.org/[/url]
 

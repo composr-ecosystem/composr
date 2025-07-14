@@ -293,7 +293,7 @@ There are many reasons, but here are a few:
 4) They may feel a feature would introduce security risks;
 5) They may feel a feature directly conflicts with other plans;
 6) They may feel a feature would make Composr [page="_SEARCH:antifeatures"]bloatware[/page];
-7) They may feel a feature breaks important engineering principles such as [url="separation of concerns"]http://en.wikipedia.org/wiki/Separation_of_concerns[/url];
+7) They may feel a feature breaks important engineering principles such as [url="separation of concerns"]https://en.wikipedia.org/wiki/Separation_of_concerns[/url];
 8) They may feel a feature is somehow incoherent with Composr's under-the-hood architecture, so would need many subtle and complex changes to numerous interconnected subsystems, and introduce risks of new bugs or confusion about redefined Composr concepts;
 9) A feature could require skills, time, or experience that no currently-available developer has;
 10) For features relating to 'flexibility', developers sometimes feel that implementing yet another complex extra layer of control may be more complex to control than customisation of the actual PHP code (which Composr supports in a neat and controlled way);

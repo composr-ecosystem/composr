@@ -104,8 +104,8 @@ For example, you can use:
  - standard PHP database functionality to open a new connection (MySQL, SQL Server, Oracle, ...)
  - PHP's [tt]file_get_contents[/tt] function to download from REST web services
  - PHP's [tt]file_get_contents[/tt] function to download from scripts written in another language, bridging their output over into the Composr page
- - PHP's [url="SOAP support"]http://php.net/manual/en/book.soap.php[/url] to integrate with more complex REST services (assuming the PHP SOAP extension is installed)
- - PHP's [url="COM support"]http://php.net/manual/en/book.com.php[/url] to integrate to ASP code (assuming the PHP COM extension is installed)
+ - PHP's [url="SOAP support"]https://php.net/manual/en/book.soap.php[/url] to integrate with more complex REST services (assuming the PHP SOAP extension is installed)
+ - PHP's [url="COM support"]https://php.net/manual/en/book.com.php[/url] to integrate to ASP code (assuming the PHP COM extension is installed)
 
 [title="2"]Example 4[/title]
 
@@ -127,6 +127,6 @@ Note I had to add a little CSS to stop DuckDuckGo trying to render parts of its 
  - [page="_SEARCH:tut_programming"]Introduction to programming[/page]
  - [page="_SEARCH:codebook"]Code Book, contents and introduction[/page]
  - [page="_SEARCH:sup_hardcore_blocks"]A PHP/Composr coding primer[/page]
- - [url="PHP website"]http://www.php.net[/url]
+ - [url="PHP website"]https://www.php.net[/url]
 
 {$SET,tutorial_tags,Development,PHP,regular}{$SET,tutorial_add_date,May 2015}{$SET,tutorial_summary,How to code simple PHP pages in Composr.}[block]main_tutorial_rating[/block]

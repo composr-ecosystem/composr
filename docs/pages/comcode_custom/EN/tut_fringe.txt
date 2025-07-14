@@ -63,7 +63,7 @@ Fonts have always been a tricky area in computing, as the actual font typeface i
 Fortunately there are three things that improve on this situation:
 1) there are certain common fonts and 'font families' that are available for almost all web browsers to use (see [url="Safe web fonts"]https://web.mit.edu/jmorzins/www/fonts.html[/url] for more information).
 2) CSS (the technology used to stylise web documents) supports a fall-back mechanism for the specification of what font to use.
-3) [url="Google Web Fonts"]http://www.google.com/webfonts[/url] provides a compatibility layer to smooth over external font support in different web browsers, and access to free fonts. It is very easy to integrate via a change to the [tt]HTML_HEAD.tpl[/tt] template and the CSS. Also, [url="TypeKit"]https://typekit.com/[/url].
+3) [url="Google Web Fonts"]https://www.google.com/webfonts[/url] provides a compatibility layer to smooth over external font support in different web browsers, and access to free fonts. It is very easy to integrate via a change to the [tt]HTML_HEAD.tpl[/tt] template and the CSS. Also, [url="TypeKit"]https://typekit.com/[/url].
 
 [title="3"]Fonts within content[/title]
 
@@ -84,7 +84,7 @@ The advice here is simple: use common lossy formats such as PNG, JPEG, WebP, or 
 Usually you should use PNG or WebP as they provide the widest compatibility and highest ratio of compression to quality.
 
 There are a few exceptional cases though:
-1) PNG does not support animations, but you can use [url="APNG"]http://caniuse.com/#feat=apng[/url] instead if you do not want to use other formats
+1) PNG does not support animations, but you can use [url="APNG"]https://caniuse.com/#feat=apng[/url] instead if you do not want to use other formats
 2) Use GIF for animated images with a low color count if you want a smaller file size
 3) Use JPEG for photographs and complex images if you do not need animations or transparency, do not mind some quality loss, and want a smaller file size
 4) Use SVG for vector art within themes (you should not use SVG anywhere else in Composr, such as attachments, uploads, or embedded images, because Content Security Policy might block them; SVGs are special XML which can be abused by hackers)
@@ -98,7 +98,7 @@ Unlike for most file types, video files cannot be identified fully be file exten
 
 Our practical advice is to always use h.264/mp3, which has worked on all major browsers for a number of years. HTML5 natively supports h.264 video. Use an mp4 container format for video. Composr includes an integrated HTML5 player.
 
-An emerging video format, [url="WebM"]http://caniuse.com/#feat=webm[/url], can also be used, but is not yet widely supported.
+An emerging video format, [url="WebM"]https://caniuse.com/#feat=webm[/url], can also be used, but is not yet widely supported.
 
 [title="4"]MPEG[/title]
 

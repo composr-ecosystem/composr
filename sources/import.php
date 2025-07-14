@@ -50,8 +50,12 @@ function load_import_deps()
     require_code('cns_general_action2');
     require_code('cns_forums_action2');
     require_code('cns_topics_action2');
-    require_code('cns_multi_moderations');
-    require_code('cns_multi_moderations2');
+
+    if (addon_installed('cns_multi_moderations')) {
+        require_code('cns_multi_moderations');
+        require_code('cns_multi_moderations2');
+    }
+
     require_css('importing');
     require_all_core_cms_code();
 }

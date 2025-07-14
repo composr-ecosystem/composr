@@ -96,15 +96,15 @@ Now proceed with installing Composr, via launching [tt]install.php[/tt] in your 
 
 [i]This step does not apply if working from a webhosting control panel[/i]
 
-You may want to install [url="git"]https://git-scm.com/[/url] or [url="Cygwin"]http://www.cygwin.com/[/url], so you can make use of some of the [tt]helper_scripts[/tt].
+You may want to install [url="git"]https://git-scm.com/[/url] or [url="Cygwin"]https://www.cygwin.com/[/url], so you can make use of some of the [tt]helper_scripts[/tt].
 
 [title="2"]See also[/title]
 
  - [url="Web Platform Installer"]https://www.microsoft.com/web/downloads/platform.aspx[/url]
  - [url="IIS Express"]https://www.microsoft.com/en-us/download/details.aspx?id=48264[/url]
- - [url="PHP homesite"]http://php.net/[/url]
- - [url="MySQL homesite"]http://mysql.com/[/url]
- - [url="phpMyAdmin"]http://www.phpmyadmin.net/[/url]
+ - [url="PHP homesite"]https://php.net/[/url]
+ - [url="MySQL homesite"]https://mysql.com/[/url]
+ - [url="phpMyAdmin"]https://www.phpmyadmin.net/[/url]
  - [page="_SEARCH:tut_install"]Installation[/page]
  - [page="_SEARCH:tut_install_windows_desktop]Installation on a Windows desktop[/page]
  - [page="_SEARCH:tut_sqlserver]Using SQL Server with Composr[/page]

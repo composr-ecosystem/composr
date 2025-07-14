@@ -49,7 +49,18 @@ function require_code(string $codename, bool $light_exit = false, ?bool $has_cus
         return;
     }
 
-    $ok_per_safe_mode = (($force_custom) || (!function_exists('in_safe_mode')) || ($REQUIRING_CODE) || (!in_safe_mode()));
+    $ok_per_safe_mode = $force_custom;
+
+    // Allow overrides if not in safe mode
+    if (function_exists('in_safe_mode') && !in_safe_mode()) {
+        $ok_per_safe_mode = true;
+    }
+
+    // ...but do not allow overrides (unless forcing custom) if running from the upgrader or we do not know what we are running
+    if ((!$force_custom) && ((empty($_SERVER['SCRIPT_NAME'])) || (basename($_SERVER['SCRIPT_NAME']) == 'upgrader.php'))) {
+        $ok_per_safe_mode = false;
+    }
+
     if (isset($REQUIRED_CODE[$codename])) {
         return; // In case it changed through the above safe mode check
     }

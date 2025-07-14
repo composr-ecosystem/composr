@@ -270,8 +270,8 @@ URL Redirects are a thin wrapper around [tt]RewriteRule[/tt] lines in your [tt].
 3) the [tt].htaccess[/tt] file is writable
 
 Tolerances:
- - Redirects will not be case sensitive (e.g. [tt]http://example.com/foo[/tt] and [tt]http://example.com/FoO[/tt] would  both match a redirect from [tt]http://example.com/foo[/tt])
- - Redirects will accept a final slash being either there or not (e.g. [tt]http://example.com/foo[/tt] and [tt]http://example.com/foo/[/tt] would  both match a redirect from [tt]http://example.com/foo[/tt])
+ - Redirects will not be case sensitive (e.g. [tt]baseurl/foo[/tt] and [tt]baseurl/FoO[/tt] would  both match a redirect from [tt]baseurl/foo[/tt])
+ - Redirects will accept a final slash being either there or not (e.g. [tt]baseurl/foo[/tt] and [tt]baseurl/foo/[/tt] would  both match a redirect from [tt]baseurl/foo[/tt])
  - You may choose to specify a query string (the [tt]?[/tt]... portion of the URL) or not; if not then any query string will automatically carry over with the redirect
 
 [concepts

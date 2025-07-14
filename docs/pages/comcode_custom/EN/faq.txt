@@ -74,7 +74,7 @@ The team has always been very fanatical about Open Source. There are 2 big reaso
 1) Given that software can be easily copied and therefore the value of Composr can be distributed across the world effortlessly, we think we have a social responsibility to take advantage of this and therefore structure our business in a way that can work with it. Software has such great potential to empower individuals from all walks of life, so we believe wherever possible companies shouldn't put the brakes on it by restricting the way things can be used via economic levies.
 2) We feel it is important that customers have full access to the code of what they pay for, so they aren't locked into a single company whose circumstances, availability, offerings, and pricings, could change drastically over time.
 
-We have structured our business so that ocProducts makes money from commercial projects, support, and implementing new functionality. We also encourage people outside our company to contribute to Composr, as a community project. Code is hosted on [url="GitLab"]{$CMS_REPOS_URL}[/url], commit access is available by request (after showing some skill and sincerity, e.g. by releasing a public addon). [page="_SEARCH:codebook_standards"]Coding standards[/page] are documented. The founders of ocProducts Ltd originally created Composr -- we do our best to make our company a great sponsor to the community project.
+We have structured our business so that ocProducts makes money from commercial projects, support, and implementing new functionality. We also encourage people outside our company to contribute to Composr, as a community project. Code is hosted on [url="GitLab"]{$CMS_REPOS_URL}[/url] and [url="GitHub"]{$CMS_REPOS_URL_MIRROR}[/url], commit access is available by request (after showing some skill and sincerity, e.g. by releasing a public addon). [page="_SEARCH:codebook_standards"]Coding standards[/page] are documented. The founders of ocProducts Ltd originally created Composr -- we do our best to make our company a great sponsor to the community project.
 
 Note that "reducing cost" should not be considered a primary benefit of Open Source. Cost often will be lower with Open Source, but people [i]do[/i] expect to be paid competitively for their work.
 
@@ -278,7 +278,7 @@ Note that PHP does not allow all settings to be overridden.
 
 [title="3"]I have (or have had) multiple installs and I keep getting logged out[/title]
 
-You need to edit the base configuration ([tt]_config.php[/tt]) to make sure the cookie settings of the sites don't overlap. Generally you'd use the Composr [tt]cookie_path[/tt] setting to do this. For example, if you have a site [tt]http://example.com/foobar[/tt], you might set [tt]$SITE_INFO['cookie_path'] = '/foobar';[/tt].
+You need to edit the base configuration ([tt]_config.php[/tt]) to make sure the cookie settings of the sites don't overlap. Generally you'd use the Composr [tt]cookie_path[/tt] setting to do this. For example, if you have a site [tt]baseurl/foobar[/tt], you might set [tt]$SITE_INFO['cookie_path'] = '/foobar';[/tt].
 Additionally, if you have changed your configuration (before, or just now) then any existing cookies need to be manually deleted as they can stick around and take priority over new ones. This is because web browsers can store multiple cookies of the same name if those cookies are varying in domain and path -- and your site will be exposed to cookies of matching domains or paths via a precedence system.
 
 You can confirm the problem is due to conflicting cookies by testing your login using a new incognito/private window in your browser. This will start up a temporary fresh cookie state so that you can be sure of no conflicts. If everything works fine in there then you know the problem is indeed a cookie conflict (cookie under a different path/domain combination that is set in your web browser).
@@ -437,7 +437,7 @@ No, there is too much CSS to feasibly make a map as is often used for forum soft
 [title="3"]How can I change how times are displayed?[/title]
 
 To change the settings for the whole of Composr you change some key strings in the [tt]global[/tt] language file. For documentation about the syntax, please see the PHP manual:
-http://php.net/manual/en/function.date.php
+https://php.net/manual/en/function.date.php
 
 [title="3"]How do I edit the HTML head and/or the opening and closing HTML body tags?[/title]
 

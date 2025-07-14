@@ -114,7 +114,7 @@ You can make it so you have a single Composr site that runs across different sub
 
 The procedure is as follows:
 [list="a"]
-[*] It is strongly recommended, for simplicity and user-friendliness, that you operate Composr from the root of your domain name, e.g. having [tt]http://example.com[/tt] as your base URL.
+[*] It is strongly recommended, for simplicity and user-friendliness, that you operate Composr from the root of your domain name, e.g. having [tt]https://example.com[/tt] as your base URL.
 [*] [list="i"]
 [*] For multiple sub(domain) names, each representing a different zone...
 Set up multiple website profiles in IIS manager / virtual hosts in the Apache configuration file. These profiles must all point to the Composr installation directory (not the zone you're linking the subdomain to).

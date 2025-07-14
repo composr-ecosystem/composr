@@ -244,7 +244,7 @@ The down-side of IRC is that it is complex. However, [url="https://kiwiirc.com/"
 
 Composr caters well for public/private chatrooms, and private instant messaging, but is not designed specifically for one-on-one live chat sessions between guest visitors and a staff team.
 
-For this we advise the bundled [tt]Support Tickets[/tt] addon, which is not real-time but provides a member-staff communication avenue. If you need real-time communication, consider an integration with external software, which should be very easy. For an example of a free live chat solution see [url="Comm100"]http://www.comm100.com/livechat/features.aspx[/url].
+For this we advise the bundled [tt]Support Tickets[/tt] addon, which is not real-time but provides a member-staff communication avenue. If you need real-time communication, consider an integration with external software, which should be very easy. For an example of a free live chat solution see [url="Comm100"]https://www.comm100.com/livechat/features.aspx[/url].
 
 This is one of the few cases where relying on a third party tool does not provide user experience problems, as it's a use-case that is quite oblique to the rest of the website experience (works in a pop-up, and is an isolated sequence of interactions).
 

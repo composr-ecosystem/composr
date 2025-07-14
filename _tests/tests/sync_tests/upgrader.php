@@ -18,8 +18,10 @@
  */
 class upgrader_test_set extends cms_test_case
 {
-    protected $from_version = '13.1';
-    protected $to_version = '14';
+    protected $from_version = '';
+    protected $to_version = '';
+
+    protected $made_installers = false;
     public function setUp()
     {
         parent::setUp();
@@ -35,6 +37,43 @@ class upgrader_test_set extends cms_test_case
 
         // Also delete generated upgrades so we can re-generate them
         deldir_contents(get_file_base() . 'uploads/website_specific/cms_homesite/upgrades/tars', true, false);
+
+        // Determine which versions we are going to test
+        require_code('version');
+        require_code('version2');
+        $this->to_version = get_version_dotted();
+        $this->from_version = get_version_dotted(intval(cms_version_number()) - 1);
+
+        if (!$this->made_installers) {
+            $this->made_installers = true;
+
+            require_code('files2');
+            require_code('make_release');
+            require_code('cms_homesite');
+
+            // Make a build of our current install if one does not already exist
+            if (!is_dir(get_builds_path() . '/builds/' . $this->to_version)) {
+                $_GET['skip_quick'] = '0';
+                $_GET['skip_manual'] = '0';
+                $_GET['skip_bundled'] = '0';
+                $_GET['skip_mszip'] = '0';
+                make_installers();
+            }
+
+            // Move build files to uploads/downloads
+            $files = get_directory_contents(get_builds_path() . '/builds/' . $this->to_version, get_builds_path() . '/builds/' . $this->to_version);
+            foreach ($files as $path) {
+                if (is_dir($path)) {
+                    continue;
+                }
+
+                $name = basename($path);
+                @copy($path, get_file_base() . '/uploads/downloads/' . $name);
+            }
+
+            // Publish build files locally so we can run upgrade build testing
+            cms_publish_release($this->to_version, false, true);
+        }
     }
 
     public function testFileManifest()
@@ -96,8 +135,6 @@ class upgrader_test_set extends cms_test_case
         require_code('cms_homesite');
         require_code('cms_homesite_make_upgrader');
 
-        $_GET['test_mode'] = '1';
-
         list($tar_path, $err) = make_upgrade_get_path($this->from_version, $this->to_version);
         $this->assertTrue(($tar_path !== null), 'Failed to make a personal upgrader: ' . $err);
     }
@@ -126,8 +163,6 @@ class upgrader_test_set extends cms_test_case
             'downloads' => true,
             'news' => true,
         ];
-
-        $_GET['test_mode'] = '1';
 
         list($tar_path, $err) = make_upgrade_get_path($this->from_version, $this->to_version, $addons);
         $this->assertTrue(($tar_path !== null), 'Failed to make a personal upgrader: ' . $err);

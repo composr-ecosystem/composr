@@ -163,7 +163,7 @@ It is important to understand how the Facebook share button works. The button do
 
 [i]This section is relevant even if you are not using the Facebook Support addon.[/i]
 
-[url="Open Graph"]http://ogp.me/[/url] is a Facebook-sponsored standard for web-page metadata. It allows you to provide the details used to render previews when a link is posted on Facebook. It's an Open Standard that may also be used by others.
+[url="Open Graph"]https://ogp.me/[/url] is a Facebook-sponsored standard for web-page metadata. It allows you to provide the details used to render previews when a link is posted on Facebook. It's an Open Standard that may also be used by others.
 
 Composr automatically includes Open Graph data in your pages, so that Facebook can automatically discern information about URLs on your website. This is handled in the [tt]HTML_HEAD.tpl[/tt] template. It is built on top of Composr's standard metadata system. Note that we also can support other metadata formats such as Dublin Core, but that is outside the scope of this tutorial (we're focusing only on Facebook metadata here, even though in some cases Facebook may itself support other metadata standards).
 

@@ -297,7 +297,7 @@ class Self_learning_cache
      *
      * @param  ID_TEXT $key Cache key
      * @param  mixed $value The value to remove; the same as what was used in append
-     * @return boolean Whether the value was removed (false: it did not exist from the start)
+     * @return boolean Whether the value was actually removed
      */
     public function remove(string $key, $value) : bool
     {

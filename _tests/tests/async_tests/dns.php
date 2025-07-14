@@ -33,10 +33,10 @@ class dns_test_set extends cms_test_case
     {
         set_value('slow_php_dns', '1');
         $host = cms_gethostbyname('dns.google');
-        $this->assertTrue((substr($host, 0, 4) == '8.8.') || (strpos($host, ':') !== false), 'Got ' . $host);
+        $this->assertTrue((substr($host, 0, 4) == '8.8.') || (substr($host, 0, 14) == '2001:4860:4860'), 'Got ' . $host);
 
         set_value('slow_php_dns', '0');
         $host = cms_gethostbyname('dns.google');
-        $this->assertTrue(substr($host, 0, 4) == '8.8.', 'Got ' . $host);
+        $this->assertTrue((substr($host, 0, 4) == '8.8.') || (substr($host, 0, 14) == '2001:4860:4860'), 'Got ' . $host);
     }
 }

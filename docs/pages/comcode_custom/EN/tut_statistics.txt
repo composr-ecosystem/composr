@@ -7,7 +7,7 @@
 
 [title="2"]Google Analytics vs Composr statistics[/title]
 
-[url="Google Analytics"]http://www.google.com/analytics/[/url] is extremely popular free tool for website owners and marketers for viewing website statistics. For that reason, I am starting the tutorial by directly addressing this.
+[url="Google Analytics"]https://www.google.com/analytics/[/url] is extremely popular free tool for website owners and marketers for viewing website statistics. For that reason, I am starting the tutorial by directly addressing this.
 
 We intentionally do not try and 'compete' with Google Analytics. There is significant overlap but Composr statistics and Google Analytics are complementary tools. Here are some key differences:
  - Pros for Google Analytics:
@@ -164,7 +164,7 @@ There are a number of ways to record events happening:
 [*] You can use the JavaScript [tt]$cms.statsEventTrack[/tt] function to track an event from within JavaScript code.
 [*] You can use add [tt]data-click-stats-event-track="{ category: 'some event', nativeTracking: true }"[/tt] on HTML [tt]<a>[/tt] elements. This is actually a wrapper around the above.
 [*] You can wrap URLs in links with the [tt]{$STATS_TRACK_URL,URL,event}[/tt] symbol.
-E.g. [tt]<a href="{$STATS_TRACK_URL*,http://example.com/,Example.com Link clicked}">Click me</a>[/tt]
+E.g. [tt]<a href="{$STATS_TRACK_URL*,https://example.com/,Example.com Link clicked}">Click me</a>[/tt]
 This handles the event recording within a redirection script, so does not depend on JavaScript. It also will track the external URL as having been viewed regardless of the event (the event parameter is actually optional).
 [/list]
 
@@ -571,6 +571,6 @@ You can also do a blank search to just see miscellaneous logged hits, which will
 
  - [page="_SEARCH:tut_trace"]Using IP addresses to trace users[/page]
  - [page="_SEARCH:sup_google_analytics"]Analytics and split testing, using Google Analytics[/page]
- - http://www.razorsocial.com/social-media-analytics-tools/
+ - https://www.razorsocial.com/social-media-analytics-tools/
 
 {$SET,tutorial_tags,Analytics,stats_block,stats,realtime_rain,core_locations,Administration,novice}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Find out about the different kinds of statistics/analytics that you can use to analyse your visitors.}[block]main_tutorial_rating[/block]

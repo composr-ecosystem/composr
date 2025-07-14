@@ -447,7 +447,7 @@ function do_dir($dir)
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Put a copy of [tt]bigdump.php[/tt] into the [tt]_temp[/tt] folder and configure it for the live database
-| [url="http://www.ozerov.de/bigdump/"]http://www.ozerov.de/bigdump/[/url]
+| [url="https://www.ozerov.de/bigdump/"]https://www.ozerov.de/bigdump/[/url]
 |-
 ! {$INC,step_num}{$GET,step_num}
 | Upload a ZIP of the files into a [tt]_new[/tt] folder, being careful to not include the [tt].git[/tt] folder in the ZIP

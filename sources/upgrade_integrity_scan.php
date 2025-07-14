@@ -177,7 +177,7 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
     $files_determined_to_upload = [];
     foreach ($files_to_check as $file) {
         if (($basic) && ((time() - $_SERVER['REQUEST_TIME']) > 8)) {
-            return ''; // Taking too long
+            return do_lang('WARNING_TOOK_TOO_LONG'); // Taking too long
         }
 
         // What to skip
@@ -319,52 +319,14 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
         if (($alien != '') || ($addon_name != '')) {
             $ret_str .= '<div>';
             if ($alien != '') {
+                $alien = '<select multiple="multiple" size="100" class="input-list form-control form-control-wide" id="alien" name="alien[]">' . $alien . '</select>';
                 $ret_str .= do_lang('WARNING_FILE_ALIEN', $alien);
             }
             if ($addon_name != '') {
                 $ret_str .= do_lang('WARNING_FILE_ADDON', $addon_name);
             }
-            $ret_str .= '
-                <script>
-                    var tick_all = function (form)
-                    {
-                        var checkmarks = form.getElementsByTagName(\'input\');
-                        for (var i = 0; i < checkmarks.length; i++) {
-                            checkmarks[i].checked=true;
-                        }
-                        return false;
-                    };
-
-                    var solve_max_input_vars = function (form)
-                    {
-                        var hidden;
-                        if (typeof form.elements[\'_op_list\'] == \'undefined\') {
-                            hidden = document.createElement(\'input\');
-                            hidden.type = \'hidden\';
-                            hidden.name = \'_op_list\';
-                            form.appendChild(hidden);
-                        } else {
-                            hidden = form.elements[\'_op_list\'];
-                            hidden.value = \'\';
-                        }
-
-                        var checkmarks = form.getElementsByTagName(\'input\');
-                        for (var i = 0; i < checkmarks.length; i++) {
-                            if (checkmarks[i].checked) {
-                                if (hidden.value != \'\') {
-                                    hidden.value += "\n";
-                                }
-                                hidden.value += checkmarks[i].value;
-                                checkmarks[i].disabled = true;
-                            }
-                        }
-
-                        return true;
-                    };
-                </script>';
-            $ret_str .= '<p class="associated-details"><a href="#!" onclick="return tick_all(this.parentNode.parentNode.parentNode);">' . do_lang('UPGRADER_CHECK_ALL') . '</a></p>';
             $proceed_icon = do_template('ICON', ['_GUID' => 'be08f7c50a1407f152770aef6ab6ead7', 'NAME' => 'buttons/proceed']);
-            $ret_str .= '<button onclick="return solve_max_input_vars(this.form);" class="btn btn-primary btn-scr buttons--proceed" accesskey="c" type="submit">' . $proceed_icon->evaluate() . ' ' . do_lang('UPGRADER_AUTO_HANDLE') . '</button>';
+            $ret_str .= '<button class="btn btn-primary btn-scr buttons--proceed" accesskey="c" type="submit">' . $proceed_icon->evaluate() . ' ' . do_lang('UPGRADER_AUTO_HANDLE') . '</button>';
             $ret_str .= '</div>';
 
             $found_something = true;
@@ -382,11 +344,11 @@ function run_integrity_check(bool $basic = false, bool $allow_merging = true, bo
 /**
  * Tell the user about any bundled modules that need moving again (because the cms ones haven't moved).
  *
- * @return array Pair: HTML list of moved files, raw list
+ * @return array Pair: HTML select element of moved files, raw list
  */
 function move_modules_ui() : array
 {
-    $out = '';
+    $out = '<select multiple="multiple" size="25" class="input-list form-control form-control-wide" id="move_modules" name="move_modules[]">';
     $outr = [];
 
     $zones = find_all_zones();
@@ -404,11 +366,17 @@ function move_modules_ui() : array
                         continue; // This has moved between versions
                     }
 
-                    $out .= '<li><input type="checkbox" name="' . uniqid('', true) . '" value="move:' . escape_html(base64_encode($_path_a) . ':' . base64_encode($_path_b)) . '" /> ' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</li>';
+                    $out .= '<option value="move:' . escape_html(base64_encode($_path_a) . ':' . base64_encode($_path_b)) . '">' . do_lang('FILE_MOVED', '<kbd>' . escape_html($page) . '</kbd>', '<kbd>' . escape_html($zone2) . '</kbd>', '<kbd>' . escape_html($zone) . '</kbd>') . '</option>';
                     $outr[] = $path_b;
                 }
             }
         }
+    }
+
+    $out .= '</select>';
+
+    if (count($outr) == 0) {
+        $out = '';
     }
 
     return [$out, $outr];
@@ -463,7 +431,7 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                         $only_if_noncustom = true;
                     }
                     $_true_hash = sprintf('%u', crc32(preg_replace('#[\r\n\t ]#', '', cms_file_get_contents_safe($equiv_file, FILE_READ_LOCK))));
-                    if (array_key_exists($file, $manifest)) { // Get hash from perfection table
+                    if (array_key_exists($rela . $file, $manifest)) { // Get hash from perfection table
                         $true_hash = $manifest[$rela . $file][0];
                         if ($true_hash != $_true_hash) {
                             $outdated__outdated_original_and_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
@@ -492,7 +460,9 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                         $outdated__possibly_outdated_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                     }
 
-                    unset($manifest[$rela . $file]);
+                    if (array_key_exists($rela . $file, $manifest)) {
+                        unset($manifest[$rela . $file]);
+                    }
                 } elseif (array_key_exists(str_replace('_custom', '', preg_replace('#themes/[^/]*/#', 'themes/default/', $rela)) . $file, $manifest)) {
                     $known_in_addon = false;
                     foreach ($hook_files as $hook_file => $info) {
@@ -506,7 +476,10 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
                     } else {
                         $outdated__uninstalled_addon_but_has_override .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                     }
-                    unset($manifest[$rela . $file]);
+
+                    if (array_key_exists($rela . $file, $manifest)) {
+                        unset($manifest[$rela . $file]);
+                    }
                 }
             }
         }
@@ -526,7 +499,7 @@ function check_outdated__handle_overrides(string $dir, string $rela, array &$man
  * @param  ?array $addon_files List of files from non-bundled addons (a map: relative file paths as keys of map) (null: unknown, load them from addons_files table)
  * @param  ?array $old_files List of files from old version (a map: relative file paths as keys of map) (null: unknown, load them from files_previous.bin manifest)
  * @param  ?array $files List of verbatim files (a map: relative file paths as keys of map) (null: unknown, load them from files.bin manifest)
- * @return array A pair: HTML list of alien files, HTML list of addon files
+ * @return array A pair: alien files (HTML list if $raw, else HTML option elements for a select input), HTML list of addon files
  */
 function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $addon_files = null, ?array $old_files = null, ?array $files = null) : array
 {
@@ -547,7 +520,6 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
     }
 
     $alien = '';
-    $alien_count = 0;
     $addon = '';
 
     require_code('files');
@@ -562,11 +534,11 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
             ];
             foreach (array_merge($old_addons_now_gone, $modules_moved_intentionally) as $x) {
                 if (file_exists(get_file_base() . '/' . $x)) {
-                    $alien .= '<li>';
-                    if (!$raw) {
-                        $alien .= '<input checked="checked" type="checkbox" name="' . uniqid('', true) . '" value="quarantine:' . escape_html(base64_encode($x)) . '" /> ';
+                    if ($raw) {
+                        $alien .= '<li><kbd>' . escape_html($x) . '</kbd></li>';
+                    } else {
+                        $alien .= '<option value="quarantine:' . escape_html(base64_encode($x)) . '">' . escape_html($x) . '</option>';
                     }
-                    $alien .= '<kbd>' . escape_html($x) . '</kbd></li>';
                 }
             }
         }
@@ -617,36 +589,22 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
                             }
                         }
                     }
-                    $disabled = '';
                     //if ((is_dir($dir . '/' . $file == '')) && ()) Not needed as this is only for files
-                    $checked = '';
-
+                    $selected = '';
                     if (array_key_exists($rela . $file, $old_files)) {
-                        $checked = 'checked="checked" ';
+                        $selected = ' selected="selected"';
                     }
-                    $file_html = '';
-                    $file_html .= '<li>';
-                    if (!$raw) {
-                        $file_html .= '<input ' . $disabled . $checked . 'type="checkbox" name="' . uniqid('', true) . '" value="quarantine:' . escape_html(base64_encode($rela . $file)) . '" /> ';
-                    }
-                    $file_html .= '<kbd>' . escape_html($rela . $file) . '</kbd></li>' . "\n";
-                    if (array_key_exists($rela . $file, $addon_files)) {
-                        $addon .= $file_html;
+
+                    if ($raw) {
+                        $alien .= '<li><kbd>' . escape_html($rela . $file) . '</kbd></li>';
                     } else {
-                        if ($alien_count <= 10000) { // Reasonable limit
-                            $alien .= $file_html;
-                            $alien_count++;
-                        }
+                        $alien .= '<option value="quarantine:' . escape_html(base64_encode($rela . $file)) . '"' . $selected . '>' . escape_html($rela . $file) . '</option>';
                     }
                 }
             }
         }
 
         closedir($dh);
-    }
-
-    if ($alien_count > 10000) { // Reasonable limit
-        $alien = '<p>Too many to list</p>';
     }
 
     return [$alien, $addon];
@@ -660,56 +618,64 @@ function check_alien(string $dir, string $rela = '', bool $raw = false, ?array $
  */
 function upgrader__integrity_scan_screen() : string
 {
-    $_op_list = post_param_string('_op_list', null);
-    if ($_op_list !== null) {
-        foreach (explode("\n", $_op_list) as $op) {
-            $_POST[uniqid('', true)] = $op;
+    if (isset($_POST['move_modules']) && is_array($_POST['move_modules'])) {
+        foreach ($_POST['move_modules'] as $key) {
+            integrity_scan_process_file($key);
         }
     }
 
-    foreach (array_keys($_POST) as $key) {
-        $val = post_param_string($key);
-        if (strpos($val, ':') !== false) {
-            $bits = explode(':', $val);
-
-            if (!is_file(get_file_base() . '/' . base64_decode($bits[1]))) {
-                continue; // Maybe user pressed refresh
-            }
-
-            if ($bits[0] == 'quarantine') {
-                afm_delete_file('_old/' . base64_decode($bits[1])); // In case target already exists
-                afm_make_directory(dirname('_old/' . base64_decode($bits[1])), false, true);
-                afm_move(base64_decode($bits[1]), '_old/' . base64_decode($bits[1]));
-            } elseif ($bits[0] == 'move') {
-                afm_delete_file(base64_decode($bits[2])); // In case target (older version) already exists
-                afm_move(base64_decode($bits[1]), base64_decode($bits[2]));
-            }
-
-            // Now delete empty directories
-            $_subdirs = explode('/', dirname(base64_decode($bits[1])));
-            $subdirs = [];
-            $buildup = '';
-            foreach ($_subdirs as $subdir) {
-                if ($buildup != '') {
-                    $buildup .= '/';
-                }
-                $buildup .= $subdir;
-
-                $subdirs[] = $buildup;
-            }
-            foreach (array_reverse($subdirs) as $subdir) {
-                $files = @scandir(get_file_base() . '/' . $subdir);
-                if (($files !== false) && (empty(array_diff($files, ['..', '.', '.DS_Store'])))) {
-                    @unlink(get_file_base() . '/' . $subdir . '/.DS_Store');
-                    @rmdir(get_file_base() . '/' . $subdir);
-                }
-            }
-
-            unset($_POST[$key]); // We don't want it propagating with buttons, annoying and confusing
+    if (isset($_POST['alien']) && is_array($_POST['alien'])) {
+        foreach ($_POST['alien'] as $key) {
+            integrity_scan_process_file($key);
         }
     }
 
     return '<h2>' . do_lang('UPGRADER_INTEGRITY_SCAN_NO_CSS_MERGE') . '</h2>' . '<p>' . do_lang('SUCCESS') . '</p>';
+}
+
+/**
+ * Process a file from the integrity scan.
+ *
+ * @param  SHORT_TEXT $encoded_file The operation:base64_file to process
+ */
+function integrity_scan_process_file(string $encoded_file)
+{
+    if (strpos($encoded_file, ':') !== false) {
+        $bits = explode(':', $encoded_file);
+
+        if (!is_file(get_file_base() . '/' . base64_decode($bits[1]))) {
+            return;
+        }
+
+        if ($bits[0] == 'quarantine') {
+            afm_delete_file('_old/' . base64_decode($bits[1])); // In case target already exists
+            afm_make_directory(dirname('_old/' . base64_decode($bits[1])), false, true);
+            afm_move(base64_decode($bits[1]), '_old/' . base64_decode($bits[1]));
+        } elseif ($bits[0] == 'move') {
+            afm_delete_file(base64_decode($bits[2])); // In case target (older version) already exists
+            afm_move(base64_decode($bits[1]), base64_decode($bits[2]));
+        }
+
+        // Now delete empty directories
+        $_subdirs = explode('/', dirname(base64_decode($bits[1])));
+        $subdirs = [];
+        $buildup = '';
+        foreach ($_subdirs as $subdir) {
+            if ($buildup != '') {
+                $buildup .= '/';
+            }
+            $buildup .= $subdir;
+
+            $subdirs[] = $buildup;
+        }
+        foreach (array_reverse($subdirs) as $subdir) {
+            $files = @scandir(get_file_base() . '/' . $subdir);
+            if (($files !== false) && (empty(array_diff($files, ['..', '.', '.DS_Store'])))) {
+                @unlink(get_file_base() . '/' . $subdir . '/.DS_Store');
+                @rmdir(get_file_base() . '/' . $subdir);
+            }
+        }
+    }
 }
 
 /**

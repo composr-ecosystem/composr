@@ -1129,6 +1129,7 @@ function cns_edit_member(int $member_id, ?string $username = null, ?string $pass
             case 'md5': // Do not allow; force to bcrypt for security
                 $update['m_password_compat_scheme'] = 'bcrypt';
                 handle_active_logout__login_providers($member_id);
+                // no break
             case 'bcrypt':
             case 'bcrypt_temporary':
             case 'bcrypt_expired':

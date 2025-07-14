@@ -516,7 +516,7 @@ class Module_admin_newsletter extends Standard_crud_module
      */
     public function bounce_filter_a() : object
     {
-        if (!function_exists('imap_open') && !addon_installed('imap')) {
+        if (!function_exists('imap_open')) {
             warn_exit(do_lang_tempcode('IMAP_NEEDED'));
         }
 

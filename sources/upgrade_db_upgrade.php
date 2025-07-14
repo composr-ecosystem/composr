@@ -594,7 +594,8 @@ function version_specific() : bool
             //  Note that any table modifications etc should be handled in the upgrade code for the NEW addon / module
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
             $renamed_addons = [
-                'unvalidated' => 'validation'
+                'unvalidated' => 'validation',
+                'imap' => 'core_imap', // LEGACY: only exists between v11 upgrades
             ];
             $_out = '';
             foreach ($renamed_addons as $old_addon => $new_addon) {

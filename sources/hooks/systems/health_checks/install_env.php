@@ -356,7 +356,7 @@ class Hook_health_check_install_env extends Hook_Health_Check
                 $mariadb_too_old = version_compare($version, $minimum_version, '<');
                 $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', $minimum_version, $version));
 
-                $max_tested_mariadb_version = '10.6'; // LEGACY needs maintaining
+                $max_tested_mariadb_version = '10.11'; // LEGACY needs maintaining
                 if (!is_maintained('mariadb')) {
                     $mariadb_too_new = version_compare($version, $max_tested_mariadb_version . '.1000', '>');
                     $this->assertTrue(

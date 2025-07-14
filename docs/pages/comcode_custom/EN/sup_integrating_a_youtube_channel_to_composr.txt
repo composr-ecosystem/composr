@@ -19,7 +19,7 @@ Composr offers an non-bundled addon to be able to display videos from a specific
 
 Now the block is installed and you can position the block on the page where you would like it to display it. Navigate to the page where you want the block to display and click the Block construction assistant. The YouTube block may be near the bottom of the list so perhaps use the browser's find option to find it.
 
-This block is very simple to use and only needs a few of the options filling in to make the block work. You need to make sure you fill in the channel name; if the URL address of the channel is [tt]http://www.YouTube.com/user/holleywoodstudio?feature=watch[/tt], then the name would be holleywoodstudio. The next option is the title you want to display for the block.
+This block is very simple to use and only needs a few of the options filling in to make the block work. You need to make sure you fill in the channel name; if the URL address of the channel is [tt]https://www.YouTube.com/user/holleywoodstudio?feature=watch[/tt], then the name would be holleywoodstudio. The next option is the title you want to display for the block.
 
 The next 2 options deal with if you are using a custom template and styling for your YouTube block. The start video option is the number video you want to start from. If you are having 25 videos on a page you can set this to 26 and start from the first video on page 2. Max videos is the total number of videos to display and can be set between 1 and 50. Order by allows you to display what order you want the videos to display in. You have three options if you put a 1 in this box it would sort the videos by upload date. A 2 in this box would sort them by most views and a 3 would sort by highest rating.
 

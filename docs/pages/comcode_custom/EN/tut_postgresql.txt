@@ -114,7 +114,7 @@ ORDER BY schemaname, tablename;
 
 Full-text is fully supported. However, ideally (not importantly) Composr would know the correct stop-word list for Postgres so it knows whether to direct searches only for a stopword to a non-full-text search. This is controlled in a dictionary (unlike MySQL, where it's hard-coded, and hence we were able to hard-code in our code also). To provide Composr an accurate full-text search word list you need to override the [tt]get_stopwords_list()[/tt] function.
 
-If you don't want Postgres's default English configuration for word tokenisation there's a hidden [tt]postgres_fulltext_language[/tt] option you can use to set a [url="different Postgres configuration"]http://stackoverflow.com/questions/39751892/get-full-list-of-full-text-search-configuration-languages[/url]:
+If you don't want Postgres's default English configuration for word tokenisation there's a hidden [tt]postgres_fulltext_language[/tt] option you can use to set a [url="different Postgres configuration"]https://stackoverflow.com/questions/39751892/get-full-list-of-full-text-search-configuration-languages[/url]:
 [code="Commandr"]
 :set_value('postgres_fulltext_language', 'spanish');
 [/code]
@@ -138,13 +138,13 @@ The main complexities of Postgres support, for MySQL developers are:
 
 [title="2"]See also[/title]
 
- - http://www.psequel.com/ (a free Mac OS Postgres GUI)
+ - https://www.psequel.com/ (a free Mac OS Postgres GUI)
  - https://www.heidisql.com/ (a free Windows Postgres GUI)
- - http://phppgadmin.sourceforge.net/doku.php (a free web-based Postgres GUI)
- - http://dbeaver.jkiss.org/ (a free cross-platform Postgres GUI)
- - http://squirrel-sql.sourceforge.net/ (a free cross-platform Postgres GUI)
+ - https://phppgadmin.sourceforge.net/doku.php (a free web-based Postgres GUI)
+ - https://dbeaver.jkiss.org/ (a free cross-platform Postgres GUI)
+ - https://squirrel-sql.sourceforge.net/ (a free cross-platform Postgres GUI)
  - [page="_SEARCH:tut_sql"]Manually editing your database with phpMyAdmin[/page]
  - [page="_SEARCH:tut_sqlserver"]Using SQL Server with Composr[/page]
- - http://troels.arvin.dk/db/rdbms/ (a comparison of SQL support in different databases)
+ - https://troels.arvin.dk/db/rdbms/ (a comparison of SQL support in different databases)
 
 {$SET,tutorial_tags,core_database_drivers,Installation,expert}{$SET,tutorial_add_date,May 2017}{$SET,tutorial_summary,A guide on using PostgreSQL with Composr, and providing some information relevant to other non-MySQL backends.}[block]main_tutorial_rating[/block]

@@ -21,6 +21,7 @@ class scripts_test_set extends cms_test_case
     public function testReferences()
     {
         disable_php_memory_limit();
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
 
         require_code('files2');
         $files = get_directory_contents(get_file_base(), '', IGNORE_ALIEN | IGNORE_SHIPPED_VOLATILE | IGNORE_UNSHIPPED_VOLATILE | IGNORE_FLOATING, true, true, ['php', 'tpl', 'js', 'xml', 'txt']);

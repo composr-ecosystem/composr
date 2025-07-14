@@ -73,7 +73,7 @@ mysql -uusername -ppassword database < filename.sql
 [/code]
 
 [box="If you can't use the shell"]
-If you don't have shell access to import a database you'll probably end up using phpMyAdmin again to restore. However you will struggle to import large databases with this, as it is much more problematic restoring than backing up. You may therefore find this tool useful: http://www.ozerov.de/bigdump/.
+If you don't have shell access to import a database you'll probably end up using phpMyAdmin again to restore. However you will struggle to import large databases with this, as it is much more problematic restoring than backing up. You may therefore find this tool useful: https://www.ozerov.de/bigdump/.
 [/box]
 
 If the new database settings are different to the old ones, you will need to use the [tt]http://yourbaseurl/config_editor.php[/tt] script to update your Composr settings (or edit [tt]_config.php[/tt] by hand).

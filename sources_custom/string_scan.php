@@ -5628,7 +5628,6 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         UPGRADER_ADDON_MANAGEMENT
         UPGRADER_AUTO_HANDLE
         UPGRADER_BUGS
-        UPGRADER_CHECK_ALL
         UPGRADER_CHECK_PERMISSIONS
         UPGRADER_CHOICES
         UPGRADER_CLEAR_CACHES
@@ -8557,7 +8556,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         EMAIL_TEMPLATE
         REPLY_TO
         SKIP_TICKET_CREATION
-        UPGRADER_NEW_ADDON_EXTRACTED
+        UPGRADER_NEW_ADDON
         UPGRADER_INTEGRITY_SCAN_2
         UPGRADER_SAFE_MODE_UPGRADE_ADDONS
         _UPGRADER_ADDON_MANAGEMENT
@@ -8608,6 +8607,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COMPILED_SCRIPTS
         DESCRIPTION_COMPILED_SCRIPTS
         INFINITE_LOOP_HALTED
+        _INFINITE_LOOP_HALTED
         NO_UPGRADE_FROM_DEV_BUILD
         INSTALLER_STEP_1_WELCOME
         WRONG_JOIN_MODULE_PERMISSIONS
@@ -8708,6 +8708,14 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         DOC_PARENTAL_CONTROLS
         STOPPED_BY_ANTISPAM_SUBSTRING
         UPGRADER_LOGIN_INFO_GENERATE_UPGRADER
+        DEDUP_MEMBERS
+        DESCRIPTION_PRUNE_DOWNLOAD_GALLERIES
+        FIELD_TYPE_region_multi
+        PP_MESSAGE
+        PRUNE_DOWNLOAD_GALLERIES
+        MODULE_TRANS_NAME_common_errors
+        WARNING_TOOK_TOO_LONG
+        WARNING_TOO_MANY
     ')));
 
     $non_admin_files = [

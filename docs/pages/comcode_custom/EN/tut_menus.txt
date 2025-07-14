@@ -154,7 +154,7 @@ The simple way to add them if you don't want to use the theme image management t
 
 We supply a very large selection by default, including some generic and abstract icons for use on your own pages, if you don't want to create your own icons.
 
-You can also find many icons online using websites such as [url="http://findicons.com/"]Find Icons[/url].
+You can also find many icons online using websites such as [url="https://findicons.com/"]Find Icons[/url].
 
 [title="2"]Indicating of the current page[/title]
 

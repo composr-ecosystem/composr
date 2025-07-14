@@ -797,7 +797,8 @@ class Module_catalogues
             // Find ID
             $id = get_param_integer('id', null);
             if ($id === null) {
-                $id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => get_param_string('catalogue_name'), 'cc_parent_id' => null]);
+                $catalogue_name = get_param_string('catalogue_name', false);
+                $id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => filter_naughty($catalogue_name), 'cc_parent_id' => null]);
                 if ($id === null) {
                     warn_exit(do_lang_tempcode('NO_CATEGORIES', 'catalogue_category'));
                 }
@@ -901,7 +902,8 @@ class Module_catalogues
             $true_id = $id;
 
             if ($true_id === null) {
-                $id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => get_param_string('catalogue_name'), 'cc_parent_id' => null]);
+                $catalogue_name = get_param_string('catalogue_name', false);
+                $id = $GLOBALS['SITE_DB']->query_select_value('catalogue_categories', 'MIN(id)', ['c_name' => filter_naughty('catalogue_name'), 'cc_parent_id' => null]);
             }
             inject_feed_url('?mode=catalogues&select=' . strval($id), do_lang('CATALOGUE_CATEGORY'));
 

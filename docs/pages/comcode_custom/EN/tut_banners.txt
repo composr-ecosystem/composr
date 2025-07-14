@@ -114,7 +114,7 @@ Staff may view more details banner statistics from Admin Zone > Audit > Banner s
 You may run your own banner network (a banner exchange program). Each banner added may be associated directly with a site for that banner, with that site also showing banners from the network.
 
 Banners are displayed on a site network using an iframe going to a URL like:
-[tt]http://yourbaseurl/banner.php?source=sitename&b_type=bannertype[/tt]
+[tt]https://yourbaseurl/banner.php?source=sitename&b_type=bannertype[/tt]
 
 The full HTML code for this is given out when you add a banner. The [tt]source[/tt] comes from the name of the banner you added, which for purposes of a banner network, is considered also as the codename of the site also showing banners in the network.
 
@@ -203,7 +203,7 @@ The first step is to define a new banner type...
 Creating a new banner type:
 [list="1"]
 [*] Log in, go to the "Admin Zone" and select "Banners" in the "Content" section dropdown list. In the "Banners" page you should see the icon "Add banner type": select this, which will take you to banner type form.
-[*] The form will ask for some details. It is highly recommended that you always provide the dimensions as per [url="IAB guidelines"]http://www.iab.net/guidelines/508676/508767/displayguidelines[/url].
+[*] The form will ask for some details. It is highly recommended that you always provide the dimensions as per [url="IAB guidelines"]https://www.iab.net/guidelines/508676/508767/displayguidelines[/url].
 Enter the following in the fields:
 [list="a"]
 [*] Name of the Banner type: [tt]square[/tt]
@@ -284,7 +284,7 @@ Here are some ideas of where to source ads from:
   - Amazon
  - Your own "advertise here" banner, directly attracting advertisers to contact you
 
-If you are using Google Adsense and don't see any banners, [url="http://www.pixelstech.net/article/1311612749-Why-there-is-white-blank-space-instead-of-AdSense-ad-on-my-website"]consider whether your account is set up correctly[/url].
+If you are using Google Adsense and don't see any banners, [url="https://www.pixelstech.net/article/1311612749-Why-there-is-white-blank-space-instead-of-AdSense-ad-on-my-website"]consider whether your account is set up correctly[/url].
 
 [title="2"]See also[/title]
 

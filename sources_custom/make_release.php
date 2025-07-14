@@ -1008,7 +1008,7 @@ function make_install_sql()
 {
     global $SITE_INFO;
 
-    // Where to build database to
+    // Where to build database to; we absolutely must use root
     $database = uniqid('cmsmr_', false); // In case make release was previously run, we should randomise the DB name
     $username = 'root';
     $password = isset($SITE_INFO['mysql_root_password']) ? $SITE_INFO['mysql_root_password'] : '';

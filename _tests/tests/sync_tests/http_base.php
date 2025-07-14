@@ -8,7 +8,7 @@
 */
 
 /**
- * @license    http://opensource.org/licenses/cpal_1.0 Common Public Attribution License
+ * @license    https://opensource.org/licenses/cpal_1.0 Common Public Attribution License
  * @copyright  Christopher Graham
  * @package    testing_platform
  */
@@ -53,7 +53,7 @@ class http_base_test_set extends cms_test_case
             $options = [];
             $options['trigger_error'] = false;
             $options['force_' . $implementation] = true;
-            $result = cms_http_request('http://example.com', $options);
+            $result = cms_http_request('https://example.com', $options);
             $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Proxy failed on ' . $implementation);
             if ($this->debug) {
                 $this->dump($result, 'ProxyServer HTTP object for implementation ' . $implementation);
@@ -100,7 +100,7 @@ class http_base_test_set extends cms_test_case
         }
 
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
-            $result = cms_http_request('http://example.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $result = cms_http_request('https://example.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
             $this->assertTrue($result->data !== null && strpos($result->data, 'Example Domain') !== false, 'Did not get Example Domain content on implementation ' . $implementation);
             if ($this->debug) {
                 $this->dump($result, 'Simple HTTP object');
@@ -130,7 +130,7 @@ class http_base_test_set extends cms_test_case
         }
 
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
-            $result = cms_http_request('http://example.com/', ['byte_limit' => 0, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $result = cms_http_request('https://example.com/', ['byte_limit' => 0, 'trigger_error' => false, ('force_' . $implementation) => true]);
             $this->assertTrue($result->data !== null, 'Data returned null when it should not, on implementation ' . $implementation);
             if ($this->debug) {
                 $this->dump($result, 'Head HTTP object');
@@ -160,7 +160,7 @@ class http_base_test_set extends cms_test_case
         }
 
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
-            $result = cms_http_request('http://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
+            $result = cms_http_request('https://fdsdsfdsjfdsfdgfdgdf.com/', ['trigger_error' => false, ('force_' . $implementation) => true]);
             $this->assertTrue($result->data === null, 'Invalid domain producing a result; maybe your ISPs DNS mucks about and you need to disable that in their preferences somehow, on implementation ' . $implementation);
             if ($this->debug) {
                 $this->dump($result, 'Fail HTTP object');
@@ -190,7 +190,7 @@ class http_base_test_set extends cms_test_case
         }
 
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
-            $result = cms_http_request('http://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $result = cms_http_request('https://jigsaw.w3.org/HTTP/300/301.html', ['convert_to_internal_encoding' => true, 'trigger_error' => false, ('force_' . $implementation) => true]);
             $this->assertTrue($result->data !== null && strpos($result->data, 'Redirect test page') !== false, 'Expected Redirect test page but did not get it, on implementation ' . $implementation);
             if ($this->debug) {
                 $this->dump($result, 'Redirect HTTP object');
@@ -252,7 +252,7 @@ class http_base_test_set extends cms_test_case
         foreach (['curl', 'sockets', 'file_wrapper'] as $implementation) {
             $write_path = cms_tempnam();
             $write = fopen($write_path, 'wb');
-            $result = cms_http_request('http://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false, ('force_' . $implementation) => true]);
+            $result = cms_http_request('https://example.com/', ['convert_to_internal_encoding' => true, 'write_to_file' => $write, 'trigger_error' => false, ('force_' . $implementation) => true]);
             fclose($write);
             $data = cms_file_get_contents_safe($write_path, FILE_READ_LOCK);
             $this->assertTrue(strpos($data, 'Example Domain') !== false, 'Expected file data to contain Example Domain but it did not, on implementation ' . $implementation);
@@ -300,7 +300,7 @@ class http_base_test_set extends cms_test_case
         set_option('proxy_user', '');
         set_option('proxy_password', '');
 
-        $result = http_get_contents('http://example.com/', ['convert_to_internal_encoding' => true, 'trigger_error' => true]);
+        $result = http_get_contents('https://example.com/', ['convert_to_internal_encoding' => true, 'trigger_error' => true]);
         $this->assertTrue(($result !== null) && (strpos($result, 'Example Domain') !== false), 'Proxy test failed. You may need to use a different proxy.' . "\n\n" . ($result !== null ? $result : 'NULL'));
 
         set_option('proxy', $old_settings[0]);

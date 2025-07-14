@@ -5611,10 +5611,6 @@ function statistical_update_model(string $table, int $view_count) : int
  */
 function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = true, ?float $days = null) : bool
 {
-    /*if (($GLOBALS['DEV_MODE']) && (running_script('index')) && (get_forum_type() == 'cns') && (get_param_integer('keep_debug_has_cookies', 0) == 0) && ($name != 'has_referers')) {    Annoying, and non-cookie support is very well tested by now
-        return true;
-    }*/
-
     // User rejected cookies; eat the existing cookie and bail out
     if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false) && ($value != '')) {
         cms_setcookie($name, '', $session, $httponly, -14.0);
@@ -5999,7 +5995,7 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
 
         // Use a more helpful (and relayed) error message, which includes serialised arguments, for the developers and staff
         $dev_error = do_lang('_INFINITE_LOOP_HALTED', comcode_escape($codename), comcode_escape(serialize($args)));
-        if ((php_function_allowed('error_log'))) {
+        if ((function_exists('error_log')) && (php_function_allowed('error_log'))) {
             @error_log('Composr: CRITICAL ' . $dev_error, 0);
         }
         relay_error_notification($dev_error);

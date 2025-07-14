@@ -67,7 +67,7 @@ Please note that unlike Drupal behaviors which depend on the [tt]jQuery.once[/tt
 
 [title="3"]The [tt]$util[/tt] library[/title]
 
-This library consists of utility functions. [tt]$util[/tt] is inspired by [url="http://underscorejs.org"]Underscore.js[/url].
+This library consists of utility functions. [tt]$util[/tt] is inspired by [url="https://underscorejs.org"]Underscore.js[/url].
 
 Sample functions:
 [code="JavaScript"]
@@ -196,7 +196,7 @@ $cms.templates.example = function (params, container) {
 [/code]
 
 Template functions suffice for most common use cases except for some templates which have lots of JS involved, where you can use OOP-based view classes instead.
-Composr View classes are heavily inspired by Backbone views, you can learn more about them here: [url="http://backbonejs.org/#View"]Backbone.View[/url].
+Composr View classes are heavily inspired by Backbone views, you can learn more about them here: [url="https://backbonejs.org/#View"]Backbone.View[/url].
 
 [title="3"]Example for [tt]data-view[/tt]:[/title]
 

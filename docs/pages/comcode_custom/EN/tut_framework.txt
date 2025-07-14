@@ -250,11 +250,11 @@ If you still are not convinced that Composr is the right choice for you, conside
 
 [title="2"]See also[/title]
 
- - [url="PHP documentation"]http://www.php.net/docs.php[/url]
- - [url="MySQL documentation"]http://dev.mysql.com/doc/mysql/en/[/url]
+ - [url="PHP documentation"]https://www.php.net/docs.php[/url]
+ - [url="MySQL documentation"]https://dev.mysql.com/doc/mysql/en/[/url]
  - [page="_SEARCH:tut_programming"]Introduction to programming[/page]
  - [url="API guide"]{$BRAND_BASE_URL}/docs/api/[/url]
  - [page="_SEARCH:codebook"]Code Book, contents and introduction[/page]
- - [url="PHP website"]http://www.php.net[/url]
+ - [url="PHP website"]https://www.php.net[/url]
 
 {$SET,tutorial_tags,core_addon_management,code_editor,Development,PHP,expert}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Composr is not just a web application, but also a programming framework. Find out how the puzzle pieces fit together.}[block]main_tutorial_rating[/block]

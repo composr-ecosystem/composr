@@ -88,7 +88,7 @@ Possible reasons for getting onto a spamlist:[list="a"]
 Here are some scanner tools you can use:[list="a"]
 [*] [url="GlockApps"]https://glockapps.com/spam-testing/[/url]
 [*] [url="mailtester"]https://www.mail-tester.com/[/url]
-[*] [url="ISnotSPAM"]http://isnotspam.com/[/url] (fairly primitive compared to the above solutions)
+[*] [url="ISnotSPAM"]https://isnotspam.com/[/url] (fairly primitive compared to the above solutions)
 [/list]
 These tools will scan for various other issues beyond content problems, they're very useful.
 To send a test e-mail to a few services at once using Commandr:
@@ -117,7 +117,7 @@ Some specific things to look out for when writing your content:[list="a"]
 [/list]
 
 Positive advice:[list="1"]
-[*] Generally it is advisable to [b][url="set up SPF"]http://www.spfwizard.net/[/url][/b], as it provides a positive signal that your server is not a spammer. Set both [tt]SPF[/tt] and [tt]TXT[/tt] record types for maximum compatibility (set them to the same values).
+[*] Generally it is advisable to [b][url="set up SPF"]https://www.spfwizard.net/[/url][/b], as it provides a positive signal that your server is not a spammer. Set both [tt]SPF[/tt] and [tt]TXT[/tt] record types for maximum compatibility (set them to the same values).
 [*] [b]Ask your visitors to add your website e-mail address to their contacts list[/b]. Spam checkers usually will not block mail sent from someone on their contacts list. If their e-mail provider has a "Safe senders" list, that's even better -- Microsoft's e-mail services have this. Microsoft's e-mail services do over-block unknown e-mail servers or if users aren't reading your e-mails for long. If you're blocked, your message will not even go into the user's spam folder.
 [*] [b]Ask users to mark e-mails non-spam[/b] if they go into their spam boxes, or move them from their spam/promotion folders to their inbox, or even sometimes reply to them. That should have an effect on learning algorithms.
 [*] [b]Configure DKIM[/b] for your server and domain name (see next section).
@@ -160,14 +160,14 @@ You can use an online tool to generate your keys, including the specific DNS rec
 Tools for testing DKIM:
  - [url="Check a TXT record (1)"]https://dkimcore.org/tools/[/url]
  - [url="Check a TXT record (2)"]https://protodave.com/tools/dkim-key-checker/[/url]
- - [url="E-mail scanner and tips"]http://www.appmaildev.com/en/dkim/[/url]
+ - [url="E-mail scanner and tips"]https://www.appmaildev.com/en/dkim/[/url]
 
 Technical references for debugging:
  - [url="Using opendkim to test"]https://isc.sans.edu/diary/How+to+Debug+DKIM/17528[/url]
  - [url="Common problems"]https://web.archive.org/web/20170707230402/https://blogs.cisco.com/security/common_errors_causing_dkim_verification_failures[/url]
  - [url="DomainKeys technical summary"]https://www.unlocktheinbox.com/resources/domainkeys/[/url]
  - [url="DKIM technical summary"]https://www.unlocktheinbox.com/resources/dkim/[/url]
- - [url="Full specification"]http://www.dkim.org/specs/rfc4871-dkimbase.html[/url]
+ - [url="Full specification"]https://www.dkim.org/specs/rfc4871-dkimbase.html[/url]
 
 [title="2"]Queues and debugging[/title]
 
@@ -255,4 +255,4 @@ If you are not able to get e-mail working then it is almost certainly a result o
  - [page="_SEARCH:tut_website_health"]Website Health[/page]
  - [url="Microsoft system for monitoring problems sending to its customers' e-mail"]https://sendersupport.olc.protection.outlook.com/pm/services.aspx[/url]
 
-{$SET,tutorial_tags,Configuration,core,Internet Technology,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Setting up e-mail servers can be complex with all the protocols/standards out there. Let's cut through the confusion.}[block]main_tutorial_rating[/block]
+{$SET,tutorial_tags,Configuration,core,core_imap,Internet Technology,regular}{$SET,tutorial_add_date,Aug 2008}{$SET,tutorial_summary,Setting up e-mail servers can be complex with all the protocols/standards out there. Let's cut through the confusion.}[block]main_tutorial_rating[/block]

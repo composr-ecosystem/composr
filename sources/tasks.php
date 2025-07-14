@@ -176,7 +176,8 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         (get_param_integer('keep_debug_tasks', 0) == 1) ||
         (get_option('tasks_background') == '0') ||
         ((is_guest()) && ($send_notification)) ||
-        (!$GLOBALS['SITE_DB']->table_exists('task_queue')/*LEGACY*/)
+        (!$GLOBALS['SITE_DB']->table_exists('task_queue')/*LEGACY*/) ||
+        (running_script('upgrader')) // An error in the upgrader might trigger a task to dispatch a notification before the table is upgraded
     ) {
         $force_immediate = true;
     }

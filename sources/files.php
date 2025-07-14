@@ -887,6 +887,8 @@ function should_ignore_file(string $path, int $bitmask = 0) : bool
             'execute_temp.php' => 'data_custom',
             '.user.ini' => '.*',
         ]);
+
+        $ignore_extensions['xml'] .= '|uploads/website_specific/xmldb/.*'; // XML database files
     }
 
     if (($bitmask & IGNORE_UNSHIPPED_VOLATILE) != 0) {

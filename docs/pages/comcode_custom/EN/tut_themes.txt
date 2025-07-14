@@ -178,7 +178,7 @@ If you get confused by Composr's use of Tempcode within the CSS you are free to 
 If you find the CSS totally "corrupts", it is likely you have made a typo somewhere. For example, failing to close a comment.
 
 You can't effectively check the Composr CSS because it has lots of Tempcode in it. Additionally, the normal outputted CSS is minified, so hard to read and relate to.
-Fortunately there is a solution. If you go to [tt]http://yourbaseurl/index.php?keep_minify=0[/tt] then the CSS will not be minified. You may then look at your HTML source, locate the URL to your CSS, and then pass this onto a regular [url="http://jigsaw.w3.org/css-validator/"]CSS validator[/url].
+Fortunately there is a solution. If you go to [tt]http://yourbaseurl/index.php?keep_minify=0[/tt] then the CSS will not be minified. You may then look at your HTML source, locate the URL to your CSS, and then pass this onto a regular [url="https://jigsaw.w3.org/css-validator/"]CSS validator[/url].
 
 [title="4"]Equations[/title]
 
@@ -438,7 +438,7 @@ The "Template names as HTML comments" HTML comments look something like this...
 <!-- START-TEMPLATE=MENU_BRANCH_popup -->
 <div class="non-current-page-2">
    <!-- START-TEMPLATE=HYPERLINK -->
-   <a href="http://example.com/home.htm">Welcome</a>
+   <a href="baseurl/home.htm">Welcome</a>
    <!-- END-TEMPLATE=HYPERLINK -->
 <div style="display: none">, </div>
 
@@ -535,7 +535,7 @@ You need to fill these fields:
 This is a simple example:
 [list="1"]
 [*] Find or make a suitable image for your website. If you want to add a new background pattern for your website then you can find a suitable one from a public domain/creative commons tile graphic for your website.
-For this example we'll use [url="this background"]http://www.wpclipart.com/textures/background_tiles/hazy_background_tile.png[/url]. Download this file.
+For this example we'll use [url="this background"]https://www.wpclipart.com/textures/background_tiles/hazy_background_tile.png[/url]. Download this file.
 [*] Go to Admin Zone > Style > Themes > Edit theme images (against your own theme).
 [*] Select the "Add theme image" button at the bottom of the screen, which will direct you to the add theme image form.
 [*] Fill the Codename for the image. For this example we'll use [tt]new_background[/tt].

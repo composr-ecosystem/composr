@@ -23,7 +23,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Miscellaneous protocols</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="File Transfer Protocol"][url="http://www.w3.org/Protocols/rfc959/"]FTP[/url][/abbr] and [abbr="Security File Transfer Protocol"][url="https://tools.ietf.org/html/draft-ietf-secsh-filexfer-02"]SFTP[/url][/abbr]</td>
+			<td>[abbr="File Transfer Protocol"][url="https://www.w3.org/Protocols/rfc959/"]FTP[/url][/abbr] and [abbr="Security File Transfer Protocol"][url="https://tools.ietf.org/html/draft-ietf-secsh-filexfer-02"]SFTP[/url][/abbr]</td>
 			<td>This is the standard for uploading files to a server.</td>
 			<td>It is good to set up an SFTP client (FTP is not secure, so best avoided) and use that for uploading/downloading files. It is more convenient and reliable than using a webhosting control panel's file manager.</td>
 		</tr>
@@ -63,7 +63,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>You don't need to know about this, unless you are configuring it to run on Composr generated e-mails.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Sender Policy Framework"][url="http://www.open-spf.org/"]SPF[/url][/abbr]</td>
+			<td>[abbr="Sender Policy Framework"][url="https://www.open-spf.org/"]SPF[/url][/abbr]</td>
 			<td>This is the protocol for limiting what servers can send e-mail for a particular domain.</td>
 			<td>It is advised to set this up to reduce spam and fraud.</td>
 		</tr>
@@ -96,12 +96,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>An awareness of web server configuration may be important. For example, how to configure Apache via [tt].htaccess[/tt] files.</td>
 		</tr>
 		<tr>
-			<td>[abbr="eXtensible HyperText Markup Language 5"]XHTML5[/abbr], [abbr="HyperText Markup Language 5"][url="http://www.w3.org/TR/html5/"]HTML5[/url][/abbr] (and microformats)</td>
+			<td>[abbr="eXtensible HyperText Markup Language 5"]XHTML5[/abbr], [abbr="HyperText Markup Language 5"][url="https://www.w3.org/TR/html5/"]HTML5[/url][/abbr] (and microformats)</td>
 			<td>This is the standard for web pages. XHTML is (for all intents and purposes) a more formal version of HTML, and we ensure Composr is written to this to make things clear and consistent. You will usually hear people talk about HTML rather than XHTML, and practically you can consider them the same.</td>
 			<td>Knowing (X)HTML is crucial to defining layouts and general template editing.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Cascading Style Sheets"][url="http://www.w3.org/Style/CSS/Overview.en.html"]CSS[/url][/abbr]</td>
+			<td>[abbr="Cascading Style Sheets"][url="https://www.w3.org/Style/CSS/Overview.en.html"]CSS[/url][/abbr]</td>
 			<td>This is the standard for styling web pages; it ties into the (X)HTML.</td>
 			<td>Knowing CSS is crucial for adjusting theme styles.</td>
 		</tr>
@@ -111,7 +111,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>Knowledge of PHP is only required if changing core Composr code or developing addons.</td>
 		</tr>
 		<tr>
-			<td>JavaScript (aka [url="https://ecma-international.org/publications-and-standards/standards/ecma-262/"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="http://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="http://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
+			<td>JavaScript (aka [url="https://ecma-international.org/publications-and-standards/standards/ecma-262/"]ECMAScript[/url]) [i](optional)[/i], [abbr="Document Object Model"][url="https://www.w3.org/DOM/DOMTR"]DOM[/url][/abbr], and [url="https://www.w3.org/TR/XMLHttpRequest/"]XMLHttpRequest[/url]</td>
 			<td>This is the standard to make web pages interactive; it ties into the (X)HTML.</td>
 			<td>You will only need to know JavaScript if doing particularly advanced themeing.</td>
 		</tr>
@@ -121,7 +121,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>This imposes various constraints on how you can code, but no true limitations.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Scalable Vector Graphics"][url="http://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>
+			<td>[abbr="Scalable Vector Graphics"][url="https://www.w3.org/Graphics/SVG/"]SVG[/url][/abbr]</td>
 			<td>Vector graphics standard, used for icons and drawing statistics graphs.</td>
 			<td>You are unlikely to need any awareness of this aside from the fact CSP may block your ability to render SVGs as embedded images.</td>
 		</tr>
@@ -140,17 +140,17 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Accessibility and Internationalisation</em></th>
 		</tr>
 		<tr>
-			<td>[url="http://www.w3.org/TR/WAI-WEBCONTENT/"]WCAG 1.0[/url] and [url="http://www.w3.org/TR/WCAG20/"]2.0[/url] and [url="http://www.w3.org/WAI/intro/aria"]WAI-ARIA[/url]</td>
+			<td>[url="https://www.w3.org/TR/WAI-WEBCONTENT/"]WCAG 1.0[/url] and [url="https://www.w3.org/TR/WCAG20/"]2.0[/url] and [url="https://www.w3.org/WAI/intro/aria"]WAI-ARIA[/url]</td>
 			<td>{$IS_MAINTAINED,standard_accessibility,Accessibility standards}, particularly for blind users.</td>
 			<td>We support the highest levels of compliance (AAA).</td>
 		</tr>
 		<tr>
-			<td>[url="http://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="https://www.section508.gov"]Section 508[/url]</td>
+			<td>[url="https://en.wikipedia.org/wiki/Access_key#UK_Government_recommendation_for_access_keys"]UK Gov. recommendation for access keys[/url] and [url="https://zoek.officielebekendmakingen.nl/stcrt-2006-136-p23-SC75949.html"]Besluit Kwaliteit Rijksoverheidswebsites[/url] and [url="https://www.section508.gov"]Section 508[/url]</td>
 			<td>{$IS_MAINTAINED,standard_accessibility,Detailed accessibility standards from particular countries}.</td>
 			<td>We support these standards.</td>
 		</td>
 		<tr>
-			<td>[url="http://www.w3.org/WAI/intro/atag.php"]{$IS_MAINTAINED,standard_accessibility,ATAG}[/url]</td>
+			<td>[url="https://www.w3.org/WAI/intro/atag.php"]{$IS_MAINTAINED,standard_accessibility,ATAG}[/url]</td>
 			<td>Accessibility standards for site authors.</td>
 			<td>We are fully compliant.</td>
 		</tr>
@@ -164,7 +164,7 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<th colspan="3"><em>Data &amp; Feeds</em></th>
 		</tr>
 		<tr>
-			<td>[abbr="eXtensible Markup Language"][url="http://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="http://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="https://datatracker.ietf.org/doc/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="http://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="http://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="http://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap?hl=en&visit_id=638038726780268799-4227682099&rd=2"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
+			<td>[abbr="eXtensible Markup Language"][url="https://www.w3.org/TR/2008/REC-xml-20081126/"]XML[/url][/abbr] (including [abbr="Really Simple Syndication"][url="https://cyber.law.harvard.edu/rss/rss.html"]RSS[/url][/abbr], [url="https://datatracker.ietf.org/doc/html/rfc4287"]Atom[/url], [abbr="Outline Processor Markup Language"][url="https://opml.org/spec2.opml"]OPML[/url][/abbr], [abbr="Extensible Stylesheet Language Transformations"][url="https://www.w3.org/TR/xslt20/"]XSLT[/url][/abbr], [url="https://www.sitemaps.org/"]XML Sitemaps[/url] and [url="https://developers.google.com/search/docs/crawling-indexing/sitemaps/news-sitemap?hl=en&visit_id=638038726780268799-4227682099&rd=2"]Google News Sitemaps[/url], and use in [abbr="Asynchronous JavaScript and XML"]AJAX[/abbr])</td>
 			<td>XML is a standard for structuring data, used for many web formats that Composr supports, as well as a few configurable parts of Composr. RSS, Atom and OPML are feed technology, to export Composr news. XSLT is a technology we use to make RSS, Atom and OPML display in a web browser.</td>
 			<td>You won't need much awareness of XML unless doing particular advanced configuration.</td>
 		</tr>
@@ -184,17 +184,17 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>This is only relevant if you are setting up a corporate Intranet.</td>
 		</tr>
 		<tr>
-			<td>[url="http://www.webdav.org/"]{$IS_MAINTAINED,webdav,WebDav}[/url]</td>
+			<td>[url="https://www.webdav.org/"]{$IS_MAINTAINED,webdav,WebDav}[/url]</td>
 			<td>A network file system.</td>
 			<td>This can be used with [page="_SEARCH:tut_repository"]The Repository[/page] for accessing the Commandr-fs filesystem.</td>
 		</tr>
 		<tr>
-			<td>[abbr="JavaScript Object Notation"][url="http://www.json.org/"]JSON[/url][/abbr]</td>
+			<td>[abbr="JavaScript Object Notation"][url="https://www.json.org/"]JSON[/url][/abbr]</td>
 			<td>This is a popular alternative to XML and is commonly used for web APIs between servers or between servers and web browsers.</td>
 			<td>Composr uses JSON in a few niche locations such as eCommerce tax tracking, telemetry, and [tt]data/endpoint.php/[/tt] API endpoints; otherwise you will not need to know JSON.</td>
 		</tr>
 		<tr>
-			<td>[abbr="Structured Query Language"][url="http://en.wikipedia.org/wiki/Sql"]SQL[/url][/abbr]</td>
+			<td>[abbr="Structured Query Language"][url="https://en.wikipedia.org/wiki/Sql"]SQL[/url][/abbr]</td>
 			<td>This is the standard for accessing/manipulating data inside databases; Composr uses it to talk to the database (e.g. [tt]SELECT * FROM table WHERE something='somevalue'[/tt]), which is usually the MySQL database application.</td>
 			<td>A basic understanding of SQL is useful. Sometimes going down to the database level, bypassing Composr, is useful. For example, to make a bulk text change across the system you could write some queries to do so.</td>
 		</tr>
@@ -209,12 +209,12 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 		</tr>
 
 		<tr>
-			<td>[url="http://developers.facebook.com/docs/opengraph/"]{$IS_MAINTAINED,standard_opengraph,Open Graph}[/url]</td>
+			<td>[url="https://developers.facebook.com/docs/opengraph/"]{$IS_MAINTAINED,standard_opengraph,Open Graph}[/url]</td>
 			<td>Facebook-originated metadata standard, with data being embedded into normal web pages.</td>
 			<td>This is automatically included in Composr's templates. Further documentation is in the [page="_SEARCH:sup_facebook"]Facebook Support[/page] tutorial.</td>
 		</tr>
 		<tr>
-			<td>[url="http://schema.org/"]{$IS_MAINTAINED,standard_schema_org,schema.org}[/url]</td>
+			<td>[url="https://schema.org/"]{$IS_MAINTAINED,standard_schema_org,schema.org}[/url]</td>
 			<td>Search Engine originating standard for providing extra data about objects within web pages.</td>
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
@@ -224,32 +224,32 @@ Composr is built on top of standard web/Internet protocols, languages and [abbr=
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
 		<tr>
-			<td>[url="http://microformats.org/wiki/hcalendar"]{$IS_MAINTAINED,standard_microformats,hCalendar}[/url]</td>
+			<td>[url="https://microformats.org/wiki/hcalendar"]{$IS_MAINTAINED,standard_microformats,hCalendar}[/url]</td>
 			<td>Standard for embedding calendar data within web pages.</td>
 			<td>This is automatically included in Composr's templates (calendar).</td>
 		</tr>
 		<tr>
-			<td>[url="http://microformats.org/wiki/hcard"]{$IS_MAINTAINED,standard_microformats,hCard}[/url]</td>
+			<td>[url="https://microformats.org/wiki/hcard"]{$IS_MAINTAINED,standard_microformats,hCard}[/url]</td>
 			<td>Standard for embedding contacts data within web pages.</td>
 			<td>This is automatically included in Composr's templates (member profiles).</td>
 		</tr>
 		<tr>
-			<td>[url="http://microformats.org/wiki/hreview"]{$IS_MAINTAINED,standard_microformats,hReview}[/url]</td>
+			<td>[url="https://microformats.org/wiki/hreview"]{$IS_MAINTAINED,standard_microformats,hReview}[/url]</td>
 			<td>Standard for embedding user review data within web pages.</td>
 			<td>This is automatically included in Composr's templates (content comments/reviews).</td>
 		</tr>
 		<tr>
-			<td>[url="http://microformats.org/wiki/rel-nofollow"]rel-nofollow[/url], rel-noopener (and removing rel-opener), [url="http://microformats.org/wiki/rel-enclosure"]rel-enclosure[/url], [url="http://microformats.org/wiki/rel-license"]rel-license[/url], [url="http://microformats.org/wiki/rel-tag"]rel-tag[/url]</td>
+			<td>[url="https://microformats.org/wiki/rel-nofollow"]rel-nofollow[/url], rel-noopener (and removing rel-opener), [url="https://microformats.org/wiki/rel-enclosure"]rel-enclosure[/url], [url="https://microformats.org/wiki/rel-license"]rel-license[/url], [url="https://microformats.org/wiki/rel-tag"]rel-tag[/url]</td>
 			<td>{$IS_MAINTAINED,standard_microformats,Standards for describing linking behaviour}.</td>
 			<td>This is automatically included in Composr's templates.</td>
 		</tr>
 		<tr>
-			<td>[url="http://gmpg.org/xfn/"]{$IS_MAINTAINED,standard_microformats,XFN}[/url]</td>
+			<td>[url="https://gmpg.org/xfn/"]{$IS_MAINTAINED,standard_microformats,XFN}[/url]</td>
 			<td>Standard for showing how website users are friends of each other.</td>
 			<td>This is automatically included in Composr's templates [size=".85"](limited support)[/size].</td>
 		</tr>
 		<tr>
-			<td>[url="http://oembed.com/"]oEmbed[/url]</td>
+			<td>[url="https://oembed.com/"]oEmbed[/url]</td>
 			<td>Provide extra information (e.g. thumbnails) for a link to a page on a site.</td>
 			<td>Composr can automatically locate oEmbed data for included links.</td>
 		</tr>
@@ -325,7 +325,7 @@ They are constructed as follows:
 
 Here is a real example:
 [code="URL"]
-http://example.com/somepath/deeper/something?one=1&two=2
+http://localhost/composr/docs/index.php?page=tut-markup
 [/code]
 
 This deconstructs as follows:
@@ -815,15 +815,15 @@ What follows is an example XHTML document, utilising all of the above principles
 		<meta name="keywords" content="example document,XHTML,element,attribute" />
 		<meta name="author" content="Core Development Team" />
 		<meta name="description" content="An example XHTML document." />
-		<script src="http://example.com/script.js" />
-		<link href="http://example.com/style.css" rel="stylesheet" media="all" />
-		<link href="http://example.com/favicon.jpg" rel="icon" type="image/jpg" />
-		<link href="http://example.com/" rel="home" title="Home" />
+		<script src="https://example.com/script.js" />
+		<link href="https://example.com/style.css" rel="stylesheet" media="all" />
+		<link href="https://example.com/favicon.jpg" rel="icon" type="image/jpg" />
+		<link href="https://example.com/" rel="home" title="Home" />
 	</head>
 	<body>
 		<div id="top-bar">
 			<h1>
-				<a href="http://example.com/" title="The example.com homepage">example.com</a>
+				<a href="https://example.com/" title="The example.com homepage">example.com</a>
 			</h1>
 		</div>
 
@@ -837,8 +837,8 @@ What follows is an example XHTML document, utilising all of the above principles
 			</ul>
 
 			<div id="bottom-bar">
-				<a href="http://www.blogrankings.com"><img src="http://www.blogrankings.com/images/blogrankings.gif" alt="BlogRankings" /></a>
-				<a href="http://www.spreadfirefox.com/?q=user/register&amp;r=23557"><img src="http://example.com/firefox.png" alt="Get Firefox!" /></a>
+				<a href="https://www.blogrankings.com"><img src="https://www.blogrankings.com/images/blogrankings.gif" alt="BlogRankings" /></a>
+				<a href="https://www.spreadfirefox.com/?q=user/register&amp;r=23557"><img src="https://example.com/firefox.png" alt="Get Firefox!" /></a>
 			</div>
 		</div>
 
@@ -846,10 +846,10 @@ What follows is an example XHTML document, utilising all of the above principles
 			<h3>Login status</h3>
 			<ul>
 				<li>
-					<a href="http://example.com/login.html" title="Log in to example.com">Login</a>
+					<a href="https://example.com/login.html" title="Log in to example.com">Login</a>
 				</li>
 				<li>
-					<a href="http://example.com/register.html" title="Register an account at example.com">Register</a>
+					<a href="https://example.com/register.html" title="Register an account at example.com">Register</a>
 				</li>
 			</ul>
 		</div>
@@ -1238,12 +1238,12 @@ Another feature of JavaScript is its event model. You can specify JavaScript fun
 
 To use these event attributes, simply put them into the tag.
 [code="HTML"]
-<a href="http://example.com/" title="Example website" onclick="log_click('http://example.com/'); ">example.com</a>
+<a href="https://example.com/" title="Example website" onclick="log_click('https://example.com/'); ">example.com</a>
 [/code]
 
 You can also put more than just a function call into event attributes.
 [code="HTML"]
-<a href="http://example.com/" title="Example website" onclick="window.alert('You clicked the link!'); log_click('http://example.com/'); ">example.com</a>
+<a href="https://example.com/" title="Example website" onclick="window.alert('You clicked the link!'); log_click('https://example.com/'); ">example.com</a>
 [/code]
 
 JavaScript is a flexible language, and many things can be achieved by using it. However, you must remember that styling should be left to CSS, structure should be left to the XHTML, and JavaScript should be used for interactivity.
@@ -1254,55 +1254,55 @@ It should also be stressed as a last point that [b]JavaScript is not secure[/b];
 
 [title="3"]General web platform references[/title]
 
- - http://webplatform.org
- - http://w3.org
- - http://caniuse.com/
- - http://webdesign.about.com/
+ - https://webplatform.org
+ - https://w3.org
+ - https://caniuse.com/
+ - https://webdesign.about.com/
  - https://teamtreehouse.com/
 
 [title="3"]XHTML tools/references[/title]
 
- - http://www.yourhtmlsource.com/
- - http://www.html.net/
- - http://www.tizag.com/
- - http://www.w3schools.com/html/default.asp
- - http://en.wikiversity.org/wiki/Web_design
+ - https://www.yourhtmlsource.com/
+ - https://www.html.net/
+ - https://www.tizag.com/
+ - https://www.w3schools.com/html/default.asp
+ - https://en.wikiversity.org/wiki/Web_design
 
 [title="3"]CSS tools/references[/title]
 
  - https://code.tutsplus.com/tutorials/design-and-code-your-first-website-in-easy-to-understand-steps--net-6062
- - http://www.yourhtmlsource.com/
- - http://www.html.net/
- - http://www.tizag.com/
- - http://www.w3schools.com/css/default.asp
- - http://www.blooberry.com/indexdot/css/propindex/all.htm
- - http://www.westciv.com/style_master/house/index.html
- - http://www.alistapart.com/
- - http://www.skybound.ca/
- - http://www.layerstyles.org/builder.html
- - http://engineering.appfolio.com/2012/11/16/css-architecture/
+ - https://www.yourhtmlsource.com/
+ - https://www.html.net/
+ - https://www.tizag.com/
+ - https://www.w3schools.com/css/default.asp
+ - https://www.blooberry.com/indexdot/css/propindex/all.htm
+ - https://www.westciv.com/style_master/house/index.html
+ - https://www.alistapart.com/
+ - https://www.skybound.ca/
+ - https://www.layerstyles.org/builder.html
+ - https://engineering.appfolio.com/2012/11/16/css-architecture/
  - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors
  - https://developer.mozilla.org/en-US/docs/Web/CSS/Reference
 
 [title="3"]JavaScript tools/references[/title]
 
- - http://www.tizag.com/
- - http://javascriptkit.com/
+ - https://www.tizag.com/
+ - https://javascriptkit.com/
  - https://developer.mozilla.org/en-US/docs/Web/JavaScript
- - http://www.devguru.com/content/technologies/javascript/home.html
- - http://www.w3schools.com/js/default.asp
+ - https://www.devguru.com/content/technologies/javascript/home.html
+ - https://www.w3schools.com/js/default.asp
  - https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model
  - https://jquery.com/
 
 Some cool effects:
- - https://web.archive.org/web/20081110140704/http://www.smashingmagazine.com/2008/09/11/75-really-useful-javascript-techniques/
- - http://www.turnjs.com/
- - http://www.chartjs.org/
- - http://inorganik.github.io/countUp.js/
- - http://www.zachleat.com/web/bigtext-makes-text-big/
- - http://freqdec.github.io/slabText/
- - http://tympanus.net/Tutorials/3DHoverEffects/
- - http://isotope.metafizzy.co/
+ - https://web.archive.org/web/20081110140704/https://www.smashingmagazine.com/2008/09/11/75-really-useful-javascript-techniques/
+ - https://www.turnjs.com/
+ - https://www.chartjs.org/
+ - https://inorganik.github.io/countUp.js/
+ - https://www.zachleat.com/web/bigtext-makes-text-big/
+ - https://freqdec.github.io/slabText/
+ - https://tympanus.net/Tutorials/3DHoverEffects/
+ - https://isotope.metafizzy.co/
 
 [title="2"]Structured Data testing[/title]
 
@@ -1312,7 +1312,7 @@ Some cool effects:
 
 [title="2"]Miscellaneous[/title]
 
- - http://uitest.com/
+ - https://uitest.com/
  - https://dev.twitter.com/cards/getting-started (you may want to implement this yourself if you use Twitter)
  - https://developers.facebook.com/tools/debug/sharing/
 

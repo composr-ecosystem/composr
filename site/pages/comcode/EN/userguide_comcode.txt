@@ -235,7 +235,7 @@ Users may add attachments according to their quota, and re-use other people's at
 
 <tbody>
 	<tr><td>[tt][hide="Secret"]This is an example of hidden text.[/hide][/tt]</td><td>[hide="Secret"]This is an example of hidden text.[/hide]</td></tr>
-	<tr><td>[tt][reference type="url" param="Wikipedia"]http://wikipedia.org[/reference][/tt]</td><td>[reference type="url" param="Wikipedia"]http://wikipedia.org[/reference]</td></tr>
+	<tr><td>[tt][reference type="url" param="Wikipedia"]https://wikipedia.org[/reference][/tt]</td><td>[reference type="url" param="Wikipedia"]https://wikipedia.org[/reference]</td></tr>
 	<tr><td>[tt][quote param="Philip"]This is an example of a quote.[/quote][/tt]</td><td>[quote param="Philip"]This is an example of a quote.[/quote]</td></tr>
 	<tr><td>[tt][staff_note]This isn't displayed (not even for staff), but is saved. Staff can view it when editing the Comcode.[/staff_note][/tt]</td><td>[staff_note]This isn't displayed (not even for staff), but is saved. Staff can view it when editing the Comcode.[/staff_note]</td></tr>
 </tbody>

@@ -451,14 +451,17 @@ class Database_Static_xml extends DatabaseDriver
     public function get_connection(bool $persistent, string $db_name, string $db_host, string $db_user, string $db_password, bool $fail_ok = false)
     {
         if ((strpos($db_name, '\\') === false) && (strpos($db_name, '/') === false)) {
-            $db_name = get_custom_file_base() . '/uploads/website_specific/' . $db_name;
+            $db_dir = get_custom_file_base() . '/uploads/website_specific/xmldb';
+            $db_name = $db_dir . '/' . $db_name;
         }
         if (!file_exists($db_name)) { // Will create on first usage
-            mkdir($db_name, 0777);
             require_code('files');
-            fix_permissions($db_name);
-            sync_file($db_name);
-            cms_file_put_contents_safe($db_name . '/index.html', '', FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+            require_code('files2');
+
+            if (!is_dir($db_dir)) {
+                make_missing_directory($db_dir);
+            }
+            make_missing_directory($db_name);
         }
 
         return [$db_name];
@@ -1045,12 +1048,14 @@ class Database_Static_xml extends DatabaseDriver
         } else {
             $files = $DIR_CONTENTS_CACHE[$table_name];
         }
-        if (($files === false) && ($fail_ok)) {
-            return null;
-        }
+
         if ($files === false) {
+            if ($fail_ok) {
+                return null;
+            }
             critical_error('PASSON', 'Failure to read table ' . $table_name);
         }
+
         $regexp = '#^' . $key_fragments . '(' . preg_quote('.xml') . '|' . preg_quote('.xml-volatile') . ')$#';
 
         foreach ($files as $file) {
@@ -2964,7 +2969,7 @@ class Database_Static_xml extends DatabaseDriver
         }
 
         // Execute
-        $schema = $this->_read_schema($db, $table_name, $fail_ok);
+        $schema = $this->_read_schema($db, $table_name, true); // Allow failure because the table might already be deleted
         if ($schema === null) {
             return null;
         }
@@ -2979,7 +2984,7 @@ class Database_Static_xml extends DatabaseDriver
                 $guid = strval($guid); // As PHP can use type for array keys
             }
             $test = $this->_execute_expression($where_expr, $record, $query, $db, $fail_ok);
-            if ($test) {
+            if ($test !== null) {
                 if ($i >= $start) {
                     $path = $db[0] . '/' . $table_name . '/' . $guid . '.xml-volatile';
                     if (!file_exists($path)) {
@@ -4472,6 +4477,8 @@ class Database_Static_xml extends DatabaseDriver
                 return $guid;
             }
         }
+
+        require_code('global4');
 
         return '{' . generate_guid() . '}';
     }

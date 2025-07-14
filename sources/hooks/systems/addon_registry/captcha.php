@@ -182,6 +182,7 @@ class Hook_addon_registry_captcha
             'data/sounds/captcha/x.wav',
             'data/sounds/captcha/y.wav',
             'data/sounds/captcha/z.wav',
+            'data/sounds/captcha/index.html',
             'lang/EN/captcha.ini',
             'sources/captcha.php',
             'sources/hooks/systems/addon_registry/captcha.php',

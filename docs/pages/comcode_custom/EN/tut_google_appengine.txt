@@ -61,7 +61,7 @@ You will also need to install MySQL, as this doesn't come with the SDK. MySQL is
 
 [title="2"]Composr installation[/title]
 
-(the exact tool/process may depend on what platform you are using -- i.e. Windows/Linux/Mac. These instructions have been written on a Mac. If you have Windows you may struggle with the command line a bit. [url="Cygwin"]http://www.cygwin.com/[/url] is great.)
+(the exact tool/process may depend on what platform you are using -- i.e. Windows/Linux/Mac. These instructions have been written on a Mac. If you have Windows you may struggle with the command line a bit. [url="Cygwin"]https://www.cygwin.com/[/url] is great.)
 
 [media width="150" description="The application launcher, after the application has been created.
 
@@ -322,7 +322,7 @@ You could create a [tt]404.php[/tt] if you need it to be dynamic, but it's proba
 
 The GAE API installs a version of PHP, but it does not have most of the limitations of the live version of PHP. Therefore be careful that you apply all the coding standards. In particular, ensure any custom files are written to using Composr's [tt]get_custom_file_base[/tt] function (which will be mapped to Google Cloud Storage live and [tt]data_custom/modules/google_appengine[/tt] in development).
 
-If you are developing and don't have Commandr working yet, the [url="PHP-minishell"]http://php-minishell.appspot.com/[/url] is quite useful for testing the environment.
+If you are developing and don't have Commandr working yet, the [url="PHP-minishell"]https://php-minishell.appspot.com/[/url] is quite useful for testing the environment.
 
 Be aware that filesystem latency may be considerably higher on GAE, as Cloud Storage may not be in the same machine as the actual running application. One hopes that the machine will be at least in the same data centre, with a fast non-congested link, but be mindful that there are reports of ~10ms latency. The same issue applies to Google Cloud SQL. Try and keep the number of filesystem and database queries you do down.
 It is also advisable to minimise the number of filesystem and database writes you make, as these have to replicate across each copy of your filesystem/database.

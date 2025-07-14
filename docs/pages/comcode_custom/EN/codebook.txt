@@ -2,7 +2,7 @@
 
 The Code Book contains documentation to teach experienced developers how to program for Composr. This page of the Codebook is mostly for sign-posting to the deeper pages of the book.
 
-This guide is not a substitute for learning PHP, HTML, CSS, or other languages. Some introductory material for learning web development is available in our [page="docs:"]main set of tutorials[/page]. There is an [url="excellent PHP book"]http://www.hackingwithphp.com/[/url] available for free online.
+This guide is not a substitute for learning PHP, HTML, CSS, or other languages. Some introductory material for learning web development is available in our [page="docs:"]main set of tutorials[/page]. There is an [url="excellent PHP book"]https://www.hackingwithphp.com/[/url] available for free online.
 
 To learn Composr's API, see the PHPDoc comments in the source files. The source files are logically named, so it should be relatively easy to get a handle on it all. Alternatively, view the [url="auto-generated documentation"]{$BRAND_BASE_URL}/docs/api/[/url].
 
@@ -35,7 +35,7 @@ When you make modifications to any of Composr's default files, There is no need 
 [surround]
 [media width="150" description="MVC structure for ADMIN-ZONE" float="right"]data_custom/images/docs/codebook/mvc_admin.png[/media]
 [media width="150" description="MVC structure for SITE-ZONE" float="right"]data_custom/images/docs/codebook/mvc_site.png[/media]
-Composr is written to the '[url="front controller"]http://en.wikipedia.org/wiki/Front_controller[/url]' and MVC '[url="design patterns"]http://en.wikipedia.org/wiki/Model-view-controller[/url]':
+Composr is written to the '[url="front controller"]https://en.wikipedia.org/wiki/Front_controller[/url]' and MVC '[url="design patterns"]https://en.wikipedia.org/wiki/Model-view-controller[/url]':
 [list]
 [*][b]Model/API[/b]: Most of the scripts from the [tt]sources[/tt] directory represent the model/API.
 [*][b]View[/b]: The templates (see 'themes/default/templates' directory) represent the 'view'. Comcode pages could also be considered part of the view (though they are also content).
@@ -83,7 +83,7 @@ Here is a glossary of some of the terms that are used to describe Composr concep
  - [b]Content[/b], Custom data within the system; the term is used in most contexts as data specifically designed for viewing (as opposed to a member profile, for example, which is automatically updated and is more of a gateway to other information).
  - [b]Custom Profile Field[/b] (CPFs), A custom field for members. Such fields are supported by some forum/member software including our own Conversr. In Conversr CPFs can be assigned to individual usergroups. CPFs are an important tool on most websites, as it is very common to need to assign extra data to members that is specific to an individual website. CPF data is always entered manually, either by the member themselves, or by staff.
  - [b]Do-next manager[/b], An full-screen icon-based menu interface that lays out the available/suggested routes a user may take.
- - [b][url="Emoticons"]http://en.wikipedia.org/wiki/Emoticon[/url][/b], Little images of faces to represent emotions.
+ - [b][url="Emoticons"]https://en.wikipedia.org/wiki/Emoticon[/url][/b], Little images of faces to represent emotions.
  - [b]Entry points[/b], See 'Page-links'.
  - [b]Entry scripts[/b], Scripts such as [tt]site/dload.php[/tt] or [tt]index.php[/tt] that are launched directly by URL. These might be called 'front controllers' by some programmers.
  - [b]Feedback[/b], A system for collecting and returning feedback from any Composr resource (e.g. rating and posting comments on a download).
@@ -210,6 +210,7 @@ Of course, with all things, a sense of balance is important. An instinct/habit f
 The documentation and tools on the Composr website may be out of date between Composr versions.
 For the latest resources, see our repositories and work tools:
  - [url="GitLab"]{$CMS_REPOS_URL}[/url] (contains Composr, automated tests, all unbundled addons and support tools)
+ - [url="GitHub"]{$CMS_REPOS_URL_MIRROR}[/url]
  - [url="Tracker"]{$BRAND_BASE_URL}/tracker/my_view_page.php[/url]
 
 {$SET,tutorial_tags,Development,PHP,testing_platform,expert}{$SET,tutorial_add_date,Jan 2006}{$SET,tutorial_summary,The programmer's guide for Composr development. Contents and Introduction.}[block]main_tutorial_rating[/block]

@@ -266,7 +266,7 @@ function is_mail_bounced(string $email, ?string $host = null, ?int $port = null,
         $password = get_option('mail_password');
     }
 
-    if ($password == '' || (!function_exists('imap_open') && !addon_installed('imap'))) {
+    if ($password == '' || (!function_exists('imap_open'))) {
         return null; // Not configured, so cannot proceed
     }
 

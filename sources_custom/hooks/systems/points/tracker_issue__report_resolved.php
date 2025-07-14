@@ -28,7 +28,7 @@ class Hook_points_tracker_issue__report_resolved
      */
     public function points_profile(?int $member_id_of, ?int $member_id_viewing) : ?array
     {
-        if (!addon_installed('cms_homesite')) {
+        if (!addon_installed('cms_homesite_tracker')) {
             return null;
         }
 

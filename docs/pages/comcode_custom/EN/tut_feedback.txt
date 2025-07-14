@@ -268,7 +268,7 @@ Content usually has a "Staff notes" field, which can be used to put notes intend
 
 [title="2"]See also[/title]
 
- - http://www.futurelab.net/blog/2012/05/1990-rule-outdated
+ - https://www.futurelab.net/blog/2012/05/1990-rule-outdated
  - [page="_SEARCH:tut_support_desk"]Running a virtual support desk[/page]
  - [page="_SEARCH:tut_nuances"]Nuances of forum integration[/page]
  - [page="_SEARCH:tut_adv_news"]Advanced news[/page]

@@ -102,7 +102,11 @@ class actionlog_test_set extends cms_test_case
                         static $done_urls = [];
 
                         if (!array_key_exists($url, $done_urls)) {
-                            $http_result = cms_http_request($url, ['timeout' => 10, 'byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id], 'ignore_http_status' => true]);
+                            $timeout = 10;
+                            if (strpos($url, 'admin-addons') !== false) { // This page takes a long time to load
+                                $timeout = 30;
+                            }
+                            $http_result = cms_http_request($url, ['timeout' => $timeout, 'byte_limit' => 0, 'trigger_error' => false, 'cookies' => [get_session_cookie() => $session_id], 'ignore_http_status' => true]);
                             $ok = in_array($http_result->message, ['200', '404']);
                             $this->assertTrue($ok, 'Unexpected HTTP response, ' . $http_result->message . ', for ' . $url . ' from ' . $handler);
                             if ($this->debug && !$ok) {

@@ -20,6 +20,13 @@
  */
 class find_broken_screen_links_test_set extends cms_test_case
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        cms_extend_time_limit(TIME_LIMIT_EXTEND__MODEST);
+    }
+
     public function testBadlySpecified()
     {
         if (($this->only !== null) && ($this->only != 'testBadlySpecified')) {

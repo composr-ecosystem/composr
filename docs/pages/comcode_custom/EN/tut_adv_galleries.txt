@@ -15,7 +15,7 @@ Also, EXIF data (in JPEG and TIFF files) will be checked for descriptions.
 The orphaned files importer will auto-select any orphaned files that are put in a directory of the same name as the gallery you are importing. This is useful if you have been organising your gallery images/videos into a directory structure before-hand, as it stops you having to manually re-select what-goes-where when you do the import.
 
 [box="Tip"]
-If you are importing a lot of large images from a digital camera you may want to size the images down first using a tool such as [url="Image Resizer"]http://www.bricelam.net/ImageResizer/[/url] or the inbuilt Preview app on a Mac.
+If you are importing a lot of large images from a digital camera you may want to size the images down first using a tool such as [url="Image Resizer"]https://www.bricelam.net/ImageResizer/[/url] or the inbuilt Preview app on a Mac.
 This will speed up upload and reduce chances of hitting timeouts (although ideally the task queue will be enabled, which the mass import tool will use if that is the case).
 [/box]
 
@@ -24,7 +24,7 @@ This will speed up upload and reduce chances of hitting timeouts (although ideal
 On gallery import, EXIF data may be gathered.
 
 This process works by matching up custom fields created for images, with the name of EXIF tags:
-http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
+https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
 
 For example, see [tt]GainControl[/tt] is an EXIF field. If there was a custom field named [tt]GainControl[/tt] or [tt]Gain Control[/tt], it should copy the EXIF value into that during a gallery import.
 
@@ -138,7 +138,7 @@ This URL can be supplied to users to help them subscribe. In iTunes they go to t
 
 Note that the default advertised Atom feed will not work. Only RSS is supported by iTunes, and only the RSS feed is given the extra metadata required. The [tt]&itunes=1[/tt] marker also tells Composr to supply an iTunes-friendly feed.
 
-[url="Apple provide a guide"]http://www.apple.com/uk/itunes/podcasts/specs.html[/url] on publishing your podcast within the iTunes store. Publishing may have more stringent requirements that the default Composr podcast can provide (the developers don't routinely test this), but templating can be used on the [tt]RSS_*.tpl[/tt] templates to supplement additional data if required.
+[url="Apple provide a guide"]https://www.apple.com/uk/itunes/podcasts/specs.html[/url] on publishing your podcast within the iTunes store. Publishing may have more stringent requirements that the default Composr podcast can provide (the developers don't routinely test this), but templating can be used on the [tt]RSS_*.tpl[/tt] templates to supplement additional data if required.
 
 [title="2"]See also[/title]
 

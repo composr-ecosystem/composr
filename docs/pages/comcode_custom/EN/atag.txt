@@ -17,9 +17,9 @@ Some of the wording in the specification is, however, not completely appropriate
 [b]Version[/b]: 10.0.0
 [b]Language[/b]: British English
 [b]Authoring tool functions available[/b]: Code-level, WYSIWYG, Indirect, Object-orientated
-[b]ATAG version[/b]: [url="2.0 Working draft, 23rd November 2005"]http://www.w3.org/TR/2005/WD-ATAG20-20051123/#conf-claim[/url]
+[b]ATAG version[/b]: [url="2.0 Working draft, 23rd November 2005"]https://www.w3.org/TR/2005/WD-ATAG20-20051123/#conf-claim[/url]
 [b]ATAG level[/b]: Triple-A
-[b]WCAG version[/b]: [url="1.0"]http://www.w3.org/TR/WAI-WEBCONTENT/[/url] [most of the checkpoints for WCAG 2.0 are met]
+[b]WCAG version[/b]: [url="1.0"]https://www.w3.org/TR/WAI-WEBCONTENT/[/url] [most of the checkpoints for WCAG 2.0 are met]
 [b]URL to this document[/b]: {$TUTORIAL_URL,atag}
 [b]User agents[/b]: Microsoft Edge 20, Internet Explorer 11, Firefox 40, Google Chrome 45, Safari 8
 [b]Content-type[/b]: XHTML 5.0 + CSS 2.1 [ + optional JavaScript: JavaScript may not be accessible, therefore it is assumed to be disabled for the purposes of accessibility]
