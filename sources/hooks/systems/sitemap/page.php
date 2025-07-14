@@ -277,7 +277,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                             }
                             if ($entry_points['!'][1] !== null) {
                                 if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points['!'][1]);
+                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points['!'][1], true);
                                     $struct['extra_meta']['icon'] = $entry_points['!'][1];
                                 }
                             }
@@ -302,7 +302,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                             }
                             if ($entry_points[$move_down_entry_point][1] !== null) {
                                 if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
-                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points[$move_down_entry_point][1]);
+                                    $struct['extra_meta']['image'] = find_theme_image('icons/' . $entry_points[$move_down_entry_point][1], true);
                                     $struct['extra_meta']['icon'] = $entry_points[$move_down_entry_point][1];
                                 }
                             }
@@ -317,7 +317,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                         if ($functions[1] !== null) {
                             if (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) {
                                 $icon = is_array($functions[1]) ? call_user_func_array($functions[1][0], $functions[1][1]) : cms_eval($functions[1], $path);
-                                $struct['extra_meta']['image'] = find_theme_image('icons/' . $icon);
+                                $struct['extra_meta']['image'] = find_theme_image('icons/' . $icon, true);
                                 $struct['extra_meta']['icon'] = $icon;
                             }
                         }
@@ -361,7 +361,7 @@ class Hook_sitemap_page extends Hook_sitemap_base
                             }
                             if ($child_node !== null) {
                                 if ($child_node['extra_meta']['image'] === null) {
-                                    $child_node['extra_meta']['image'] = find_theme_image('icons/' . $entry_point_details[1]);
+                                    $child_node['extra_meta']['image'] = find_theme_image('icons/' . $entry_point_details[1], true);
                                     $child_node['extra_meta']['icon'] = $entry_point_details[1];
                                 }
 

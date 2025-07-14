@@ -314,7 +314,7 @@ function _build_sitemap_menu(string $menu_id, string $tray_status = 'tray_closed
         }
 
         if ($icon !== null) {
-            $node['extra_meta']['image'] = find_theme_image('icons/' . $icon);
+            $node['extra_meta']['image'] = find_theme_image('icons/' . $icon, true);
             $node['extra_meta']['icon'] = $icon;
         }
 
@@ -421,7 +421,7 @@ function _build_stored_menu_branch(array $item, array $items) : array
         'url' => $is_page_link ? null : $item['i_link'],
         'extra_meta' => [
             'description' => get_translated_tempcode('menu_items', $item, 'i_caption_long'),
-            'image' => ($item['i_theme_img_code'] == '') ? null : find_theme_image($item['i_theme_img_code']),
+            'image' => ($item['i_theme_img_code'] == '') ? null : find_theme_image($item['i_theme_img_code'], true),
             'icon' => ($item['i_theme_img_code'] == '' || substr($item['i_theme_img_code'], 0, 6) != 'icons/') ? null : substr($item['i_theme_img_code'], 6),
         ],
         'has_possible_children' => true,

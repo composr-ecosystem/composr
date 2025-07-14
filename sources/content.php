@@ -1364,7 +1364,7 @@ abstract class Hook_CMA
         if ($field === null) {
             if ($fallback_theme_image !== null) {
                 $has_fallen_back = true;
-                return find_theme_image($fallback_theme_image);
+                return find_theme_image($fallback_theme_image, true);
             }
 
             return '';
@@ -1375,7 +1375,7 @@ abstract class Hook_CMA
 
             if (($ret == '') && ($fallback_theme_image !== null)) {
                 $has_fallen_back = true;
-                return find_theme_image($fallback_theme_image);
+                return find_theme_image($fallback_theme_image, true);
             }
 
             return $ret;
@@ -1385,14 +1385,14 @@ abstract class Hook_CMA
         if ($ret == '') {
             if ($fallback_theme_image !== null) {
                 $has_fallen_back = true;
-                return find_theme_image($fallback_theme_image);
+                return find_theme_image($fallback_theme_image, true);
             }
 
             return '';
         }
 
         if ($info['image_field_is_theme_image']) {
-            return find_theme_image($ret);
+            return find_theme_image($ret, true);
         }
 
         if (url_is_local($ret)) {

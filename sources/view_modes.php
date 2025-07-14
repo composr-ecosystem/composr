@@ -228,7 +228,7 @@ function special_page_types(string $special_page_type, object &$out, ?string $ou
             ];
             $url = build_url($url_map, get_module_zone('admin_themes'));
 
-            $image = find_theme_image($id, false, false, $theme, $lang);
+            $image = find_theme_image($id, true, false, $theme, $lang);
             if ($image == '') {
                 continue;
             }

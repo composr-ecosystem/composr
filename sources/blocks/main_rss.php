@@ -205,7 +205,7 @@ class Block_main_rss
                     }
                 }
                 if ($cat !== null) {
-                    $category_img = ($news_cats[$cat]['nc_img'] == '') ? '' : find_theme_image($news_cats[$cat]['nc_img']);
+                    $category_img = ($news_cats[$cat]['nc_img'] == '') ? '' : find_theme_image($news_cats[$cat]['nc_img'], true);
                 }
                 $category = $item['category'];
             }

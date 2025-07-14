@@ -105,7 +105,7 @@ class Hook_fields_theme_image
                 unset($METADATA['image']);
             }
 
-            $img_url = find_theme_image($ev);
+            $img_url = find_theme_image($ev, true);
 
             set_extra_request_metadata([
                 'image' => $img_url,
@@ -139,7 +139,7 @@ class Hook_fields_theme_image
             return '';
         }
 
-        $img_url = find_theme_image($ev);
+        $img_url = find_theme_image($ev, true);
         if (!array_key_exists('c_name', $field)) {
             $field['c_name'] = 'other';
         }

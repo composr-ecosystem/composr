@@ -307,7 +307,7 @@ function tapatalk_strip_comcode(string $data) : string
             foreach ($smilies as $code => $imgcode) {
                 $code_len = strlen($code);
                 if (($char == $code[0]) && (substr($data, $i, $code_len) == $code)) {
-                    $eval = '[img]' . find_theme_image($imgcode[1]) . '[/img]';
+                    $eval = '[img]' . find_theme_image($imgcode[1], true) . '[/img]';
                     $before = substr($data, 0, $i);
                     $after = substr($data, $i + $code_len);
                     $data = $before . $eval . $after;

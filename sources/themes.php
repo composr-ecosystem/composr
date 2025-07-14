@@ -278,6 +278,8 @@ function find_theme_image(string $id, bool $silent_fail = false, bool $leave_loc
         // Missing
         if (!$silent_fail) {
             trigger_error(do_lang('NO_SUCH_THEME_IMAGE', escape_html($id)), E_USER_NOTICE);
+        } elseif (function_exists('attach_message')) {
+            attach_message(do_lang('NO_SUCH_THEME_IMAGE', escape_html($id)), 'warn', false, true);
         }
     }
 

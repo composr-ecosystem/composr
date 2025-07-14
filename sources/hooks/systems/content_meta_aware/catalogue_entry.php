@@ -310,7 +310,7 @@ function generate_catalogue_entry_image_url(array $row) : string
             break;
 
         case 'theme_image':
-            $value = find_theme_image($field['effective_value_pure']);
+            $value = find_theme_image($field['effective_value_pure'], true);
             break;
 
         case 'picture_multi':

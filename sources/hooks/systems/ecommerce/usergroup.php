@@ -67,7 +67,7 @@ class Hook_ecommerce_usergroup
                     continue; // Missing
                 }
                 if ($image_url != '') {
-                    $image_url = find_theme_image($image_url);
+                    $image_url = find_theme_image($image_url, true);
                 }
             }
 

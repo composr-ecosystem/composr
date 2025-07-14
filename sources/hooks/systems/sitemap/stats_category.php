@@ -150,7 +150,7 @@ class Hook_sitemap_stats_category extends Hook_sitemap_base
             'url' => null,
             'extra_meta' => [
                 'description' => null,
-                'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/' . $icon) : null,
+                'image' => (($meta_gather & SITEMAP_GATHER_IMAGE) != 0) ? find_theme_image('icons/' . $icon, true) : null,
                 'icon' => ($icon === null) ? null : $icon,
                 'add_time' => null,
                 'edit_time' => null,
