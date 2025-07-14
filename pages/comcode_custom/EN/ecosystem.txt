@@ -26,6 +26,7 @@ The core developers only officially maintain en_GB (British English) and en_US (
 Members can help the core developers improve the software and keep it free from breaking issues by [page="docs:codebook_3"]developing automated tests[/page] for our testing platform. While our goal is not 100% coverage (this does not make economical sense), we want coverage for the major components of Composr and anything that may be prone to breaking. The testing platform is contained in its [page=":downloads:entry:250"]own addon[/page] and on our [url="Git repository"]https://gitlab.com/composr-foundation/composr[/url].
 [*][b]Direct code contributions[/b]
 Members can [page=":contact"]directly contribute code[/page] to the core Composr software to make it better than ever for everyone else.
+[/list]
 
 [title="2"]Offering Free and/or Paid Support[/title]
 
