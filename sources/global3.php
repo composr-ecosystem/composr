@@ -778,6 +778,7 @@ function _load_blank_output_state(bool $just_tempcode = false, bool $true_blank 
              * @global ?array $ATTACHED_MESSAGES_RAW
              */
             $ATTACHED_MESSAGES_RAW = [];
+            clear_infinite_loop_iterations('attach_message');
         }
         $LATE_ATTACHED_MESSAGES = null;
 

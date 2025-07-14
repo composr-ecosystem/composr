@@ -51,6 +51,7 @@ class Hook_commandr_command_test_mail
 
         global $ATTACHED_MESSAGES_RAW;
         $ATTACHED_MESSAGES_RAW = [];
+        clear_infinite_loop_iterations('attach_message');
 
         if (@$GLOBALS['SITE_INFO']['no_email_output'] === '1') {
             return ['', '', '', 'no_email_output==1'];

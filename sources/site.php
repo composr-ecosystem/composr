@@ -202,13 +202,13 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES, $SITE_INFO;
 
     foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([$last[0], $last[1]] == [$message_eval, $type]) {
+        if (($last[0] == $message_eval) && ($last[1] == $type)) {
             return ''; // Already shown
         }
     }
 
     // We wait until after checking if the message was already shown before counting towards infinite loop to prevent premature terminations
-    check_for_infinite_loop('attach_message', [$message, $type], 2);
+    check_for_infinite_loop('attach_message', [$message_eval, $type], 2);
 
     $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
 
