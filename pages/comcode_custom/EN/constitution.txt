@@ -28,8 +28,9 @@ All members of the Composr CMS community shall be granted these [abbr="Privilege
 
 [list]
 [*]the privilege to collaborate on the official Composr CMS website (composr.app), including but not limited to receiving support from others, discussing ideas, voting on decisions for the community, sharing personal customizations / addons / themes, improving documentation, and offering professional development services which directly relate to Composr CMS, subject to the terms of this Constitution;
-[*]the privilege to report bugs, features, and suggestions to the official tracker ({$BASE_URL*}/tracker/);
-[*]the privilege to submit merge requests to the official Composr CMS GitLab ({$CMS_REPOS_URL*}); and
+[*]the privilege to report bugs, features, and suggestions to the official tracker ({$BASE_URL*}/tracker/ and ({$BASE_URL*}/report_issue.htm);
+[*]the privilege to submit merge requests to the official Composr CMS GitLab ({$CMS_REPOS_URL*});
+[*]the privilege to submit merge requests to the official Composr CMS GitHub ({$CMS_REPOS_URL_MIRROR*});
 [*]the privilege to [abbr="One may argue this should be a right and not a privilege. In the Composr community, it is a privilege. Abuse of the Composr platform or the voting system will result in the loss of voting privileges. However, it is unconstitutional for a member to be denied their voting privileges for any biased reason (e.g. being denied the ability to vote on specific measures)."]vote on measures[/abbr] as explained in Article III.
 [/list]
 
@@ -60,10 +61,10 @@ All members of the Composr CMS community, including members of the Board, shall 
 [*]to act lawfully and refrain from (including encouraging) criminal activity in accordance with U.S. Law and the Laws of the States of [abbr="That is the state in which the server running composr.app is located."]Virginia[/abbr] and [abbr="Ohio is the state under which PDStig, LLC, the company hosting and managing composr.app, does business."]Ohio[/abbr];
 [*]to refrain from publishing any private or personally identifiable information of others, unless said information was already publicly shared by said person, or said person has granted prior documented consent to share it;
 [*]to otherwise act with civility and respect; and
-[*]to report when someone is violating these responsibilities through the applicable "Report this" links or "Report" buttons, or through [email]support@composr.app[/email] when using a report link / button is not available.
+[*]to report when someone is violating these responsibilities through the applicable "Report this" links or "Report" buttons, or through [email]equity@composr.app[/email] when using a report link / button is not available.
 [/list]
 
-*Not actively contributing will not result in any enforcement actions (contributions are voluntary). However, those who actively contribute receive more privileges, voting power, and rewards.
+*Not actively contributing will not result in any enforcement actions (contributions are voluntary). However, those who actively contribute receive more benefits, voting power, and rewards.
 
 **Not actively enforced, but it is encouraged for members to participate in the decision-making processes of the community.
 
