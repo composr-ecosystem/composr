@@ -67,6 +67,11 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testRead()
     {
+        if (version_compare(PHP_VERSION, '8.2.0', '<')) { // LEGACY
+            $this->assertTrue(false, 'test requires PHP 8.2 or higher');
+            return;
+        }
+
         if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
             $this->assertTrue(false, 'Zip and XML extensions needed for test');
             return;
@@ -107,6 +112,11 @@ class spreadsheets_test_set extends cms_test_case
 
     public function testWrite()
     {
+        if (version_compare(PHP_VERSION, '8.2.0', '<')) { // LEGACY
+            $this->assertTrue(false, 'test requires PHP 8.2 or higher');
+            return;
+        }
+        
         if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
             $this->assertTrue(false, 'Zip and XML extensions needed for test');
             return;
