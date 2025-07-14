@@ -244,7 +244,12 @@ class addon_guards_test_set extends cms_test_case
                     // At this point, we just want the function body contents, not the entire function definition
                     $open_brace = strpos($function_info['code'], '{');
                     $close_brace = strrpos($function_info['code'], '}');
-                    $code = trim(substr($function_info['code'], ($open_brace + 1), ($close_brace - $open_brace - 1)));
+                    $code_substr = substr($function_info['code'], ($open_brace + 1), ($close_brace - $open_brace - 1));
+                    if ($code_substr !== false) {
+                        $code = trim($code_substr);
+                    } else {
+                        $code = '';
+                    }
 
                     // Ignore empty functions
                     if ($code == '') {
