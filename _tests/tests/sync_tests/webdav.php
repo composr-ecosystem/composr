@@ -42,6 +42,11 @@ class webdav_test_set extends cms_test_case
             return;
         }
 
+        if (version_compare(PHP_VERSION, '8.0.0', '<')) { // LEGACY: SabreDav does not require 8.0 but its dependencies do
+            $this->assertTrue(false, 'PHP 8.0 or later required');
+            return;
+        }
+
         $ht = get_file_base() . '/.htaccess';
         if ((!is_file($ht)) || (strpos(file_get_contents($ht), 'WebDAV implementation') === false)) {
             $this->assertTrue(false, 'root .htaccess file required for WebDAV tests');
