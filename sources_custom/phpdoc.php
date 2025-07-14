@@ -248,7 +248,10 @@ function get_php_file_api(string $filename, bool $include_code = false, bool $pe
             $return = null;
             for ($i++; $i < $j - 1; $i++) {
                 $ltrim = ltrim($lines[$i]);
-                $ltrim = ltrim(substr($ltrim, 1)); // Remove '*'
+                $ltrim_substr = substr($ltrim, 1);
+                if ($ltrim_substr !== false) {
+                    $ltrim = ltrim($ltrim_substr); // Remove '*'
+                }
                 $ltrim = rtrim($ltrim); // Remove additional whitespace
                 if ($ltrim == '') {
                     continue;
