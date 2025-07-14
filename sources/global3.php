@@ -5970,12 +5970,6 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     global $CHECK_FOR_INFINITE_LOOP; // Global in case we want to reset iteration count
     global $HAS_LOOPED_INFINITELY;
 
-    // Fatally exit if we already triggered an infinite loop for something else
-    if ($HAS_LOOPED_INFINITELY) {
-        require_code('critical_errors');
-        critical_error('INFINITE_LOOP', $codename, true);
-    }
-
     $hash = md5(serialize($args));
 
     // Prepare global array tracker
@@ -5989,6 +5983,12 @@ function check_for_infinite_loop(string $codename, array $args, int $allowed_ite
     // Increment count and handle if we surpassed the allowed number of iterations
     $CHECK_FOR_INFINITE_LOOP[$codename][$hash]++;
     if ($CHECK_FOR_INFINITE_LOOP[$codename][$hash] > $allowed_iterations) {
+        // Fatally exit if we already triggered an infinite loop for something else
+        if ($HAS_LOOPED_INFINITELY) {
+            require_code('critical_errors');
+            critical_error('INFINITE_LOOP', $codename, true);
+        }
+
         $HAS_LOOPED_INFINITELY = true;
 
         require_code('failure');
