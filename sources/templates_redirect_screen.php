@@ -38,7 +38,7 @@ function _redirect_screen(?object $title, $url, $text = null, bool $intermediary
 
     global $ATTACHED_MESSAGES_RAW;
 
-    foreach ($ATTACHED_MESSAGES_RAW as $message) {
+    foreach ($ATTACHED_MESSAGES_RAW as $key => $message) {
         $_message = is_object($message[0]) ? $message[0]->evaluate() : $message[0];
         if (($_message != '') && ($_message != do_lang('_REDIRECTING')) && (strpos($_message, 'cancel_sw_warn') === false)) {
             $map = [
