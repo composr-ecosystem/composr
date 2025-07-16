@@ -140,12 +140,14 @@ function score_quiz(int $entry_id, ?int $quiz_id = null, ?array $quiz = null, ?a
         $quiz_id = $GLOBALS['SITE_DB']->query_select_value('quiz_entries', 'q_quiz_id', ['id' => $entry_id]);
     }
     if ($quiz_id === null) {
-        $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $quiz_id], '', 1);
-        if (!array_key_exists(0, $quizzes)) {
-            warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
-        }
-        $quiz = $quizzes[0];
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
     }
+
+    $quizzes = $GLOBALS['SITE_DB']->query_select('quizzes', ['*'], ['id' => $quiz_id], '', 1);
+    if (!array_key_exists(0, $quizzes)) {
+        warn_exit(do_lang_tempcode('MISSING_RESOURCE', 'quiz'));
+    }
+    $quiz = $quizzes[0];
 
     $__given_answers = $GLOBALS['SITE_DB']->query_select('quiz_entry_answer', ['q_question_id', 'q_answer'], ['q_entry_id' => $entry_id]);
     $_given_answers = [];
