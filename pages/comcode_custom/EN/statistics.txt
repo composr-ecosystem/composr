@@ -13,13 +13,13 @@ Note that statistics always begin at the start of a given month. For example, if
 These graphs outline the general activity levels on the site and within the community.
 
 [box="Unique Views"]
-This graph shows the number of unique devices or IP addresses who have visited the site.
-[block="total_unique_views" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows the number of unique devices or IP addresses who have visited the site in a given week.
+[block="total_unique_views" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Actions"]
-This graph shows the number of actions that took place on site which have been logged. Examples of actions include but are not limited to adding/editing/deleting content, editing one's profile, and making forum posts. Usually, this is an indication of how much activity took place on the site on a given day.
-[block="actionlog_activity" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph shows the number of actions that took place on site in a given week which have been logged. Examples of actions include but are not limited to adding/editing/deleting content, editing one's profile, and making forum posts. Usually, this is an indication of how much activity took place on the site on a given day.
+[block="actionlog_activity" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Downloads"]
@@ -50,8 +50,8 @@ This graph shows how many new (public) forum posts and comments were made in a g
 [/box]
 
 [box="New Content"]
-This graph tallies how many new items were discovered in the sitemap on any given day. This is usually an indication of how many new pieces of content were created on a given day.
-[block="sitemap_growth" month_range__start="-12"]main_staff_stats_graph[/block]
+This graph tallies how many new items were discovered in the sitemap on a given week. This is usually an indication of how many new pieces of content were created on a given day.
+[block="sitemap_growth" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Development[/title]
