@@ -189,7 +189,7 @@ class Module_admin_actionlog
             }
         }
         foreach ($_action_type_list as $lang_id => $lang) {
-            $flags = get_handler_flags($lang_id);
+            $flags = get_actionlog_handler_flags($lang_id);
             if (($flags & ACTIONLOG_FLAG__GDPR) != 0) {
                 $_action_type_list[$lang_id] = 'GDPR: ' . $lang;
             }
