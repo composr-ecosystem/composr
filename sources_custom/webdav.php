@@ -41,6 +41,11 @@ function webdav_script()
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('commandr')));
     }
 
+    if (version_compare(PHP_VERSION, '8.0.0', '<')) { // LEGACY: SabreDav does not require 8.0 but its dependencies do
+        require_lang('critical_error');
+        warn_exit(do_lang_tempcode('PHP_TOO_OLD', escape_html('8.0')));
+    }
+
     cms_ini_set('ocproducts.type_strictness', '0');
 
     header('X-Robots-Tag: noindex');

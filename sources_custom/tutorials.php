@@ -417,7 +417,7 @@ function tutorial_sql_likes_recent($field)
 function find_tutorial_image($icon, $tags, $get_theme_image = false)
 {
     if ($icon != '') {
-        $ret = find_theme_image($icon);
+        $ret = find_theme_image($icon, true);
         if ($ret != '') {
             return $ret;
         }
@@ -435,10 +435,11 @@ function find_tutorial_image($icon, $tags, $get_theme_image = false)
     }
 
     $theme_image = 'icons/spare/advice_and_guidance';
-    $img = find_theme_image($theme_image);
     if ($get_theme_image) {
         return $theme_image;
     }
+
+    $img = find_theme_image($theme_image, true);
     return $img;
 }
 

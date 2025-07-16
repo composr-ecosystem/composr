@@ -283,7 +283,7 @@ class CMSForumRead
         $rows = $GLOBALS['FORUM_DB']->query_select('f_emoticons', ['*'], $where);
         $smiley_categories = [];
         foreach ($rows as $row) {
-            $url = find_theme_image($row['e_theme_img_code']);
+            $url = find_theme_image($row['e_theme_img_code'], true);
 
             $category = 'default';
             switch ($row['e_relevance_level']) {

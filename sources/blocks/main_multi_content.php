@@ -430,7 +430,7 @@ PHP;
             $_content_data = [
                 'CONTENT_TYPE' => $content_type,
                 'CONTENT_TYPE_LABEL' => $content_type_label,
-                'CONTENT_TYPE_ICON' => ($info['alternate_icon_theme_image'] === null) ? null : find_theme_image($info['alternate_icon_theme_image']),
+                'CONTENT_TYPE_ICON' => ($info['alternate_icon_theme_image'] === null) ? null : find_theme_image($info['alternate_icon_theme_image'], true),
                 'CONTENT_ID' => $content_id,
                 'CONTENT_URL' => $object->get_view_url($row),
                 'CONTENT_TITLE_PLAIN' => $object->get_title($row, FIELD_RENDER_PLAIN),

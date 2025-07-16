@@ -153,7 +153,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
             'url' => null,
             'extra_meta' => [
                 'description' => $description,
-                'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
+                'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon, true),
                 'icon' => ($icon === null) ? null : $icon,
                 'add_time' => null,
                 'edit_time' => null,
@@ -231,7 +231,7 @@ class Hook_sitemap_page_grouping extends Hook_sitemap_base
                             'url' => $link[2],
                             'extra_meta' => [
                                 'description' => $child_description,
-                                'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon),
+                                'image' => ($icon === null) ? null : find_theme_image('icons/' . $icon, true),
                                 'icon' => ($icon === null) ? null : $icon,
                                 'add_time' => null,
                                 'edit_time' => null,

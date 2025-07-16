@@ -1499,7 +1499,7 @@ class Module_topics
         foreach ($rows as $row) {
             $path = $row['e_theme_img_code'];
 
-            $url = find_theme_image($path);
+            $url = find_theme_image($path, true);
             $content->attach(do_template('FORM_SCREEN_INPUT_THEME_IMAGE_ENTRY', [
                 '_GUID' => '22050272aebe90adf8cd4c89e4a7b06a',
                 'PRETTY' => '',

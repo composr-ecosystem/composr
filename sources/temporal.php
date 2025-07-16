@@ -501,6 +501,8 @@ function post_param_date(string $stub, bool $get_also = false, bool $do_timezone
  */
 function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null) : int
 {
+    _cms_mktime_polyfill(false, $minute, $second, $month, $day, $year);
+
     $test = mktime($hour, $minute, $second, $month, $day, $year);
     if ($test === false) {
         if (function_exists('attach_message')) {
@@ -519,15 +521,17 @@ function cms_mktime(int $hour, ?int $minute = null, ?int $second = null, ?int $m
  * Get UNIX timestamp for a GMT date, with graceful error handling for integer overflows.
  *
  * @param  integer $hour The hour
- * @param  integer $minute The minute
- * @param  integer $second The second
- * @param  integer $month The month
- * @param  integer $day The day
- * @param  integer $year The year
+ * @param  ?integer $minute The minute (null: now)
+ * @param  ?integer $second The second (null: now)
+ * @param  ?integer $month The month (null: now)
+ * @param  ?integer $day The day (null: now)
+ * @param  ?integer $year The year (null: now)
  * @return TIME The timestamp
  */
-function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day, int $year) : int
+function cms_gmmktime(int $hour, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null) : int
 {
+    _cms_mktime_polyfill(true, $minute, $second, $month, $day, $year);
+
     $test = gmmktime($hour, $minute, $second, $month, $day, $year);
     if ($test === false) {
         if (function_exists('attach_message')) {
@@ -540,6 +544,45 @@ function cms_gmmktime(int $hour, int $minute, int $second, int $month, int $day,
     }
 
     return $test;
+}
+
+/**
+ * LEGACY: Fix null mktime values in older PHP versions.
+ *
+ * @param  boolean Whether the specified time is in GMT instead of user time
+ * @param  integer $minute The minute, passed by reference
+ * @param  integer $second The second, passed by reference
+ * @param  integer $month The month, passed by reference
+ * @param  integer $day The day, passed by reference
+ * @param  integer $year The year, passed by reference
+ * @ignore
+ *
+ */
+function _cms_mktime_polyfill(bool $is_gmt, ?int &$minute = null, ?int &$second = null, ?int &$month = null, ?int &$day = null, ?int &$year = null)
+{
+    if (version_compare(PHP_VERSION, '8.0.0', '<')) {
+        if ($is_gmt) {
+            $current_time = getdate(time());
+        } else {
+            $current_time = getdate(utctime_to_usertime());
+        }
+
+        if ($minute === null) {
+            $minute = $current_time['minutes'];
+        }
+        if ($second === null) {
+            $second = $current_time['seconds'];
+        }
+        if ($month === null) {
+            $month = $current_time['mon'];
+        }
+        if ($day === null) {
+            $day = $current_time['mday'];
+        }
+        if ($year === null) {
+            $year = $current_time['year'];
+        }
+    }
 }
 
 /**

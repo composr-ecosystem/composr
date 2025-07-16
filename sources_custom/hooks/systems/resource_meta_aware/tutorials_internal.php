@@ -186,5 +186,5 @@ function generate_tutorials_entry_image_url(array $row) : string
 
     require_code('tutorials');
     $data = get_tutorial_metadata($row['t_page_name']);
-    return find_theme_image($data['icon']);
+    return find_theme_image($data['icon'], true);
 }

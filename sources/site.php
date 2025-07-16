@@ -190,6 +190,7 @@ function inform_non_canonical_parameter(string $param, bool $block_page_from_sta
 function attach_message($message, string $type = 'inform', bool $put_in_helper_panel = false, bool $log_error = false) : string
 {
     $message_eval = (is_object($message) ? $message->evaluate() : escape_html($message));
+    $message_hash = hash('sha256', $message_eval);
 
     if ($message_eval == '') {
         return ''; // Empty message
@@ -201,16 +202,14 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
 
     global $ATTACHED_MESSAGES, $ATTACHED_MESSAGES_RAW, $LATE_ATTACHED_MESSAGES, $SITE_INFO;
 
-    foreach ($ATTACHED_MESSAGES_RAW as $last) {
-        if ([$last[0], $last[1]] == [$message_eval, $type]) {
-            return ''; // Already shown
-        }
+    if (isset($ATTACHED_MESSAGES_RAW[$message_hash])) {
+        return ''; // Already shown
     }
 
     // We wait until after checking if the message was already shown before counting towards infinite loop to prevent premature terminations
-    check_for_infinite_loop('attach_message', [$message, $type], 2);
+    check_for_infinite_loop('attach_message', [$message_eval], 2);
 
-    $ATTACHED_MESSAGES_RAW[] = [$message_eval, $type];
+    $ATTACHED_MESSAGES_RAW[$message_hash] = true;
 
     if ($log_error) {
         require_code('urls');

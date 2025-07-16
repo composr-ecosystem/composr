@@ -20,7 +20,17 @@
  */
 function spreadsheet_read_file_types() : string
 {
-    if (!addon_installed('enhanced_spreadsheets') || !class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
+    if (!addon_installed('enhanced_spreadsheets')) {
+        return non_overridden__spreadsheet_read_file_types();
+    }
+
+    // Required PHP extensions
+    if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
+        return non_overridden__spreadsheet_read_file_types();
+    }
+
+    // Required PHP version
+    if (version_compare(PHP_VERSION, '8.2.0', '<')) { // LEGACY
         return non_overridden__spreadsheet_read_file_types();
     }
 
@@ -39,7 +49,17 @@ function spreadsheet_read_file_types() : string
  */
 function spreadsheet_open_read(string $path, ?string $filename = null, int $algorithm = 3, bool $trim = true, ?string $default_charset = '') : object
 {
-    if (!addon_installed('enhanced_spreadsheets') || !class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
+    if (!addon_installed('enhanced_spreadsheets')) {
+        return non_overridden__spreadsheet_open_read($path, $filename, $algorithm, $trim, $default_charset);
+    }
+
+    // Required PHP extensions
+    if (!class_exists('ZipArchive', false) || !function_exists('xml_parser_create')) {
+        return non_overridden__spreadsheet_open_read($path, $filename, $algorithm, $trim, $default_charset);
+    }
+
+    // Required PHP version
+    if (version_compare(PHP_VERSION, '8.2.0', '<')) { // LEGACY
         return non_overridden__spreadsheet_open_read($path, $filename, $algorithm, $trim, $default_charset);
     }
 
