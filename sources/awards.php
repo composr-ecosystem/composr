@@ -18,6 +18,10 @@
  * @package    awards
  */
 
+/*
+    This file handles awards.
+*/
+
 /**
  * Get details of awards won for a content item.
  *

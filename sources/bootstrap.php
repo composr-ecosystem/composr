@@ -19,7 +19,7 @@ NOTE TO PROGRAMMERS:
  */
 
 /*
-    This is the primary bootstrap script for loading in the software. It should be required first by virtually all front-end scripts.
+    This is the primary bootstrap script for loading in the software. It should be required first by virtually all endpoint scripts.
     This file should be kept to an absolute minimum because it cannot be strict-typed.
     After requiring, use require_code__bootstrap to load your first bootstrap script (whether global or minikernel) which contains the require_code function.
     Use require_code from that point forward for proper override support.
@@ -42,7 +42,7 @@ global $SITE_INFO;
 $SITE_INFO = [];
 
 // Load up config file
-// NB: We ignore any issues for now and let global.php do the error handling for this (e.g. it's fine if it's missing if, say, we are running the installer
+// We ignore any issues for now and let global.php do the error handling for this (e.g. it's fine if it's missing if, say, we are running the installer)
 if (is_file($FILE_BASE . '/_config.php')) {
     @include $FILE_BASE . '/_config.php';
     if (!is_array($SITE_INFO) || (count($SITE_INFO) == 0) || (empty($SITE_INFO))) {
@@ -266,7 +266,7 @@ function require_code__bootstrap(string $codename)
 
 /**
  * Make a PHP file evaluable.
- * NB: this function is used across the entire code, not just in bootstrap.
+ * This function is used across the entire software, not just in bootstrap.
  *
  * @param  string $c File contents
  * @param  ?string $path File path (null: N/A)

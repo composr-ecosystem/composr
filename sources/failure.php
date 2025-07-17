@@ -936,7 +936,7 @@ function is_unbannable_bot_ip(string $ip) : bool
  * @param  IP $ip The IP address to ban (potentially encoded with *'s)
  * @param  LONG_TEXT $descrip Explanation for ban
  * @param  ?TIME $ban_until When to ban until (null: no limit)
- * @param  boolean $ban_positive Whether this is a positive ban (as opposed to a cached negative)
+ * @param  boolean $ban_positive Whether this is actually a ban (as opposed to a cached negative "not-banned")
  * @param  boolean $force_ban Whether to force the ban to take place even if the IP address is on a spam exclusion or has a negative ban
  * @param  boolean $check_caching Whether to check internal run-time caching (disable if doing automated tests)
  * @return boolean Whether a change actually happened

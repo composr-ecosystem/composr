@@ -193,6 +193,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
 
     // Blocking based on dnsbl.tornevall.org settings (used by default because stopforumspam syndicates to this and ask us to check this first, for performance)
     // https://docs.tornevall.net/display/TORNEVALL/DNSBLv5%3A+About+and+usage
+    // TODO: Make these configurable
     if (strpos($rbl, 'tornevall.org') !== false) {
         $block = [
             'tornevall_abuse' => true,              // TornevallRBL: Block on 'abuse'
@@ -233,6 +234,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
 
     // Blocking based on efnet.org settings (not used by default)
     // http://efnetrbl.org/
+    // TODO: Make these configurable
     if ((strpos($rbl, 'efnet.org') !== false) || (strpos($rbl, 'efnetrbl.org') !== false)) {
         $block = [
             'efnet_openproxy' => true,              // EFNet: Block open proxies registered at rbl.efnet.org
@@ -267,6 +269,7 @@ function check_rbl(string $rbl, string $user_ip, bool $we_have_a_result_already 
 
     // Blocking based on HTTP:BL settings (not used by default, because it requires getting a key)
     // http://www.projecthoneypot.org/httpbl_api.php
+    // TODO: Make these configurable
     if (strpos($rbl, 'dnsbl.httpbl.org') !== false) {
         if (strpos($rbl, '*') === false) { // Fix a misconfiguration based on the admin copy and pasting the given HTTP:BL setup example
             $rbl = str_replace('7.1.1.127', '*', $rbl);

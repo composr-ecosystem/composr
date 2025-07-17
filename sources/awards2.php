@@ -18,6 +18,10 @@
  * @package    awards
  */
 
+/*
+    This file handles award types.
+*/
+
 /**
  * Make an award type.
  *

@@ -145,6 +145,7 @@ function create_selection_list_banners(?string $it = null, ?int $only_owned = nu
 
     return $out;
 }
+
 /**
  * Get the Tempcode for the form to add a banner, with the information passed along to it via the parameters already added in.
  *
