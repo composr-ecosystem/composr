@@ -338,7 +338,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                 $time_elapsed += ($time_after - $time_before);
 
                 // Reset time limit (hook may have overwritten / we provide same max time for each hook)
-                cms_extend_time_limit(TIME_LIMIT_EXTEND__CRAWL);
+                cms_set_time_limit(30);
 
                 // Update cron_progression table
                 if (isset($cron_progression[$hook])) {
