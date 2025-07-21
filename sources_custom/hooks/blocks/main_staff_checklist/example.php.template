@@ -1,0 +1,20 @@
+/**
+ * Hook class.
+ */
+class Hook_checklist_example
+{
+    /**
+     * Find items to include on the staff checklist.
+     *
+     * @return array An array of tuples: The task row to show, the number of seconds until it is due (or null if not on a timer), the number of things to sort out (or null if not on a queue), The name of the config option that controls the schedule (or null if no option)
+     */
+    public function run() : array
+    {
+        $tpl = new Tempcode();
+
+        $out = [];
+        $out[] = [$tpl, null, null, 'config_option_name'];
+
+        return $out;
+    }
+}

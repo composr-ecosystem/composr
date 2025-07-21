@@ -1,0 +1,14 @@
+/**
+ * Hook class.
+ */
+class Hook_notes_example
+{
+    /**
+     * Trigger for main_notes saves.
+     *
+     * @param  PATH $file Filename
+     */
+    public function run(string $file)
+    {
+    }
+}

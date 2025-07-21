@@ -1,0 +1,43 @@
+/**
+ * Hook class.
+ */
+class Hook_endpoint_folder_name_example
+{
+    /**
+     * Return information about this endpoint.
+     *
+     * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
+     * @param  ?string $id Standard ID parameter (null: not-set)
+     * @return ?array Info about the hook (null: endpoint is disabled)
+     */
+    public function info(?string $type, ?string $id) : ?array
+    {
+        /*
+            authorization => false if none required, otherwise an array of systems/endpoint_authorization hooks of which one or more must pass,
+            log_stats_event => name of the event to log in stats when this endpoint is called
+        */
+        return [
+            'authorization' => false,
+            // 'authorization' => ($type !== 'view') ? ['super_admin', 'maintenance_password'] : false,
+            'log_stats_event' => 'folder_name/example',
+        ];
+    }
+
+    /**
+     * Run an API endpoint.
+     *
+     * @param  ?string $type Standard type parameter, usually either of add/edit/delete/view (null: not-set)
+     * @param  ?string $id Standard ID parameter (null: not-set)
+     * @return array Data structure that will be converted to correct response type
+     */
+    public function run(?string $type, ?string $id) : array
+    {
+        // Success return, with custom data (will automatically include 'success' => true)
+        return [
+            'key' => 'value',
+        ];
+
+        // Example of a failure return
+        // return ['success' => false, 'error_details' => 'error message'];
+    }
+}

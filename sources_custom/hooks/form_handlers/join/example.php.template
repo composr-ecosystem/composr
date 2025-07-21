@@ -1,0 +1,27 @@
+/**
+ * Hook class.
+ */
+class Hook_form_handlers_join_example
+{
+    /**
+     * Trigger run when a member joins the site.
+     * This only runs when someone joins, not when an account is manually created.
+     *
+     * @param  MEMBER $member_id The ID of the new member
+     * @param  SHORT_TEXT $username The username of the new member
+     * @param  SHORT_TEXT $email_address The e-mail address of the new member
+     * @param  ?integer $dob_day The member's day of birth (null: not specified)
+     * @param  ?integer $dob_month The member's month of birth (null: not specified)
+     * @param  ?integer $dob_year The member's year of birth (null: not specified)
+     * @param  array $actual_custom_fields Custom profile fields specified by the member
+     * @param  ID_TEXT $timezone The time zone of the member
+     * @param  BINARY $validated Whether the new member is validated
+     * @param  ID_TEXT $language The language code of the member
+     * @param  BINARY $allow_emails Whether the member is allowing other members to e-mail them
+     * @param  BINARY $allow_emails_from_staff Whether the member is allowing e-mails from staff
+     * @param  SHORT_TEXT $ip_address The IP address from which the member joined
+     */
+    public function run(int $member_id, string $username, string $email_address, ?int $dob_day, ?int $dob_month, ?int $dob_year, array $actual_custom_fields, string $timezone, int $validated, string $language, int $allow_emails, int $allow_emails_from_staff, string $ip_address)
+    {
+    }
+}

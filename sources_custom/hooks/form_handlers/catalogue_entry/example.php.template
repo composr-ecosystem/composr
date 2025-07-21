@@ -1,0 +1,66 @@
+/**
+ * Hook class.
+ */
+class Hook_form_handlers_catalogue_entry_example
+{
+    /**
+     * Trigger run after a catalogue entry is added.
+     * This function is optional.
+     *
+     * @param  AUTO_LINK $id The ID of the new catalogue entry
+     * @param  AUTO_LINK $category_id The ID of the category that the entry is in
+     * @param  ID_TEXT $catalogue_name The name of the catalogue in which this entry is located
+     * @param  BINARY $validated Whether the entry has been validated
+     * @param  LONG_TEXT $notes Hidden notes pertaining to the entry
+     * @param  BINARY $allow_rating Whether the entry may be rated
+     * @param  SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style)
+     * @param  BINARY $allow_trackbacks Whether the entry may be trackbacked
+     * @param  array $map A map of field IDs, to values, that defines the entries settings
+     * @param  TIME $time The time the entry was added
+     * @param  MEMBER $submitter The entries submitter
+     * @param  ?TIME $edit_date The edit time (null: never)
+     * @param  integer $views The number of views
+     * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: not edited)
+     * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: not edited)
+     */
+    public function add(int $id, int $category_id, string $catalogue_name, int $validated, string $notes, int $allow_rating, int $allow_comments, int $allow_trackbacks, array $map, int $time, int $submitter, ?int $edit_date, int $views, ?string $meta_keywords, ?string $meta_description)
+    {
+    }
+
+    /**
+     * Trigger run after a catalogue entry is edited.
+     * This function is optional.
+     *
+     * @param  AUTO_LINK $id The ID of the entry being edited
+     * @param  AUTO_LINK $category_id The ID of the category that the entry is in
+     * @param  ID_TEXT $catalogue_name The name of the catalogue in which this entry is located
+     * @param  BINARY $validated Whether the entry has been validated
+     * @param  LONG_TEXT $notes Hidden notes pertaining to the entry
+     * @param  BINARY $allow_rating Whether the entry may be rated
+     * @param  SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style)
+     * @param  BINARY $allow_trackbacks Whether the entry may be trackbacked
+     * @param  array $map A map of field IDs, to values, that defines the entries settings
+     * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: keywords and descriptions were not changed)
+     * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: keywords and descriptions were not changed)
+     * @param  ?TIME $edit_time Edit time (null: either means current time, or if $null_is_literal, means reset to to null)
+     * @param  ?TIME $add_time Add time (null: not changed)
+     * @param  ?integer $views Number of views (null: not changed)
+     * @param  ?MEMBER $submitter Submitter (null: not changed)
+     * @param  boolean $null_is_literal Whether null parameters mean literally use null in the database (if supported) instead of do not change
+     */
+    public function edit(int $id, int $category_id, string $catalogue_name, int $validated, string $notes, int $allow_rating, int $allow_comments, int $allow_trackbacks, array $map, ?string $meta_keywords, ?string $meta_description, ?int $edit_time, ?int $add_time, ?int $views, ?int $submitter, bool $null_is_literal)
+    {
+    }
+
+    /**
+     * Trigger run after a catalogue entry is deleted.
+     * This function is optional.
+     *
+     * @param  AUTO_LINK $id The ID of the catalogue entry which was deleted
+     * @param  AUTO_LINK $old_category_id The ID of the category in which the deleted entry existed
+     * @param  ID_TEXT $catalogue_name The name of the catalogue in which the deleted entry existed
+     */
+    public function delete(int $id, int $old_category_id, string $catalogue_name)
+    {
+    }
+}

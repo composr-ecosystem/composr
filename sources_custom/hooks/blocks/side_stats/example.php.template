@@ -1,0 +1,15 @@
+/**
+ * Hook class.
+ */
+class Hook_stats_example
+{
+    /**
+     * Show a stats section.
+     *
+     * @return Tempcode The result of execution
+     */
+    public function run() : object
+    {
+        return new Tempcode();
+    }
+}
