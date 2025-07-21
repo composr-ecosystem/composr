@@ -71,6 +71,7 @@ test_a
 /*.geany
 /.project
 /.settings
+/.fleet
 /.buildpath
 /data_custom/latest_activity.bin
 /data_custom/installer_step_8.bin
