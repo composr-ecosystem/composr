@@ -1155,7 +1155,7 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
     }
 
     require_code('content2');
-    if (($meta_keywords == '') && ($meta_description == '')) {
+    if (($meta_keywords === '') && ($meta_description === '')) {
         $seo_source_map__specific = get_value('catalogue_seo_source_map__' . $catalogue_name);
         if ($seo_source_map__specific !== null) {
             $seo_source_map = [];
@@ -1178,8 +1178,9 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
             }
         }
 
-        seo_meta_set_for_implicit('catalogue_entry', strval($id), $seo_source_map, $meta_description);
-    } else {
+        // NB: We need to populate this into $meta_keywords for use in form_handlers hooks
+        $meta_keywords = seo_meta_set_for_implicit('catalogue_entry', strval($id), $seo_source_map, $meta_description);
+    } elseif (($meta_keywords !== null) && ($meta_description !== null)) {
         seo_meta_set_for_explicit('catalogue_entry', strval($id), $meta_keywords, $meta_description);
     }
 
@@ -1216,7 +1217,7 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
         if (!method_exists($ob, 'add')) {
             continue;
         }
-        $ob->add($id, $category_id, $catalogue_name, $validated, $notes, $allow_comments, $allow_trackbacks, $map, $time, $submitter, $edit_date, $views, $meta_keywords, $meta_description);
+        $ob->add($id, $category_id, $catalogue_name, $validated, $notes, $allow_rating, $allow_comments, $allow_trackbacks, $map, $time, $submitter, $edit_date, $views, $meta_keywords, $meta_description);
     }
 
     reorganise_uploads__catalogue_entries(['ce_id' => $id]);
@@ -1247,13 +1248,13 @@ function actual_add_catalogue_entry(int $category_id, int $validated, string $no
  * @param  SHORT_INTEGER $allow_comments Whether comments are allowed (0=no, 1=yes, 2=review style)
  * @param  BINARY $allow_trackbacks Whether the entry may be trackbacked
  * @param  array $map A map of field IDs, to values, that defines the entries settings
- * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit)
- * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit)
+ * @param  ?SHORT_TEXT $meta_keywords Meta keywords for this resource (null: do not edit keywords or description)
+ * @param  ?LONG_TEXT $meta_description Meta description for this resource (null: do not edit keywords or description)
  * @param  ?TIME $edit_time Edit time (null: either means current time, or if $null_is_literal, means reset to to null)
  * @param  ?TIME $add_time Add time (null: do not change)
  * @param  ?integer $views Number of views (null: do not change)
  * @param  ?MEMBER $submitter Submitter (null: do not change)
- * @param  boolean $null_is_literal Determines whether some nulls passed mean 'use a default' or literally mean 'set to null
+ * @param  boolean $null_is_literal Whether null parameters mean literally use null in the database (if supported) instead of do not change
  */
 function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, string $notes, int $allow_rating, int $allow_comments, int $allow_trackbacks, array $map, ?string $meta_keywords = '', ?string $meta_description = '', ?int $edit_time = null, ?int $add_time = null, ?int $views = null, ?int $submitter = null, bool $null_is_literal = false)
 {
@@ -1373,7 +1374,10 @@ function actual_edit_catalogue_entry(int $id, int $category_id, int $validated, 
     suggest_new_idmoniker_for('catalogues', 'entry', strval($id), '', strip_comcode($title));
 
     require_code('content2');
-    seo_meta_set_for_explicit('catalogue_entry', strval($id), $meta_keywords, $meta_description);
+
+    if (($meta_keywords !== null) && ($meta_description !== null)) {
+        seo_meta_set_for_explicit('catalogue_entry', strval($id), $meta_keywords, $meta_description);
+    }
 
     $self_url = build_url(['page' => 'catalogues', 'type' => 'entry', 'id' => $id], get_module_zone('catalogues'), [], false, false, true);
 
