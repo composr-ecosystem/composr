@@ -56,6 +56,7 @@ class ComposrPlugin extends MantisPlugin {
     protected $cms_sc_session_cookie_name = 'cms_session';
     protected $cms_sc_cookie_domain = '';
     protected $cms_sc_cookie_path = '';
+    protected $cms_session_id = '';
     protected $cms_file_base = __DIR__ . '/../../../';
 
     function register()
@@ -295,41 +296,52 @@ class ComposrPlugin extends MantisPlugin {
 
     function event_core_ready()
     {
-        // Composr - try session authentication
         require_api('authentication_api.php');
         require_api('database_api.php');
         require_api('user_api.php');
+        require_api('gpc_api.php');
 
         global $g_script_login_cookie, $g_cache_anonymous_user_cookie_string, $g_db, $g_window_title;
 
-        if ((isset($_COOKIE[$this->cms_sc_session_cookie_name])) && (isset($g_db)))
-        {
-            $query = 'SELECT member_id FROM ' . $this->cms_sc_db_prefix . 'sessions WHERE the_session=\'' . db_prepare_binary_string($_COOKIE[$this->cms_sc_session_cookie_name]) . '\'';
-            $result = db_query($query);
+        if (!isset($g_db)) {
+            return;
+        }
 
-            if (1 == db_num_rows($result)) {
-                $user = db_result($result);
-                user_cache_row($user);
+        // Determine what our Session ID is
+        $this->cms_session_id = gpc_get_string('keep_session', '');
+        if ($this->cms_session_id == '') {
+            if (!isset($_COOKIE[$this->cms_sc_session_cookie_name])) {
+                return;
+            }
+            $this->cms_session_id = $_COOKIE[$this->cms_sc_session_cookie_name];
+        }
 
-                $t_query = 'SELECT u.id,u.cookie_string
-							FROM '.$this->cms_sc_db_prefix.'f_members m
-							LEFT JOIN '.$this->cms_sc_db_prefix.'f_member_custom_fields f ON f.mf_member_id=m.id
-							LEFT JOIN ' . db_get_table('user') . ' u ON u.username=m.m_username
-							WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->cms_extra_signin_sql;
-                $t_result = db_query($t_query);
-                if ($t_row = db_fetch_array($t_result)) {
-                    $t_cookie = $t_row['cookie_string'];
+        // Try authorizing with the CMS
+        $query = 'SELECT member_id FROM ' . $this->cms_sc_db_prefix . 'sessions WHERE the_session=\'' . db_prepare_binary_string($this->cms_session_id) . '\'';
+        $result = db_query($query);
 
-                    $g_cache_anonymous_user_cookie_string = $t_cookie;
-                    current_user_set((int)$t_row['id']);
+        if (1 == db_num_rows($result)) {
+            $user = db_result($result);
+            user_cache_row($user);
 
-                    // Update the session
-                    $query = 'UPDATE ' . $this->cms_sc_db_prefix . 'sessions SET last_activity_time=' . db_param() . ', the_zone=' . db_param() . ', the_page=' . db_param() . ', the_type=' . db_param() . ', the_id=' . db_param() . ', the_title=' . db_param() . ' WHERE the_session=' . db_param();
-                    db_query($query, [time(), '', '', '', '', $g_window_title, $_COOKIE[$this->cms_sc_session_cookie_name]]);
+            $t_query = 'SELECT u.id,u.cookie_string
+FROM '.$this->cms_sc_db_prefix.'f_members m
+LEFT JOIN '.$this->cms_sc_db_prefix.'f_member_custom_fields f ON f.mf_member_id=m.id
+LEFT JOIN ' . db_get_table('user') . ' u ON u.username=m.m_username
+WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->cms_extra_signin_sql;
+            $t_result = db_query($t_query);
+            if ($t_row = db_fetch_array($t_result)) {
+                $t_cookie = $t_row['cookie_string'];
 
-                    // This line ensures that the fetched cookie is used in auth_get_current_user_cookie()
-                    $g_script_login_cookie = $t_cookie;
-                }
+                $g_cache_anonymous_user_cookie_string = $t_cookie;
+                current_user_set((int)$t_row['id']);
+
+                // Update the session
+                $query = 'UPDATE ' . $this->cms_sc_db_prefix . 'sessions SET last_activity_time=' . db_param() . ', the_zone=' . db_param() . ', the_page=' . db_param() . ', the_type=' . db_param() . ', the_id=' . db_param() . ', the_title=' . db_param() . ' WHERE the_session=' . db_param();
+                db_query($query, [time(), '', '', '', '', $g_window_title, $this->cms_session_id]);
+
+                // This line ensures that the fetched cookie is used in auth_get_current_user_cookie()
+                $g_script_login_cookie = $t_cookie;
             }
         }
     }
@@ -536,7 +548,7 @@ class ComposrPlugin extends MantisPlugin {
 
         $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($p_sponsorship->id) . '?';
         $map = [
-            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'keep_session' => $this->cms_session_id,
             'type' => ($p_sponsorship->id == 0) ? 'add' : 'edit',
             'bug_id' => strval($p_sponsorship->bug_id),
             'user_id' => strval($p_sponsorship->user_id),
@@ -574,7 +586,7 @@ class ComposrPlugin extends MantisPlugin {
 
         $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($sponsorship_id) . '?';
         $map = [
-            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'keep_session' => $this->cms_session_id,
             'type' => 'delete',
             'bug_id' => strval($bug_id),
         ];
@@ -606,7 +618,7 @@ class ComposrPlugin extends MantisPlugin {
 
         $url = $this->cms_sc_endpoint_url . 'tracker_sponsorship/' . strval($bug_id) . '?';
         $map = [
-            'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+            'keep_session' => $this->cms_session_id,
             'type' => 'delete-all',
             'reason' => 'The issue was deleted'
         ];
@@ -642,7 +654,7 @@ class ComposrPlugin extends MantisPlugin {
             switch ($new_bug->status) {
                 case 80: // Resolved
                     $map = [
-                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'keep_session' => $this->cms_session_id,
                         'type' => 'complete-all',
                         'recipient' => strval($new_bug->handler_id),
                         'reporter' => strval($new_bug->reporter_id),
@@ -654,7 +666,7 @@ class ComposrPlugin extends MantisPlugin {
 
                     $response = $this->url_get($url);
                     if ($response === null) {
-                        trigger_error('Error communicating the completion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error communicating the completion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
 
                     $data = @json_decode($response, true);
@@ -662,13 +674,13 @@ class ComposrPlugin extends MantisPlugin {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }
-                        trigger_error('Error completing the sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error completing the sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
 
                     break;
                 case 90: // Closed
                     $map = [
-                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'keep_session' => $this->cms_session_id,
                         'type' => 'delete-all',
                         'reason' => 'The issue was closed'
                     ];
@@ -679,7 +691,7 @@ class ComposrPlugin extends MantisPlugin {
 
                     $response = $this->url_get($url);
                     if ($response === null) {
-                        trigger_error('Error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error communicating the deletion of sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
 
                     $data = @json_decode($response, true);
@@ -687,13 +699,13 @@ class ComposrPlugin extends MantisPlugin {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }
-                        trigger_error('Error deleting the sponsorships with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error deleting the sponsorships with ' . $this->cms_sc_site_name, ERROR );
                     }
                     break;
 
                 default:
                     $map = [
-                        'keep_session' => $_COOKIE[$this->cms_sc_session_cookie_name],
+                        'keep_session' => $this->cms_session_id,
                         'type' => 'reopen-all',
                     ];
                     foreach ($map as $key => $value) {
@@ -703,7 +715,7 @@ class ComposrPlugin extends MantisPlugin {
 
                     $response = $this->url_get($url);
                     if ($response === null) {
-                        trigger_error('Error communicating the reversal of issue points with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error communicating the reversal of issue points with ' . $this->cms_sc_site_name, ERROR );
                     }
 
                     $data = @json_decode($response, true);
@@ -711,7 +723,7 @@ class ComposrPlugin extends MantisPlugin {
                         if (isset($data['error_details'])) {
                             trigger_error($data['error_details'], ERROR );
                         }
-                        trigger_error('Error reversing issue points with ' . $this->cms_sc_site_name, ERROR );
+                        trigger_error('Unknown error reversing issue points with ' . $this->cms_sc_site_name, ERROR );
                     }
             }
         }
