@@ -55,8 +55,9 @@ class Hook_config_valid_images
         if (function_exists('imagecreatefrombmp')) {
             $ret .= ',bmp';
         }
+        if (function_exists('imagecreatefromwebp')) {
+            $ret .= ',webp';
+        }
         return $ret;
-        // webp is not really websafe.
-        // This encodes what we may *upload*. See the is_image function for explicitly hard-coded checks of what constitutes valid images in different situations.
     }
 }

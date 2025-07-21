@@ -561,4 +561,28 @@ class Hook_addon_registry_core_configuration
             'SERVICES' => $services,
         ]), null, '', true);
     }
+
+    /**
+     * Install the addon.
+     *
+     * @param  ?float $upgrade_major_minor From what major/minor version we are upgrading (null: new install)
+     * @param  ?integer $upgrade_patch From what patch version of $upgrade_major_minor we are upgrading (null: new install)
+     */
+    public function install(?float $upgrade_major_minor = null, ?int $upgrade_patch = null)
+    {
+        // LEGACY: 11.0.3 (Composr 11 beta8); WEBP should be marked as a valid image type now if PHP supports it.
+        if (
+            (($upgrade_major_minor !== null) && ($upgrade_major_minor < 11.0)) ||
+            (($upgrade_patch !== null) && (($upgrade_major_minor == 11.0) && ($upgrade_patch < 3)))
+        ) {
+            require_code('config');
+            require_code('config2');
+
+            $valid_images = get_option('valid_images');
+            if (function_exists('imagecreatefromwebp') && (strpos($valid_images, 'webp') === false)) {
+                $valid_images .= ',webp';
+                set_option('valid_images', $valid_images);
+            }
+        }
+    }
 }
