@@ -66,7 +66,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
         }
 
         if ($type == 'edit') {
-            $escrow_id = escrow_edit_sponsorship($id, $bug_id, $amount);
+            $escrow_id = escrow_edit_sponsorship(intval($id), $bug_id, $amount);
             if ($escrow_id !== null) {
                 return ['success' => true, 'id' => $escrow_id];
             }
@@ -74,7 +74,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
         }
 
         if ($type == 'delete') {
-            $ledger_id = escrow_cancel_sponsorship($id);
+            $ledger_id = escrow_cancel_sponsorship(intval($id));
             if ($ledger_id === null) {
                 return ['success' => false, 'error_details' => 'Could not cancel the escrow / refund the points of the sponsorship.'];
             }
@@ -83,7 +83,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
 
         if ($type == 'delete-all') { // $id is the bug ID
             $reason = get_param_string('reason');
-            $results = escrow_cancel_all_sponsorships($id, $reason);
+            $results = escrow_cancel_all_sponsorships(intval($id), $reason);
             if ($results[1] === false) {
                 return ['success' => false, 'error_details' => 'Could not cancel all the escrows / refund the points of the sponsorships. Note that it is possible some were cancelled, but not all.'];
             }
@@ -98,12 +98,12 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
                 return ['success' => false, 'error_details' => 'A recipient / issue handler must be assigned to complete the sponsorships.'];
             }
 
-            $results = escrow_complete_all_sponsorships($id, $recipient);
+            $results = escrow_complete_all_sponsorships(intval($id), $recipient);
             if ($results[1] === false) {
                 return ['success' => false, 'error_details' => 'Could not mark all escrows completed and award the points. Note that some may have been marked completed, but not all. Also note that basic tracker points have not been awarded due to this error.'];
             }
 
-            $tracker_points = award_tracker_points($id, $reporter, $recipient);
+            $tracker_points = award_tracker_points(intval($id), $reporter, $recipient);
             if ($tracker_points === false) {
                 return ['success' => false, 'error_details' => 'Could not award points for resolved tracker issue. Note that sponsorships have been awarded if there were any.'];
             }
@@ -113,7 +113,7 @@ class Hook_endpoint_cms_homesite_tracker_sponsorship
 
         if ($type == 'reopen-all') { // $id is the bug ID
             // When re-opening issues, reverse the baseline points awarded
-            reverse_tracker_points($id);
+            reverse_tracker_points(intval($id));
             return ['success' => true];
         }
 
