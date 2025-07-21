@@ -209,7 +209,7 @@ function attach_message($message, string $type = 'inform', bool $put_in_helper_p
     // We wait until after checking if the message was already shown before counting towards infinite loop to prevent premature terminations
     check_for_infinite_loop('attach_message', [$message_eval], 2);
 
-    $ATTACHED_MESSAGES_RAW[$message_hash] = true;
+    $ATTACHED_MESSAGES_RAW[$message_hash] = [$message_eval, $type];
 
     if ($log_error) {
         require_code('urls');

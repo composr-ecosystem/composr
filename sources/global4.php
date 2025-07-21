@@ -683,7 +683,7 @@ function _log_it(string $type, ?string $a = null, ?string $b = null, ?int $relat
 
     // Notification
     require_code('actionlog');
-    if ((!get_mass_import_mode()) && ($ADMIN_ACTIONLOG_ON) && ((get_handler_flags($type) & ACTIONLOG_FLAG__GDPR) == 0)) {
+    if ((!get_mass_import_mode()) && ($ADMIN_ACTIONLOG_ON) && ((get_actionlog_handler_flags($type) & ACTIONLOG_FLAG__GDPR) == 0)) {
         if ($logged < 10) { // Be extra sure it's not some kind of import, causing spam
             if (addon_installed('actionlog')) {
                 if (do_lang($type, null, null, null, null, false) === null) {

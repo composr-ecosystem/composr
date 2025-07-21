@@ -61,6 +61,12 @@ class Hook_media_rendering_image_websafe
         if ($mime_type == 'image/jpeg') {
             return MEDIA_RECOG_PRECEDENCE_HIGH;
         }
+        if ($mime_type == 'image/bmp') {
+            return MEDIA_RECOG_PRECEDENCE_HIGH;
+        }
+        if ($mime_type == 'image/webp') {
+            return MEDIA_RECOG_PRECEDENCE_HIGH;
+        }
         return MEDIA_RECOG_PRECEDENCE_NONE;
     }
 

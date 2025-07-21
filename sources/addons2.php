@@ -369,7 +369,7 @@ function find_available_addons(bool $installed_too = true, bool $hash_and_mtime 
 /**
  * Find the non-bundled addons available on the homesite.
  *
- * @return array Map of addon ID to addon title, could be empty if an error occurred
+ * @return array Map of addon download ID to addon title, could be empty if an error occurred
  */
 function find_remote_addons() : array
 {
@@ -377,9 +377,12 @@ function find_remote_addons() : array
     if (!empty($addons)) {
         return $addons; // Caching
     }
+
+    // Actually we use the AJAX tree to do this; the choose download hook will make the actual web call to the homesite
     $stub = (get_param_integer('localhost', 0) == 1) ? get_base_url() : get_brand_base_url();
     $v = 'Version ' . float_to_raw_string(cms_version_number(), 2, true);
     $url = $stub . '/data/ajax_tree.php?hook=choose_download&id=' . urlencode($v) . '&file_type=tar&full_depth=1';
+
     $contents = http_get_contents($url, ['convert_to_internal_encoding' => true, 'trigger_error' => false]);
     if ($contents !== null) {
         $matches = [];
@@ -451,7 +454,7 @@ function find_addon_dependencies_on(string $addon_name) : array
     // From DB
     $list_a = collapse_1d_complexity('addon_name', $GLOBALS['SITE_DB']->query_select('addons_dependencies', ['addon_name'], ['addon_name_dependant_upon' => $addon_name, 'addon_name_incompatibility' => 0], 'ORDER BY addon_name'));
 
-    // From core addons
+    // From addon hooks
     static $software_addon_dep_cache = null;
     if ($software_addon_dep_cache === null) {
         $software_addon_dep_cache = [];
@@ -629,7 +632,9 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
             ]));
         }
     }
+
     tar_close($tar);
+
     $chmod = new Tempcode();
     $root_chmod = false;
     foreach (array_keys($dirs) as $dir) {
@@ -668,7 +673,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
     }
 
     // Non-core addon
-    if ($info['author'] != 'Core Team') {
+    if ($info['author'] != 'Core Development Team') {
         static $done_non_core_warn = false;
         if (!$done_non_core_warn) {
             $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => 'dd66b2c540908de60753a1ced73b8ac0', 'WARNING' => do_lang_tempcode('ADDON_WARNING_GENERAL')]));
@@ -720,7 +725,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
         $_dependencies_str->attach($in_tpl);
     }
     if (!empty($dependencies)) {
-        if (($info['author'] == 'Core Team') && (!$always_return)) {
+        if (($info['author'] == 'Core Development Team') && (!$always_return)) {
             $post_fields = build_keep_post_fields();
             foreach ($dependencies as $in) {
                 $post_fields->attach(form_input_hidden('install_' . $in . '.tar', $in . '.tar'));
@@ -740,7 +745,7 @@ function inform_about_addon_install(string $file, array $also_uninstalling = [],
     }
 
     //if (!$overwrite->is_empty()) $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => 'fe40ed8192a452a835be4c0fde64406b', 'WARNING' => do_lang_tempcode('ADDON_WARNING_OVERWRITE', escape_html($overwrite], escape_html($file)))));
-    if ($info['author'] != 'Core Team') {
+    if ($info['author'] != 'Core Development Team') {
         if ($php) {
             $warnings->attach(do_template('ADDON_INSTALL_WARNING', ['_GUID' => '8cf249a119d10b2e97fc94cb9981dcea', 'WARNING' => do_lang_tempcode('ADDON_WARNING_PHP', escape_html($file))]));
         }
@@ -766,7 +771,8 @@ function has_feature(string $dependency) : bool
     $dependency = str_replace(' ', '', cms_strtolower_ascii(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
 
     $remapping = [ // LEGACY: Useful for carrying legacy remappings
-        'unvalidated' => 'validation'
+        'unvalidated' => 'validation',
+        'imap' => 'core_imap',
     ];
     if (array_key_exists($dependency, $remapping)) {
         $dependency = $remapping[$dependency];
@@ -1444,7 +1450,7 @@ function inform_about_addon_uninstall(string $addon_name, array $also_uninstalli
         $_dependencies_str->attach(escape_html($in));
     }
     if (!empty($dependencies)) {
-        if (($addon_info['author'] == 'Core Team') && (!$always_return)) {
+        if (($addon_info['author'] == 'Core Development Team') && (!$always_return)) {
             $post_fields = build_keep_post_fields();
             foreach ($dependencies as $in) {
                 $post_fields->attach(form_input_hidden('uninstall_' . $in, $in));

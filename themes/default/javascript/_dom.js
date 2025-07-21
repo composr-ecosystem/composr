@@ -2786,8 +2786,14 @@
                             if (!el.src && jsTypeRE.test(el.type)) {
                                 var win = el.ownerDocument ? el.ownerDocument.defaultView : window;
                                 (function () {
-                                    // eslint-disable-next-line no-eval
-                                    eval(el.innerHTML); // eval() call
+                                    // Clone to a new script element
+                                    var newScript = document.createElement('script');
+                                    Array.from(el.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                                    newScript.textContent = el.innerHTML;
+
+                                    if (el.parentNode) {
+                                        el.parentNode.replaceChild(newScript, el);
+                                    }
                                 }).call(win); // Set `this` context for eval
                             }
                         });

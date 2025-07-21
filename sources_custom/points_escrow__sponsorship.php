@@ -96,7 +96,7 @@ function escrow_cancel_sponsorship(int $escrow_id) : ?int
  */
 function escrow_cancel_all_sponsorships(int $bug_id, string $reason) : array
 {
-    $ids = cancel_all_escrows_by_content('tracker_issue', $bug_id, $reason);
+    $ids = cancel_all_escrows_by_content('tracker_issue', strval($bug_id), $reason);
     $success = true;
     foreach ($ids as $id => $value) {
         if ($value === null) {
@@ -121,7 +121,7 @@ function escrow_complete_all_sponsorships(int $bug_id, int $recipient) : array
         return [[], false];
     }
 
-    $ids = complete_all_escrows_by_content($recipient, 'tracker_issue', $bug_id);
+    $ids = complete_all_escrows_by_content($recipient, 'tracker_issue', strval($bug_id));
     $success = true;
     foreach ($ids as $id => $value) {
         if ($value[0] === null) {

@@ -5496,12 +5496,8 @@ socket_addrinfo_explain
 stream_isatty
 imagecreatefrombmp
 imagebmp
-
-GD stuff that's not on by default...
-
 imagecreatefromwebp
 imagewebp
-
 
 // ---
 

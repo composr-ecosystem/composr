@@ -118,7 +118,7 @@ function download_backup_file_script()
  * @param  resource $install_php_file File to write in to
  * @param  ?mixed $callback Callback to run on each iteration (null: none)
  */
-function get_table_backup($log_file, string $db_meta, string $db_meta_indices, $install_php_file, $callback = null)
+function make_table_backup($log_file, string $db_meta, string $db_meta_indices, $install_php_file, $callback = null)
 {
     push_db_scope_check(false);
 
@@ -313,7 +313,7 @@ function make_backup(string $file, string $b_type = 'full', int $max_size = 100,
 //        'i_fields' => 'LONG_TEXT',
 //    ]);
 ");
-    get_table_backup($log_file, 'db_meta', 'db_meta_indices', $install_data_php_file, $callback);
+    make_table_backup($log_file, 'db_meta', 'db_meta_indices', $install_data_php_file, $callback);
 
     fclose($install_data_php_file);
 

@@ -273,7 +273,7 @@ class Hook_admin_stats_actionlogs extends CMSStatsProvider
     {
         require_code('actionlog');
 
-        $flags = get_handler_flags($type);
+        $flags = get_actionlog_handler_flags($type);
 
         // Do not count GDPR towards the statistics regardless of stat
         if (($flags & ACTIONLOG_FLAG__GDPR) != 0) {

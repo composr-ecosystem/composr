@@ -316,7 +316,7 @@ function _captcha_image_fallback(string $code_needed) : array
 }
 
 /**
- * Create an audio CATCHA.
+ * Create an audio CAPTCHA.
  *
  * @param  string $code_needed The code
  * @return string the audio CAPTCHA data

@@ -35,7 +35,7 @@ function init__actionlog()
 }
 
 /**
- * Base action log class.
+ * Base action log class extended by action log hooks.
  * Used for ameliorating action log entries.
  *
  * @package core_notifications
@@ -246,7 +246,7 @@ abstract class Hook_actionlog
  * @param  ID_TEXT $the_type Action log type
  * @return integer Flags
  */
-function get_handler_flags(string $the_type) : int
+function get_actionlog_handler_flags(string $the_type) : int
 {
     static $hook_obs = null;
     if ($hook_obs === null) {

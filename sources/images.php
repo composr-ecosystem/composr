@@ -445,7 +445,7 @@ function is_image(string $name, int $criteria, bool $as_admin = false, bool $mim
         if (($ext == 'gif') && (($gd & IMG_GIF) != 0) && (function_exists('imagecreatefromgif'))) {
             $found = true;
         }
-        if (($ext == 'webp') && (function_exists('imagecreatefromwebp')/* https://bugs.php.net/bug.php?id=72596 */)) {
+        if (($ext == 'webp') && (defined('IMG_WEBP')) && (($gd & IMG_WEBP) != 0) && (function_exists('imagecreatefromwebp'))) {
             $found = true;
         }
         if (($ext == 'bmp') && (defined('IMG_BMP')) && (($gd & IMG_BMP) != 0)) {
