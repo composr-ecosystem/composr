@@ -182,6 +182,18 @@ You may or may not agree with the particular current coding standards within Com
 
 Of course, with all things, a sense of balance is important. An instinct/habit for quality should not need to come at the cost of maintaining a productivity. And, all things that are engineered have to be subject to trade-off of competing concerns, rather than rigid standards that may not be appropriate in certain very specific situations.
 
+[title="2"]Artificial Intelligence (AI)[/title]
+At the time of this writing, AI is spreading rapidly. Many developers now utilise AI in their development workflows. It is important for us to define our position and standards on the use of AI within the Composr codebase.
+
+The core development team acknowledges the benefits of using AI to help developers debug errors / code and to think about concepts in new ways. As such, we are not against using AI when working on Composr. However, it is important to recognize the following limitations:
+ - AI does not have an understanding of Composr coding standards; any example code which is output will likely violate our coding standards and need revised
+ - AI does not understand the nuances of Composr (e.g. Comcode / Tempcode, [tt]phpstub.php[/tt] / custom [tt]cms_*[/tt] functions to wrap PHP ones, code overrides) and may suggest things which will not actually work in the software; you need to carefully consider what AI suggests
+ - AI does not have an understanding of Composr's security practices and may suggest things or code which is not secure (e.g. using [tt]$_POST[/tt] directly instead of [tt]post_param_*[/tt])
+ - AI is subject to 'comment pollution' where, in its example code, it will place an unnecessary amount of comments; you will need to clean this up
+ - AI often trains on code, and may suggest such, which is subject to a licence agreement not compatible with Composr; you must keep this in mind
+
+As such, we do not recommend 'vibe coding' with Composr (using AI to write your code, opposed to only using it to help you think about how to write the code yourself). We also do not recommend using any AI auto-completion tool in your code editor or IDE when working on Composr.
+
 [title="2"]Troubleshooting[/title]
 
 &raquo; See [page="_SEARCH:codebook_3"]Miscellany[/page].
