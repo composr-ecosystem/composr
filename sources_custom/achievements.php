@@ -547,6 +547,12 @@ class Achievements_loader
                     ];
                 }
 
+                // No active qualifications for the group? Unset the group / do not count it towards progress.
+                if (count($this->achievement_progress[$member_id][$achievement]['qualification_groups'][$i]['qualifications']) < 1) {
+                    unset($this->achievement_progress[$member_id][$achievement]['qualification_groups'][$i]);
+                    continue;
+                }
+
                 $this->achievement_progress[$member_id][$achievement]['qualification_groups'][$i]['group_progress'] = $group_progress;
 
                 // Whichever qualification group has the highest progress is the one we consider for the overall achievement progress
@@ -739,7 +745,7 @@ class Achievements_loader
             }
 
             // Determine if we need to add or remove the achievement to the member
-            if ($total_progress[0] >= $total_progress[1]) {
+            if (($total_progress[0] >= $total_progress[1]) && ($total_progress[1] > 0)) {
                 if ($this->achievements[$achievement]['readOnly'] === false) {
                     $this->award_achievement($achievement, $member_id);
                 }
