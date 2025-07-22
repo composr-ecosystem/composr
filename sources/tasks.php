@@ -206,10 +206,15 @@ function call_user_func_array__long_task(string $plain_title, ?object $title, st
         $mim_before = get_mass_import_mode();
         $result = call_user_func_array([$ob, 'run'], $args);
         set_mass_import_mode($mim_before);
+
+        // Too aggressive; task hooks should handle erasing cache themselves
+        /*
         if (!$mim_before) {
             require_code('caches3');
             erase_block_cache();
         }
+        */
+
         if ($result === false) {
             $result = [null, do_lang_tempcode('INTERNAL_ERROR', escape_html('2ff9c408d65c440206e47c80e632d1e5'))];
         }
