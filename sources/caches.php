@@ -569,8 +569,10 @@ function erase_persistent_cache()
         closedir($d);
     }
 
+    // Also flush static cache
     erase_static_cache();
 
+    // Also flush failover cache
     require_code('files');
     if (cms_is_writable(get_custom_file_base() . '/data_custom/failover_rewritemap.txt')) {
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
@@ -579,6 +581,10 @@ function erase_persistent_cache()
         cms_file_put_contents_safe(get_custom_file_base() . '/data_custom/failover_rewritemap__mobile.txt', '', FILE_WRITE_FAILURE_SOFT | FILE_WRITE_FIX_PERMISSIONS);
     }
 
+    // Flush database cache
+    $GLOBALS['SITE_DB']->query_delete('cache');
+
+    // Do not continue if we do not have a persistent cache
     global $PERSISTENT_CACHE;
     if ($PERSISTENT_CACHE === null) {
         return;
