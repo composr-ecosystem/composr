@@ -185,14 +185,16 @@ Of course, with all things, a sense of balance is important. An instinct/habit f
 [title="2"]Artificial Intelligence (AI)[/title]
 At the time of this writing, AI is spreading rapidly. Many developers now utilise AI in their development workflows. It is important for us to define our position and standards on the use of AI within the Composr codebase.
 
-The core development team acknowledges the benefits of using AI to help developers debug errors / code and to think about concepts in new ways. As such, we are not against using AI when working on Composr. However, it is important to recognize the following limitations:
+The core development team acknowledges the benefits of using AI to help developers debug errors / code and to think about concepts in new ways. As such, we are not against using AI when working on Composr. In fact, it is used to a small degree by the core developer team. However, it is important to recognize the following limitations:
  - AI does not have an understanding of Composr coding standards; any example code which is output will likely violate our coding standards and need revised
  - AI does not understand the nuances of Composr (e.g. Comcode / Tempcode, [tt]phpstub.php[/tt] / custom [tt]cms_*[/tt] functions to wrap PHP ones, code overrides) and may suggest things which will not actually work in the software; you need to carefully consider what AI suggests
  - AI does not have an understanding of Composr's security practices and may suggest things or code which is not secure (e.g. using [tt]$_POST[/tt] directly instead of [tt]post_param_*[/tt])
- - AI is subject to 'comment pollution' where, in its example code, it will place an unnecessary amount of comments; you will need to clean this up
+ - AI is subject to 'comment pollution' where, in its example code, it will place an unnecessary amount of comments; you will need to clean this up and leave only the most necessary ones
  - AI often trains on code, and may suggest such, which is subject to a licence agreement not compatible with Composr; you must keep this in mind
 
-As such, we do not recommend 'vibe coding' with Composr (using AI to write your code, opposed to only using it to help you think about how to write the code yourself). We also do not recommend using any AI auto-completion tool in your code editor or IDE when working on Composr.
+We do not recommend 'vibe coding' with Composr (using AI to write your code, opposed to only using it to help you think about how to write the code yourself). We also do not recommend using AI auto-completion tools in your code editor or IDE without manually reviewing what is filled in.
+
+On the subject of 'understanding', AI 'understands' differently than people do. To understand what you want, AI needs context (data) in the input prompt. This may include instructions, negative instructions (e.g. do not do this), and/or examples. It can also include raw training data, such as providing the Composr coding standards tutorials or the API documentation. Due to the large size of the Composr codebase and coding standards, the amount of context needed for the AI to 'understand' Composr is so large that it may institute many points of failure. This means the output of AI has many chances to misinterpret something, creating a chain reaction of hallucinations and leading to a faulty output. In conclusion, even if you provide an AI the full context of Composr, the above five points still apply; you will need to carefully review what the AI outputs before implementing it into Composr. And edits will still likely be needed.
 
 [title="2"]Troubleshooting[/title]
 
