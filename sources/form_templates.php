@@ -1236,7 +1236,7 @@ function form_input_username_multi($pretty_name, $description, string $name, arr
  * @param  ID_TEXT $name The name which this input field is for
  * @param  string $default The default value for this input field
  * @param  boolean $required Whether this is a required input field
- * @param  boolean $display_only Whether this should not be an actual input field but rather display $description as a paragraph (true: only $pretty_name, $description, $name, and $tabindex are considered)
+ * @param  boolean $display_only Whether this should not be an actual input field but rather display $description as a paragraph (true: only $pretty_name, $description, $name, $default, and $tabindex are considered)
  * @param  ?integer $tabindex The tab index of the field (null: not specified)
  * @param  boolean $scrolls Whether the field scrolls
  * @param  ?integer $maxlength The maximum length of the field (null: unlimited)
