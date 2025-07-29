@@ -878,7 +878,7 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
         try {
             $t_url = escapeshellarg($p_url);
             $t_data = shell_exec('curl ' . $t_url);
-            if ($t_data !== false) {
+            if (is_string($t_data)) {
                 return $t_data;
             }
         } catch (Exception $e) {

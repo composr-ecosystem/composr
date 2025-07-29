@@ -3,12 +3,18 @@
 {$PARAGRAPH,{!cms_homesite:COMMON_ERRORS_TEXT}}
 
 {+START,LOOP,ERRORS}
-	<h2>{ERROR_MESSAGE*}</h2>
-	{$PARAGRAPH,{$COMCODE,{ERROR_SUMMARY}}}
 
-	<h3>{!HOW_DID_THIS_HAPPEN}</h3>
-	{$PARAGRAPH,{$COMCODE,{ERROR_CAUSE}}}
+{+START,SET,comcode_box}
+[hide="{ERROR_MESSAGE@}"]
+{ERROR_SUMMARY}
 
-	<h3>{!HOW_DO_I_FIX}</h3>
-	{$PARAGRAPH,{$COMCODE,{ERROR_RESOLUTION}}}
+[title="3"]{!HOW_DID_THIS_HAPPEN}[/title]
+{ERROR_CAUSE}
+
+[title="3"]{!HOW_DO_I_FIX}[/title]
+{ERROR_RESOLUTION}
+[/hide]
+{+END}
+	
+	{$COMCODE,{$GET,comcode_box}}
 {+END}
