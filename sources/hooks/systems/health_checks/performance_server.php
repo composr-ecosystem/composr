@@ -565,7 +565,9 @@ class Hook_health_check_performance_server extends Hook_Health_Check
 
             if (strpos(PHP_OS, 'Darwin') !== false) {
                 $data = shell_exec('vm_stat');
-                if (preg_match('#^Pages free:\s*(\d+)#m', $data, $matches) != 0) {
+                if (!is_string($data)) {
+                    $this->stateCheckSkipped('Skipped; command vm_stat not found or does not work');
+                } elseif (preg_match('#^Pages free:\s*(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[1]) * 4 * 1024;
                     if (preg_match('#^Pages inactive:\s*(\d+)#m', $data, $matches) != 0) { // We consider this free. Mac is going to try and use all RAM for something, so we have to use a weird definition
                         $bytes_free += intval($matches[1]) * 4 * 1024;
@@ -573,14 +575,18 @@ class Hook_health_check_performance_server extends Hook_Health_Check
                 }
             } elseif (strpos(PHP_OS, 'Linux') !== false) {
                 $data = shell_exec('free');
-                if (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
+                if (!is_string($data)) {
+                    $this->stateCheckSkipped('Skipped; command free not found or does not work');
+                } elseif (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[6]) * 1024;
                 } elseif (preg_match('#^Mem:\s+(\d+)\s+(\d+)\s+(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[3]) * 1024;
                 }
             } elseif (cms_strtoupper_ascii(substr(PHP_OS, 0, 3)) == 'WIN') {
                 $data = shell_exec('wmic OS get FreePhysicalMemory /Value');
-                if (preg_match('#FreePhysicalMemory=(\d+)#m', $data, $matches) != 0) {
+                if (!is_string($data)) {
+                    $this->stateCheckSkipped('Skipped; command wmic not found or does not work');
+                } elseif (preg_match('#FreePhysicalMemory=(\d+)#m', $data, $matches) != 0) {
                     $bytes_free = intval($matches[1]) * 1024;
                 }
             } else {
