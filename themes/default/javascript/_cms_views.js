@@ -1084,11 +1084,6 @@
                     },
                     revokable: true,
                     type: 'opt-in', // Required by GDPR
-                    onStatusChange: function onStatusChange(status, chosenBefore) {
-                        if (!this.hasConsented()) {
-
-                        }
-                    }
                 };
 
                 if ($cms.getCountry()) {
@@ -1283,7 +1278,7 @@
         /* Software Chat */
         loadSoftwareChat: function () {
             $cms.ui.encryptData('Grant me le accezz 2 de chat!').then(function (encryptedData) {
-                if (encryptedData == '') {
+                if (encryptedData === '') {
                     return;
                 }
 

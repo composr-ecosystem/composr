@@ -747,7 +747,6 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
     }
 
     // TODO: antispam measure that is more effective than renaming bugnote_text (does not stop paid human spammers)
-    // TODO: Prevent guests from editing guest issues
 
     /**
      * Retrieve the contents of a remote URL (better than MantisBT's built-in method).
@@ -766,18 +765,23 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
             try {
                 $t_curl = curl_init($p_url);
 
+                // Use a common browser User-Agent and headers to reduce the risk of a Cloudflare challenge
+                $browser_user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+                $headers = [
+                    'Accept: text/html,application/xhtml+xml,application/xml,application/json',
+                    'Accept-Language: en-US,en;q=0.9',
+                ];
+
                 $t_curl_opt = array(
                     CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_FOLLOWLOCATION  => true, // Follow redirects
-                    CURLOPT_MAXREDIRS      => 3,     // Limit the number of redirections
-                    CURLOPT_TIMEOUT        => 5,     // Timeout in seconds
-                    CURLOPT_CONNECTTIMEOUT => 5      // Connection timeout in seconds
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_MAXREDIRS      => 3,
+                    CURLOPT_TIMEOUT        => 5,
+                    CURLOPT_CONNECTTIMEOUT => 5,
+                    CURLOPT_USERAGENT      => $browser_user_agent,
+                    CURLOPT_HTTPHEADER     => $headers,
+                    CURLOPT_REFERER        => $p_url,
                 );
-
-                # Default User Agent (Mantis version + php curl extension version)
-                $t_vers = curl_version();
-                $t_curl_opt[CURLOPT_USERAGENT] =
-                    'mantisbt/' . MANTIS_VERSION . ' php-curl/' . $t_vers['version'];
 
                 # Set the options
                 curl_setopt_array($t_curl, $t_curl_opt);
@@ -874,7 +878,7 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
         try {
             $t_url = escapeshellarg($p_url);
             $t_data = shell_exec('curl ' . $t_url);
-            if ($t_data !== false) {
+            if (is_string($t_data)) {
                 return $t_data;
             }
         } catch (Exception $e) {
