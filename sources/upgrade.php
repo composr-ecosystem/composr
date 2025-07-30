@@ -317,7 +317,6 @@ function upgrade_script()
                         'data/upgrader2.php' => false,
                         'sources/crypt_master.php' => false,
                         'sources/crypt_maintenance.php' => false, // FUDGE: v11
-                        'sources/tar.php' => true, // LEGACY: 10.0.52
                     );
 
                     $must_restart = false;
