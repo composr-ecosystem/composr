@@ -2791,6 +2791,7 @@
                                     Array.from(el.attributes).forEach(function (attr) {
                                         newScript.setAttribute(attr.name, attr.value);
                                     });
+                                    newScript.setAttribute('nonce', $cms.getCspNonce()); // Fix CSP nonce to our current request
                                     newScript.textContent = el.innerHTML;
 
                                     if (el.parentNode) {
