@@ -108,8 +108,8 @@ class addon_guards_test_set extends cms_test_case
             'Hook_media_rendering_\w+' => 'recognises_url',
 
             // Overrides
-            'Hx_import_\w+' => 'info',
-            'Mx_' => 'pre_run',
+            'Hx_\w+' => 'info', // Hook override
+            'Mx_\w+' => 'pre_run', // Module override
         ];
 
         // Function exceptions, defined as a regex of class::function (class is __global if none). Takes priority over class controllers.
@@ -365,7 +365,7 @@ class addon_guards_test_set extends cms_test_case
             'Hook_rss_\w+' => 'has_access', // Careful! Make sure run is calling this.
 
             // Overrides
-            'Hx_import_\w+' => 'info',
+            'Hx_\w+' => 'info',
             'Mx_\w+' => 'pre_run,run,run_start',
         ];
 
