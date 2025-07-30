@@ -126,9 +126,9 @@ function request_via_cron(string $codename, array $map, int $special_cache_flags
  * This will use persistent cache if enabled, else the database.
  *
  * @param  MINIID_TEXT $codename The codename to check for caching
- * @param  integer $ttl The TTL of what is being cached in minutes
+ * @param  integer $ttl The TTL of what is being cached in minutes; this is set directly on the TTL flag for the cache engine
  * @param  LONG_TEXT $cache_identifier The requisite situational information (a serialized map) [-> further restraints when reading]
- * @param  mixed $cache The result we are caching
+ * @param  mixed $cache The result we are caching; do not use null or a boolean
  * @param  integer $special_cache_flags Special cache flags
  * @param  array $_langs_required A list of the language files that need loading to use Tempcode embedded in the cache
  * @param  array $_javascripts_required A list of the javascript files that need loading to use Tempcode embedded in the cache
