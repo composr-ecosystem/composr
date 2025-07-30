@@ -11,13 +11,19 @@
 		<privacy_policy>This is governed by the Data Protection Act 2018 (as modified by GDPR).</privacy_policy>
 	</control>
 
-	<!-- Florida (US) specific: Lockout under 14 (Effective Jan 1, 2025) -->
+	<!-- Lockout: Australia under 16 -->
+	<control name="lockout" age_threshold="16" regions="AU" no_join="1">
+		<message>In line with promoting online safety for young users in Australia under the Online Safety Act 2021, you must be 16 years of age or older to use this site.</message>
+		<privacy_policy>This is guided by the Online Safety Act 2021.</privacy_policy>
+	</control>
+
+	<!-- Florida (US) specific: Lockout under 14 -->
 	<control name="lockout" age_threshold="14" regions="US-FL" no_join="1">
 		<message>Under Florida law (HB3 - 2024), social media accounts are prohibited for children under 14. You are not yet of age.</message>
 		<privacy_policy>This is governed by Florida House Bill 3 (2024) concerning online protections for minors.</privacy_policy>
 	</control>
 
-	<!-- Florida (US) specific: Parental consent for 14-15 year olds (Effective Jan 1, 2025) -->
+	<!-- Florida (US) specific: Parental consent for 14-15 year olds -->
 	<control name="parental_consent" age_threshold="16" regions="US-FL">
 		<mail>Under Florida law (HB3 - 2024), parental consent is required for 14 and 15-year-olds to have social media accounts.</mail>
 		<privacy_policy>This is governed by Florida House Bill 3 (2024) concerning online protections for minors.</privacy_policy>
@@ -33,12 +39,6 @@
 	<control name="parental_consent" age_threshold="16" regions="NZ">
 		<mail>Under New Zealand's Privacy Act 2020 principles regarding the handling of young people's data, parental consent is required for users under the age of 16.</mail>
 		<privacy_policy>This is governed by the Privacy Act 2020.</privacy_policy>
-	</control>
-
-	<!-- Parental Consent: Australia under 16 -->
-	<control name="parental_consent" age_threshold="16" regions="AU">
-		<mail>In line with promoting online safety for young users in Australia under the Online Safety Act 2021, parental consent is required for users under the age of 16.</mail>
-		<privacy_policy>This is guided by the Online Safety Act 2021.</privacy_policy>
 	</control>
 
 	<!-- COPPA compliant: US specific, 13 and under -->
