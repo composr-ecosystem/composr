@@ -93,7 +93,7 @@ extra_logging,Permission/eCommerce/profile logging features,Composr Core Develop
 context,Magic click / context menu features,Composr Core Development Team,,Not regularly tested.,No,
 php,Maintain with new versions of PHP,Composr Core Development Team,Composr Core Development Team,Not regularly tested with versions below 7.4 or above 8.3. Could potentially break due to third-party changes.,No,
 mysql,Maintain with new versions of MySQL,Composr Core Development Team,"PDStig, LLC",Not regularly tested with versions higher than 8.2. Could potentially break due to third-party changes.,No,
-mariadb,Maintain support for MariaDB,Composr Core Development Team,"PDStig, LLC","Not regularly tested with versions above 10.6. Could potentially break due to third-party changes, although they do claim MySQL-compatibility.",No,
+mariadb,Maintain support for MariaDB,Composr Core Development Team,"PDStig, LLC","Not regularly tested with versions above 10.11. Could potentially break due to third-party changes, although they do claim MySQL-compatibility.",No,
 options_hidden,Hidden options,Composr Core Development Team,,Not regularly tested. Mostly intended for developers or very low-level configuration.,No,
 options_dev,Development options in config_editor.php,Composr Core Development Team,,Not regularly tested.,No,
 currency_codes,ISO currencies (internal list),Composr Core Development Team,,Could potentially break due to political changes.,No,async_tests/_api_currency automated test.
