@@ -955,18 +955,15 @@ class Module_admin_push_bugfix
     {
         global $REMOTE_BASE_URL;
 
-        $type = 'GET';
+        $type = 'view';
         $id = null;
         if ($post_params !== null) {
-            $type = 'POST';
+            $type = 'add';
             foreach ($post_params as $key => $param) {
                 if ($key == 'PUT_id') {
-                    $type = 'PUT';
+                    $type = 'edit';
                     $id = $param;
                     unset($post_params['PUT_id']);
-                    if (count($post_params) == 0) {
-                        $post_params = null;
-                    }
                     continue;
                 }
                 if (is_array($param)) {
@@ -992,10 +989,11 @@ class Module_admin_push_bugfix
         if ($id !== null) {
             $call_url .= '/' . urlencode(strval($id));
         }
+        $call_url .= '?type=' . urlencode($type);
 
         $files = ($file === null) ? null : ['upload' => $file];
 
-        $result = cms_http_request($call_url, ['http_verb' => $type, 'post_params' => $post_params, 'files' => $files, 'auth' => $auth, 'trigger_error' => false]);
+        $result = cms_http_request($call_url, ['post_params' => $post_params, 'files' => $files, 'auth' => $auth, 'trigger_error' => false]);
         if (substr($result->message, 0, 1) !== '2') {
             return null;
         }
