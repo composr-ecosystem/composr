@@ -1073,6 +1073,7 @@ class Hook_addon_registry_core
             'sources/hooks/systems/tasks/sitemap.php',
             'sources/hooks/systems/trusted_sites/.htaccess',
             'sources/hooks/systems/trusted_sites/core.php',
+            'sources/hooks/systems/trusted_sites/google_analytics.php',
             'sources/hooks/systems/trusted_sites/index.html',
             'sources/hooks/systems/upload_syndication/.htaccess',
             'sources/hooks/systems/upload_syndication/index.html',

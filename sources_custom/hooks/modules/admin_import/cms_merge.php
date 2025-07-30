@@ -11,8 +11,11 @@
  * @package    cms_homesite
  */
 
- /*FORCE_ORIGINAL_LOAD_FIRST*/
+/*FORCE_ORIGINAL_LOAD_FIRST*/
 
+/**
+ * Hook class.
+ */
 class Hx_import_cms_merge extends Hook_import_cms_merge
 {
     /**
