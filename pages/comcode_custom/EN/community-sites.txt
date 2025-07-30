@@ -11,7 +11,7 @@ The views and opinions expressed on these sites do not reflect the views and opi
 Composr CMS makes it easy for anyone to make any kind of website. You may find sites here without professional designs or with controversial topics.
 [/box]
 
-[block param="3" display_type="GRID" sorting="1" max="12" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+[block param="3" display_type="GRID" sorting="1" max="12" start="0" pagination="1" as_guest="0" check="1" defer="1"]main_cc_embed[/block]
 
 [title="2"]Compliance Requirements[/title]
 Sites containing any of the following types of content anywhere on it are not likely to be featured:

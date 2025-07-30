@@ -7,7 +7,7 @@ This page outlines the current maintenance status of Composr.
 [title="2"]Branch maintenance[/title]
 As based on our policy described in our [page="docs:tut_software_feedback"]Problem and feedback reports, and development policies[/page] tutorial, current Composr branches are maintained as follows (ordered according to latest release date)...
 
-[block]main_version_support[/block]
+[block defer="1"]main_version_support[/block]
 
 Branch statuses:
 [list]
@@ -54,13 +54,13 @@ The table below outlines the current status of features which have an elevated r
 
 If you see a feature here that you would like to sponsor for bug fixes and/or maintenance, consider [page=":partners"]hiring a Composr partner[/page] to do so. Or, if you would like to maintain it yourself, consider [url="making a merge request on our repository"]https://gitlab.com/composr-foundation/composr[/url] for the feature you want to maintain (fixing something or adding a new feature), and then [page=":contact"]contacting us[/page] so we can list you here (choose free options, make a partnership inquiry).
 
-[block]cms_maintenance_status[/block]
+[block defer="1"]cms_maintenance_status[/block]
 
 [title="3"]Non-bundled addons[/title]
 
 The default assumption for non-bundled addons if they are not listed should be that no non-bundled addon is supported to the same level of reliability and quality as Composr itself.
 
-[block include_non_bundled="only"]cms_maintenance_status[/block]
+[block include_non_bundled="only" defer="1"]cms_maintenance_status[/block]
 
 If you want a non-bundled addon receive on-going maintenance you can request to sponsor it. Most non-bundled addons will regardless be supported by critical bug fixes, and automatically updated as Composr APIs change -- but not to the normal expected quality, and not proactively tested.
 

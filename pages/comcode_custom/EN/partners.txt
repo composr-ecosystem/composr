@@ -7,13 +7,13 @@ It is the responsibility of purchasers of services to assess the suitability of 
 
 [title="2"]Companies[/title]
 
-[block="10" cache="0"]main_cc_embed[/block]
+[block="10" cache="0" defer="1"]main_cc_embed[/block]
 
 [title="2"]Individuals[/title]
 
-[block="11" cache="0"]main_cc_embed[/block]
+[block="11" cache="0" defer="1"]main_cc_embed[/block]
 
 [title="2"]Add Your Listing[/title]
 Services must be substantially related to Composr. For example, webhosting that happens to be compatible with Composr would not apply, but webhosting that came with expert Composr support would.
 
-[block="partners" only_one="1"]main_catalogues_form[/block]
+[block="partners" only_one="1" defer="1"]main_catalogues_form[/block]

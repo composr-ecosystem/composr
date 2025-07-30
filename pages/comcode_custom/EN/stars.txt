@@ -5,40 +5,40 @@ Sometimes when someone gives you points, they select a role in relation to the p
 
 [title="2"]Helpful soul[/title]
 Helpful souls are members who are generally helpful around the community.
-[block param="Helpful soul"]main_stars[/block]
+[block param="Helpful soul" defer="1"]main_stars[/block]
 
 [title="2"]Support expert[/title]
 Support experts are members known for giving out great technical support.
-[block param="Support expert"]main_stars[/block]
+[block param="Support expert" defer="1"]main_stars[/block]
 
 [title="2"]Programming god[/title]
 Programming gods are members known for contributing excellent code or coding advice to Composr or the community (e.g. Addons or core development).
-[block param="Programming god"]main_stars[/block]
+[block param="Programming god" defer="1"]main_stars[/block]
 
 [title="2"]Themeing genius[/title]
 Themeing geniuses are members known for making great Composr themes or offering great themeing advice.
-[block param="Themeing genius"]main_stars[/block]
+[block param="Themeing genius" defer="1"]main_stars[/block]
 
 [title="2"]Community ambassador[/title]
 Community ambassadors are members with charisma who help build and strengthen the Composr community.
-[block param="Community ambassador"]main_stars[/block]
+[block param="Community ambassador" defer="1"]main_stars[/block]
 
 [title="2"]Tracker master[/title]
 Tracker master are members who regularly use the tracker to report and/or resolve bugs and feature requests.
-[block param="Tracker master"]main_stars[/block]
+[block param="Tracker master" defer="1"]main_stars[/block]
 
 [title="2"]Translator saviour[/title]
 Translator saviours are members who contributed towards translating Composr in different languages.
-[block param="Translator saviour"]main_stars[/block]
+[block param="Translator saviour" defer="1"]main_stars[/block]
 
 [title="2"]Special mentions for core developers[/title]
 Over a dozen developers have contributed to ocPortal / Composr CMS in an official (core) capacity. Key contributors over the history of the software include the following:
 
 [title="3"]Original Development Team[/title]
-[block param="9" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+[block param="9" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1" defer="1"]main_cc_embed[/block]
 
 [title="3"]Active Core Developers[/title]
-[block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+[block param="8" display_type="TABULAR" sorting="1" max="30" start="0" pagination="1" as_guest="0" check="1" defer="1"]main_cc_embed[/block]
 
 [title="3"]Inactive Core Developers[/title]
-[block param="7" display_type="TITLELIST" sorting="1" max="100" start="0" pagination="1" as_guest="0" check="1"]main_cc_embed[/block]
+[block param="7" display_type="TITLELIST" sorting="1" max="100" start="0" pagination="1" as_guest="0" check="1" defer="1"]main_cc_embed[/block]

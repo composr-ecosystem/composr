@@ -14,22 +14,22 @@ These graphs outline the general activity levels on the site and within the comm
 
 [box="Unique Views"]
 This graph shows the number of unique devices or IP addresses who have visited the site in a given week.
-[block="total_unique_views" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="total_unique_views" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Actions"]
 This graph shows the number of actions that took place on site in a given week which have been logged. Examples of actions include but are not limited to adding/editing/deleting content, editing one's profile, and making forum posts. Usually, this is an indication of how much activity took place on the site on a given day.
-[block="actionlog_activity" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="actionlog_activity" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Downloads"]
 This graph shows the number of times someone downloaded something in a given week. This only counts unique downloads (a member downloading a file will only ever be counted once even if that same member downloaded that same file multiple times).
-[block="downloads" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="downloads" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Points"]
 This graph shows the total number of points which have been sent, received / earned, or spent / charged in any way in a given week. Note that there could be a wide range of spikes especially if some members earned a lot of points.
-[block="points_transacted" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="points_transacted" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Content[/title]
@@ -38,20 +38,20 @@ These graphs showcase statistics involving content growth on our site.
 
 [box="Members"]
 This graph shows how many new accounts were created on a given week (new members who joined).
-[block="members" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="members" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Forums"]
 This graph shows how many new (public) forum topics were created in a given week.
-[block="public_topics" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="public_topics" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 
 This graph shows how many new (public) forum posts and comments were made in a given week.
-[block="public_posts" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="public_posts" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="New Content"]
 This graph tallies how many new items were discovered in the sitemap on a given week. This is usually an indication of how many new pieces of content were created on a given day.
-[block="sitemap_growth" month_range__start="-12" pivot="week_series"]main_staff_stats_graph[/block]
+[block="sitemap_growth" month_range__start="-12" pivot="week_series" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Development[/title]
@@ -60,15 +60,15 @@ These graphs showcase statistics involving the development of Composr CMS.
 
 [box="Relayed Errors"]
 Some webmasters of Composr CMS sites have elected to automatically relay some errors to us through telemetry. This graph shows the number of errors that have been reported to us by week. Note that errors are often reported more than once and by multiple websites; the graph counts each report even if it is a duplicate.
-[block="relayed_errors" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="relayed_errors" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Issue Tracker Activity"]
 This graph showcases the number of tracker issues each week which have been updated / have seen activity.
-[block="tracker_issue_activity" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="tracker_issue_activity" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 
 This graph showcases the number of new tracker issues which have been created each week.
-[block="tracker_issues" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="tracker_issues" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [title="2"]Transparency[/title]
@@ -77,13 +77,13 @@ These graphs provide a bit of transparency into the operations of composr.app .
 
 [box="Security Incidences Halted"]
 This graph shows the number of security incidences which have been stopped by the Composr software on composr.app by week. These can include failed login attempts, anti-spam, and hack attempts. These only include incidences halted by the Composr software on composr.app and not by the server running the site or by the third-party Web Application Firewall.
-[block="security_incidents" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="security_incidents" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 [/box]
 
 [box="Warnings"]
 This graph shows the total number of warnings that have been issued by week.
-[block="recorded_punishments" pivot="week_series" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="recorded_punishments" pivot="week_series" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 
 This graph shows the number of warnings which have been issued according to reason within the last year.
-[block="recorded_punishment_reasons" month_range__start="-12"]main_staff_stats_graph[/block]
+[block="recorded_punishment_reasons" month_range__start="-12" defer="1"]main_staff_stats_graph[/block]
 [/box]
