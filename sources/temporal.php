@@ -549,14 +549,13 @@ function cms_gmmktime(int $hour, ?int $minute = null, ?int $second = null, ?int 
 /**
  * LEGACY: Fix null mktime values in older PHP versions.
  *
- * @param  boolean Whether the specified time is in GMT instead of user time
- * @param  integer $minute The minute, passed by reference
- * @param  integer $second The second, passed by reference
- * @param  integer $month The month, passed by reference
- * @param  integer $day The day, passed by reference
- * @param  integer $year The year, passed by reference
+ * @param  boolean $is_gmt Whether the specified time is in GMT instead of user time
+ * @param  ?integer $minute The minute, passed by reference (null: set to current)
+ * @param  ?integer $second The second, passed by reference (null: set to current)
+ * @param  ?integer $month The month, passed by reference (null: set to current)
+ * @param  ?integer $day The day, passed by reference (null: set to current)
+ * @param  ?integer $year The year, passed by reference (null: set to current)
  * @ignore
- *
  */
 function _cms_mktime_polyfill(bool $is_gmt, ?int &$minute = null, ?int &$second = null, ?int &$month = null, ?int &$day = null, ?int &$year = null)
 {

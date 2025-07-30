@@ -36,11 +36,6 @@ class hooks_test_set extends cms_test_case
             'systems/non_active_urls',
         ];
 
-        // Remap the key prefix to the value prefix.
-        $prefix_remaps = [
-            'Hx_' => 'Hook_',
-        ];
-
         // Grab the hook files
         $files = get_directory_contents(get_file_base() . '/sources/hooks', get_file_base() . '/sources/hooks', 0, true, true, ['php']);
         $files = array_merge($files, get_directory_contents(get_file_base() . '/sources_custom/hooks', get_file_base() . '/sources_custom/hooks', 0, true, true, ['php']));
@@ -86,10 +81,8 @@ class hooks_test_set extends cms_test_case
                     $hook_prefix = $class_preg[1];
                 }
 
-                // Remap the prefix if necessary
-                if (array_key_exists($hook_prefix, $prefix_remaps)) {
-                    $hook_prefix = $prefix_remaps[$hook_prefix];
-                }
+                // Hx_ is an override prefix for Hook_
+                $hook_prefix = str_replace('Hx_', 'Hook_', $hook_prefix);
 
                 // Put the class name prefix in our structure array if it is not already in there and not to be ignored
                 if (!in_array($hook_prefix, $hook_structure[$hook_type . '/' . $hook_subtype])) {
