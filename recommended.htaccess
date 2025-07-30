@@ -19,7 +19,7 @@ SecRuleRemoveById 300018 340147 340014 950119 950120 973331
 LimitRequestBody 524288000
 
 # Set Composr to handle 404 errors. Assume Composr is in the root
-<FilesMatch "(?<!\.jpg|\.jpeg|\.jpe|\.bmp|\.gif|\.png|\.ico|\.cur|\.svg|\.css|\.js|\.html)$">
+<FilesMatch "(?<!\.jpg|\.jpeg|\.jpe|\.bmp|\.gif|\.png|\.ico|\.cur|\.svg|\.webp|\.css|\.js|\.html)$">
 ErrorDocument 404 /index.php?page=404
 </FilesMatch>
 
