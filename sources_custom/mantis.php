@@ -195,6 +195,16 @@ function create_tracker_issue(string $version, string $tracker_title, string $tr
         A_FROM_SYSTEM_PRIVILEGED
     );
 
+    // If this is an auto-resolved issue we are creating, handle points
+    if (addon_installed('points') && ($status == 80)) {
+        if (addon_installed('cms_homesite')) {
+            require_code('points_escrow__sponsorship');
+            escrow_complete_all_sponsorships($ret, $handler_id);
+        }
+
+        award_tracker_points($ret, get_member(), $handler_id);
+    }
+
     return $ret;
 }
 
