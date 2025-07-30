@@ -180,6 +180,7 @@ class Module_photo_verification
         $url = build_url($map, '_SELF');
 
         return do_template('FORM_SCREEN', [
+            '_GUID' => 'e762b453af4756228747bd331c743e9a',
             'HIDDEN' => new Tempcode(),
             'TITLE' => $this->title,
             'FIELDS' => $fields,
@@ -224,7 +225,7 @@ class Module_photo_verification
         $ticket_id = ticket_generate_new_id();
         $ticket_type_id = $GLOBALS['SITE_DB']->query_select_value_if_there('ticket_types', 'id', [$GLOBALS['SITE_DB']->translate_field_ref('ticket_type_name') => 'Verification request']);
         if ($ticket_type_id === null) {
-            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('missing_verification_ticket_type')));
+            warn_exit(do_lang_tempcode('INTERNAL_ERROR', escape_html('931d695136935e4fbbebaa8a9ef451ee')));
         }
 
         $post = do_lang('VERIFICATION_TICKET_BODY', comcode_escape($code), comcode_escape($photo[0]));

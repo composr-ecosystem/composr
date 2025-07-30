@@ -423,8 +423,8 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
     check_for_infinite_loop('set_option', [$name, $value, $will_be_formally_set], 25);
 
     if ($ob === null) {
-        require_code('hooks/systems/config/' . filter_naughty_harsh($name));
-        $ob = object_factory('Hook_config_' . filter_naughty_harsh($name), true);
+        require_code('zones');
+        $ob = get_hook_ob('systems', 'config', filter_naughty_harsh($name), 'Hook_config_', true);
         if ($ob === null) { // If it's still null, it is not found. Exit.
             return;
         }
@@ -485,11 +485,15 @@ function set_option(string $name, string $value, int $will_be_formally_set = 1, 
     }
 
     // Clear caches
+    require_code('caches3');
     if (function_exists('persistent_cache_delete')) {
         persistent_cache_delete('OPTIONS');
     }
     if (class_exists('Self_learning_cache')) {
         Self_learning_cache::erase_smart_cache();
+    }
+    if (!empty($details['public'])) { // Need to clear all templates utilising $PUBLIC_CONFIG_OPTIONS_JSON
+        erase_cached_templates(false, ['_cms', 'global']);
     }
 
     if ($will_be_formally_set == 1) {

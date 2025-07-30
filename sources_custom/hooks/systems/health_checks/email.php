@@ -17,6 +17,9 @@
 
 /*FORCE_ORIGINAL_LOAD_FIRST*/
 
+/**
+ * Hook class.
+ */
 class Hx_health_check_email extends Hook_health_check_email
 {
     /**
