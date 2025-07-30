@@ -498,7 +498,7 @@ function cancel_escrow(int $id, int $member_id, string $reason, ?array $row = nu
     $refund_id = null;
     if (($actually_refund) && ($row['original_points_ledger_id'] !== null)) {
         // Get the original points ledger
-        $_ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['id', 'amount_gift_points'], ['id' => $row['original_points_ledger_id']], '', 1);
+        $_ledger = $GLOBALS['SITE_DB']->query_select('points_ledger', ['*'], ['id' => $row['original_points_ledger_id']], '', 1);
         if ($_ledger === null || !array_key_exists(0, $_ledger)) {
             warn_exit(do_lang_tempcode('MISSING_RESOURCE'));
         }
