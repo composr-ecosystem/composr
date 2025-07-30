@@ -108,8 +108,6 @@ function sponsorship_cache_row( $p_sponsorship_id, $p_trigger_errors = true ) {
 
 	$c_sponsorship_id = (int)$p_sponsorship_id;
 
-    event_signal('EVENT_COMPOSR_SPONSORSHIP_CACHE_ROW', [$c_sponsorship_id]); // Composr
-
 	if( isset( $g_cache_sponsorships[$c_sponsorship_id] ) ) {
 		return $g_cache_sponsorships[$c_sponsorship_id];
 	}
@@ -175,12 +173,6 @@ function sponsorship_get_id( $p_bug_id, $p_user_id = null ) {
 		$c_user_id = (int)$p_user_id;
 	}
 
-    // Composr
-    $id = event_signal('EVENT_COMPOSR_SPONSORSHIP_GET_ID', [$p_bug_id, $c_user_id]);
-    if ($id !== null) {
-        return $id;
-    }
-
 	db_param_push();
 	$t_query = 'SELECT id FROM {sponsorship} WHERE bug_id=' . db_param() . ' AND user_id = ' . db_param();
 	$t_result = db_query( $t_query, array( (int)$p_bug_id, $c_user_id ), 1 );
@@ -233,20 +225,15 @@ function sponsorship_get_all_ids( $p_bug_id ) {
 		return $s_cache_sponsorship_bug_ids[$c_bug_id];
 	}
 
-    // Composr
-    /*
-        db_param_push();
-        $t_query = 'SELECT * FROM {sponsorship} WHERE bug_id = ' . db_param();
-        $t_result = db_query( $t_query, array( $c_bug_id ) );
-    */
-	$t_sponsorship_ids = array();
-    $t_sponsorship_ids = event_signal('EVENT_COMPOSR_SPONSORSHIP_GET_ALL_IDS', [$t_sponsorship_ids, $c_bug_id]);
-    /*
+    db_param_push();
+    $t_query = 'SELECT * FROM {sponsorship} WHERE bug_id = ' . db_param();
+    $t_result = db_query( $t_query, array( $c_bug_id ) );
+
+    $t_sponsorship_ids = [];
 	while( $t_row = db_fetch_array( $t_result ) ) {
 		$t_sponsorship_ids[] = $t_row['id'];
 		$g_cache_sponsorships[(int)$t_row['id']] = $t_row;
 	}
-    */
 
 	$s_cache_sponsorship_bug_ids[$c_bug_id] = $t_sponsorship_ids;
 
@@ -290,8 +277,6 @@ function sponsorship_get_currency() {
  */
 function sponsorship_format_amount( $p_amount ) {
 	$t_currency = sponsorship_get_currency();
-    // Composr - Do the reverse for points
-	// return $t_currency . ' ' . $p_amount;
     return $p_amount . ' ' . $t_currency;
 }
 
@@ -336,22 +321,6 @@ function sponsorship_set( SponsorshipData $p_sponsorship ) {
 	$c_logo = $p_sponsorship->logo;
 	$c_url = $p_sponsorship->url;
 	$c_now = db_now();
-
-    // Composr
-    $id = event_signal('EVENT_COMPOSR_SPONSORSHIP_SET', [$p_sponsorship]); // Composr
-    if ($id !== null) {
-        sponsorship_clear_cache( null );
-        sponsorship_update_bug( $c_bug_id );
-        bug_monitor( $c_bug_id, $c_user_id );
-
-        if( $c_id == 0 ) {
-            email_sponsorship_added( $c_bug_id );
-        } else {
-            email_sponsorship_updated( $c_bug_id );
-        }
-
-        return $id;
-    }
 
 	# if new sponsorship
 	if( $c_id == 0 ) {
@@ -410,13 +379,9 @@ function sponsorship_set( SponsorshipData $p_sponsorship ) {
  * @return void
  */
 function sponsorship_delete_all( $p_bug_id ) {
-    event_signal('EVENT_COMPOSR_SPONSORSHIP_DELETE_ALL', [$p_bug_id]); // Composr
-
-    /*
 	db_param_push();
 	$t_query = 'DELETE FROM {sponsorship} WHERE bug_id=' . db_param();
 	db_query( $t_query, array( (int)$p_bug_id ) );
-    */
 
 	sponsorship_clear_cache( );
 }
@@ -443,8 +408,6 @@ function sponsorship_delete( $p_sponsorship_id ) {
 	$t_query = 'DELETE FROM {sponsorship} WHERE id=' . db_param();
 	db_query( $t_query, array( (int)$p_sponsorship_id ) );
 
-    event_signal('EVENT_COMPOSR_SPONSORSHIP_DELETE', [$p_sponsorship_id, $t_sponsorship->bug_id]); // Composr
-
 	sponsorship_clear_cache( $p_sponsorship_id );
 
 	history_log_event_special( $t_sponsorship->bug_id, BUG_DELETE_SPONSORSHIP, $t_sponsorship->user_id, $t_sponsorship->amount );
@@ -460,8 +423,6 @@ function sponsorship_delete( $p_sponsorship_id ) {
  * @return boolean
  */
 function sponsorship_update_paid( $p_sponsorship_id, $p_paid ) {
-    return true; // Composr - do nothing; we handle this in escrows
-
 	$t_sponsorship = sponsorship_get( $p_sponsorship_id );
 
 	db_param_push();
@@ -480,8 +441,6 @@ function sponsorship_update_paid( $p_sponsorship_id, $p_paid ) {
  * @return boolean
  */
 function sponsorship_update_date( $p_sponsorship_id ) {
-    return true; // Composr - do nothing; we handle this in escrows
-
 	db_param_push();
 	$t_query = 'UPDATE {sponsorship} SET last_updated=' . db_param() . ' WHERE id=' . db_param();
 	db_query( $t_query, array( db_now(), (int)$p_sponsorship_id ) );

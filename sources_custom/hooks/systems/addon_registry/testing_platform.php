@@ -913,6 +913,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/first_tests/modularisation.php',
             '_tests/tests/index.html',
             '_tests/tests/regression_tests/.htaccess',
+            '_tests/tests/regression_tests/exploit_regressions.php',
             '_tests/tests/regression_tests/index.html',
             '_tests/tests/regression_tests/input_filter_post_block.php',
             '_tests/tests/sync_tests/.htaccess',

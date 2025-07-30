@@ -168,14 +168,12 @@ class Hook_addon_registry_photo_verification
     public function get_file_list() : array
     {
         return [
-            'sources_custom/hooks/systems/addon_registry/photo_verification.php',
-            'sources_custom/hooks/systems/actionlog/photo_verification.php',
-
-            'site/pages/modules_custom/photo_verification.php',
+            'adminzone/pages/comcode_custom/EN/photo_verification.txt',
             'lang_custom/EN/photo_verification.ini',
             'site/pages/comcode_custom/EN/_photo_verification.txt',
-            'adminzone/pages/comcode_custom/EN/photo_verification.txt',
-
+            'site/pages/modules_custom/photo_verification.php',
+            'sources_custom/hooks/systems/actionlog/photo_verification.php',
+            'sources_custom/hooks/systems/addon_registry/photo_verification.php',
             'uploads/verification/index.html',
         ];
     }

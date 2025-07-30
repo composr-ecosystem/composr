@@ -446,11 +446,11 @@ function resolve_tracker_issue(int $tracker_id, ?int $handler = null)
  * This will undo previous transactions for the same issue if they exist (treated as an edit).
  *
  * @param  AUTO_LINK $bug_id The issue that was resolved
- * @param  MEMBER $reporter The member who reported the issue
- * @param  MEMBER $handler The member who resolved the issue
+ * @param  ?MEMBER $reporter The member who reported the issue (null: look it up)
+ * @param  ?MEMBER $handler The member who resolved the issue (null: look it up)
  * @return boolean Whether the operation was successful
  */
-function award_tracker_points(int $bug_id, int $reporter, int $handler) : bool
+function award_tracker_points(int $bug_id, ?int $reporter = null, ?int $handler = null) : bool
 {
     if (!addon_installed('points')) {
         warn_exit(do_lang_tempcode('MISSING_ADDON', escape_html('points')));
@@ -461,6 +461,21 @@ function award_tracker_points(int $bug_id, int $reporter, int $handler) : bool
     $ret = true;
     $points = 25; // FUDGE
 
+    if (($reporter === null) || ($handler === null)) {
+        $rows = $GLOBALS['SITE_DB']->query_parameterised('SELECT reporter_id,handler_id FROM mantis_bug_table WHERE id={id}', ['id' => $bug_id]);
+        if (array_key_exists(0, $rows)) {
+            if ($reporter === null) {
+                $reporter = $rows[0]['reporter_id'];
+            }
+            if ($handler === null) {
+                $handler = $rows[0]['handler_id'];
+            }
+        } else {
+            return false;
+        }
+    }
+
+    // Reset so we do not dog-pile points
     points_transactions_reverse_all(true, null, null, 'tracker_issue', '', strval($bug_id));
 
     $id = points_credit_member($handler, 'Programming god: Resolved tracker issue #' . strval($bug_id), $points, 0, true, 0, 'tracker_issue', 'resolve', strval($bug_id));

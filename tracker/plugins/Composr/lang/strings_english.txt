@@ -53,4 +53,4 @@ $s_priority_enum_string = '20:Deferred,30:Not Financially Sponsored,40:Financial
 $s_report_bug_link = 'Report Issue (or suggest feature)';
 $s_users_sponsoring_bug = 'You can incentivise others to implement this feature by sponsoring (escrowing) points to it. When you do, the resolving / assigned member will receive the sponsored points. If the issue is closed or deleted, your points will be refunded. You can also use this form to change your sponsorship amount. Set to 0 to cancel your sponsorship completely.';
 $s_sponsorship_process_url = ''; // TODO
-$s_sponsorship_enum_string = '0:Refunded,1:Paid to issue handler,2:Active,3:Pending dispute';
+$s_sponsorship_enum_string = '0:Pending Sync,1:Sync Error; contact staff,2:Active and Synced,3:Paid to issue handler';
