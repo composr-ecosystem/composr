@@ -1,11 +1,13 @@
 {TITLE}
 
 {+START,IF_NON_EMPTY,{POINTS}}
-	<div class="meta_details" role="note">
-		<dl class="meta_details_list">
-			<dt class="field_name">{!POINTS}:</dt> <dd>{POINTS*}</dd>
-		</dl>
-	</div>
+	{+START,IF,{$GT,{POINTS},0}}
+		<div class="meta_details" role="note">
+			<dl class="meta_details_list">
+				<dt class="field_name">{!POINTS}:</dt> <dd>{POINTS*}</dd>
+			</dl>
+		</div>
+	{+END}
 {+END}
 
 {WARNING_DETAILS}
