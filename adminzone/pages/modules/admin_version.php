@@ -451,7 +451,7 @@ class Module_admin_version
             $GLOBALS['SITE_DB']->create_table('cache', [
                 'id' => '*AUTO',
                 'cached_for' => 'ID_TEXT',
-                'identifier' => 'MINIID_TEXT',
+                'identifier' => 'ID_TEXT',
                 'staff_status' => '?BINARY', // May be null
                 'the_member' => '?MEMBER', // May be null
                 'the_groups' => 'LONG_TEXT', // May be blank
@@ -1376,6 +1376,8 @@ class Module_admin_version
 
                 $GLOBALS['SITE_DB']->query_update('zones', ['zone_default_page' => 'home'], ['zone_name' => $zone]);
             }
+
+            $GLOBALS['SITE_DB']->alter_table_field('cache', 'identifier', 'ID_TEXT');
         }
 
         // Ensure for every install / upgrade that the entry points for custom zones are updated to match the adminzone one
