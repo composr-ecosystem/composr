@@ -77,7 +77,11 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
 
     // Make sure the JavaScript exists
     if ($theme === null) {
-        $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
+        if ($GLOBALS['FORUM_DRIVER'] === null) {
+            $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
+        } else {
+            $theme = 'default';
+        }
     }
     $active_theme = $theme;
     $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());
