@@ -114,9 +114,25 @@ function tar_get_directory(&$resource, $tolerate_errors = false)
             $resource['end'] = $offset;
         } else {
             if (substr($header, 257, 5) == 'ustar') {
-                $path = str_replace('\\', '/', substr($header, 345, min(512, strpos($header, $chr_0, 345) - 345)) . substr($header, 0, min(100, strpos($header, $chr_0, 0))));
+                $prefix = substr($header, 345, min(155, strpos($header, $chr_0, 345) - 345));
+                $name = substr($header, 0, min(100, strpos($header, $chr_0, 0)));
+
+                if (!empty($prefix)) {
+                    $path = rtrim($prefix, '/') . '/' . ltrim($name, '/');
+                } else {
+                    $path = $name;
+                }
+                $path = str_replace('\\', '/', $path);
             } else {
-                $path = substr($header, 0, min(100, strpos($header, $chr_0, 0)));
+                $end_of_string = strpos($header, $chr_0, 0);
+                if ($end_of_string === false) {
+                    if ($tolerate_errors) {
+                        return null;
+                    }
+                    warn_exit(do_lang_tempcode('CORRUPT_TAR'));
+                }
+                $path = substr($header, 0, min(100, $end_of_string));
+
             }
             if ($next_name !== null) {
                 $path = $next_name;
