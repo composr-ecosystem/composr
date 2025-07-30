@@ -842,9 +842,15 @@ function _get_cache_entries(array $dets) : array
         list($codename, $cache_identifier, $cache_identifier_hash, $special_cache_flags, $ttl, $tempcode, $caching_via_cron, $map) = $det;
         $sz = serialize([$codename, $cache_identifier_hash, $special_cache_flags]);
 
-        if (isset($cache[$sz])) { // Already cached
-            $rets[$i] = $cache[$sz];
-            continue;
+        if (isset($cache[$sz]) && ($cache[$sz][0] !== null)) { // Already loaded previously
+            // We still need to check if this is stale
+            $stale = (($ttl !== null) && (time() > ($cache[$sz][1] + $ttl * 60)));
+            if (!$stale) {
+                $rets[$i] = $cache[$sz][0];
+                continue;
+            }
+
+            unset($cache[$sz]);
         }
 
         $staff_status = null;
@@ -868,7 +874,7 @@ function _get_cache_entries(array $dets) : array
                     $ret = null;
                 }
 
-                $cache[$sz] = $ret;
+                $cache[$sz] = [$ret, time()];
                 $rets[$i] = $ret;
                 continue;
             }
@@ -898,7 +904,7 @@ function _get_cache_entries(array $dets) : array
                     $ret = null;
                 }
 
-                $cache[$sz] = $ret;
+                $cache[$sz] = [$ret, time()];
                 $rets[$i] = $ret;
                 continue;
             }
@@ -917,7 +923,7 @@ function _get_cache_entries(array $dets) : array
         if ($stale) { // Stale
             if (!$caching_via_cron) {
                 $ret = null;
-                $cache[$sz] = $ret;
+                $cache[$sz] = [$ret, time()];
                 $rets[$i] = $ret;
                 continue;
             }
@@ -931,7 +937,7 @@ function _get_cache_entries(array $dets) : array
             $ob = new Tempcode();
             if (!$ob->from_assembly($cache_row['the_value'], true)) { // Error
                 $ret = null;
-                $cache[$sz] = $ret;
+                $cache[$sz] = [$ret, time()];
                 $rets[$i] = $ret;
                 continue;
             }
@@ -971,7 +977,7 @@ function _get_cache_entries(array $dets) : array
             }
         }
 
-        $cache[$sz] = $ret;
+        $cache[$sz] = [$ret, $cache_row['date_and_time']];
         $rets[$i] = $ret;
     }
 

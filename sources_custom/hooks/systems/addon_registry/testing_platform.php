@@ -828,7 +828,7 @@ We hope other users will appreciate your efforts and give you some points to rew
             '_tests/tests/async_tests/password_strength.php',
             '_tests/tests/async_tests/permission_modules.php',
             '_tests/tests/async_tests/permissions.php',
-            '_tests/tests/async_tests/persistent_cache.php',
+            '_tests/tests/sync_tests/persistent_cache.php',
             '_tests/tests/async_tests/php_versioning.php',
             '_tests/tests/async_tests/phpbb_post_parser.php',
             '_tests/tests/async_tests/phpstub_accuracy.php',
