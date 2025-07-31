@@ -2045,6 +2045,10 @@ function load_comcode_page(string $string, string $zone, string $codename, ?stri
         'p_order' => 0,
     ];
 
+    if (!is_file($file_base . '/' . $string)) {
+        warn_exit(do_lang_tempcode('MISSING_PAGE', escape_html($zone . ':' . $codename)));
+    }
+
     global $KEEP_MARKERS, $SHOW_EDIT_LINKS, $INJECT_HIDDEN_TEMPLATE_NAMES;
     if ((has_caching_for('comcode_page', $codename)) && (get_param_integer('keep_print', 0) == 0) && !$KEEP_MARKERS && !$SHOW_EDIT_LINKS && !$INJECT_HIDDEN_TEMPLATE_NAMES) {
         $support_smart_decaching = support_smart_decaching();

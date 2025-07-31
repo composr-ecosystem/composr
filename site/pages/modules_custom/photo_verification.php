@@ -174,7 +174,7 @@ class Module_photo_verification
         $fields->attach(form_input_text(do_lang_tempcode('VERIFICATION_CODE'), do_lang_tempcode('DESCRIPTION_VERIFICATION_CODE'), 'verification_code', $code, false, true));
         $fields->attach(form_input_upload(do_lang_tempcode('VERIFICATION_PHOTO'), do_lang_tempcode('DESCRIPTION_VERIFICATION_PHOTO'), 'verification', true, null, null, true, 'jpg,png,jpeg,gif,tif,tiff,webp,bmp'));
 
-        $text = load_comcode_page('site/pages/comcode_custom/' . get_lang(get_member()) . '/_photo_verification.txt', 'site', '_verification');
+        $text = load_comcode_page('site/pages/comcode_custom/' . get_lang(get_member()) . '/_photo_verification.txt', 'site', '_photo_verification');
 
         $map = ['page' => '_SELF', 'type' => 'submit'];
         $url = build_url($map, '_SELF');

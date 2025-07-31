@@ -24,9 +24,6 @@ class telemetry_test_set extends cms_test_case
     {
         parent::setUp();
 
-        $info = 'There is a bug with this test at this time. It may say you have a few failures, but if no fail messages appear, you can assume this test passed.';
-        $this->dump($info, 'INFO');
-
         if (!addon_installed('cms_homesite')) {
             $this->assertTrue(false, 'This test requires the cms_homesite addon to be installed.');
             return;

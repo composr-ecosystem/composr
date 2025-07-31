@@ -1,0 +1,59 @@
+﻿To access restricted content, you must first verify your age and identity. This is to ensure the safety and security of all members on the site and to comply with online safety regulations.
+
+If you are on probation, then you cannot request verification until your probation expires.
+
+[title="2"]Verification Process[/title]
+Verification is easy and only involves taking and uploading a picture with some required information. We do not use any third-party service to verify you. Therefore, your image and information stays with us.
+
+To verify your age and identity, you will need to take a picture of yourself, unmodified (except to censor unnecessary information if you choose), which contains the following:
+
+[list]
+[*][b]Your face, unobstructed[/b]
+ - If you have a religious hair covering, you do not have to remove it if it does not cover your face.
+ - Anything that obscures your face must be removed both in your photo and in the photo portion of the government ID.
+[*][b]A valid government-issued identification card[/b] (temporary IDs are not accepted), and the following information must be legible:
+ - Your face / photo ID
+ - Your birthdate
+ - The issue date and expiration date of the card (and it must be valid)
+ - Security features of the card (logos, seals, holograms, etc.)
+  - It is reasonable that cameras may not pick up on all of the security features, especially holograms. We will still accept it so long as a few are present: enough for us to determine the card is authentic.
+You may censor or blur, as we do not need, any information not listed above, such as your legal name, geographical information (e.g. address), demographic information (e.g. gender), ID/PIN numbers, signature, etc.
+[*][b]A hand-written piece of paper[/b] with the following information on it:
+ - Your username
+ - The verification code presented to you on the form (caution: the code expires 24 hours after first loading this page)
+[/list]
+
+[b]All information must be present in a single photo[/b]; you may not submit multiple photos for verification to include each piece of information separately. You also may not edit together multiple photos into a single photo.
+
+Example verification image:
+[media description="Example verification image" type="image_websafe" framed="1" thumb="1"]data_custom/images/photo_verification_example.jpg[/media]
+
+[title="2"]Retention[/title]
+Once you have satisfied the verification requirements and staff have approved it, you will be granted access to restricted content. 
+
+The photo you used to verify will be kept on record in a Support Ticket. You can request for it to be deleted, but you revoke your verification by doing so.
+
+[title="2"]Supplementary: Why do we need each of the above information?[/title]
+We ask for each of the information listed above for the following reasons:
+[list]
+[*][b]Face / Photo ID[/b]
+to prove the ID belongs to you
+[*][b]Date of birth on ID[/b]
+to prove you are old enough to access restricted content
+[*][b]Date of birth on ID matches your account date of birth[/b]
+secondary proof that the ID belongs to you
+[*][b]ID issue and expiration date[/b]
+to prove the ID is valid
+[*][b]Logos / seals on the ID[/b]
+to prove the ID is real
+[*][b]Paper is hand-written[/b]
+to prove a human produced the information on the paper
+[*][b]Username on paper[/b]
+to prove you own the account on which you are submitting this verification
+[*][b]Verification code[/b]
+to prove you authentically produced your verification image and submitted your verification request, and to prove you did not use an old verification image
+[*][b]Verification code matches staff logs[/b]
+When you submit your request, the verification code given is also logged in the staff logs. That way, we can prove you actually submitted this form and did not forge a verification request (with your own verification code) through Support Tickets or e-mail.
+[*][b]All information is on one photo unaltered[/b]
+to prove consistency between all the proofs listed above (e.g. if the photo was altered [except to blur unnecessary info] or multiple photos were used, we cannot prove, for example, the ID / paper in one photo belongs to you in another photo)
+[/list]

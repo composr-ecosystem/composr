@@ -28,12 +28,9 @@
  */
 function is_encryption_enabled_telemetry() : bool
 {
-    static $enabled = null;
-    if ($enabled === null) {
-        $available = is_encryption_available_telemetry();
-        $site_keys_exist = file_exists(get_file_base() . '/data_custom/keys/telemetry-site.json');
-        $enabled = (($available) && ($site_keys_exist));
-    }
+    $available = is_encryption_available_telemetry();
+    $site_keys_exist = file_exists(get_file_base() . '/data_custom/keys/telemetry-site.json');
+    $enabled = (($available) && ($site_keys_exist));
     return $enabled;
 }
 
@@ -45,12 +42,9 @@ function is_encryption_enabled_telemetry() : bool
  */
 function is_encryption_available_telemetry() : bool
 {
-    static $enabled = null;
-    if ($enabled === null) {
-        $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.json');
-        $available = function_exists('sodium_crypto_box_seal');
-        $enabled = (($available) && ($public_key_exists));
-    }
+    $public_key_exists = file_exists(get_file_base() . '/data/keys/telemetry.json');
+    $available = function_exists('sodium_crypto_box_seal');
+    $enabled = (($available) && ($public_key_exists));
     return $enabled;
 }
 
@@ -352,10 +346,10 @@ function generate_telemetry_key_pair(float $version, bool $overwrite_existing = 
  * Generate a site key-pair for use in signing messages to the homesite telemetry service.
  * This function will always overwrite existing public and private keys, so use with care!
  *
- * @return array Public key, private key, signing public key, signing private key
+ * @return ?array Public key, private key, signing public key, signing private key (null: error saving the keys)
  * @throws SodiumException
  */
-function generate_site_telemetry_key_pair() : array
+function generate_site_telemetry_key_pair() : ?array
 {
     require_code('files2');
 
@@ -398,7 +392,10 @@ function generate_site_telemetry_key_pair() : array
         ]
     ];
 
-    cms_file_put_contents_safe($key_path, json_encode($to_json), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    $success = cms_file_put_contents_safe($key_path, json_encode($to_json), FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
+    if (!$success) {
+        return null;
+    }
 
     return [$public_key_base64, $private_key_base64, $s_public_key_base64, $s_private_key_base64];
 }
@@ -449,7 +446,12 @@ function register_site_telemetry(bool $skip_creation = false) : bool
     if (is_encryption_enabled_telemetry()) {
         list($public_key, $private_key, $sign_public_key, $sign_private_key) = get_site_keys_telemetry();
     } else {
-        list($public_key, $private_key, $sign_public_key, $sign_private_key) = generate_site_telemetry_key_pair();
+        $site_keys = generate_site_telemetry_key_pair();
+        if ($site_keys === null) {
+            return false;
+        }
+
+        list($public_key, $private_key, $sign_public_key, $sign_private_key) = $site_keys;
     }
 
     // Create a telemetry challenge to verify site ownership with the homesite on registration
