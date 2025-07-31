@@ -134,6 +134,7 @@ function get_release_tree(string $type = 'manual', bool $bleeding_edge = false) 
     $download_rows = load_version_download_rows();
 
     $versions[$type] = [];
+    $_versions = [];
 
     foreach ($download_rows as $cat_version => $download_types) {
         foreach ($download_types as $download_type => $download_rows) {
