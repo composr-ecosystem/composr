@@ -74,8 +74,6 @@ function get_false_permissions() : array
         ['GENERAL_SETTINGS', 'open_virtual_roots'],
         ['GENERAL_SETTINGS', 'sees_javascript_error_alerts'],
         ['GENERAL_SETTINGS', 'see_software_docs'],
-        ['GENERAL_SETTINGS', 'see_not_validated'],
-        ['GENERAL_SETTINGS', 'jump_to_not_validated'],
         ['GENERAL_SETTINGS', 'may_enable_staff_notifications'],
         ['GENERAL_SETTINGS', 'bypass_flood_control'],
         ['GENERAL_SETTINGS', 'remove_page_split'],

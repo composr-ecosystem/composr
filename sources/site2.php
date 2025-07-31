@@ -95,7 +95,7 @@ function get_staff_actions_list() : string
 function get_page_warning_details(string $zone, string $codename, object $edit_url) : object
 {
     $warning_details = new Tempcode();
-    if ((!has_privilege(get_member(), 'jump_to_not_validated')) && (addon_installed('validation'))) {
+    if (addon_installed('validation')) {
         require_code('validation');
         check_jump_to_not_validated('comcode_page', $zone . ':' . $codename, get_member(), []);
     }

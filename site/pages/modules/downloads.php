@@ -377,7 +377,7 @@ class Module_downloads
                 require_lang('galleries');
                 $cat = 'download_' . strval($id);
                 $map = ['cat' => $cat];
-                if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+                if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                     $map['validated'] = 1;
                 }
                 $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, 'ORDER BY add_date,id', 200/*Stop silliness, could be a DOS attack*/);

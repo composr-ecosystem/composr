@@ -760,7 +760,7 @@ function calendar_matches(int $auth_member_id, int $member_id, bool $restrict, ?
             }
         }
     }
-    if (!has_privilege($auth_member_id, 'see_not_validated')) {
+    if ((addon_installed('validation')) && (!has_privilege($auth_member_id, 'see_not_validated'))) {
         if ($where != '') {
             $where .= ' AND ';
         }

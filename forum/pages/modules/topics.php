@@ -1547,7 +1547,7 @@ class Module_topics
                 } elseif ((!has_privilege(get_member(), 'view_other_pt')) && ($_postdetails[0]['p_whisper_to_member'] != get_member()) && ($_postdetails[0]['p_posting_member'] != get_member()) && ($_postdetails[0]['p_whisper_to_member'] !== null)) {
                     access_denied('I_ERROR');
                 }
-                if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_posting_member'] != get_member()) || ((is_guest($_postdetails[0]['p_posting_member'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
+                if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated')) && ($_postdetails[0]['p_validated'] == 0) && (($_postdetails[0]['p_posting_member'] != get_member()) || ((is_guest($_postdetails[0]['p_posting_member'])) && ($_postdetails[0]['p_ip_address'] != get_ip_address())))) {
                     access_denied('I_ERROR');
                 }
             }

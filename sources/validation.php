@@ -31,6 +31,9 @@
  */
 function check_jump_to_not_validated(string $content_type, string $content_id, int $member_viewing, array $bypass_members = [], bool $ret = false) : bool
 {
+    // Possible infinite loops from hooks
+    check_for_infinite_loop('check_jump_to_not_validated', [$content_type, $content_id, $member_viewing, $bypass_members], 100);
+
     // Check the privilege
     if (has_privilege($member_viewing, 'jump_to_not_validated')) {
         return true;

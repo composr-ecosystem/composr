@@ -73,7 +73,7 @@ class Hook_rss_catalogues
         foreach ($_categories as $i => $_category) {
             $_categories[$i]['_title'] = get_translated_text($_category['cc_title']);
         }
-        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries WHERE ce_add_date>' . strval(time() - $cutoff) . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND ce_validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY ce_add_date DESC', $max, 0, false, true);
+        $rows = $GLOBALS['SITE_DB']->query('SELECT * FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'catalogue_entries WHERE ce_add_date>' . strval(time() - $cutoff) . (((addon_installed('validation')) && ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated')))) ? ' AND ce_validated=1 ' : '') . ' AND ' . $filters . ' ORDER BY ce_add_date DESC', $max, 0, false, true);
         $categories = [];
         foreach ($_categories as $category) {
             $categories[$category['id']] = $category;

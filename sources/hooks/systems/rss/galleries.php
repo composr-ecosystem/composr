@@ -84,7 +84,7 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('video', 'r.id');
         }
-        $query = 'SELECT r.*,\'video\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $query = 'SELECT r.*,\'video\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'videos r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
         $rows1 = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $extra_join = '';
@@ -97,7 +97,7 @@ class Hook_rss_galleries
             require_code('locations');
             $extra_where .= sql_region_filter('image', 'r.id');
         }
-        $query = 'SELECT r.*,\'image\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
+        $query = 'SELECT r.*,\'image\' AS type,r.id AS r_id FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'images r' . $extra_join . ' WHERE add_date>' . strval($cutoff) . ' AND ' . $filters . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? ' AND validated=1 ' : '') . $extra_where . ' ORDER BY add_date DESC';
         $rows2 = browser_matches('itunes') ? [] : $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS', 'the_description' => 'LONG_TRANS__COMCODE']);
 
         $rows = array_merge($rows1, $rows2);

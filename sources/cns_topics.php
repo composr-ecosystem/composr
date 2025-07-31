@@ -91,7 +91,7 @@ function cns_get_topic_where(int $topic_id, ?int $member_id = null) : string
     } elseif (!has_privilege($member_id, 'view_other_pt')) {
         $where .= ' AND (p_whisper_to_member=' . strval($member_id) . ' OR p_posting_member=' . strval($member_id) . ' OR p_whisper_to_member IS NULL)';
     }
-    if ((!has_privilege($member_id, 'see_not_validated')) && (addon_installed('validation'))) {
+    if ((addon_installed('validation')) && (!has_privilege($member_id, 'see_not_validated'))) {
         if (is_guest($member_id)) {
             $where .= ' AND (p_validated=1 OR (' . db_string_equal_to('p_ip_address', get_ip_address()) . ' AND p_posting_member=' . strval($member_id) . '))';
         } else {

@@ -326,7 +326,7 @@ class Module_wiki
             $breadcrumbs = wiki_breadcrumbs($chain, $current_title, has_privilege(get_member(), 'open_virtual_roots') && (get_option('virtual_root_links') == '1'), true, true);
 
             $where_map = ['page_id' => $id];
-            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+            if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                 $where_map['validated'] = 1;
             }
 

@@ -331,7 +331,7 @@ class Hook_search_cns_members extends FieldsSearchHook
             $where_clause .= '(' . $group_where_clause . ')';
         }
 
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'm_validated=1';
         }

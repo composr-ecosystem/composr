@@ -567,7 +567,7 @@ class Module_news
         $_content = [];
         foreach ($categories as $category) {
             if (has_category_access(get_member(), 'news', strval($category['id']))) {
-                $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? 'validated=1 AND ' : '') . ' (news_entry_category=' . strval($category['id']) . ' OR news_category=' . strval($category['id']) . ') AND ' . $where;
+                $query = 'SELECT COUNT(*) FROM ' . get_table_prefix() . 'news r' . $join . ' WHERE ' . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? 'validated=1 AND ' : '') . ' (news_entry_category=' . strval($category['id']) . ' OR news_category=' . strval($category['id']) . ') AND ' . $where;
                 $count = $GLOBALS['SITE_DB']->query_value_if_there($query);
                 if ($count > 0) {
                     $_content[] = render_news_category_box($category, '_SELF', false, true, $blogs);

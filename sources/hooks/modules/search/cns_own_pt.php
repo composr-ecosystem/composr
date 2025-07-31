@@ -215,7 +215,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= ' OR p_whisper_to_member=' . strval(get_member()) . ' OR p_posting_member=' . strval(get_member());
             }
             $where_clause .= ')';
-            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+            if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }
@@ -246,7 +246,7 @@ class Hook_search_cns_own_pt extends FieldsSearchHook
                 $where_clause .= 's.t_cache_first_post_id=r.id';
             }
 
-            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+            if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }

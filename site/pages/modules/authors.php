@@ -275,7 +275,7 @@ class Module_authors
                 $downloads_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
                 $downloads_where = ['author' => $author];
-                if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+                if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                     $downloads_where['validated'] = 1;
                 }
 
@@ -313,7 +313,7 @@ class Module_authors
                 $news_released = paragraph(do_lang_tempcode('TOO_MANY_TO_CHOOSE_FROM'));
             } else {
                 $news_where = ['author' => $author];
-                if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+                if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                     $news_where['validated'] = 1;
                 }
 

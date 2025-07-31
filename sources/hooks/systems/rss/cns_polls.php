@@ -83,7 +83,7 @@ class Hook_rss_cns_polls
         $sql .= ' JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_poll_answers pa ON pa.id=pv.pv_answer_id';
         $sql .= ' JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t ON t.t_poll_id=pv.pv_poll_id';
         $sql .= ' JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members pvm ON pvm.id=pv.pv_member_id';
-        $sql .= ' WHERE t.t_poll_id IS NOT NULL AND pv.pv_date_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND t.t_validated=1 ' : '');
+        $sql .= ' WHERE t.t_poll_id IS NOT NULL AND pv.pv_date_time>' . strval($cutoff) . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? ' AND t.t_validated=1 ' : '');
         $sql .= ' AND po.po_view_member_votes=1 AND po.po_is_private=0';
         $sql .= ' AND ' . $filters;
         $sql .= ' ORDER BY pv.pv_date_time DESC,pv.id DESC';
