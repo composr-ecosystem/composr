@@ -62,6 +62,7 @@
 		</qualifications>
 	</achievement>
 
+	<!--
 	<achievement name="extrovert" image="icons_monochrome/menu/social/chat/chat" title="achievements:ACHIEVEMENT_EXTROVERT" points="100">
 		<qualifications>
 			<qualification name="content" types="post" count="25" />
@@ -70,6 +71,7 @@
 			<qualification name="gitlab_comments" count="25" />
 		</qualifications>
 	</achievement>
+	-->
 
 	<achievement name="attachment_guru" image="icons_monochrome/buttons/upload" title="achievements:ACHIEVEMENT_ATTACHMENT_GURU" points="50">
 		<qualifications>
