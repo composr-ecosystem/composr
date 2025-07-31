@@ -105,6 +105,7 @@ class Hook_endpoint_cms_homesite_personal_upgrader
             // 10 => 11
             'unvalidated' => 'validation',
             'composr_homesite' => 'cms_homesite',
+            'imap' => 'core_imap',
         ];
 
         $addons = [];
