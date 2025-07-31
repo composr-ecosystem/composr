@@ -34,6 +34,8 @@ if (!addon_installed__messaged('cms_homesite', $error_msg)) {
     return $error_msg;
 }
 
+require_code('cms_homesite');
+
 $title = get_screen_title('Publish new ' . brand_name() . ' release', false);
 $title->evaluate_echo();
 
