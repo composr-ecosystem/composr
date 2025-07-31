@@ -32,6 +32,9 @@
  */
 function _redirect_screen(?object $title, $url, $text = null, bool $intermediary_hop = false, string $msg_type = 'inform') : object
 {
+    // If enforcement triggers a redirect out of the installer, these might not yet be compiled
+    require_lang('global');
+
     if (is_object($url)) {
         $url = $url->evaluate();
     }
