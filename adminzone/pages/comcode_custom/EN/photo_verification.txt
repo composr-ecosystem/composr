@@ -1,0 +1,48 @@
+﻿[title]Validating Age / Verification entries[/title]
+This page will detail the process which should be followed to verify a member.
+
+We assume you have a manual process of granting access to restricted content for verified members (e.g. a group you can assign to them). The photo verification addon does not do any of this automatically.
+
+Verification requests will come through as Support Tickets. On the Admin Zone dashboard checklist, pending Support Tickets will be listed which may include verification requests.
+
+[title="2"]Verifying the Authenticity of the Request[/title]
+It is possible for someone to forge a verification request. Therefore, please follow these instructions first to verify the authenticity of a request:
+ - Note the verification code listed on the Support Ticket's title
+ - Go to the Admin Zone > Audit > Action Logs. Select the "Verification request" action, and optionally paste the code in as First parameter.
+ - If you see an entry in the action logs with the same code, the final step is to click its "view ticket" link and verify it takes you to the correct Support Ticket.
+
+If it takes you back to the same Support Ticket, then you have successfully verified the request was authentic. You can then proceed to the next step of assessing the photo.
+
+If any of the above steps fail, the request is not authentic. State so in a reply to the ticket, direct the member to make a request correctly, and then close the ticket.
+
+[title="2"]Assessing the Photo[/title]
+Make sure the attached Verification Photo on the Support Ticket contains all required information [b]in one photo[/b]. Members are not allowed to upload multiple verification photos nor are they allowed to edit together multiple photos into one. If they did, it is an invalid request; state so in the ticket and close the ticket.
+
+[title="2"]Face[/title]
+Assess the following:
+ - Real-life face is clearly and fully visible / not obstructed
+ - They look like the person in their government ID photo
+
+If they fail any of these, it is an invalid request. Reply so in the ticket and close it.
+
+[title="2"]Government ID[/title]
+Assess the following:
+ - It has a Photo ID, and the photo matches their IRL face
+ - Date of birth confirms they are of age to verify
+ - Date of birth matches the one set on their profile
+ - Date the ID was issued, and it is not in the future
+ - Date the ID expires, and it is not in the past
+ - Logos / holograms proving the ID is legitimate (you may need to research what security features to expect for that particular ID / country)
+
+If any of the above cannot be verified by you, tell them so in a reply to the ticket, and have them submit a new verification request. Then close the ticket.
+
+[title="2"]Paper[/title]
+Assess the following:
+ - The text on the paper is hand-written and legible
+ - The written username matches the username of the member who made the request
+ - The written verification code matches (case insensitive) the verification code on the Support Ticket / in the action log
+
+If any of this information cannot be verified by you, then reject the request by replying to the Support Ticket instructing the member to submit a new verification request. Then close the ticket.
+
+[title="2"]Verifying the Member[/title]
+By this point, the member has completed verification. You can reply the acceptance and then close the ticket. Assign any groups necessary to grant the member appropriate privileges / permissions to access restricted content.
