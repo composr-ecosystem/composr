@@ -1185,6 +1185,7 @@ The documentation is primarily maintained on our website, and this archive is on
             'data_custom/images/docs/tut_menus/menus_editor.png',
             'data_custom/images/docs/tut_mobile/index.html',
             'data_custom/images/docs/tut_mobile/mobile.png',
+            'data_custom/images/docs/tut_mobile/mobile_menu.png',
             'data_custom/images/docs/tut_mobile_sdk/android.png',
             'data_custom/images/docs/tut_mobile_sdk/index.html',
             'data_custom/images/docs/tut_mobile_sdk/logo.jpg',

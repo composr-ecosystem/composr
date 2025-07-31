@@ -170,6 +170,7 @@ class Hook_addon_registry_photo_verification
     {
         return [
             'adminzone/pages/comcode_custom/EN/photo_verification.txt',
+            'data_custom/images/photo_verification_example.jpg',
             'lang_custom/EN/photo_verification.ini',
             'site/pages/comcode_custom/EN/_photo_verification.txt',
             'site/pages/modules_custom/photo_verification.php',
