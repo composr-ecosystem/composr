@@ -1065,7 +1065,7 @@ function remove_ip_ban(string $ip)
  */
 function get_webservice_result($error_message) : ?string
 {
-    return null; // TODO: is this necessary anymore with telemetry?
+    return null; // Disabled; not necessary anymore with telemetry and causes antispam heuristics to ban other servers
 
     /*
     if (get_base_url_hostname() == parse_url(get_brand_base_url(), PHP_URL_HOST)) {
