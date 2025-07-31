@@ -139,10 +139,13 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
 
                 // TODO: skip emoticons
 
+                $probably_plural_word = true;
+
                 // Add a point for each category of characters found
                 $c = 0;
                 if (preg_match('#\d#', $m) != 0) { // Digits
                     $c++;
+                    $probably_plural_word = false;
                 }
                 if (preg_match('#,+[A-Z]#', $m) != 0) { // Uppercase letters
                     $c++;
@@ -152,6 +155,9 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 }
                 if (preg_match('#[^\w]#', $m) != 0) { // Symbols
                     $c++;
+                    if (preg_match('#[^\']#', $m) != 0) {
+                        $probably_plural_word = false;
+                    }
                 }
                 if ((is_numeric($m)) && (strlen($m) >= 4)) { // Numerical strings greater than or equal to 4 characters long with no delimiters; possibly a sensitive PIN or ID number
                     $c++;
@@ -163,14 +169,17 @@ function _password_censor($text, $scan_type = 1, $explicit_only = false)
                 // Add points if a label exists indicating this is probably a password
                 if (preg_match('#(password|pass|pword|pw|p/w|pwd|pin)\s*:?=?\s*\n' . preg_quote($m, '#') . '#i', $text) != 0) {
                     $c++; // Potential passwords are on a new line; less likely to be an actual password than if they were on the same line but we should still add 1 point
+                    $probably_plural_word = false;
                 } elseif (preg_match('#(code|secret|key)\s*:?=?\s*\n?' . preg_quote($m, '#') . '#i', $text) != 0) {
                     $c++; // The words "code", "secret", and "key" are less likely to indicate a password, but they could, so add 1 point
+                    $probably_plural_word = false;
                 } elseif (preg_match('#(password|pass|pword|pw|p/w|pwd|pin)\s*:?=?\s*' . preg_quote($m, '#') . '#i', $text) != 0) {
                     $c += 2; // Password labels with a colon or equal sign on the same line are almost certainly passwords. Add 2 points.
+                    $probably_plural_word = false;
                 }
 
-                // If the score is 3 points or more, censor it.
-                if ($c >= 3) {
+                // If the score is 3 points or more, and this probably isn't just a pluralised word, censor it.
+                if (($c >= 3) && (!$probably_plural_word)) {
                     $text = str_replace($m, '(auto-censored)', $text);
                 }
             }
