@@ -25,9 +25,6 @@ Transfer the installation files to your server. Here are our latest available ve
 [box]
 [block cache="0"]cms_homesite_download[/block]
 [/box]
-[box="Did You Know?"]
- When a new version of Composr CMS v11 is released, we change the background image and the colours of the composr.app site.
-[/box]
 
 After doing that, go to [tt]yourbaseurl/install.php[/tt] to run the install wizard.
 
