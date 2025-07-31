@@ -108,16 +108,17 @@ class Hook_addon_registry_photo_verification
     {
         return 'This addon provides a simple tool for collecting photo ID verification in cases where a site may be providing adult content. The addon provides a simple form where members can upload a photo which is then sent to staff in a special Support Ticket. The process involves the following:
         [list="1"]
-        [*]The member goes to the module page containing the form and instructions.
+        [*]The member goes to the module page containing the form and instructions ([tt]site:photo_verification[/tt]).
         [*]The form generates and presents a random string of characters along with a photo upload field.
         [*]The member is instructed to take a picture of themselves holding up a valid ID and a handwritten paper containing their username and the provided random string.
         [*]The submission is sent to staff as a Support Ticket; the software also logs the random string in the support ticket and the action log as proof of a genuine submission.
         [*]Staff can then manually verify the member\'s ID / age and grant them access to restricted content as necessary.
         [/list]
 
-        After installing this addon, the following pages will be available:
+        After installing this addon, the following special pages will be available:
         [list]
-        [*]The verification form ([tt]site:photo_verification[/tt])
+        [*]The verification form and instructions ([tt]site:photo_verification[/tt])
+        [*]The Comcode page containing the instructions on the form which you can edit to your liking ([tt]site:_photo_verification[/tt])
         [*]Instructions for verifying the authenticity of a verification request ([tt]adminzone:photo_verification[/tt])
         [/list]
 
