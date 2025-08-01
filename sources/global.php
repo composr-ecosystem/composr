@@ -1525,21 +1525,22 @@ if ($rate_limiting) {
 
         $fixed_ip = str_replace(['.', ':'], ['_', '-'], $ip);
 
-        if (!(((!empty($_SERVER['SERVER_ADDR'])) && ($ip == $_SERVER['SERVER_ADDR'])) || ((!empty($_SERVER['LOCAL_ADDR'])) && ($ip == $_SERVER['LOCAL_ADDR'])))) {
+        //if (!(((!empty($_SERVER['SERVER_ADDR'])) && ($ip == $_SERVER['SERVER_ADDR'])) || ((!empty($_SERVER['LOCAL_ADDR'])) && ($ip == $_SERVER['LOCAL_ADDR'])))) {
             $rate_limiting_data = [];
 
             // Read in rate limiter data for this IP
             $rate_limiter_path = dirname(__DIR__) . '/data_custom/rate_limiting/' . $fixed_ip . '.json';
 
             if (is_file($rate_limiter_path)) {
-                $fp = fopen($rate_limiter_path, 'rb');
-                flock($fp, LOCK_EX);
-                $rate_limiting_data = @json_decode($rate_limiter_path, true);
-                if (!$rate_limiting_data) {
+                $_rate_limiting_data = file_get_contents($rate_limiter_path);
+                if (!$_rate_limiting_data) {
                     $rate_limiting_data = [];
+                } else {
+                    $rate_limiting_data = @json_decode($_rate_limiting_data, true);
+                    if (!$rate_limiting_data) {
+                        $rate_limiting_data = [];
+                    }
                 }
-                flock($fp, LOCK_UN);
-                fclose($fp);
             }
 
             // Filter to just times within our window
@@ -1567,7 +1568,7 @@ if ($rate_limiting) {
 
             // Save some memory
             unset($rate_limiting_data);
-        }
+        //}
     }
 }
 
