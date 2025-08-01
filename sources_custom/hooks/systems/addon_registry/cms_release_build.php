@@ -37,7 +37,7 @@ class Hook_addon_registry_cms_release_build
      */
     public function get_version() : string
     {
-        return '11.0.3'; // addon_version_auto_update 5225e0deeb3c8fb279714283d234a8e6
+        return '11.0.4'; // addon_version_auto_update e9bf4f4a86734528aca17d14d9a6f81b
     }
 
     /**
