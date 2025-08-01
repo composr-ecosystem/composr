@@ -3,9 +3,9 @@
  Copyright (c) Christopher Graham, 2004-2024
 */
 
-{$THEMEWIZARD_COLOR,#72f86d,cns_personal_post_background,50% 00FF00 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#7dfa73,cns_personal_post_background,50% 00FF00 + 50% area_2_background}
 {$THEMEWIZARD_COLOR,#000000,cns_personal_post_text,100% BW}
-{$THEMEWIZARD_COLOR,#f2786d,emphasis_background,50% FF0000 + 50% area_2_background}
-{$THEMEWIZARD_COLOR,#180c0b,emphasis_text,10% emphasis_background + 90% BW}
-{$THEMEWIZARD_COLOR,#f2786d,cns_polls_background,50% FF0000 + 50% area_2_background}
-{$THEMEWIZARD_COLOR,#180c0b,cns_polls_text,10% cns_polls_background + 90% BW}
+{$THEMEWIZARD_COLOR,#fd7a73,emphasis_background,50% FF0000 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#190c0c,emphasis_text,10% emphasis_background + 90% BW}
+{$THEMEWIZARD_COLOR,#fd7a73,cns_polls_background,50% FF0000 + 50% area_2_background}
+{$THEMEWIZARD_COLOR,#190c0c,cns_polls_text,10% cns_polls_background + 90% BW}

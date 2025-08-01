@@ -15,21 +15,21 @@ See global.css for actual CSS rules.
 */
 
 /* Fundamental base colours */
-{$THEMEWIZARD_COLOR,#4c9507,seed,100% 4c9507}
+{$THEMEWIZARD_COLOR,#ddac56,seed,100% ddac56}
 {$THEMEWIZARD_COLOR,#6c757d,seed_secondary,100% 6c757d}
 {$THEMEWIZARD_COLOR,#FFFFFF,WB,100% FFFFFF}
 {$THEMEWIZARD_COLOR,#000000,BW,100% 000000}
 /*Theme seed is: e5922d*/
 
 /* WCAG compliance colours */
-{$THEMEWIZARD_COLOR,#9fff41,seed_contrast_low,100% (seed contrast 3)} /* AA compliance */
-{$THEMEWIZARD_COLOR,#112102,seed_contrast_medium,100% (seed contrast 4.5)} /* AA + AAA (for large text) compliance */
-{$THEMEWIZARD_COLOR,#ffffff,seed_contrast_high,100% (seed contrast 7)} /* AA + AAA compliance */
+{$THEMEWIZARD_COLOR,#775c2e,seed_contrast_low,100% (seed contrast 3)} /* AA compliance */
+{$THEMEWIZARD_COLOR,#564321,seed_contrast_medium,100% (seed contrast 4.5)} /* AA + AAA (for large text) compliance */
+{$THEMEWIZARD_COLOR,#322713,seed_contrast_high,100% (seed contrast 7)} /* AA + AAA compliance */
 {$THEMEWIZARD_COLOR,#ffffff,seed_contrast_BW,100% (seed contrast 0)} /* AA + AAA compliance */
 
 /* The fundamental website */
-{$THEMEWIZARD_COLOR,#ebf3e3,fixed_width_background,11% (seed sat_to 100) + 89% WB}
-{$THEMEWIZARD_COLOR,#91be67,fixed_width_border,61% seed + 39% WB}
+{$THEMEWIZARD_COLOR,#fbf2e3,fixed_width_background,11% (seed sat_to 100) + 89% WB}
+{$THEMEWIZARD_COLOR,#eacc97,fixed_width_border,61% seed + 39% WB}
 {$THEMEWIZARD_COLOR,#ffffff,main_background,100% WB}
 {$THEMEWIZARD_COLOR,#f2f2f2,main_2_background,95% WB + 5% BW}
 
@@ -66,20 +66,20 @@ See global.css for actual CSS rules.
 {$THEMEWIZARD_COLOR,#dff2e3,light_success_background_2,85% WB + 15% success_color}
 {$THEMEWIZARD_COLOR,#cc0000,red_highlight_text,80% FF0000 + 20% 000000}
 {$THEMEWIZARD_COLOR,#007a00,green_highlight_text,100% 007A00}
-{$THEMEWIZARD_COLOR,#eadcd6,required_background,60% (area_4_background hue_to 0) + 40% area_background}
-{$THEMEWIZARD_COLOR,#ebe4db,required_2_background,40% (area_4_background hue_to 0) + 60% area_background}
+{$THEMEWIZARD_COLOR,#f9e7e3,required_background,60% (area_4_background hue_to 0) + 40% area_background}
+{$THEMEWIZARD_COLOR,#faece6,required_2_background,40% (area_4_background hue_to 0) + 60% area_background}
 {$THEMEWIZARD_COLOR,#000000,dark_shadow,100% BW}
 
 /* For standard elements */
 {$THEMEWIZARD_COLOR,#1a1a1a,body_color,90% BW + 10% WB}
-{$THEMEWIZARD_COLOR,#3a7105,heading_text,76% seed + 24% BW}
-{$THEMEWIZARD_COLOR,#336405,a.link,67% seed + 33% BW}
-{$THEMEWIZARD_COLOR,#264b04,a.hover,75% a.link + 25% BW}
-{$THEMEWIZARD_COLOR,#acff5c,a.link_light,67% (seed val_to 100) + 33% FFFFFF}
-{$THEMEWIZARD_COLOR,#c1ff85,a.hover_light,75% a.link_light + 25% FFFFFF}
-{$THEMEWIZARD_COLOR,#c1daa8,th_secondary_text,35% seed + 65% WB}
-{$THEMEWIZARD_COLOR,#abce8c,hr,60% area_background + 40% seed}
-{$THEMEWIZARD_COLOR,#3a7105,divider_line,76% seed + 24% BW}
+{$THEMEWIZARD_COLOR,#a88341,heading_text,76% seed + 24% BW}
+{$THEMEWIZARD_COLOR,#94733a,a.link,67% seed + 33% BW}
+{$THEMEWIZARD_COLOR,#6f562c,a.hover,75% a.link + 25% BW}
+{$THEMEWIZARD_COLOR,#ffd996,a.link_light,67% (seed val_to 100) + 33% FFFFFF}
+{$THEMEWIZARD_COLOR,#ffe3b1,a.hover_light,75% a.link_light + 25% FFFFFF}
+{$THEMEWIZARD_COLOR,#f3e2c4,th_secondary_text,35% seed + 65% WB}
+{$THEMEWIZARD_COLOR,#efd9b0,hr,60% area_background + 40% seed}
+{$THEMEWIZARD_COLOR,#a88341,divider_line,76% seed + 24% BW}
 
 {$THEMEWIZARD_COLOR,#ffffff,text_light,100% ffffff}
 {$THEMEWIZARD_COLOR,#212529,text_dark,100% 212529}
@@ -87,61 +87,61 @@ See global.css for actual CSS rules.
 /* Borders */
 {$THEMEWIZARD_COLOR,#dddddd,standard_border,100% DDDDDD}
 {$THEMEWIZARD_COLOR,#9b9b9b,dark_border,70% standard_border + 30% BW}
-{$THEMEWIZARD_COLOR,#c4dcad,pale_border,33% seed + 67% WB}
-{$THEMEWIZARD_COLOR,#c4dcad,point_of_interest_border,33% seed + 67% WB}
+{$THEMEWIZARD_COLOR,#f4e4c7,pale_border,33% seed + 67% WB}
+{$THEMEWIZARD_COLOR,#f4e4c7,point_of_interest_border,33% seed + 67% WB}
 
 /* Backgrounds (quiet a variety, as we need to be able to stack them, to have both hover and active effects, to have zebra striping, and various other levels of perceived focus) */
-{$THEMEWIZARD_COLOR,#ebf3e4,area_background,11% seed + 89% WB}
-{$THEMEWIZARD_COLOR,#e4efda,area_2_background,15% seed + 85% WB}
-{$THEMEWIZARD_COLOR,#eff5e9,area_3_background,60% area_2_background + 40% WB}
-{$THEMEWIZARD_COLOR,#dbeacd,area_4_background,20% seed + 80% WB}
-{$THEMEWIZARD_COLOR,#f9fbf7,area_5_background,3% seed + 97% WB}
-{$THEMEWIZARD_COLOR,#9ede60,area_light_background,65% (seed val_to 80) + 35% WB}
-{$THEMEWIZARD_COLOR,#eff5e9,area_faded_background,80% area_background + 20% WB}
-{$THEMEWIZARD_COLOR,#f9fbf7,area_zebra_background,100% area_5_background}
+{$THEMEWIZARD_COLOR,#fbf6ec,area_background,11% seed + 89% WB}
+{$THEMEWIZARD_COLOR,#faf3e6,area_2_background,15% seed + 85% WB}
+{$THEMEWIZARD_COLOR,#fcf8f0,area_3_background,60% area_2_background + 40% WB}
+{$THEMEWIZARD_COLOR,#f8eedd,area_4_background,20% seed + 80% WB}
+{$THEMEWIZARD_COLOR,#fefcfa,area_5_background,3% seed + 97% WB}
+{$THEMEWIZARD_COLOR,#dec08c,area_light_background,65% (seed val_to 80) + 35% WB}
+{$THEMEWIZARD_COLOR,#fcf8f0,area_faded_background,80% area_background + 20% WB}
+{$THEMEWIZARD_COLOR,#fefcfa,area_zebra_background,100% area_5_background}
 {$THEMEWIZARD_COLOR,#ffffff,area_hover_background,100% WB}
-{$THEMEWIZARD_COLOR,#dbeacd,area_hover_2_background,20% seed + 80% WB}
+{$THEMEWIZARD_COLOR,#f8eedd,area_hover_2_background,20% seed + 80% WB}
 {$THEMEWIZARD_COLOR,#ffffff,area_current_background,100% WB}
-{$THEMEWIZARD_COLOR,#dde8d3,point_of_interest_background,97% area_2_background + 2% BW}
+{$THEMEWIZARD_COLOR,#f3ecdf,point_of_interest_background,97% area_2_background + 2% BW}
 {$THEMEWIZARD_COLOR,#444444,panel_bottom_background,100% 444444}
 {$THEMEWIZARD_COLOR,#333333,footer_background,100% 333333}
 {$THEMEWIZARD_COLOR,#333333,tooltip_background,100% 333333}
 {$THEMEWIZARD_COLOR,#f0f2f4,input_disabled_background,67% E9ECEF + 33% WB}
 
 /* Backgrounds, employing color wheel theory */
-{$THEMEWIZARD_COLOR,#e9eacd,area_highlight_left_complement_background,20% (seed hue_add -21) + 80% WB}
-{$THEMEWIZARD_COLOR,#cdeacd,area_highlight_right_complement_background,20% (seed hue_add +21) + 80% WB}
+{$THEMEWIZARD_COLOR,#f8e1dd,area_highlight_left_complement_background,20% (seed hue_add -21) + 80% WB}
+{$THEMEWIZARD_COLOR,#f5f8dd,area_highlight_right_complement_background,20% (seed hue_add +21) + 80% WB}
 
 /* Buttons */
-{$THEMEWIZARD_COLOR,#488e07,button_primary,95% seed + 5% BW}
+{$THEMEWIZARD_COLOR,#d2a352,button_primary,95% seed + 5% BW}
 {$THEMEWIZARD_COLOR,#ffffff,button_primary_text,100% (button_primary contrast 0)}
 
 /* Text */
-{$THEMEWIZARD_COLOR,#0f1e01,slightly_seeded_text,20% seed + 80% BW}
-{$THEMEWIZARD_COLOR,#f9fbf7,slightly_seeded_pale_text,3% seed + 97% WB}
-{$THEMEWIZARD_COLOR,#3e4934,slightly_seeded_gray_text,20% WB + 65% BW + 15% seed}
-{$THEMEWIZARD_COLOR,#316105,area_text,65% seed + 35% BW}
-{$THEMEWIZARD_COLOR,#3a4f25,area_key_text,53% (seed sat_to 53) + 47% BW}
-{$THEMEWIZARD_COLOR,#2e520c,area_link,55% (seed sat_to 86) + 45% BW}
+{$THEMEWIZARD_COLOR,#2c2211,slightly_seeded_text,20% seed + 80% BW}
+{$THEMEWIZARD_COLOR,#fefcfa,slightly_seeded_pale_text,3% seed + 97% WB}
+{$THEMEWIZARD_COLOR,#544d40,slightly_seeded_gray_text,20% WB + 65% BW + 15% seed}
+{$THEMEWIZARD_COLOR,#907038,area_text,65% seed + 35% BW}
+{$THEMEWIZARD_COLOR,#755e37,area_key_text,53% (seed sat_to 53) + 47% BW}
+{$THEMEWIZARD_COLOR,#7a5411,area_link,55% (seed sat_to 86) + 45% BW}
 {$THEMEWIZARD_COLOR,#0d0d0d,slightly_gray_text,95% BW + 5% WB}
 
 /* Special colour for box titles */
 {$THEMEWIZARD_COLOR,#f2f2f2,box_title_background,100% main_2_background}
-{$THEMEWIZARD_COLOR,#488e07,box_title_background_2,95% seed + 5% BW}
+{$THEMEWIZARD_COLOR,#d2a352,box_title_background_2,95% seed + 5% BW}
 {$THEMEWIZARD_COLOR,#1a1a1a,box_title_text,90% BW + 10% WB}
-{$THEMEWIZARD_COLOR,#264b04,box_title_text_hover,100% a.hover}
+{$THEMEWIZARD_COLOR,#6f562c,box_title_text_hover,100% a.hover}
 {$THEMEWIZARD_COLOR,#ffffff,box_title_text_2,100% (box_title_background_2 contrast 0)}
-{$THEMEWIZARD_COLOR,#edf4e7,box_title_link,90% (box_title_background_2 contrast 0) + 10% box_title_background_2}
+{$THEMEWIZARD_COLOR,#fbf6ee,box_title_link,90% (box_title_background_2 contrast 0) + 10% box_title_background_2}
 
 /* Special colour for code/quote boxes */
-{$THEMEWIZARD_COLOR,#4c9507,code_title_background,100% seed}
-{$THEMEWIZARD_COLOR,#3f3f3e,code_text,25% code_background + 85% BW}
-{$THEMEWIZARD_COLOR,#fafcf8,code_background,25% area_background + 75% WB}
-{$THEMEWIZARD_COLOR,#4c9507,code_border,100% seed}
+{$THEMEWIZARD_COLOR,#ddac56,code_title_background,100% seed}
+{$THEMEWIZARD_COLOR,#403f3f,code_text,25% code_background + 85% BW}
+{$THEMEWIZARD_COLOR,#fefdfa,code_background,25% area_background + 75% WB}
+{$THEMEWIZARD_COLOR,#ddac56,code_border,100% seed}
 
 /* Drop down menus should look 'above' the site */
 {$THEMEWIZARD_COLOR,#ffffff,dropdown_menu_item_background,100% WB}
-{$THEMEWIZARD_COLOR,#dbeacd,dropdown_menu_item_background_hover,100% area_4_background}
+{$THEMEWIZARD_COLOR,#f8eedd,dropdown_menu_item_background_hover,100% area_4_background}
 
 /* Global-level messages should stand out compared to other styling */
 {$THEMEWIZARD_COLOR,#f1f1f1,message_highlighted_part,40% standard_border + 60% WB}
