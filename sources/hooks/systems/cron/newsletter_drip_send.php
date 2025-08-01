@@ -68,7 +68,7 @@ class Hook_cron_newsletter_drip_send
 
         require_lang('newsletter');
 
-        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], $mails_per_send);
+        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], '', $mails_per_send);
         if (!empty($to_send)) {
             // We'll cache messages here
             $cached_messages = [];
