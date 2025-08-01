@@ -58,6 +58,16 @@ class Hook_task_compile_api
                     continue;
                 }
 
+                // This is bundled third-party code; we do not want this in our API documentation
+                if (strpos($path, 'sources/imap/') !== false) {
+                    continue;
+                }
+
+                // This is bundled third-party code; we do not want this in our API documentation
+                if (strpos($path, 'sources/isocodes/') !== false) {
+                    continue;
+                }
+
                 $files_to_process[] = $path;
             }
         }
