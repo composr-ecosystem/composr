@@ -37,7 +37,7 @@ class Hook_addon_registry_gitlab_shared
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update
+        return '11'; // addon_version_auto_update 474fe52b505254612a89eb41bd543972
     }
 
     /**

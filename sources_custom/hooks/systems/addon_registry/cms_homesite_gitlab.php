@@ -37,7 +37,7 @@ class Hook_addon_registry_cms_homesite_gitlab
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update
+        return '11'; // addon_version_auto_update f38a8e84c310ae457f02557c84d25f7d
     }
 
     /**

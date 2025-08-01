@@ -37,7 +37,7 @@ class Hook_addon_registry_unslider
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 00d3094369d639db35755f37294d67f1
+        return '11.0.1'; // addon_version_auto_update c18f5dfcf72d5f8967ab203b0bc151e8
     }
 
     /**

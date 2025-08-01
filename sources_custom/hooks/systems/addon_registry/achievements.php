@@ -37,7 +37,7 @@ class Hook_addon_registry_achievements
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update b404f5ae3184d393c68d37e32e2acc4e
+        return '11.0.3'; // addon_version_auto_update d5cfa4d0f3adce519f972366d779a310
     }
 
     /**
