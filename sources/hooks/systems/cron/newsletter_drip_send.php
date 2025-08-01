@@ -147,7 +147,7 @@ class Hook_cron_newsletter_drip_send
                 if ($id_list != '') {
                     $id_list .= ' OR ';
                 }
-                $id_list .= 'id=' . strval($sent_id);
+                $id_list .= 'id=' . strval($sent_id['id']);
             }
             if ($id_list != '') {
                 $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
