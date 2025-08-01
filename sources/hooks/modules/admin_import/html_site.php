@@ -178,8 +178,6 @@ class Hook_import_html_site
             foreach ($new_zones as $zone) {
                 actual_add_zone($zone, titleify($zone), DEFAULT_ZONE_PAGE_NAME, '', $theme, 0);
             }
-
-            sync_htaccess_with_zones();
         }
 
         // Discern cruft in htm/html via looking for best levenshtein to length ratio over a few pages; scan by tag, not by byte

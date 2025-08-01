@@ -284,6 +284,8 @@ function actual_add_zone(string $zone, string $title, string $default_page = DEF
 
     save_zone_base_url($zone, $base_url);
 
+    sync_htaccess_with_zones();
+
     log_it('ADD_ZONE', $zone, $title);
 
     return $zone;
@@ -1155,9 +1157,11 @@ function sync_htaccess_with_zones()
     $htaccess_path = get_file_base() . '/.htaccess';
     if (($change_htaccess) && (file_exists($htaccess_path)) && (cms_is_writable($htaccess_path))) {
         $zones = find_all_zones();
+        unset($zones['site']); // We force this in because find_all_zones will not return it if single public zone is enabled
+        unset($zones['']); // We also force the welcome zone
 
         $htaccess = cms_file_get_contents_safe($htaccess_path, FILE_READ_LOCK);
-        $htaccess = preg_replace('#\(site[^\)]*#', '(' . implode('|', $zones), $htaccess);
+        $htaccess = preg_replace('#RewriteRule \^\/\?\(([a-z_\|]*)\)\/#', 'RewriteRule ^/?(|site|' . implode('|', $zones) . ')/', $htaccess); // We force the site zone in the list because find_all_zones() does not return it if single public zone is enabled
         require_code('files');
         cms_file_put_contents_safe($htaccess_path, $htaccess, FILE_WRITE_FIX_PERMISSIONS | FILE_WRITE_SYNC_FILE);
     }
