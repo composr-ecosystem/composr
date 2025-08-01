@@ -27,8 +27,7 @@ class rate_limiting_test_set extends cms_test_case
         file_put_contents($config_file_path, $config_file . "\n\n\$SITE_INFO['rate_limiting'] = '1';\n\$SITE_INFO['rate_limit_time_window'] = '60';\n\$SITE_INFO['rate_limit_hits_per_window'] = '3';");
         fix_permissions($config_file_path);
 
-        $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
-        file_put_contents($rate_limiter_path, '');
+        $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiting/' . str_replace(['.', ':'], ['_', '-'], get_ip_address()) . '.json';
 
         $url = build_url(['page' => ''], '');
         for ($i = 0; $i < 4; $i++) {
@@ -53,6 +52,6 @@ class rate_limiting_test_set extends cms_test_case
         }
 
         file_put_contents($config_file_path, $config_file);
-        unlink($rate_limiter_path);
+        //unlink($rate_limiter_path);
     }
 }

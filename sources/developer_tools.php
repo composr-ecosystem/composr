@@ -92,7 +92,7 @@ function semi_dev_mode_startup()
                 }
                 foreach ($_MODIFIED_FILES as $file) {
                     if ((substr($file, 0, strlen(get_file_base())) == get_file_base()) && (is_file($file)) && (strpos($file, 'log') === false) && (strpos($file, 'tmp') === false) && (strpos($file, 'temp') === false) && (strpos($file, 'cache') === false) && (strpos($file, 'backup') === false) && (strpos($file, 'builds') === false) && (strpos($file, 'incoming') === false)) {
-                        if ((strpos($file, '_config.php') === false) && (strpos($file, 'failover_rewritemap') === false) && (basename($file) != 'rate_limiter.php')) {
+                        if ((strpos($file, '_config.php') === false) && (strpos($file, 'failover_rewritemap') === false) && (strpos($file, 'data_custom/rate_limiting/') === false)) {
                             @exit(escape_html('File not change-synched: ' . $file));
                         }
                     }

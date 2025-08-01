@@ -74,7 +74,6 @@ class path_references_test_set extends cms_test_case
                 // Files that do not exist by default in a Composr install
                 'data_custom/execute_temp.php',
                 'data_custom/latest_activity.txt',
-                'data_custom/rate_limiter.php',
                 'sources_custom/critical_errors.php',
                 'Could not find data_custom/upgrader.cms.tmp',
                 'lang_custom/langs.ini',

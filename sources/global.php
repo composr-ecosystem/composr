@@ -1523,16 +1523,21 @@ if ($rate_limiting) {
         $ip = $_SERVER['REMOTE_ADDR'];
         $time = time();
 
-        if (!(((!empty($_SERVER['SERVER_ADDR'])) && ($ip == $_SERVER['SERVER_ADDR'])) || ((!empty($_SERVER['LOCAL_ADDR'])) && ($ip == $_SERVER['LOCAL_ADDR'])))) {
-            global $RATE_LIMITING_DATA;
-            $RATE_LIMITING_DATA = [];
+        $fixed_ip = str_replace(['.', ':'], ['_', '-'], $ip);
 
-            // Read in state
-            $rate_limiter_path = dirname(__DIR__) . '/data_custom/rate_limiter.php';
+        if (!(((!empty($_SERVER['SERVER_ADDR'])) && ($ip == $_SERVER['SERVER_ADDR'])) || ((!empty($_SERVER['LOCAL_ADDR'])) && ($ip == $_SERVER['LOCAL_ADDR'])))) {
+            $rate_limiting_data = [];
+
+            // Read in rate limiter data for this IP
+            $rate_limiter_path = dirname(__DIR__) . '/data_custom/rate_limiting/' . $fixed_ip . '.json';
+
             if (is_file($rate_limiter_path)) {
                 $fp = fopen($rate_limiter_path, 'rb');
-                flock($fp, LOCK_SH);
-                include $rate_limiter_path;
+                flock($fp, LOCK_EX);
+                $rate_limiting_data = @json_decode($rate_limiter_path, true);
+                if (!$rate_limiting_data) {
+                    $rate_limiting_data = [];
+                }
                 flock($fp, LOCK_UN);
                 fclose($fp);
             }
@@ -1540,11 +1545,9 @@ if ($rate_limiting) {
             // Filter to just times within our window
             $pertinent = [];
             $rate_limit_time_window = empty($SITE_INFO['rate_limit_time_window']) ? 10 : intval($SITE_INFO['rate_limit_time_window']);
-            if (isset($RATE_LIMITING_DATA[$ip])) {
-                foreach ($RATE_LIMITING_DATA[$ip] as $i => $old_time) {
-                    if ($old_time >= $time - $rate_limit_time_window) {
-                        $pertinent[] = $old_time;
-                    }
+            foreach ($rate_limiting_data as $i => $old_time) {
+                if ($old_time >= $time - $rate_limit_time_window) {
+                    $pertinent[] = $old_time;
                 }
             }
 
@@ -1556,28 +1559,14 @@ if ($rate_limiting) {
                 exit('We only allow ' . strval($rate_limit_hits_per_window - 1) . ' page hits every ' . strval($rate_limit_time_window) . ' seconds. You\'re at ' . strval(count($pertinent)) . '.');
             }
 
-            // Remove any old hits from other IPs
-            foreach ($RATE_LIMITING_DATA as $_ip => $times) {
-                if ($_ip != $ip) {
-                    foreach ($times as $i => $old_time) {
-                        if ($old_time < $time - $rate_limit_time_window) {
-                            unset($RATE_LIMITING_DATA[$_ip][$i]);
-                        }
-                    }
-                    if (empty($RATE_LIMITING_DATA[$_ip])) {
-                        unset($RATE_LIMITING_DATA[$_ip]);
-                    }
-                }
-            }
-
             // Write out new state
-            $RATE_LIMITING_DATA[$ip] = $pertinent;
-            $RATE_LIMITING_DATA[$ip][] = $time;
-            file_put_contents($rate_limiter_path, '<' . '?php' . "\n\n" . '$RATE_LIMITING_DATA=' . var_export($RATE_LIMITING_DATA, true) . ';' . "\n", LOCK_EX);
+            $rate_limiting_data = $pertinent;
+            $rate_limiting_data[] = $time;
+            file_put_contents($rate_limiter_path, json_encode($rate_limiting_data), LOCK_EX);
             //sync_file($rate_limiter_path); Not done. Each server should rate limit separately. Synching this data across servers would be too slow and not scalable
 
             // Save some memory
-            unset($RATE_LIMITING_DATA);
+            unset($rate_limiting_data);
         }
     }
 }
