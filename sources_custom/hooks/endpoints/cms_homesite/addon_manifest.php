@@ -101,17 +101,11 @@ class Hook_endpoint_cms_homesite_addon_manifest
                 $addon_manifest[$addon_id] = [
                     'name' => $addon_name,
                     'download_id' => null,
+                    'download_guid' => null,
                     'download_url' => null,
                     'version' => null,
                     'updated' => null,
                     'hash' => null,
-
-                    // LEGACY: 11.beta5 and below
-                    0 => null,
-                    1 => null,
-                    2 => null,
-                    3 => $addon_name,
-                    4 => null,
                 ];
 
                 // Populate our manifest with what we found in the database (if we found anything)
@@ -120,6 +114,19 @@ class Hook_endpoint_cms_homesite_addon_manifest
                     $additional_details = get_translated_text($result[0]['additional_details']);
                     $addon_manifest[$addon_id]['download_id'] = $result[0]['id'];
                     $addon_manifest[$addon_id]['download_url'] = $result[0]['url'];
+
+                    // Security: We use resource GUID if Commandr is installed to prevent content scraping
+                    if (addon_installed('commandr')) {
+                        require_code('resource_fs');
+
+                        $_id = find_guid_via_id('download', strval($result[0]['id']));
+                        if ($_id === null) {
+                            return ['success' => 'false', 'error_details' => do_lang('INTERNAL_ERROR', comcode_escape('TODO'))];
+                        }
+                        $addon_manifest[$addon_id]['download_guid'] = $_id;
+                    } else {
+                        $addon_manifest[$addon_id]['download_guid'] = strval($id);
+                    }
 
                     // Determine the CRC32 hash
                     if (url_is_local($result[0]['url'])) {
@@ -158,13 +165,6 @@ class Hook_endpoint_cms_homesite_addon_manifest
                         $addon_manifest[$addon_id]['name'] = $name_remap[$name_titled];
                     }
                 }
-
-                // LEGACY: 11.beta5 and below
-                $addon_manifest[$addon_id][0] = $addon_manifest[$addon_id]['updated'];
-                $addon_manifest[$addon_id][1] = $addon_manifest[$addon_id]['download_id'];
-                $addon_manifest[$addon_id][2] = $addon_manifest[$addon_id]['download_url'];
-                $addon_manifest[$addon_id][3] = $addon_manifest[$addon_id]['name'];
-                $addon_manifest[$addon_id][4] = $addon_manifest[$addon_id]['hash'];
             }
         }
 

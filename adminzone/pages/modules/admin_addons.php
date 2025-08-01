@@ -401,7 +401,7 @@ class Module_admin_addons
             if ($updated_addons != '') {
                 $updated_addons .= ',';
             }
-            $updated_addons .= strval($updated_addon);
+            $updated_addons .= $updated_addon[1];
         }
 
         // Actually caching is very detrimental for the speed of this page!
@@ -617,7 +617,7 @@ class Module_admin_addons
         $set_title = do_lang_tempcode('SOURCE');
         $field_set = alternate_fields_set__start($set_name);
 
-        $to_import = get_param_string('to_import', null);
+        $to_import = post_param_string('to_import', null);
 
         $field_set->attach(form_input_tree_list(do_lang_tempcode('DOWNLOAD'), do_lang_tempcode('DESCRIPTION_DOWNLOAD_ADDON_HOMESITE', escape_html(get_brand_page_url(['page' => 'community'], 'site'))), 'url', null, 'choose_homesite_addon', [], false, $to_import, true, null, true));
 
