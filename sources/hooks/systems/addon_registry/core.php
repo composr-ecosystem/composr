@@ -42,7 +42,7 @@ class Hook_addon_registry_core
      */
     public function get_version() : string
     {
-        return '11.0.5'; // addon_version_auto_update 9b49a99c6253783ee035ce09dea27d26
+        return '11.0.5'; // addon_version_auto_update c09ab69669b97cf3517ce4a397722a1b
     }
 
     /**
