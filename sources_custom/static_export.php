@@ -210,9 +210,8 @@ function _static_export_scriptrep_callback(array $matches) : string
             $id = $matches[3];
 
             // Security: We use resource GUID if Commandr is installed to prevent content scraping
-            // LEGACY: The cms_version_time is to ensure we do not do this until 11 beta8
             require_code('version');
-            if (addon_installed('commandr') && ((cms_version_time() > 1741833435) || $GLOBALS['DEV_MODE'])) {
+            if (addon_installed('commandr')) {
                 require_code('resource_fs');
 
                 $_id = find_id_via_guid(strval($id));
