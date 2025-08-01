@@ -186,6 +186,13 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
     // We randomise the order because we have a global safety time-out. This ensures every hook has a chance to run at some point over Cron executions.
     cms_shuffle_assoc($cron_hooks);
 
+    // FUDGE: Newsletter drip send should always run third to first so it runs before sending queued e-mails
+    if (array_key_exists('newsletter_drip_send', $cron_hooks)) {
+        $cron_hook = $cron_hooks['newsletter_drip_send'];
+        unset($cron_hooks['newsletter_drip_send']);
+        $cron_hooks = ['newsletter_drip_send' => $cron_hook] + $cron_hooks;
+    }
+
     // FUDGE: Background tasks should always run second to first as tasks are considered high priority (may involve users waiting on a response)
     if (array_key_exists('tasks', $cron_hooks)) {
         $cron_hook = $cron_hooks['tasks'];
