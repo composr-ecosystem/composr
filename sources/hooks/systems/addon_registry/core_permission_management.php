@@ -42,7 +42,7 @@ class Hook_addon_registry_core_permission_management
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 4d3d3795525a2a8e1ba55f36df23e707
+        return '11.0.2'; // addon_version_auto_update ee9cee5c4f88fbfe142313bc54680b3e
     }
 
     /**

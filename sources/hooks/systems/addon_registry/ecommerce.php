@@ -57,7 +57,7 @@ class Hook_addon_registry_ecommerce
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 52c4e92ed8437d91a5f89caf18627576
+        return '11.0.3'; // addon_version_auto_update 0b210d31a628efa9defef48eff785007
     }
 
     /**

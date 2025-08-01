@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_warnings
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 2833200712e978849f4983822bcccb2a
+        return '11.0.3'; // addon_version_auto_update 8c454ed283e2bf659649d35d1eb71256
     }
 
     /**

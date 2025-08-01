@@ -42,7 +42,7 @@ class Hook_addon_registry_quizzes
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update c5a82a375de78a3f63965731a399708b
+        return '11.0.2'; // addon_version_auto_update 15ce24047e8f3b01ed07a14dba12190c
     }
 
     /**

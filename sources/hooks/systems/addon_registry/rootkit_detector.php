@@ -42,7 +42,7 @@ class Hook_addon_registry_rootkit_detector
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 7897314b9fe9101e25d24e551d2c2a58
+        return '11.0.3'; // addon_version_auto_update 29fe21c62550b4adb770c22e9819b5c1
     }
 
     /**

@@ -42,7 +42,7 @@ class Hook_addon_registry_syndication_blocks
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update 47c12cbcf8755885d77a6767a721b97a
+        return '11.0.1'; // addon_version_auto_update d6f5f9009e2b66e1c3eabcbf54ba66ab
     }
 
     /**

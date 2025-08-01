@@ -42,7 +42,7 @@ class Hook_addon_registry_awards
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update de32802c2c68f66f899dc1166a007948
+        return '11.0.2'; // addon_version_auto_update 3c5807d486356935986c0111869b35b8
     }
 
     /**

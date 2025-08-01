@@ -42,7 +42,7 @@ class Hook_addon_registry_core_cleanup_tools
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 85ca61b13257695803fe7a1cf7a13596
+        return '11.0.3'; // addon_version_auto_update 4646a0adbefd4efdd4e2c5d145491331
     }
 
     /**

@@ -42,7 +42,7 @@ class Hook_addon_registry_core_form_interfaces
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 8b4f844dadffa34e4d540cf37d1558fe
+        return '11.0.3'; // addon_version_auto_update 0ba7a7d5a74e7d6cc9d592e52c1417ef
     }
 
     /**

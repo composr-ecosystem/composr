@@ -235,6 +235,7 @@ INSERT INTO cms_modules (module_the_name, module_author, module_organisation, mo
 ('admin_early_access', 'Chris Graham', 'Composr', '', NULL, 2),
 ('admin_giftr', 'Chris Graham', 'Composr', '', NULL, 2),
 ('admin_karma', 'Chris Graham', 'Composr', '', NULL, 2),
+('photo_verification', 'Chris Graham', 'Composr', '', NULL, 2),
 ('admin_referrals', 'Chris Graham', 'Composr', '', NULL, 2),
 ('admin_workflow', 'Chris Graham', 'Composr', '', NULL, 2),
 ('admin_aggregate_types', 'Chris Graham', 'Composr', '', NULL, 2),
@@ -247,8 +248,8 @@ INSERT INTO cms_modules (module_the_name, module_author, module_organisation, mo
 ('news', 'Chris Graham', 'Composr', '', NULL, 10),
 ('admin_realtime_rain', 'Chris Graham', 'Composr', '', NULL, 1),
 ('admin_make_release', 'Chris Graham', 'Composr', '', NULL, 2),
-('admin_modularisation', 'Chris Graham', 'Composr', '', NULL, 2),
-('admin_push_bugfix', 'Chris Graham', 'Composr', '', NULL, 2);
+('admin_modularisation', 'Chris Graham', 'Composr', '', NULL, 2);
+INSERT INTO cms_modules (module_the_name, module_author, module_organisation, module_hacked_by, module_hack_version, module_version) VALUES ('admin_push_bugfix', 'Chris Graham', 'Composr', '', NULL, 2);
 
 DROP TABLE IF EXISTS cms_news;
 CREATE TABLE cms_news (
@@ -642,8 +643,6 @@ CREATE TABLE cms_privilege_list (
     PRIMARY KEY (the_name, the_default)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('GENERAL_SETTINGS', 'may_enable_staff_notifications', 0),
-('GENERAL_SETTINGS', 'jump_to_not_validated', 0),
-('GENERAL_SETTINGS', 'see_not_validated', 0),
 ('GENERAL_SETTINGS', 'see_software_docs', 0),
 ('GENERAL_SETTINGS', 'sees_javascript_error_alerts', 0),
 ('GENERAL_SETTINGS', 'open_virtual_roots', 0),
@@ -681,10 +680,10 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('GENER
 ('SUBMISSION', 'edit_midrange_content', 0),
 ('SUBMISSION', 'edit_highrange_content', 0),
 ('SUBMISSION', 'bypass_validation_midrange_content', 0),
-('SUBMISSION', 'bypass_validation_highrange_content', 0);
-INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SUBMISSION', 'feature', 0),
-('STAFF_ACTIONS', 'access_overrun_site', 0),
-('STAFF_ACTIONS', 'view_profiling_modes', 0),
+('SUBMISSION', 'bypass_validation_highrange_content', 0),
+('SUBMISSION', 'feature', 0),
+('STAFF_ACTIONS', 'access_overrun_site', 0);
+INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('STAFF_ACTIONS', 'view_profiling_modes', 0),
 ('STAFF_ACTIONS', 'see_stack_trace', 0),
 ('STAFF_ACTIONS', 'bypass_bandwidth_restriction', 0),
 ('STAFF_ACTIONS', 'access_closed_site', 0),
@@ -721,10 +720,10 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SUBMI
 ('FORUMS_AND_MEMBERS', 'pt_anyone', 0),
 ('FORUMS_AND_MEMBERS', 'delete_private_topic_posts', 0),
 ('FORUMS_AND_MEMBERS', 'exceed_post_edit_time_limit', 1),
-('FORUMS_AND_MEMBERS', 'exceed_post_delete_time_limit', 1);
-INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('FORUMS_AND_MEMBERS', 'bypass_required_cpfs', 0),
-('FORUMS_AND_MEMBERS', 'bypass_required_cpfs_if_already_empty', 0),
-('FORUMS_AND_MEMBERS', 'bypass_email_address', 0),
+('FORUMS_AND_MEMBERS', 'exceed_post_delete_time_limit', 1),
+('FORUMS_AND_MEMBERS', 'bypass_required_cpfs', 0),
+('FORUMS_AND_MEMBERS', 'bypass_required_cpfs_if_already_empty', 0);
+INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('FORUMS_AND_MEMBERS', 'bypass_email_address', 0),
 ('FORUMS_AND_MEMBERS', 'bypass_email_address_if_already_empty', 0),
 ('FORUMS_AND_MEMBERS', 'bypass_dob', 0),
 ('FORUMS_AND_MEMBERS', 'bypass_dob_if_already_empty', 0),
@@ -740,10 +739,10 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('FORUM
 ('GENERAL_SETTINGS', 'remove_page_split', 0),
 ('GENERAL_SETTINGS', 'bypass_wordfilter', 0),
 ('SUBMISSION', 'perform_keyword_check', 0),
-('SUBMISSION', 'have_personal_category', 0);
-INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('STAFF_ACTIONS', 'assume_any_member', 0),
-('SUBMISSION', 'edit_own_lowrange_content', 1),
-('SUBMISSION', 'submit_highrange_content', 1),
+('SUBMISSION', 'have_personal_category', 0),
+('STAFF_ACTIONS', 'assume_any_member', 0),
+('SUBMISSION', 'edit_own_lowrange_content', 1);
+INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SUBMISSION', 'submit_highrange_content', 1),
 ('SUBMISSION', 'submit_midrange_content', 1),
 ('SUBMISSION', 'submit_lowrange_content', 1),
 ('SUBMISSION', 'bypass_validation_lowrange_content', 1),
@@ -781,10 +780,10 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('STAFF
 ('SECTION_CHAT', 'moderate_my_private_rooms', 1),
 ('SECTION_CHAT', 'ban_chatters_from_rooms', 0),
 ('FORUMS_AND_MEMBERS', 'run_multi_moderations', 1),
-('FORUMS_AND_MEMBERS', 'see_warnings', 0);
-INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('FORUMS_AND_MEMBERS', 'warn_members', 0),
-('_SECTION_DOWNLOADS', 'download', 1),
-('SEARCH', 'autocomplete_keyword_download_category', 0),
+('FORUMS_AND_MEMBERS', 'see_warnings', 0),
+('FORUMS_AND_MEMBERS', 'warn_members', 0),
+('_SECTION_DOWNLOADS', 'download', 1);
+INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SEARCH', 'autocomplete_keyword_download_category', 0),
 ('SEARCH', 'autocomplete_title_download_category', 0),
 ('SEARCH', 'autocomplete_keyword_download', 0),
 ('SEARCH', 'autocomplete_title_download', 0),
@@ -821,14 +820,16 @@ INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('FORUM
 ('SEARCH', 'autocomplete_title_quiz', 0),
 ('RECOMMEND', 'use_own_recommend_message', 0),
 ('SEARCH', 'autocomplete_past_search', 0),
-('SEARCH', 'autocomplete_keyword_comcode_page', 0);
-INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('SEARCH', 'autocomplete_title_comcode_page', 0),
-('GENERAL_SETTINGS', 'use_sms', 0),
-('GENERAL_SETTINGS', 'sms_higher_limit', 0),
+('SEARCH', 'autocomplete_keyword_comcode_page', 0),
+('SEARCH', 'autocomplete_title_comcode_page', 0),
+('GENERAL_SETTINGS', 'use_sms', 0);
+INSERT INTO cms_privilege_list (p_section, the_name, the_default) VALUES ('GENERAL_SETTINGS', 'sms_higher_limit', 0),
 ('GENERAL_SETTINGS', 'sms_higher_trigger_limit', 0),
 ('GENERAL_SETTINGS', 'may_report_content', 1),
 ('SUPPORT_TICKETS', 'view_others_tickets', 0),
 ('SUPPORT_TICKETS', 'support_operator', 0),
+('SUBMISSION', 'see_not_validated', 0),
+('SUBMISSION', 'jump_to_not_validated', 0),
 ('WIKI', 'wiki_manage_tree', 0),
 ('SUBMISSION', 'set_content_review_settings', 0),
 ('SEARCH', 'autocomplete_keyword_news', 0),
@@ -1285,9 +1286,9 @@ CREATE TABLE cms_staff_checklist_cus_tasks (
     done_time integer unsigned NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1751596054, 0, '', NULL),
-(2, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1751596054, 0, '', NULL),
-(3, '[page=\"adminzone:admin_version\"]Consider contributing to the Composr project[/page]', 1751596054, 0, '', NULL);
+INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1754007569, 0, '', NULL),
+(2, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1754007569, 0, '', NULL),
+(3, '[page=\"adminzone:admin_version\"]Consider contributing to the Composr project[/page]', 1754007569, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;
 CREATE TABLE cms_staff_links (
@@ -1644,18 +1645,15 @@ CREATE TABLE cms_values (
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_values ADD INDEX date_and_time (date_and_time);
-INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('multi_lang_content', '0', 1751596047),
-('cns_topic_count', '1', 1751596049),
-('cns_member_count', '3', 1751596050),
-('cns_post_count', '1', 1751596050),
-('trusted_sites_1', 'composr.app\nipinfo.io', 1751596051),
-('trusted_sites_2', 'validator.w3.org', 1751596051),
-('users_online', '0', 1751596051),
-('version', '11.00', 1751596052),
-('cns_version', '11.00', 1751596052),
-('user_peak', '0', 1751596063),
-('user_peak_week', '0', 1751596063),
-('site_salt', 'ZhmssjvO-6qzp1fGvND_EPWZGl095XSU', 1751596063);
+INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('multi_lang_content', '0', 1754007561),
+('cns_topic_count', '1', 1754007564),
+('cns_member_count', '3', 1754007564),
+('cns_post_count', '1', 1754007564),
+('version', '11.00', 1754007566),
+('cns_version', '11.00', 1754007566),
+('trusted_sites_1', 'composr.app\nipinfo.io', 1754007573),
+('trusted_sites_2', 'validator.w3.org', 1754007573),
+('users_online', '0', 1754007573);
 
 DROP TABLE IF EXISTS cms_values_elective;
 CREATE TABLE cms_values_elective (
@@ -1664,8 +1662,8 @@ CREATE TABLE cms_values_elective (
     date_and_time integer unsigned NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('setupwizard_completed', '0', 1751596054),
-('db_version', '1751596013', 1751596066);
+INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('setupwizard_completed', '0', 1754007568),
+('db_version', '1754007512', 1754007580);
 
 DROP TABLE IF EXISTS cms_video_transcoding;
 CREATE TABLE cms_video_transcoding (
@@ -1775,7 +1773,7 @@ ALTER TABLE cms_wiki_pages ADD INDEX sadd_date (add_date);
 ALTER TABLE cms_wiki_pages ADD INDEX sps (submitter);
 
 ALTER TABLE cms_wiki_pages ADD INDEX wiki_views (wiki_views);
-INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1751596063, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_68673c178cfaf5.27341559_32\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_68673c178cfaf5.27341559_32\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_68673c178cfaf5.27341559_32\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1754007577, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_688c0811f25478.83283342_32\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_688c0811f25478.83283342_32\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_688c0811f25478.83283342_32\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_wiki_posts;
 CREATE TABLE cms_wiki_posts (

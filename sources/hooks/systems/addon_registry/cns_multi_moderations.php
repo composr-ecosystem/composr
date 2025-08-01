@@ -42,7 +42,7 @@ class Hook_addon_registry_cns_multi_moderations
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 55964fef47493bc997ad8d85afb1231b
+        return '11.0.2'; // addon_version_auto_update eeee34903a886aeb062322f89962a1ca
     }
 
     /**
