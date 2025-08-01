@@ -826,10 +826,12 @@ function save_comcode_page(string $zone, string $new_file, ?string $lang = null,
     //persistent_cache_delete(['PAGE_INFO']); Already erases above
     delete_cache_entry('main_comcode_page_children');
     delete_cache_entry('menu');
-    $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], ['the_zone' => $zone, 'the_page' => $file]);
-    $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_zone' => $zone, 'the_page' => $file]);
-    foreach ($caches as $cache) {
-        delete_lang($cache['string_index']);
+    foreach ([$file, $new_file] as $cache_file) {
+        $caches = $GLOBALS['SITE_DB']->query_select('cached_comcode_pages', ['string_index'], ['the_zone' => $zone, 'the_page' => $cache_file]);
+        $GLOBALS['SITE_DB']->query_delete('cached_comcode_pages', ['the_zone' => $zone, 'the_page' => $cache_file]);
+        foreach ($caches as $cache) {
+            delete_lang($cache['string_index']);
+        }
     }
     $GLOBALS['COMCODE_PAGE_RUNTIME_CACHE'] = [];
 
