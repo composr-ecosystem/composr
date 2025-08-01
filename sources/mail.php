@@ -1275,6 +1275,9 @@ abstract class Mail_dispatcher_base
                 $this->log('SKIPPED', $email . ' is either unsubscribed or had a bounce in the last 8 weeks.');
 
                 unset($to_emails[$key]);
+                if (is_array($to_names)) {
+                    unset($to_names[$key]);
+                }
                 continue;
             }
 
@@ -1285,6 +1288,9 @@ abstract class Mail_dispatcher_base
                     $this->log('SKIPPED', $email . ' is for a banned member, and we are not sending on priority 1.');
 
                     unset($to_emails[$key]);
+                    if (is_array($to_names)) {
+                        unset($to_names[$key]);
+                    }
                     continue;
                 }
             }
@@ -1300,7 +1306,7 @@ abstract class Mail_dispatcher_base
         $to_emails = $to_emails_new;
 
         // To name (an array)
-        if ((is_array($to_names)) && (!empty($to_names))) {
+        if ((is_array($to_names)) && (!empty($to_names)) && (!empty($to_emails))) {
             if ($to_emails[0] == $staff_address) {
                 $to_names = [];
                 for ($i = 0; $i < count($to_emails); $i++) {
