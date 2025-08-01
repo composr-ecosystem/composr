@@ -3359,7 +3359,7 @@ END;
 LimitRequestBody 524288000
 
 # Set Composr to handle 404 errors. Assume Composr is in the root
-<FilesMatch "(?<!\.jpg|\.jpeg|\.jpe|\.bmp|\.gif|\.png|\.ico|\.cur|\.svg|\.css|\.js|\.html)$">
+<FilesMatch "(?<!\.jpg|\.jpeg|\.jpe|\.bmp|\.gif|\.png|\.ico|\.cur|\.svg|\.webp|\.css|\.js|\.html)$">
 ErrorDocument 404 {$base}/index.php?page=404
 </FilesMatch>
 END;

@@ -370,6 +370,11 @@ function enforce_temporary_passwords(int $member_id)
         return;
     }
 
+    // Prevent issues from installer redirects by bailing if the install file still exists (unless in dev mode)
+    if (is_file(get_file_base() . '/install.php') && (!$GLOBALS['DEV_MODE'])) {
+        return;
+    }
+
     require_code('users_active_actions');
     _enforce_temporary_passwords($member_id);
 }
@@ -426,6 +431,11 @@ function enforce_declarations(int $member_id)
         return;
     }
 
+    // Prevent issues from installer redirects by bailing if the install file still exists (unless in dev mode)
+    if (is_file(get_file_base() . '/install.php') && (!$GLOBALS['DEV_MODE'])) {
+        return;
+    }
+
     require_code('users_active_actions');
     _enforce_declarations($member_id);
 }
@@ -459,6 +469,11 @@ function enforce_parental_controls(int $member_id)
 
     // Allow logging out
     if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
+        return;
+    }
+
+    // Prevent issues from installer redirects by bailing if the install file still exists (unless in dev mode)
+    if (is_file(get_file_base() . '/install.php') && (!$GLOBALS['DEV_MODE'])) {
         return;
     }
 
