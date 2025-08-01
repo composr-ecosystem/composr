@@ -120,7 +120,8 @@ class Hook_cron_newsletter_drip_send
                         'as_admin' => true,
                         'in_html' => $is_html,
                         'mail_template' => $template,
-                        'bypass_queue' => true,
+                        //'bypass_queue' => true,
+                        'bypass_queue' => false, // Not ideal but we want automatic mail failure handling
                         'smtp_sockets_use' => (get_option('newsletter_smtp_sockets_use') == '1'),
                         'smtp_sockets_host' => get_option('newsletter_smtp_sockets_host'),
                         'smtp_sockets_port' => intval(get_option('newsletter_smtp_sockets_port')),
@@ -142,13 +143,15 @@ class Hook_cron_newsletter_drip_send
 
             // Mass cleanup for maximum performance
             $id_list = '';
-            foreach ($sent as $sent_id) {
+            foreach ($to_send as $sent_id) {
                 if ($id_list != '') {
                     $id_list .= ' OR ';
                 }
                 $id_list .= 'id=' . strval($sent_id);
             }
-            $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
+            if ($id_list != '') {
+                $GLOBALS['SITE_DB']->query('DELETE FROM ' . get_table_prefix() . 'newsletter_drip_send WHERE ' . $id_list, null, 0, false, true);
+            }
         }
 
         if (count($to_send) < $mails_per_send) {
