@@ -777,8 +777,6 @@ class Module_admin_zones
 
         actual_add_zone($zone, $_title, $default_page, $header_text, $theme, $require_session, false, $base_url);
 
-        sync_htaccess_with_zones();
-
         $this->set_permissions($zone);
         if (addon_installed('ecommerce')) {
             require_code('ecommerce_permission_products');
@@ -976,8 +974,6 @@ class Module_admin_zones
         }
 
         $this->title = get_screen_title('EDIT_ZONE'); // Re-get title late, as we might be changing the theme this title is got from
-
-        sync_htaccess_with_zones();
 
         // Show it worked / Refresh
         if ($new_zone == $zone) {

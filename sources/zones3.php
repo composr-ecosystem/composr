@@ -285,6 +285,7 @@ function actual_edit_zone(string $zone, string $title, string $default_page, str
 
     require_code('zones2');
     save_zone_base_url($zone, $base_url);
+    sync_htaccess_with_zones();
 
     log_it('EDIT_ZONE', $zone, $title);
 
