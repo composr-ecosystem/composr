@@ -41,13 +41,20 @@ if (!function_exists('mu_ui')) {
 
         $post_url = get_self_url();
 
+        $text = new Tempcode();
+        $text->attach(paragraph('You can generate an upgrader from any version of Composr to any other version. If you access this upgrade post via the version information box on your Admin Zone dashboard then we\'ll automatically know what version you\'re running. If you\'d prefer though you can enter in your *current* version number right here and we will generate an upgrade for you.'));
+
+        $text->attach(paragraph('Examples: If running version 1.2.5 you would type 1 for major, 2 for minor, 5 for patch, and leave Bleeding-edge blank.<br />For version 1.5.8.beta, you would type 1 for major, 5 for minor, 8 for patch, and beta for Bleeding-edge.<br />For version 1.4.alpha4, you would type 1 for major, 4 for minor, 0 for patch, and alpha4 for Bleeding-edge.<br />For version 1.beta5, you would type 1 for major, 0 for minor, 0 for patch, and beta5 for Bleeding-edge.'));
+
+        $text->attach(paragraph('If you type an invalid version, or one that does not exist in our database, you will instead be given an omni-upgrader, which is very large in size but contains every file of Composr. You can generally use this regardless what version you are running.'));
+
         $ret = do_template('FORM_SCREEN', [
             '_GUID' => '6ba4f8844a2a3954696071b65af0b12e',
             'GET' => false,
             'SKIP_WEBSTANDARDS' => true,
             'HIDDEN' => $hidden,
             'TITLE' => 'Make a Composr upgrader',
-            'TEXT' => paragraph('You can generate an upgrader from any version of Composr to any other version. If you access this upgrade post via the version information box on your Admin Zone dashboard then we\'ll automatically know what version you\'re running. If you\'d prefer though you can enter in your version number right here:'),
+            'TEXT' => $text,
             'SUBMIT_ICON' => 'buttons/proceed',
             'SUBMIT_NAME' => do_lang_tempcode('PROCEED'),
             'FIELDS' => $form,
