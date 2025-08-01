@@ -166,7 +166,7 @@ function cns_get_topic_tree(?int $forum_id = null, ?string $breadcrumbs = null, 
         $rows = []; // Too many, this method will suck
     }
     $tmap = ['t_forum_id' => $forum_id];
-    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+    if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
         $tmap['t_validated'] = 1;
     }
     $children[0]['entries'] = collapse_2d_complexity('id', 't_cache_first_title', $GLOBALS['FORUM_DB']->query_select('f_topics', ['id', 't_cache_first_title', 't_cache_first_time'], $tmap, 'ORDER BY t_cache_first_time DESC', 12));

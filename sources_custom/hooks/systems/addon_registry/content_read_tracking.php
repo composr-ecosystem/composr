@@ -37,7 +37,7 @@ class Hook_addon_registry_content_read_tracking
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update e6b278ff3561531d31470b31aae86351
+        return '11.0.1'; // addon_version_auto_update e298980eb9ada9684e1f4d761cd8a4b0
     }
 
     /**

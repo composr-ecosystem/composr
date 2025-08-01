@@ -37,7 +37,7 @@ class Hook_addon_registry_enhanced_spreadsheets
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update ef531d5ce7deefd854b1549b612c8812
+        return '11.0.2'; // addon_version_auto_update 9c6ee9f3122259412f64b859de7b9cec
     }
 
     /**

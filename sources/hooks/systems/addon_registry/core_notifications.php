@@ -42,7 +42,7 @@ class Hook_addon_registry_core_notifications
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 6a853fdb215e36f1bba2b799487bf6a4
+        return '11.0.3'; // addon_version_auto_update 41da72081f1fdeb57dbbe0650eed03dc
     }
 
     /**

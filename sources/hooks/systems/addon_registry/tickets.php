@@ -42,7 +42,7 @@ class Hook_addon_registry_tickets
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 6b04a26ba833926887cc43a55fe1a038
+        return '11.0.2'; // addon_version_auto_update 8bf1b25e5b9aea7c1b4ed451d8f06542
     }
 
     /**

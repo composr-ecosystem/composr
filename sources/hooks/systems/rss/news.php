@@ -75,7 +75,7 @@ class Hook_rss_news
             $extra_where .= sql_region_filter('news', 'p.id');
         }
 
-        $query = 'SELECT DISTINCT p.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where  . ' ORDER BY date_and_time DESC';
+        $query = 'SELECT DISTINCT p.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'news p LEFT JOIN ' . get_table_prefix() . 'news_category_entries d ON d.news_entry=p.id' . $extra_join . ' WHERE date_and_time>' . strval($cutoff) . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? ' AND validated=1 ' : '') . ' AND ' . $filters . $extra_where  . ' ORDER BY date_and_time DESC';
         $rows = $GLOBALS['SITE_DB']->query($query, $max, 0, false, false, ['title' => 'SHORT_TRANS__COMCODE', 'news' => 'LONG_TRANS__COMCODE', 'news_article' => 'LONG_TRANS__COMCODE']);
         $_categories = $GLOBALS['SITE_DB']->query_select('news_categories', ['id', 'nc_title'], ['nc_owner' => null]);
         foreach ($_categories as $i => $_category) {

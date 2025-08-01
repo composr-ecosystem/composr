@@ -426,6 +426,16 @@ function enforce_declarations(int $member_id)
         return;
     }
 
+    // Don't run when in the setup wizard
+    if (get_page_name() == 'admin_setupwizard') {
+        return;
+    }
+
+    // Prevent issues from installer redirects by bailing if the install file still exists (unless in dev mode)
+    if (is_file(get_file_base() . '/install.php') && (!$GLOBALS['DEV_MODE'])) {
+        return;
+    }
+
     require_code('users_active_actions');
     _enforce_declarations($member_id);
 }
@@ -459,6 +469,11 @@ function enforce_parental_controls(int $member_id)
 
     // Allow logging out
     if ((get_page_name() == 'login') && (get_param_string('type', 'browse') == 'logout')) {
+        return;
+    }
+
+    // Prevent issues from installer redirects by bailing if the install file still exists (unless in dev mode)
+    if (is_file(get_file_base() . '/install.php') && (!$GLOBALS['DEV_MODE'])) {
         return;
     }
 
@@ -500,6 +515,11 @@ function enforce_parental_controls(int $member_id)
 
     // Bail to prevent infinite loops if the member is on their own member profile (might be filling in those fields)
     if (((get_page_name() == 'members') && ((get_param_string('id', '') == '') || (get_param_string('id', '') == strval($member_id))) && (get_param_string('type', 'browse') == 'view'))) {
+        return;
+    }
+
+    // Don't enforce anything else when in the setup wizard
+    if (get_page_name() == 'admin_setupwizard') {
         return;
     }
 

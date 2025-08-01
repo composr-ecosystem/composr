@@ -61,7 +61,7 @@ class Hook_addon_registry_galleries
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update a1f2c59c254072938965b92ca06ffff2
+        return '11.0.3'; // addon_version_auto_update c8b44dfa390d4274034ef0654db82e9a
     }
 
     /**

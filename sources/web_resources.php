@@ -310,7 +310,11 @@ function css_enforce(string $c, ?string $theme = null, bool $allow_defer = false
 
     // Make sure the CSS file exists
     if ($theme === null) {
-        $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
+        if ($GLOBALS['FORUM_DRIVER'] === null) {
+            $theme = 'default';
+        } else {
+            $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
+        }
     }
     $active_theme = $theme;
     $dir = get_custom_file_base() . '/themes/' . $theme . '/templates_cached/' . filter_naughty(user_lang());

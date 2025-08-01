@@ -42,7 +42,7 @@ class Hook_addon_registry_setupwizard
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 7a5e37317382f732b1915e12bc6dc038
+        return '11.0.2'; // addon_version_auto_update 9ac77330fd861b15b0174b5532270194
     }
 
     /**

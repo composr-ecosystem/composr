@@ -42,7 +42,7 @@ class Hook_addon_registry_core_imap
      */
     public function get_version() : string
     {
-        return '11'; // addon_version_auto_update d9df9dfa3193ebadaa8b9d80fc02dce4
+        return '11.0.1'; // addon_version_auto_update da15fa18dc36cf93508bbf0c17f081fe
     }
 
     /**

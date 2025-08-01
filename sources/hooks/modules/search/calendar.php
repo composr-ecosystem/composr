@@ -143,7 +143,7 @@ class Hook_search_calendar extends FieldsSearchHook
         $this->_handle_date_check($cutoff, 'e_add_date', $where_clause);
         $where_clause .= ' AND ';
         $where_clause .= 'e_type<>' . strval(db_get_first_id());
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'validated=1';
         }

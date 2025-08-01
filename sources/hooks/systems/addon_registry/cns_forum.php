@@ -59,7 +59,7 @@ class Hook_addon_registry_cns_forum
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 8e85d7b29d77a730a48091784a542e64
+        return '11.0.3'; // addon_version_auto_update 13e91f99f4c8aa0eea19fe49118d0941
     }
 
     /**

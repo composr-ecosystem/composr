@@ -368,7 +368,7 @@ class Module_quiz
         $max = get_param_integer('quizzes_max', 20);
 
         $sql = 'SELECT q.* FROM ' . $GLOBALS['SITE_DB']->get_table_prefix() . 'quizzes q WHERE 1=1';
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $sql .= ' AND q_validated=1';
         }
         $filter = get_param_string('filter', '');

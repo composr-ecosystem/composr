@@ -57,7 +57,7 @@ class Hook_addon_registry_captcha
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 8628f51e78f9c1328cd34525903b5356
+        return '11.0.3'; // addon_version_auto_update 9e2101259eae0a04ef8e38df9bbc9941
     }
 
     /**

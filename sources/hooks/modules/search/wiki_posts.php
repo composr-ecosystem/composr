@@ -142,7 +142,7 @@ class Hook_search_wiki_posts extends FieldsSearchHook
         }
         $this->_handle_date_check($cutoff, 'date_and_time', $where_clause);
 
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $where_clause .= ' AND ';
             $where_clause .= 'validated=1';
         }

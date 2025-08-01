@@ -61,7 +61,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
         $info['default'] = (get_option('search_cns_posts') == '1');
         $info['special_on'] = [];
         $info['special_off'] = ['open' => do_lang_tempcode('POST_SEARCH_OPEN'), 'closed' => do_lang_tempcode('POST_SEARCH_CLOSED'), 'pinned' => do_lang_tempcode('POST_SEARCH_PINNED')];
-        if ((has_privilege($member_id, 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (has_privilege($member_id, 'see_not_validated'))) {
             $info['special_off']['not_validated'] = do_lang_tempcode('POST_SEARCH_NOT_VALIDATED');
         }
         if (can_use_fast_custom_index('cns_posts')) {
@@ -327,7 +327,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
                 $where_clause .= ' OR p_whisper_to_member=' . strval(get_member()) . ' OR p_posting_member=' . strval(get_member());
             }
             $where_clause .= ')';
-            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+            if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'p_validated=1';
             }
@@ -380,7 +380,7 @@ class Hook_search_cns_posts extends FieldsSearchHook
             }
             $where_clause .= ')';
 
-            if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+            if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                 $where_clause .= ' AND ';
                 $where_clause .= 'r.p_validated=1';
             }

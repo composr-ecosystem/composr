@@ -37,7 +37,7 @@ class Hook_addon_registry_webdav
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 1f130fda8c159f9f70f294661e92487d
+        return '11.0.3'; // addon_version_auto_update f26cd7dec9cca379e53e7a08dddfb37b
     }
 
     /**

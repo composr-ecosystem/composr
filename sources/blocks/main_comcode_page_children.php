@@ -82,7 +82,7 @@ PHP;
         if ($zone !== null) {
             $qmap['the_zone'] = $zone;
         }
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $qmap['p_validated'] = 1;
         }
         $children = $GLOBALS['SITE_DB']->query_select('comcode_pages', ['the_page', 'the_zone', 'p_order'], $qmap, 'ORDER BY p_order,the_page');

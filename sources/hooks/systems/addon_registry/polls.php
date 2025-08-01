@@ -42,7 +42,7 @@ class Hook_addon_registry_polls
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update 755e9de53cefef31491ed119b15a1406
+        return '11.0.2'; // addon_version_auto_update f827e720d5f1262227a274b4ded2794a
     }
 
     /**

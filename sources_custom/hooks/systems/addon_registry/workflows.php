@@ -37,7 +37,7 @@ class Hook_addon_registry_workflows
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 3722802745764cc3471076072abeeff3
+        return '11.0.3'; // addon_version_auto_update a33a181ca1b0d1e75623deb575017226
     }
 
     /**

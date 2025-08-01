@@ -37,7 +37,7 @@ class Hook_addon_registry_external_db_login
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 32ee4930c7fd867ce9fbea13033b3eb1
+        return '11.0.3'; // addon_version_auto_update 125a9ede895d433cf491bc2b17137770
     }
 
     /**

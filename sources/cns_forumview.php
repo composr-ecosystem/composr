@@ -806,7 +806,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
             $child_or_list .= ' AND ';
         }
         $query = 'SELECT DISTINCT t_forum_id FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_topics t LEFT JOIN ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_read_logs l ON t.id=l_topic_id AND l_member_id=' . strval(get_member()) . ' WHERE t_forum_id IS NOT NULL AND ' . $child_or_list . 't_cache_last_time>' . strval(time() - 60 * 60 * 24 * intval(get_option('post_read_history_days'))) . ' AND (l_time<t_cache_last_time OR l_time IS NULL)';
-        if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+        if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
             $query .= ' AND t_validated=1';
         }
         $unread_forums = array_flip(collapse_1d_complexity('t_forum_id', $GLOBALS['FORUM_DB']->query($query)));
@@ -909,7 +909,7 @@ function cns_get_forum_view(int $forum_id, array $forum_info, int $start = 0, in
 
     // Find topics
     $extra = '';
-    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation')) && (!cns_may_moderate_forum($forum_id, $member_id))) {
+    if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated')) && (!cns_may_moderate_forum($forum_id, $member_id))) {
         $extra = 't_validated=1 AND ';
     }
     if (($forum_info['f_parent_forum_id'] === null) || ($GLOBALS['FORUM_DB']->query_select_value('f_topics', 'COUNT(*)', ['t_cascading' => 1]) == 0)) {

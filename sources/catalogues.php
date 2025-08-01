@@ -651,7 +651,7 @@ function get_catalogue_entries(string $catalogue_name, ?int $category_id, ?int $
         // WHERE clause
         $where_clause .= ' AND r.cc_id=' . strval($category_id);
     }
-    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+    if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
         $where_clause .= ' AND r.ce_validated=1';
     }
 

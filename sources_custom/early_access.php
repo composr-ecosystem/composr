@@ -53,8 +53,8 @@ function check_has_special_page_access_for_unvalidated_content(int $member_id, s
         $INVALIDATED_FAST_SPIDER_CACHE = true;
     }
 
-    // NB: Generally, this is already covered by the validation addon
-    if (has_privilege($member_id, 'jump_to_not_validated')) {
+    // NB: Generally, this is already covered by the validation addon; cannot use check_jump_to_not_validated as that will trigger an infinite loop
+    if ((addon_installed('validation')) && (has_privilege($member_id, 'jump_to_not_validated'))) {
         if (!$special_pass) {
             $special_pass = true;
             $message = do_lang_tempcode((get_param_integer('redirected', 0) == 1) ? 'UNVALIDATED_TEXT_NON_DIRECT' : 'UNVALIDATED_TEXT', $content_type);

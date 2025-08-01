@@ -37,7 +37,7 @@ class Hook_addon_registry_early_access
      */
     public function get_version() : string
     {
-        return '11.0.1'; // addon_version_auto_update c1ced5476c32ef21a77130b752a860d9
+        return '11.0.2'; // addon_version_auto_update 9bb9b78cea7cf582de85a882f1f7caa6
     }
 
     /**

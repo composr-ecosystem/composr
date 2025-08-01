@@ -740,7 +740,7 @@ class Module_galleries
                         require_code('content_privacy');
                         check_privacy('video', strval($probe_id));
                     }
-                    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+                    if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                         $map['validated'] = 1;
                     }
                     $rows = $GLOBALS['SITE_DB']->query_select('videos', ['*'], $map, '', 1);
@@ -809,7 +809,7 @@ class Module_galleries
                         require_code('content_privacy');
                         check_privacy('image', strval($probe_id));
                     }
-                    if ((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) {
+                    if ((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) {
                         $map['validated'] = 1;
                     }
                     $rows = $GLOBALS['SITE_DB']->query_select('images', ['*'], $map, '', 1);

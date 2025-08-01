@@ -57,7 +57,7 @@ class Hook_addon_registry_banners
      */
     public function get_version() : string
     {
-        return '11.0.2'; // addon_version_auto_update 5baea5e47abb305739349be61f69a006
+        return '11.0.3'; // addon_version_auto_update ca197e1f1ce67a4a578c18c32b8cacd5
     }
 
     /**

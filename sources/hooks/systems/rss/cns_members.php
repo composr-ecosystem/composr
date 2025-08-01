@@ -55,7 +55,7 @@ class Hook_rss_cns_members
             return null;
         }
 
-        $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members p WHERE m_join_time>' . strval($cutoff) . (((!has_privilege(get_member(), 'see_not_validated')) && (addon_installed('validation'))) ? (' AND m_validated=1 AND ' . db_string_equal_to('m_validated_email_confirm_code', '')) : '') . ' ORDER BY m_join_time DESC', $max);
+        $rows = $GLOBALS['FORUM_DB']->query('SELECT * FROM ' . $GLOBALS['FORUM_DB']->get_table_prefix() . 'f_members p WHERE m_join_time>' . strval($cutoff) . (((addon_installed('validation')) && (!has_privilege(get_member(), 'see_not_validated'))) ? (' AND m_validated=1 AND ' . db_string_equal_to('m_validated_email_confirm_code', '')) : '') . ' ORDER BY m_join_time DESC', $max);
         $categories = $GLOBALS['FORUM_DRIVER']->get_usergroup_list(true);
 
         $content = new Tempcode();
