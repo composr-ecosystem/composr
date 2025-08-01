@@ -342,7 +342,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
 
                 // Update cron_progression table
                 if (isset($cron_progression[$hook])) {
-                    $cron_progression[$hook]['c_last_run_time'] = time();
+                    $cron_progression[$hook]['c_last_run_time'] = $time_before;
                     $cron_progression[$hook]['c_last_execution_secs'] = $time_after - $time_before;
                     $cron_progression[$hook]['c_last_error'] = $last_error;
 
@@ -350,7 +350,7 @@ function cron_run(bool $force = false, bool $verbose = false, ?array $limit_hook
                         'cron_progression',
                         [
                             'c_hook' => $hook,
-                            'c_last_run_time' => time(),
+                            'c_last_run_time' => $time_before,
                             'c_last_execution_secs' => $time_after - $time_before,
                             'c_last_error' => $last_error,
                         ],
