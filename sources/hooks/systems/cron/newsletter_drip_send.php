@@ -68,7 +68,7 @@ class Hook_cron_newsletter_drip_send
 
         require_lang('newsletter');
 
-        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], 'ORDER BY id DESC', $mails_per_send); // From disk-end, for maximum performance (truncating files to mark done is quicker?)
+        $to_send = $GLOBALS['SITE_DB']->query_select('newsletter_drip_send', ['*'], [], $mails_per_send);
         if (!empty($to_send)) {
             // We'll cache messages here
             $cached_messages = [];
