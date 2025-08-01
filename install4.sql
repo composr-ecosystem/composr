@@ -1286,9 +1286,9 @@ CREATE TABLE cms_staff_checklist_cus_tasks (
     done_time integer unsigned NULL,
     PRIMARY KEY (id)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1754007569, 0, '', NULL),
-(2, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1754007569, 0, '', NULL),
-(3, '[page=\"adminzone:admin_version\"]Consider contributing to the Composr project[/page]', 1754007569, 0, '', NULL);
+INSERT INTO cms_staff_checklist_cus_tasks (id, task_title, add_date, recur_interval, recur_every, done_time) VALUES (1, 'Add your content', 1754013164, 0, '', NULL),
+(2, '[url=\"Set up up-time monitor\"]https://uptimerobot.com/[/url]', 1754013164, 0, '', NULL),
+(3, '[page=\"adminzone:admin_version\"]Consider contributing to the Composr project[/page]', 1754013164, 0, '', NULL);
 
 DROP TABLE IF EXISTS cms_staff_links;
 CREATE TABLE cms_staff_links (
@@ -1645,15 +1645,18 @@ CREATE TABLE cms_values (
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
 ALTER TABLE cms_values ADD INDEX date_and_time (date_and_time);
-INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('multi_lang_content', '0', 1754007561),
-('cns_topic_count', '1', 1754007564),
-('cns_member_count', '3', 1754007564),
-('cns_post_count', '1', 1754007564),
-('version', '11.00', 1754007566),
-('cns_version', '11.00', 1754007566),
-('trusted_sites_1', 'composr.app\nipinfo.io', 1754007573),
-('trusted_sites_2', 'validator.w3.org', 1754007573),
-('users_online', '0', 1754007573);
+INSERT INTO cms_values (the_name, the_value, date_and_time) VALUES ('multi_lang_content', '0', 1754013155),
+('cns_topic_count', '1', 1754013158),
+('cns_member_count', '3', 1754013158),
+('cns_post_count', '1', 1754013158),
+('version', '11.00', 1754013160),
+('cns_version', '11.00', 1754013160),
+('trusted_sites_1', 'composr.app\nipinfo.io', 1754013165),
+('trusted_sites_2', 'validator.w3.org', 1754013165),
+('users_online', '0', 1754013165),
+('user_peak', '0', 1754013177),
+('user_peak_week', '0', 1754013177),
+('site_salt', 'P8pq5m9qXF-sWsuehyzFBlaqEQvjSBis', 1754013177);
 
 DROP TABLE IF EXISTS cms_values_elective;
 CREATE TABLE cms_values_elective (
@@ -1662,8 +1665,8 @@ CREATE TABLE cms_values_elective (
     date_and_time integer unsigned NOT NULL,
     PRIMARY KEY (the_name)
 ) CHARACTER SET=utf8mb4 engine=MyISAM;
-INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('setupwizard_completed', '0', 1754007568),
-('db_version', '1754007512', 1754007580);
+INSERT INTO cms_values_elective (the_name, the_value, date_and_time) VALUES ('setupwizard_completed', '0', 1754013162),
+('db_version', '1754013104', 1754013175);
 
 DROP TABLE IF EXISTS cms_video_transcoding;
 CREATE TABLE cms_video_transcoding (
@@ -1773,7 +1776,7 @@ ALTER TABLE cms_wiki_pages ADD INDEX sadd_date (add_date);
 ALTER TABLE cms_wiki_pages ADD INDEX sps (submitter);
 
 ALTER TABLE cms_wiki_pages ADD INDEX wiki_views (wiki_views);
-INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1754007577, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_688c0811f25478.83283342_32\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_688c0811f25478.83283342_32\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_688c0811f25478.83283342_32\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
+INSERT INTO cms_wiki_pages (id, title, notes, the_description, add_date, edit_date, wiki_views, show_posts, submitter, the_description__text_parsed, the_description__source_user) VALUES (1, 'Wiki+ home', '', '', 1754013171, NULL, 0, 1, 2, 'return unserialize(\"a:5:{i:0;a:1:{i:0;a:1:{i:0;a:5:{i:0;s:40:\\\"string_attach_688c1deca186b1.77623203_32\\\";i:1;a:0:{}i:2;i:1;i:3;s:0:\\\"\\\";i:4;s:0:\\\"\\\";}}}i:1;a:0:{}i:2;s:10:\\\":container\\\";i:3;b:0;i:4;a:1:{s:40:\\\"string_attach_688c1deca186b1.77623203_32\\\";s:69:\\\"\\$tpl_funcs[\'string_attach_688c1deca186b1.77623203_32\']=\\\"echo \\\\\\\"\\\\\\\";\\\";\\n\\\";}}\");\n', 2);
 
 DROP TABLE IF EXISTS cms_wiki_posts;
 CREATE TABLE cms_wiki_posts (
