@@ -243,7 +243,7 @@ class Module_admin_newsletter extends Standard_crud_module
 
         $minutes_between_sends = intval(get_option('minutes_between_sends'));
         $mails_per_send = intval(get_option('mails_per_send'));
-        $_eta = intval((floatval($num_in_queue) / floatval($mails_per_send)) * floatval($minutes_between_sends) * 60.0);
+        $_eta = intval((floatval($num_in_queue) / floatval($mails_per_send)) * floatval($minutes_between_sends) * 75.0);
         $eta = display_time_period($_eta);
 
         $queue_url = build_url(['page' => '_SELF', 'type' => 'archive', 'queued' => 1], '_SELF');
