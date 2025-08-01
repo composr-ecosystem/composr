@@ -8,7 +8,16 @@
 		<nav>
 			<ul class="actions-list spaced-list">
 				<li>
-					{+START,INCLUDE,ICON}NAME=buttons/proceed2{+END} <a href="{$PAGE_LINK*,_SELF:_SELF:addon_import:to_import={UPDATED_ADDONS}}"><strong>{!IMPORT_UPDATED_ADDONS}</strong></a>
+					<form title="{!IMPORT_UPDATED_ADDONS}" action="{$PAGE_LINK*,_SELF:_SELF:addon_import}" method="post">
+						{$INSERT_FORM_POST_SECURITY}
+
+						<input type="hidden" name="csrf_token_preserve" value="1" />
+						<input type="hidden" name="to_import" value="{UPDATED_ADDONS*}" />
+
+						<p class="proceed-button">
+							<button data-disable-on-click="1" class="btn btn-primary btn-scr buttons--proceed" type="submit">{!IMPORT_UPDATED_ADDONS} {+START,INCLUDE,ICON}NAME=buttons/proceed2{+END}</button>
+						</p>
+					</form>
 				</li>
 			</ul>
 		</nav>

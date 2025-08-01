@@ -1149,7 +1149,7 @@ UPGRADING ADDONS
 /**
  * Find updated addons via checking the homesite web service.
  *
- * @return array Map of addons needing updated, name to download ID on the homesite
+ * @return array Map of addons needing updated, name to duple of download ID, download GUID
  */
 function find_updated_addons() : array
 {
@@ -1201,7 +1201,7 @@ function find_updated_addons() : array
             // Can we check if it is updated by version?
             if ($addon_manifest['version'] !== null) {
                 if (version_compare($addon_manifest['version'], $info['version']) > 0) {
-                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                    $updated_addons[$addon_manifest['name']] = [$addon_manifest['download_id'], $addon_manifest['download_guid']];
                 }
                 continue;
             }
@@ -1209,7 +1209,7 @@ function find_updated_addons() : array
             // Can we check by update time? (NB: install time is usually the mtime of the addon registry hook; and this file would normally change for get_version())
             if ($addon_manifest['updated'] !== null) {
                 if ($addon_manifest['updated'] > $info['install_time']) {
-                    $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                    $updated_addons[$addon_manifest['name']] = [$addon_manifest['download_id'], $addon_manifest['download_guid']];
                 }
                 continue;
             }
@@ -1222,7 +1222,7 @@ function find_updated_addons() : array
                 // Can we check if it is updated by version?
                 if ($addon_manifest['version'] !== null) {
                     if (version_compare($addon_manifest['version'], $available_addon['version']) > 0) {
-                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                        $updated_addons[$addon_manifest['name']] = [$addon_manifest['download_id'], $addon_manifest['download_guid']];
                     }
                     break;
                 }
@@ -1230,7 +1230,7 @@ function find_updated_addons() : array
                 // Can we check by update time?
                 if ($addon_manifest['updated'] !== null) {
                     if ($addon_manifest['updated'] > $available_addon['mtime']) {
-                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                        $updated_addons[$addon_manifest['name']] = [$addon_manifest['download_id'], $addon_manifest['download_guid']];
                     }
                     break;
                 }
@@ -1238,7 +1238,7 @@ function find_updated_addons() : array
                 // Can we check by TAR hash?
                 if ($addon_manifest['hash'] !== null) {
                     if ($addon_manifest['hash'] != $available_addon['hash']) {
-                        $updated_addons[$addon_manifest['name']] = $addon_manifest['download_id'];
+                        $updated_addons[$addon_manifest['name']] = [$addon_manifest['download_id'], $addon_manifest['download_guid']];
                     }
                     break;
                 }
