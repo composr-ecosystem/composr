@@ -179,16 +179,26 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             return;
         }
 
-        global $RATE_LIMITING_DATA;
-        $RATE_LIMITING_DATA = [];
+        require_code('files2');
 
-        $rate_limiter_path = get_custom_file_base() . '/data_custom/rate_limiter.php';
-        if (is_file($rate_limiter_path)) {
-            $fp = fopen($rate_limiter_path, 'rb');
-            flock($fp, LOCK_SH);
-            include $rate_limiter_path;
-            flock($fp, LOCK_UN);
-            fclose($fp);
+        $rate_limiting_data = [];
+
+        // Populate rate limiting data
+        $rate_limiter_dir = get_custom_file_base() . '/data_custom/rate_limiting';
+        $files = get_directory_contents($rate_limiter_dir, $rate_limiter_dir, IGNORE_ACCESS_CONTROLLERS, true, true, ['json']);
+        foreach ($files as $file) {
+            $ip = str_replace(['_', '-'], ['.', ':'], basename($file, '.json'));
+            $file_contents = cms_file_get_contents_safe($file);
+            if (!$file_contents) {
+                continue;
+            }
+
+            $_rate_limiting_data = @json_decode($file_contents, true);
+            if (empty($_rate_limiting_data)) {
+                continue;
+            }
+
+            $rate_limiting_data[$ip] = $_rate_limiting_data;
         }
 
         $threshold_sample = intval(get_option('hc_requests_window_size'));
@@ -197,19 +207,13 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
         $threshold_sample_compound = intval(get_option('hc_compound_requests_window_size'));
         $threshold_rps_compound = floatval(get_option('hc_compound_requests_per_second_threshold'));
 
-        /*  Test
-        $RATE_LIMITING_DATA = [
-            '1.2.3.4' => array_fill(0, 30, time()),
-        ];
-        */
-
-        if (!empty($RATE_LIMITING_DATA)) {
+        if (!empty($rate_limiting_data)) {
             global $SITE_INFO;
             $rate_limit_time_window = empty($SITE_INFO['rate_limit_time_window']) ? 10 : intval($SITE_INFO['rate_limit_time_window']);
 
             $times_compound = [];
 
-            foreach ($RATE_LIMITING_DATA as $ip => $times) {
+            foreach ($rate_limiting_data as $ip => $times) {
                 $requests_per_second = floatval(count($times)) / floatval($rate_limit_time_window);
                 $ok = (count($times) < $threshold_sample) || ($requests_per_second < $threshold_rps);
                 $this->assertTrue($ok, 'Heavy visitor load @ ' . float_format($requests_per_second, 2, true) . ' PHP requests per second (for a sample size over ' . integer_format($threshold_sample) . ') requests from IP ' . $ip);
@@ -218,7 +222,7 @@ class Hook_health_check_security_hackattack extends Hook_Health_Check
             }
 
             $requests_per_second = floatval(count($times_compound)) / floatval($rate_limit_time_window);
-            $ok = (count($times_compound) < $threshold_sample) || ($requests_per_second < $threshold_rps);
+            $ok = (count($times_compound) < $threshold_sample_compound) || ($requests_per_second < $threshold_rps_compound);
             $this->assertTrue($ok, 'Heavy visitor load @ ' . float_format($requests_per_second, 2, true) . ' PHP requests per second (for a sample size over ' . integer_format($threshold_sample_compound) . ') requests from all IPs together');
         }
     }

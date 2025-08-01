@@ -147,7 +147,6 @@ class basic_code_formatting_test_set extends cms_test_case
                 continue;
             }
             $exceptions = array_merge(list_untouchable_third_party_files(), [
-                'data_custom/rate_limiter.php',
                 'text/unbannable_ips.txt',
                 'themes/default/templates/BREADCRUMB_SEPARATOR.tpl',
             ]);

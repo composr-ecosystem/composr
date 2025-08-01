@@ -2015,6 +2015,8 @@ class Hook_addon_registry_core
             'uploads/repimages/index.html',
             'uploads/website_specific/index.html',
             'web.config',
+            'data_custom/rate_limiting/index.html',
+            'data_custom/rate_limiting/.htaccess',
         ];
     }
 
