@@ -395,6 +395,8 @@ function should_ignore_file($filepath, $bitmask = 0, $bitmask_defaults = 0)
                                              // Files you are sometimes expected to leave around, but outside Composr's direct remit
                                              'bingsiteauth.xml' => '',
                                              'php.ini' => '.*',
+                                             '.php-ini' => '.*',
+                                             '.php-version' => '.*',
                                              '.htpasswd' => '.*',
                                              'iirf.ini' => '',
                                              'robots.txt' => '',

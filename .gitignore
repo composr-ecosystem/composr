@@ -67,6 +67,8 @@ gibb
 gibberish
 /bingsiteauth.xml
 php.ini
+*.php-ini
+*.php-version
 /*.shtml
 /uploads/auto_thumbs/*
 /uploads/incoming/*.bin
