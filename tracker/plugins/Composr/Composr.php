@@ -108,8 +108,11 @@ class ComposrPlugin extends MantisPlugin {
     {
         return array(
             'EVENT_CORE_HEADERS' => 'event_core_headers',
+            'EVENT_DISPLAY_FORMATTED' => 'event_display_formatted',
+            'EVENT_DISPLAY_TEXT' => 'event_display_formatted',
             'EVENT_LAYOUT_CONTENT_BEGIN' => 'event_layout_content_begin',
             'EVENT_MENU_ISSUE_RELATIONSHIP' => 'event_menu_issue_relationship',
+            'EVENT_MENU_MAIN_FILTER' => 'event_menu_main_filter',
             'EVENT_AUTH_USER_FLAGS' => 'event_auth_user_flags',
             'EVENT_CORE_READY' => 'event_core_ready',
             'EVENT_MENU_MAIN' => 'event_menu_main',
@@ -192,6 +195,47 @@ class ComposrPlugin extends MantisPlugin {
                 exit();
             }
         }
+    }
+
+    function event_display_formatted($e, $text, $is_multiline = true)
+    {
+        if (empty($text)) {
+            return $text;
+        }
+
+        /* We need to modify all links displayed which map to the base URL of the site to contain keep_session if provided in the URL */
+
+        require_api('gpc_api.php');
+        $keep_session = gpc_get_string('keep_session', null);
+        if (empty($keep_session)) {
+            return $text;
+        }
+
+        $dom = new DOMDocument();
+        $dom->loadHTML('<?xml encoding="UTF-8">' . $text, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        $links = $dom->getElementsByTagName('a');
+
+        for ($i = $links->length - 1; $i >= 0; $i--) {
+            $link = $links->item($i);
+            $href = $link->getAttribute('href');
+            $this->inject_keep_session($href);
+            $link->setAttribute('href', $href);
+        }
+
+        $html = $dom->saveHTML();
+        $html = preg_replace('~<?xml encoding="UTF-8">~', '', $html);
+
+        return trim($html);
+    }
+
+    function event_menu_main_filter($e, $menu_data)
+    {
+        foreach ($menu_data as &$menu_item) {
+            $this->inject_keep_session($menu_item['url']);
+        }
+
+        return [$menu_data];
     }
 
     function event_layout_content_begin()
@@ -484,5 +528,31 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
         }
 
         return $cookie_name;
+    }
+
+    protected function inject_keep_session(&$url)
+    {
+        require_api('gpc_api.php');
+
+        // Skip absolute links which are not pointing to the main website
+        if (empty($url) || ((substr($url, 0, 4) == 'http') && (strpos($url, $this->cms_sc_site_url) === false))) {
+            return;
+        }
+
+        $keep_session = gpc_get_string('keep_session', null);
+        if (empty($keep_session)) {
+            return;
+        }
+
+        // Extract anchor if present
+        $anchor = '';
+        if (strpos($url, '#') !== false) {
+            list($url, $anchor) = explode('#', $url, 2);
+            $anchor = '#' . $anchor;
+        }
+
+        // Add keep_session parameter to the URL
+        $separator = (parse_url($url, PHP_URL_QUERY)) ? '&' : '?';
+        $url = $url . $separator . 'keep_session=' . urlencode($keep_session) . $anchor;
     }
 }

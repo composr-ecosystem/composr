@@ -117,7 +117,7 @@ class Commandr_fs
         }
 
         $default_dir = [];
-        cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($default_dir)), false, false);
+        cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($default_dir)), 'PERSONALIZATION', false, false);
         return $default_dir;
     }
 
@@ -534,7 +534,7 @@ class Commandr_fs
         // Change the current directory
         if ($this->_is_dir($target_directory)) {
             $this->pwd = $target_directory;
-            cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($target_directory)), false, false);
+            cms_setcookie('commandr_dir', base64_encode($this->pwd_to_string($target_directory)), 'PERSONALIZATION', false, false);
 
             return true;
         }

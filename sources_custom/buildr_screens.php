@@ -313,9 +313,9 @@ function output_room_screen(int $member_id) : object
         ]));
     }
 
-    $hide_actions = ((array_key_exists('hideActions', $_COOKIE)) && ($_COOKIE['hideActions'] == 1)) ? 'display: block;' : 'display: none;';
-    $hide_additions = ((array_key_exists('hideAdditions', $_COOKIE)) && ($_COOKIE['hideAdditions'] == 1)) ? 'display: block;' : 'display: none;';
-    $hide_modifications = ((array_key_exists('hideModifications', $_COOKIE)) && ($_COOKIE['hideModifications'] == 1)) ? 'display: block;' : 'display: none;';
+    $hide_actions = ((array_key_exists('buildr_hide_actions', $_COOKIE)) && ($_COOKIE['buildr_hide_actions'] == 1)) ? 'display: block;' : 'display: none;';
+    $hide_additions = ((array_key_exists('buildr_hide_additions', $_COOKIE)) && ($_COOKIE['buildr_hide_additions'] == 1)) ? 'display: block;' : 'display: none;';
+    $hide_modifications = ((array_key_exists('buildr_hide_mods', $_COOKIE)) && ($_COOKIE['buildr_hide_mods'] == 1)) ? 'display: block;' : 'display: none;';
 
     // PEOPLE HERE
     $other_person = post_param_integer('member', -1);

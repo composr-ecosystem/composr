@@ -205,12 +205,13 @@ function handle_active_login(string $username)
         $remember = post_param_integer('remember', 0, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES);
 
         // Create invisibility cookie
+        // TODO: This should really be handled by the session and not a cookie
         if ((isset($_COOKIE[get_member_cookie() . '_invisible'])/*i.e. already has cookie set, so adjust*/) || ($remember == 1)) {
             $invisible = post_param_integer('login_invisible', 0, INPUT_FILTER_DEFAULT_POST & ~INPUT_FILTER_TRUSTED_SITES);
             if ($invisible == 1) {
-                cms_setcookie(get_member_cookie() . '_invisible', '1');
+                cms_setcookie(get_member_cookie() . '_invisible', '1', 'PERSONALIZATION');
             } else {
-                cms_setcookie(get_member_cookie() . '_invisible', '');
+                cms_setcookie(get_member_cookie() . '_invisible', '', 'PERSONALIZATION');
             }
             $_COOKIE[get_member_cookie() . '_invisible'] = strval($invisible);
         }
@@ -273,7 +274,7 @@ function handle_active_logout()
     // Update last-visited cookie
     if (get_forum_type() == 'cns') {
         require_code('users_active_actions');
-        cms_setcookie('last_visit', strval(time()), true);
+        cms_setcookie('last_visit', strval(time()), 'ANALYTICS', true);
     }
 }
 
@@ -465,12 +466,13 @@ function set_invisibility(bool $make_invisible = true)
     delete_cache_entry('side_users_online');
 
     // Store in cookie, if we have login cookies around
+    // TODO: This should be handled by the session and not a cookie
     if (array_key_exists(get_member_cookie(), $_COOKIE)) {
         require_code('users_active_actions');
         if ($make_invisible) {
-            cms_setcookie(get_member_cookie() . '_invisible', '1');
+            cms_setcookie(get_member_cookie() . '_invisible', '1', 'PERSONALIZATION');
         } else {
-            cms_setcookie(get_member_cookie() . '_invisible', '');
+            cms_setcookie(get_member_cookie() . '_invisible', '', 'PERSONALIZATION');
         }
         $_COOKIE[get_member_cookie() . '_invisible'] = strval($make_invisible ? 1 : 0);
     }

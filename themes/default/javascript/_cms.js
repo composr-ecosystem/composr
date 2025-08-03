@@ -539,10 +539,15 @@
      * @memberof $cms
      * @param cookieName
      * @param cookieValue
+     * @param cookieCategory
      * @param numDays
      */
-    $cms.setCookie = function setCookie(cookieName, cookieValue, numDays) {
-        var cookieConsent = $cms.readCookie('cookieconsent_ESSENTIAL');
+    $cms.setCookie = function setCookie(cookieName, cookieValue, cookieCategory, numDays) {
+        cookieName = strVal(cookieName);
+        cookieValue = strVal(cookieValue);
+        cookieCategory = strVal(cookieCategory);
+
+        var cookieConsent = $cms.readCookie('cookieconsent_' + cookieCategory);
         if ((!cookieConsent || (cookieConsent !== 'ALLOW')) && (cookieValue !== '')) {
             return;
         }
@@ -550,8 +555,6 @@
         var expires = new Date(),
             output;
 
-        cookieName = strVal(cookieName);
-        cookieValue = strVal(cookieValue);
         numDays = Number(numDays) || 1;
 
         expires.setDate(expires.getDate() + numDays); // Add days to date
@@ -568,7 +571,7 @@
 
         document.cookie = output;
 
-        var read = $cms.readCookie(cookieName);
+        var read = $cms.readCookie(cookieName, cookieCategory);
 
         if (read && (read !== cookieValue) && $cms.isDevMode() && !alertedCookieConflict) {
             $cms.ui.alert('{!COOKIE_CONFLICT_DELETE_COOKIES;^}' + '... ' + document.cookie + ' (' + output + ')', '{!ERROR_OCCURRED;^}');
@@ -579,20 +582,22 @@
     /**
      * @memberof $cms
      * @param cookieName
+     * @param cookieCategory
      * @param defaultValue
      * @returns {string}
      */
-    $cms.readCookie = function readCookie(cookieName, defaultValue) {
+    $cms.readCookie = function readCookie(cookieName, cookieCategory, defaultValue) {
+        cookieName = strVal(cookieName);
+        cookieCategory = strVal(cookieCategory);
+        defaultValue = strVal(defaultValue);
+        
         // If cookies have not been consented, pretend no cookies are set even if there are old cookies remaining
-        if (cookieName !== 'cookieconsent_ESSENTIAL') {
-            var cookieConsent = $cms.readCookie('cookieconsent_ESSENTIAL');
+        if (cookieName !== 'cookieconsent_' + cookieCategory) {
+            var cookieConsent = $cms.readCookie('cookieconsent_' + cookieCategory, cookieCategory);
             if (!cookieConsent || (cookieConsent !== 'ALLOW')) {
                 return '';
             }
         }
-
-        cookieName = strVal(cookieName);
-        defaultValue = strVal(defaultValue);
 
         var cookies = String(document.cookie),
             startIdx = cookies.startsWith(cookieName + '=') ? 0 : cookies.indexOf(' ' + cookieName + '=');

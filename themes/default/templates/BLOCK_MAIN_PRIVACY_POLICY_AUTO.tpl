@@ -13,6 +13,10 @@
 						</th>
 
 						<th>
+							{!CATEGORY}
+						</th>
+
+						<th>
 							{!REASON}
 						</th>
 					</tr>
@@ -23,6 +27,10 @@
 						<tr>
 							<td>
 								<kbd>{NAME*}</kbd>
+							</td>
+
+							<td>
+								{CATEGORY*}
 							</td>
 
 							<td>

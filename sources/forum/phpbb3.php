@@ -1487,10 +1487,10 @@ class Forum_driver_phpbb3 extends Forum_driver_base
 
         $cookie = serialize([$member_cookie_name => strval($member_id), $pass_cookie_name => $hash, $session_cookie_name => $session_id]);
 
-        cms_setcookie($member_cookie_name, strval($member_id), false, true);
-        cms_setcookie($pass_cookie_name, $hash, false, true);
+        cms_setcookie($member_cookie_name, strval($member_id), 'PERSONALIZATION', false, true);
+        cms_setcookie($pass_cookie_name, $hash, 'PERSONALIZATION', false, true);
         if ($session_id !== null) {
-            cms_setcookie($session_cookie_name, $session_id, false, true);
+            cms_setcookie($session_cookie_name, $session_id, 'ESSENTIAL', false, true);
         }
     }
 

@@ -37,8 +37,9 @@ The Composr caches are:
  - [b]Comcode cache[/b]: this removes the need for Composr to parse Comcode whenever it is used
  - [b]block cache[/b]: this removes the need for many blocks to be fully executed whenever they are viewed -- they are cached against the parameters they are called up with using a per-block tailored scheme
  - [b]theme image cache[/b]: this removes the need for Composr to search for theme image files whenever they are referenced by code (a code could translate to perhaps 10 different URLs, due to the flexibility of the system)
- - [b]values caches[/b]: this isn't a specific cache, but caching of values such as member post counts removes the need for Composr to recalculate them on-the-fly
+ - [b]values caches[/b]: this isn't a specific cache, but caching of values such as member post counts and points removes the need for Composr to recalculate them on-the-fly; sometimes hidden custom profile fields are used for this
  - [b]persistent cache[/b]: this caches common data outside the database, in some kind of persistent cache handler (see the next section)
+  - When disabled, Composr still uses a "persistent cache", but it is handled in the database instead.
  - [b]background template compilation[/b]: this can be turned on in the Performance configuration to let admins have cached pages on their computer that are immediately (without server communication) interstitially displayed (for a few seconds) while the server generates the up-to-date page
  - [b]static cache[/b]: this can be turned on from the Installation Options editor to feed static pages to bots or Guests
  - [b]self-learning cache[/b]: this can be turned on from the Installation Options editor and allows pages to learn what resources they need, for efficient bulk loading of essentials while avoiding loading full resource sets upfront
@@ -72,25 +73,32 @@ The cache is implemented to work with any one of:
   - or [b]{$IS_MAINTAINED,caches_memcached,memcached}[/b], which works via the other PHP memcached server extension
  - [b]{$IS_MAINTAINED,caches_wincache,Wincache}[/b] -- a PHP accelerator extension developed by Microsoft, optimised for Windows
  - [b]{$IS_MAINTAINED,caches_xcache,XCache}[/b] -- another PHP accelerator extension
- - [b]{$IS_MAINTAINED,caches_filesystem,disk cache}[/b] -- stores data under the [tt]caches/persistent[/tt] directory -- while this does increase disk access, it still provides a performance boost over not having a persistent cache
+ - [b]{$IS_MAINTAINED,caches_filesystem,disk cache}[/b] -- stores data under the [tt]caches/persistent[/tt] directory -- while this does increase disk access, it still (sometimes) provides a performance boost over not having a persistent cache
 
 The PHP extensions work by either holding memory resident within the web server's PHP module (so it stays in memory between requests), or within a standalone persistent caching server that runs on the network. The [tt]filesystem[/tt] handler just stores data on disk, but disk caching will usually mean the data loads very quickly, and certainly more quickly than many disparate filesystem and database read operations.
 
-Composr will not use a persistent cache by default but it may be enabled from the Installation Options editor.
+Composr will not use a persistent cache by default (and instead stores persistent data in the database) but it may be enabled from the Installation Options editor.
 
 Be aware that some persistent cache backends may be tied into a PHP process, rather than held system wide. This is the case for APC. Therefore if you are using a CGI architecture the full contents of the cache will be dumped each time a web request finishes (defeating the entire purpose); for fast CGI it's not as bad, as processes serve multiple requests, although it does mean there is a lot of duplication between each fast CGI process.
 
 Do not set the persistent cache's memory (typically done in the PHP extension configuration) higher than needed, especially on a fast CGI or module-based PHP installation -- for at least some persistent cache backends the memory is pre-allocated, for each PHP process that is running. For APC, this is set via the [tt]apc.shm_size[/tt] setting.
 
+[title="5"]A note about the filesystem persistent cache engine[/title]
+This engine is meant to be a "last resort" and is not as efficient as other engines due to the numerous read/write operations it demands. Composr tries to increase efficiency by only writing cache to the disk once PHP is finished processing (via the shutdown handler, if it is available). That way, only one write operation is performed per cache bucket instead of potentially several if a bucket changes multiple times on the same request. This does, however, mean that requests which read the cache before the updated cache is saved (by the other request / process) will be loading in an old cache.
+
+Additionally, the [tt]caches/persistent[/tt] directory will get populated with a lot of files very quickly when using this cache (we're talking tens of thousands or more). This is because every type of cache condition (e.g. a cache against different members, groups, time zones, and so on) requires a different file. A scheduler hook will clear some of these files out if the directory gets too populated.
+
 [title="3"]General advice[/title]
 
 General tips:
  - [b]Don't have addons installed that you don't need[/b]. Some may have general performance requirements, such as catalogues (adds custom fields checking to all content types) -- while others may just have general over-head in terms of sitemap generation, language string presence, moniker registration, and hook execution.
+  - If you absolutely must have an addon installed (e.g. preserving existing data) but want to treat it as "disabled", you can use the Commandr command [tt]set_value addon_disabled_name_of_addon 1[/tt] and Composr will treat the addon as if it is not installed.
  - Enable the [b]disable_smart_decaching[/b] option in the installation options. You can make it intelligent, by only allowing smart decaching if the FTP log was modified recently.
  - If you get a lot of 404 errors (or if bots love to hit your 404 page because of the sitemap on it), it is best to make a [b]static 404 page[/b] instead of using Composr's which can be relatively intensive. You activate a custom 404 page by putting a reference to it in the [tt].htaccess[/tt] file (Apache only; our [tt]recommended.htaccess[/tt] file does this for Composr's). Or for IIS, there is sample code in the [tt]web.config[/tt] file.
  - Enable the "Output compression" configuration option to compress output data (unless your server already does this, or you are using Cloudflare; these are recommended over using Composr's).
- - Sending e-mails can be an intensive task because Composr has to work out what CSS to include for each e-mail, put templating together, and connect through and send to the e-mail server. [b]Turning on the "E-mail queue" configuration option[/b] will avoid this happening immediately during user actions, deferring it. It will make forum posting, for example, faster.
+ - Sending e-mails can be an intensive task because Composr has to work out what CSS to include for each e-mail, put templating together, and connect through and send to the e-mail server. [b]Turning on the "E-mail queue" configuration option[/b] (on by default as of v11) will avoid this happening immediately during user actions, deferring it. It will make forum posting, for example, faster.
   - Turning this on will also reduce the risk you run into issues with getting blocklisted for spam or hitting outbound mail limits on your host.
+  - Turning this on will also enable automatic retries every hour up to 5 times if a mail fails to send.
  - Disabling URL monikers can help with performance; however this will also impact SEO if you think your URL paths are key to that; disable only if you really have to.
  - If you use [tt]www[/tt] in your base URL, set an explicit cookie domain in [tt]_config.php[/tt] to include that. This will cause Google Analytics cookies to be set on the [tt]www[/tt] subdomain, reducing the cookie volume on other domains.
   - Make extra sure first that you redirect all [tt]non-www[/tt] traffic to your [tt]www[/tt] URL.
@@ -117,7 +125,7 @@ $SITE_INFO['static_caching_hours'] = '3';
 [/code]
 All user agents identified as bots or spiders, or listed in the [tt]text/bots.txt[/tt] file, will be served out of a cache. HTTP caching is also properly implemented.
 The cache lifetime in this example would be 3 hours, but you can change it to whatever you require.
-The cache files are saved under the [tt]caches/persistent[/tt] directory.
+The cache files are saved under the [tt]caches/static[/tt] directory.
 
 If you want any [b]Guest user to be cached[/b] like this, set:
 [code="PHP"]
@@ -193,6 +201,8 @@ This is not recommended, but if you really need to squeeze performance, you can 
 $SITE_INFO['no_keep_params'] = '1'; // Disable 'keep' parameters, which can lead to a small performance improvement as URLs can be compiled directly into the template cache
 [/code]
 
+Be aware this will break your site for anyone who does not accept cookie consent; Composr uses [tt]keep_session[/tt] in the URL to keep them logged in. So they will not be able to log in if keep paremeters are disabled and the user does not accept cookies.
+
 [title="2"]Composr front-end development[/title]
 
 Template Tips:
@@ -201,7 +211,7 @@ Template Tips:
 
 Block tips:
  - You can mark out parts of a complex Comcode layout as having [b][tt]quick_cache[/tt][/b] by moving the content into individual Comcode pages then using the [tt]main_include_module[/tt] block to insert it back, with the [tt]quick_cache[/tt] parameter turned on for that block.
- - The [b]defer-loading option block parameter[/b] is also useful (as it decouples block generation from initial load, and allows blocks to generate in parallel), although it puts a requirement on JavaScript (so crawlers may not get the content for example).
+ - The [b]defer block parameter[/b] is also useful (as it decouples block generation from initial load, and allows blocks to generate in parallel), although it puts a requirement on JavaScript (so crawlers may not get the content for example).
  - If you are using a particularly visually complex block (e.g. deep pop-out menus) then use the [tt]quick_cache[/tt] block parameter on it if possible.
  - The [tt]main_news[/tt] and [tt]main_forum_news[/tt] blocks have an [tt]optimise[/tt] parameter which will simplify down the Comcode of anything displayed such as it will be stored statically. This usually will have no impact, but may increase performance if a lot of Comcode tags were used. It does have an impact if dynamic elements are used within posts, such as Comcode that check's a user's usergroup or displays the current date/time.
 
@@ -493,7 +503,8 @@ Only one opcode cache can be used, and they often need to be manually compiled a
 [title="4"]PHP version[/title]
 
 Tips:
- - [b]Use PHP 7[/b] or higher, as PHP 7 introduced massive speed improvements.
+ - [b]Use PHP 7[/b] or higher, as PHP 7 introduced massive speed improvements. Composr doesn't support earlier versions anyway.
+   - You really should use a version of PHP supported by the developers to ensure the best optimisation and security.
 
 [title="4"]PHP process model[/title]
 
@@ -579,6 +590,7 @@ A faster and more dedicated server will make Composr run faster. This may seem o
 CPU speed will be the most limiting factor for most websites: so this is the first thing that should be considered. Our analysis of web servers [i]targeted[/i] to enthusiasts and small businesses show that servers commonly only have around 10% of the performance of a good desktop machine -- look at the CPU family carefully, don't just count the Ghz! If you're not careful your 'server' may be a tiny ARM machine in a massive rack, with shared network storage.
 
 Go with an SSD in your machine if possible. Or better yet, use a combination of SSD and HDD so you can get a reduced cost but can still utilise SSD for your mission-critical applications.
+ - For example, you could put the main Composr install on an SSD, and then set up a symlink for the [tt]uploads[/tt], [tt]imports[/tt], and [tt]exports[/tt] directories onto an HDD as these directories primarily contain larger files or media files.
 
 [title="3"]The Cloud[/title]
 
@@ -1101,10 +1113,7 @@ Check the MySQL documentation and/or look at what tables and fields there are if
 
 [title="4"]Composr's page stats[/title]
 
-If you have the stats addon you can also see what percentage of clock time each page is running for using this query:
-[code="SQL"]
-SELECT the_page,SUM(milliseconds),SUM(milliseconds)/((SELECT config_value FROM ocp_config WHERE the_name='stats_store_time')*24*60*60*1000)*100 FROM ocp_stats GROUP BY the_page ORDER BY SUM(milliseconds);
-[/code]
+If you have the stats addon you can also see what percentage of clock time each page is running for in the Admin Zone > Audit > Statistics.
 
 [title="4"]Filesystem[/title]
 

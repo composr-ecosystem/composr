@@ -44,7 +44,7 @@
             return false;
         }
 
-        var cookie = $cms.readCookie('use_wysiwyg');
+        var cookie = $cms.readCookie('use_wysiwyg', 'PERSONALIZATION');
         switch ($cms.configOption('wysiwyg')) {
             case -1: // Off by default
                 return (cookie === '1');
@@ -64,7 +64,7 @@
 
         var isWysiwygOn = $editing.wysiwygOn();
         if (isWysiwygOn) {
-            if ($cms.readCookie('use_wysiwyg') === '-1') {
+            if ($cms.readCookie('use_wysiwyg', 'PERSONALIZATION') === '-1') {
                 _toggleWysiwyg(name);
             } else {
                 $cms.ui.generateQuestionUi(
@@ -89,12 +89,12 @@
 
                     if (savingCookies.toLowerCase() === '{!javascript:WYSIWYG_DISABLE_ONCE_AND_DONT_ASK;^}'.toLowerCase()) {
                         _toggleWysiwyg(name);
-                        $cms.setCookie('use_wysiwyg', '-1', 3000);
+                        $cms.setCookie('use_wysiwyg', '-1', 'PERSONALIZATION', 3000);
                     }
 
                     if (savingCookies.toLowerCase() === '{!javascript:WYSIWYG_DISABLE_ALWAYS;^}'.toLowerCase()) {
                         _toggleWysiwyg(name);
-                        $cms.setCookie('use_wysiwyg', '0', 3000);
+                        $cms.setCookie('use_wysiwyg', '0', 'PERSONALIZATION', 3000);
                     }
                 });
             }
@@ -103,8 +103,8 @@
 
         _toggleWysiwyg(name);
 
-        if ($cms.readCookie('use_wysiwyg') !== '-1') {
-            $cms.setCookie('use_wysiwyg', '1', 3000);
+        if ($cms.readCookie('use_wysiwyg', 'PERSONALIZATION') !== '-1') {
+            $cms.setCookie('use_wysiwyg', '1', 'PERSONALIZATION', 3000);
         }
 
         function _toggleWysiwyg() {
@@ -146,8 +146,8 @@
                         '{!javascript:DISCARD_WYSIWYG_CHANGES;^}'
                     ).then(function (prompt) {
                         if (!prompt || (prompt.toLowerCase() === '{!INPUTSYSTEM_CANCEL;^}'.toLowerCase())) {
-                            if ($cms.readCookie('use_wysiwyg') === '0') {
-                                $cms.setCookie('use_wysiwyg', '1', 3000);
+                            if ($cms.readCookie('use_wysiwyg', 'PERSONALIZATION') === '0') {
+                                $cms.setCookie('use_wysiwyg', '1', 'PERSONALIZATION', 3000);
                             }
                             return;
                         }

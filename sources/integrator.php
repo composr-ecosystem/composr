@@ -18,6 +18,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: setcookie*/
+
 /**
  * Take a URL and process it to make a hard include. We'll get the HTML and we'll also load up some global stuff for 'do_header' to use.
  *

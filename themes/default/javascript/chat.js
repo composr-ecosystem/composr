@@ -162,7 +162,7 @@
             try {
                 $dom.$('#post_' + chatroomId).focus();
             } catch (e) {}
-            $dom.$('#post_' + chatroomId).value = $cms.readCookie('last_chat_msg_' + chatroomId);
+            $dom.$('#post_' + chatroomId).value = $cms.readCookie('last_chat_msg_' + chatroomId, 'PERSONALIZATION');
         });
 
         $dom.on(container, 'click', '.js-click-chatroom-chat-post', function (e) {
@@ -192,11 +192,11 @@
             }
 
             if ($dom.keyPressed(e, 'Enter')) {
-                $cms.setCookie('last_chat_msg_' + chatroomId, '');
+                $cms.setCookie('last_chat_msg_' + chatroomId, '', 'PERSONALIZATION');
                 chatPost(e, chatroomId, 'post_' + chatroomId, '', '');
                 e.preventDefault();
             } else {
-                $cms.setCookie('last_chat_msg_' + chatroomId, textarea.value);
+                $cms.setCookie('last_chat_msg_' + chatroomId, textarea.value, 'PERSONALIZATION');
             }
         });
     };

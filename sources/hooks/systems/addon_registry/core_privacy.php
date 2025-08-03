@@ -204,6 +204,7 @@ class Hook_addon_registry_core_privacy
         $cookies = [];
         $cookies[] = [
             'NAME' => lorem_word(),
+            'CATEGORY' => lorem_word(),
             'REASON' => lorem_phrase(),
         ];
 

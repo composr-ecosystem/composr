@@ -13,6 +13,8 @@
  * @package    core
  */
 
+/*EXTRA FUNCTIONS: setcookie*/
+
 // Fixup SCRIPT_FILENAME potentially being missing
 $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 

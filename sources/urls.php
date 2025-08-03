@@ -324,7 +324,7 @@ function skippable_keep(string $key, $val) : bool
         return true;
     }
 
-    return ((($key === 'keep_session') && (($val === '') || (has_cookies()))) || (($key === 'keep_has_js') && ($val === '1'))) && ((isset($_COOKIE['js_on'])) || (get_option('detect_javascript') === '0'));
+    return ((($key === 'keep_session') && (($val === '') || (has_cookies())) && (allowed_cookies('ESSENTIAL'))) || (($key === 'keep_has_js') && ($val === '1'))) && ((isset($_COOKIE['js_on'])) || (get_option('detect_javascript') === '0'));
 }
 
 /**
