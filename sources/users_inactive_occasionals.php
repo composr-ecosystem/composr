@@ -311,7 +311,7 @@ function set_session_id(string $id, bool $guest_session = false)
 
     // Save cookie
     if ($id != '') {
-        $success = cms_setcookie(get_session_cookie(), $id, !$guest_session, true, max(1.0 / 24.0 / 60.0 / 60.0, floatval(get_option('session_expiry_time')) / 24.0));
+        $success = cms_setcookie(get_session_cookie(), $id, 'ESSENTIAL', !$guest_session, true, max(1.0 / 24.0 / 60.0 / 60.0, floatval(get_option('session_expiry_time')) / 24.0));
     } else {
         $success = true;
     }

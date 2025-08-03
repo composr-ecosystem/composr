@@ -954,10 +954,10 @@ class Forum_driver_wbb22 extends Forum_driver_base
             $username = $this->get_username($member_id);
         }
 
-        cms_setcookie(get_member_cookie(), $username, false, true);
+        cms_setcookie(get_member_cookie(), $username, 'PERSONALIZATION', false, true);
         $_COOKIE[get_member_cookie()] = $username;
 
-        cms_setcookie(get_pass_cookie(), md5($password_raw), false, true);
+        cms_setcookie(get_pass_cookie(), md5($password_raw), 'PERSONALIZATION', false, true);
     }
 
     /**

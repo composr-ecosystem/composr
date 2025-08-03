@@ -641,8 +641,8 @@ abstract class Forum_driver_base
         $member_cookie_name = get_member_cookie();
         $pass_cookie_name = get_pass_cookie();
 
-        cms_setcookie($member_cookie_name, '', false, true, -14.0);
-        cms_setcookie($pass_cookie_name, '', false, true, -14.0);
+        cms_setcookie($member_cookie_name, '', 'PERSONALIZATION', false, true, -14.0);
+        cms_setcookie($pass_cookie_name, '', 'PERSONALIZATION', false, true, -14.0);
     }
 
     /**

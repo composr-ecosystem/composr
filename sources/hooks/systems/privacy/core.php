@@ -49,39 +49,51 @@ class Hook_privacy_core extends Hook_privacy_base
 
             'cookies' => [
                 'cms_autosave_*' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_autosave'),
                 ],
                 'has_cookies' => [
+                    'category' => 'ESSENTIAL',
                     'reason' => do_lang_tempcode('COOKIE_has_cookies'),
                 ],
                 'has_js' => (get_option('detect_javascript') == '0') ? null : [
+                    'category' => 'ESSENTIAL',
                     'reason' => do_lang_tempcode('COOKIE_has_js'),
                 ],
                 'last_visit' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_last_visit'),
                 ],
                 get_member_cookie() . ' & ' . get_pass_cookie() => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_automatic_login'),
                 ],
                 get_member_cookie() . '_invisible' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_invisible'),
                 ],
                 get_session_cookie() => [
+                    'category' => 'ESSENTIAL',
                     'reason' => do_lang_tempcode('COOKIE_session'),
                 ],
                 'tray_*, hide*, og_*' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_trays'),
                 ],
                 'use_wysiwyg' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_use_wysiwyg'),
                 ],
                 'client_time*' => (get_option('is_on_timezone_detection') == '0') ? null : [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_client_time'),
                 ],
                 'font_size' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_font_size'),
                 ],
                 '__ut*, _ga, _gid' => (get_option('google_analytics') == '') ? null : [
+                    'category' => 'ANALYTICS',
                     'reason' => do_lang_tempcode('COOKIE_ga'),
                 ],
             ],

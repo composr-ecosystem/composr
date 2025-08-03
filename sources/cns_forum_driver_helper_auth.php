@@ -26,7 +26,7 @@
 function cns_create_login_cookie(int $member_id)
 {
     // User
-    cms_setcookie(get_member_cookie(), strval($member_id), false, true);
+    cms_setcookie(get_member_cookie(), strval($member_id), 'PERSONALIZATION', false, true);
 
     // Password
     $login_key = $GLOBALS['FORUM_DRIVER']->get_member_row_field($member_id, 'm_login_key_hash');
@@ -36,7 +36,7 @@ function cns_create_login_cookie(int $member_id)
         $login_key_hash = ratchet_hash($login_key, get_site_salt() . '_' . get_pass_cookie());
         $GLOBALS['FORUM_DB']->query_update('f_members', ['m_login_key_hash' => $login_key_hash], ['id' => $member_id], '', 1);
     }
-    cms_setcookie(get_pass_cookie(), $login_key, false, true);
+    cms_setcookie(get_pass_cookie(), $login_key, 'PERSONALIZATION', false, true);
 }
 
 /**
@@ -194,8 +194,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
 
             switch ($password_compat_scheme) {
                 case 'pending_deletion': // Account is actually pending deletion in the task queue; we should bail on error
-                    cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-                    cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
+                    cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+                    cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
                     require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                     $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_PENDING_DELETION');
                     return $out;
@@ -203,8 +203,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                 case 'none':
                     require_code('crypt');
                     if (!hash_equals(cms_base64_encode($row['m_pass_hash_salted'], true, true, true), $password_mixed)) {
-                        cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-                        cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
+                        cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+                        cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
@@ -216,8 +216,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                 case 'bcrypt_expired':
                     require_code('crypt');
                     if (($row['m_login_key_hash'] == '') || (!ratchet_hash_verify($password_mixed, get_site_salt() . '_' . get_pass_cookie(), $row['m_login_key_hash']))) {
-                        cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-                        cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
+                        cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+                        cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
@@ -227,8 +227,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
                 default: // LEGACY
                     require_code('crypt');
                     if (($row['m_login_key_hash'] == '') || (!ratchet_hash_verify($password_mixed, get_site_salt() . '_' . get_pass_cookie(), $row['m_login_key_hash'], CRYPT_LEGACY_V10))) {
-                        cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-                        cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
+                        cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+                        cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
                         require_code('tempcode'); // This can be incidental even in fast AJAX scripts, if an old invalid cookie is present, so we need Tempcode for do_lang_tempcode
                         $out['error'] = do_lang_tempcode((get_option('login_error_secrecy') == '1') ? 'MEMBER_INVALID_LOGIN' : 'MEMBER_BAD_PASSWORD');
                         return $out;
@@ -337,8 +337,8 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
             unset($GLOBALS['FORUM_DRIVER']->MEMBER_ROWS_CACHED[$member_id]);
 
             // Destroy login cookie; we cannot re-hash them because it might not have been passed in.
-            cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-            cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
+            cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+            cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
         }
     }
 
@@ -349,9 +349,9 @@ function cns_authorise_login(object $this_ref, ?string $username, ?int $member_i
         $test2 = $this_ref->db->query_select_value_if_there('f_member_known_login_ips', 'i_val_code', ['i_member_id' => $row['id'], 'i_ip_address' => $ip]);
         if ((($test2 === null) || ($test2 != '')) && (!compare_ip_address($ip, $row['m_ip_address']))) { // IP needs validation
             // Eat login cookies; if IP validation is necessary, then the login is invalid
-            cms_setcookie(get_member_cookie(), '', false, true, -14.0);
-            cms_setcookie(get_pass_cookie(), '', false, true, -14.0);
-            cms_setcookie(get_session_cookie(), '', true, true, -14.0);
+            cms_setcookie(get_member_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+            cms_setcookie(get_pass_cookie(), '', 'PERSONALIZATION', false, true, -14.0);
+            cms_setcookie(get_session_cookie(), '', 'PERSONALIZATION', true, true, -14.0);
 
             $send_validation_email = true;
             if (!$SENT_OUT_VALIDATE_NOTICE) {

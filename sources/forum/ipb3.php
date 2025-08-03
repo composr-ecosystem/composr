@@ -1406,11 +1406,11 @@ class Forum_driver_ipb3 extends Forum_driver_base
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         // User
-        cms_setcookie(get_member_cookie(), strval($member_id), false, true);
+        cms_setcookie(get_member_cookie(), strval($member_id), 'PERSONALIZATION', false, true);
 
         // Password
         $_password = $this->get_member_row_field($member_id, 'member_login_key');
-        cms_setcookie(get_pass_cookie(), $_password, false, true);
+        cms_setcookie(get_pass_cookie(), $_password, 'PERSONALIZATION', false, true);
 
         // Set stronghold
         global $SITE_INFO;
@@ -1426,7 +1426,7 @@ class Forum_driver_ipb3 extends Forum_driver_base
             }
             $cookie_prefix = substr($a, 0, $i);
             $stronghold = md5(md5(strval($member_id) . '-' . $ip_octets[0] . '-' . $ip_octets[1] . '-' . $_password) . $crypt_salt);
-            cms_setcookie($cookie_prefix . 'ipb_stronghold', $stronghold, false, true);
+            cms_setcookie($cookie_prefix . 'ipb_stronghold', 'PERSONALIZATION', $stronghold, false, true);
         }
     }
 

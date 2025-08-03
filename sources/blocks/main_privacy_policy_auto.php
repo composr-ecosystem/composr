@@ -95,6 +95,7 @@ PHP;
 
                 $cookies[] = [
                     'NAME' => $name,
+                    'CATEGORY' => $details['category'],
                     'REASON' => $details['reason'],
                 ];
                 $hash_data[] = is_object($name) ? $name->evaluate() : $name;

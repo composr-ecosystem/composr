@@ -1270,13 +1270,13 @@ class Forum_driver_vb3 extends Forum_driver_base
     public function create_login_cookie(int $member_id, ?string $username, string $password_raw)
     {
         // User
-        cms_setcookie(get_member_cookie(), strval($member_id), false, true);
+        cms_setcookie(get_member_cookie(), strval($member_id), 'PERSONALIZATION', false, true);
 
         // Password
         $password_hashed = $this->get_member_row_field($member_id, 'password');
         global $SITE_INFO;
         $_password = md5($password_hashed . $SITE_INFO['vb_unique_id']);
-        cms_setcookie(get_pass_cookie(), $_password, false, true);
+        cms_setcookie(get_pass_cookie(), $_password, 'PERSONALIZATION', false, true);
     }
 
     /**

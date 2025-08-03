@@ -270,7 +270,7 @@
             this.el.classList.toggle('is-collapsed', !expanded);
 
             if (this.cookie) {
-                $cms.setCookie(this.cookie, expanded ? 'open' : 'closed');
+                $cms.setCookie(this.cookie, expanded ? 'open' : 'closed', 'PERSONALIZATION');
             }
         },
 
@@ -301,7 +301,7 @@
 
         /**@method*/
         handleTrayCookie: function () {
-            var cookieValue = $cms.readCookie(this.cookie), expanded;
+            var cookieValue = $cms.readCookie(this.cookie, 'PERSONALIZATION'), expanded;
 
             if ((!$dom.isDisplayed(this.contentEl) && (cookieValue === 'open')) || ($dom.isDisplayed(this.contentEl) && (cookieValue === 'closed'))) {
                 expanded = $cms.ui.toggleableTray(this.contentEl, false);
@@ -1080,10 +1080,20 @@
                         link: '{!READ_MORE;}',
                         href: pageLinkPrivacy,
                         allow: '{!ALLOW_COOKIES;}',
-                        dismiss: '{!DENY_COOKIES;}', // e.g. deny cookies
+                        dismiss: '{!DENY_COOKIES;}',
+                    },
+                    elements: {
+                        categories: '<ul class="cc-categories">' +
+                            ['ESSENTIAL', 'PERSONALIZATION', 'ANALYTICS', 'MARKETING', 'UNCATEGORIZED'].map(function categoryMap(category, index) {
+                                return `<li class="cc-category">
+                                <input type="checkbox" name="${category}"${(index < 2) ? ' checked="checked"' : ''}/>
+                                <label class="cc-info" for="${category}">${category}</label>
+                                </li>`;
+                            }).join("") + '</ul>',
+                        save: `<p><button class="cc-btn cc-save">Save</button></p>`,
                     },
                     revokable: true,
-                    type: 'opt-in', // Required by GDPR
+                    type: 'categories', // Required by GDPR
                 };
 
                 if ($cms.getCountry()) {
@@ -1143,13 +1153,13 @@
 
         // Tell the server we have JavaScript, so do not degrade things for reasons of compatibility - plus also set other things the server would like to know
         if ($cms.configOption('detect_javascript')) {
-            $cms.setCookie('js_on', 1, 120);
+            $cms.setCookie('js_on', 1, 'UNCATEGORIZED', 120);
         }
 
         if ($cms.configOption('is_on_timezone_detection')) {
             if (!window.parent || (window.parent === window)) {
-                $cms.setCookie('client_time', (new Date()).toString(), 120);
-                $cms.setCookie('client_time_ref', (Date.now() / 1000), 120);
+                $cms.setCookie('client_time', (new Date()).toString(), 'PERSONALIZATION', 120);
+                $cms.setCookie('client_time_ref', (Date.now() / 1000), 'PERSONALIZATION', 120);
             }
         }
 
@@ -1629,14 +1639,14 @@
                 panelRight.classList.add('helper-panel-visible');
                 $dom.fadeIn(helperPanelContents);
 
-                if ($cms.readCookie('hide_helper_panel') === '1') {
-                    $cms.setCookie('hide_helper_panel', '0', 100);
+                if ($cms.readCookie('hide_helper_panel', 'PERSONALIZATION') === '1') {
+                    $cms.setCookie('hide_helper_panel', '0', 'PERSONALIZATION', 100);
                 }
 
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!HIDE}';
                 $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/hide', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/helper_panel/hide}');
             } else {
-                if ($cms.readCookie('hide_helper_panel') === '') {
+                if ($cms.readCookie('hide_helper_panel', 'PERSONALIZATION') === '') {
                     $cms.ui.confirm('{!CLOSING_HELP_PANEL_CONFIRM;^}').then(function (answer) {
                         if (answer) {
                             _hideHelperPanel(panelRight, helperPanelContents, helperPanelToggle);
@@ -1651,7 +1661,7 @@
                 panelRight.classList.remove('helper-panel-visible');
                 panelRight.classList.add('helper-panel-hidden');
                 helperPanelContents.style.display = 'none';
-                $cms.setCookie('hide_helper_panel', '1', 100);
+                $cms.setCookie('hide_helper_panel', '1', 'PERSONALIZATION', 100);
                 helperPanelToggle.title = '{!HELP_OR_ADVICE}: {!SHOW}';
                 $cms.ui.setIcon(helperPanelToggleIcon, 'helper_panel/show', '{$IMG;,{$?,{$THEME_OPTION,use_monochrome_icons},icons_monochrome,icons}/helper_panel/show}');
             }

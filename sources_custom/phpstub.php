@@ -2618,26 +2618,6 @@ function set_exception_handler($exception_handler)
 }
 
 /**
- * Send a cookie.
- * TODO: Should remove this and prefer cms_setcookie for GDPR compliance.
- *
- * @sets_output_state
- *
- * @param  string $name The name
- * @param  ?string $value The value (null: unset existing cookie)
- * @param  integer $expire Expiration timestamp (0: session cookie)
- * @param  ?string $path Path (null: current URL path)
- * @param  ?string $domain Domain (null: current URL domain)
- * @param  boolean $secure Whether the cookie is only for HTTPS
- * @param  boolean $httponly Whether the cookie will not be available to JavaScript
- * @return ?boolean Success status (fails if output already started) (null: failed also)
- */
-function setcookie(string $name, ?string $value = null, int $expire = 0, ?string $path = null, ?string $domain = null, bool $secure = false, bool $httponly = false) : ?bool
-{
-    return false;
-}
-
-/**
  * Set locale information.
  *
  * @param  integer $category The locale category (LC_ALL, LC_COLLATE, LC_CTYPE, LC_MONETARY, LC_NUMERIC, LC_TIME)

@@ -18,7 +18,7 @@
  * @package    core
  */
 
-/*EXTRA FUNCTIONS: fsockopen|fileowner|filegroup|collator_.*|dns_get_record*/
+/*EXTRA FUNCTIONS: fsockopen|fileowner|filegroup|collator_.*|dns_get_record|setcookie*/
 
 /*
     global3.php contains further support functions, which are shared between the installer and the main installation (i.e. global.php and global2.php are not used by the installer, and the installer emulates these functions functionality via minikernel.php).
@@ -4002,8 +4002,7 @@ function get_bot_type(?string $agent = null) : ?string
 }
 
 /**
- * Determine whether the user's browser supports cookies or not, and they accepted cookies through cookie consent.
- * Unfortunately this will not return true until the next page hit after they accept cookies.
+ * Determine whether the user's browser supports cookies or not.
  *
  * @return boolean Whether the user has definitely got cookies
  */
@@ -4020,17 +4019,12 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
         return false;
     }*/
 
-    if (!allowed_cookies()) {
-        $has_cookies_cache = false;
-        return false;
-    }
-
     if (isset($_COOKIE['has_cookies'])) {
         $has_cookies_cache = true;
         return true;
     }
     if (running_script('index')) {
-        $result = cms_setcookie('has_cookies', '1', false, false);
+        $result = cms_setcookie('has_cookies', '1', 'ESSENTIAL', false, false);
         $has_cookies_cache = $result;
         return $result;
     }
@@ -4040,13 +4034,14 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
 }
 
 /**
- * Whether the current user explicitly allowed cookies in the cookie consent notice.
+ * Get whether the current user explicitly allowed cookies in the cookie consent notice.
  *
+ * @param  ID_TEXT $category The cookie category to check
  * @return boolean Whether cookies were allowed
  */
-function allowed_cookies() : bool
+function allowed_cookies(string $category = 'ESSENTIAL') : bool
 {
-    if (!isset($_COOKIE['cookieconsent_ESSENTIAL']) || ($_COOKIE['cookieconsent_ESSENTIAL'] != 'ALLOW')) {
+    if (!isset($_COOKIE['cookieconsent_' . cms_strtoupper_ascii($category)]) || ($_COOKIE['cookieconsent_' . cms_strtoupper_ascii($category)] != 'ALLOW')) {
         return false;
     }
 
@@ -5605,16 +5600,17 @@ function statistical_update_model(string $table, int $view_count) : int
  *
  * @param  string $name The name of the cookie
  * @param  string $value The value to store in the cookie (blank: delete the cookie)
+ * @param  ID_TEXT $category The cookie consent category of this cookie
  * @param  boolean $session Whether it is a session cookie (gets removed once the browser window closes)
  * @param  boolean $httponly Whether the cookie should not be readable by JavaScript
  * @param  ?float $days Days to store; not applicable for session cookies unless expiring it (null: default) (-14: expire the cookie)
  * @return boolean The result of the PHP setcookie command
  */
-function cms_setcookie(string $name, string $value, bool $session = false, bool $httponly = true, ?float $days = null) : bool
+function cms_setcookie(string $name, string $value, string $category = 'UNCATEGORIZED', bool $session = false, bool $httponly = true, ?float $days = null) : bool
 {
     // User rejected cookies; eat the existing cookie and bail out
-    if (!allowed_cookies() && (strpos($name, 'cookieconsent_') === false) && ($value != '')) {
-        cms_setcookie($name, '', $session, $httponly, -14.0);
+    if (($value != '') && (!allowed_cookies($category))) {
+        cms_setcookie($name, '', $category, $session, $httponly, -14.0);
         return false;
     }
 

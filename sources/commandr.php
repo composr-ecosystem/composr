@@ -1296,26 +1296,26 @@ class Virtual_shell
                 }
                 $data = base64_encode(json_encode($commandr_state_diff));
                 if (strlen($data) < 4096) {
-                    cms_setcookie('commandr_state', $data, true, false);
+                    cms_setcookie('commandr_state', $data, 'PERSONALIZATION', true, false);
                 }
 
                 // Code includes
                 $newly_required = array_diff(array_keys($GLOBALS['REQUIRED_CODE']), $already_required);
                 $data = base64_encode(json_encode($newly_required));
                 if (strlen($data) < 4096) {
-                    cms_setcookie('commandr_state_code', $data, true, false);
+                    cms_setcookie('commandr_state_code', $data, 'PERSONALIZATION', true, false);
                 }
 
                 // Lang file includes
                 $data = base64_encode(json_encode(array_keys($GLOBALS['LANGS_REQUESTED'])));
                 if (strlen($data) < 4096) {
-                    cms_setcookie('commandr_state_lang', $data, true, false);
+                    cms_setcookie('commandr_state_lang', $data, 'PERSONALIZATION', true, false);
                 }
 
 
                 // ^ We use base64 encoding to work around inane modsecurity restrictions. We can't always work around modsecurity (GET/POST encoding would be too messy), but for cookies it is an easy win
             } else {
-                cms_setcookie('commandr_state', '', true, false, -14.0);
+                cms_setcookie('commandr_state', '', 'PERSONALIZATION', true, false, -14.0);
             }
         } else {
             // Fake the PHP evaluation, because it's prohibited by a shared install

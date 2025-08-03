@@ -13,6 +13,8 @@
  * @package    multi_domain_login
  */
 
+/*EXTRA FUNCTIONS: setcookie*/
+
 global $SITE_INFO;
 
 require dirname(__DIR__) . '/_config.php';

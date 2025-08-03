@@ -256,7 +256,7 @@ class Hook_health_check_install_env_php_lock_down extends Hook_Health_Check
             preg_replace preg_replace_callback preg_split print_r rawurldecode rmdir
             rawurlencode readdir realpath rename require require_once reset
             round rsort rtrim serialize set_error_handler preg_match preg_grep preg_match_all
-            setcookie setlocale sha1 sin sort fprintf sprintf srand str_pad str_repeat str_replace
+            setlocale sha1 sin sort fprintf sprintf srand str_pad str_repeat str_replace
             strcmp strip_tags stripslashes strlen strpos strrpos strstr strtok
             strtotime strtr strval substr substr_count time trim trigger_error
             uasort uksort uniqid unlink unserialize unset urldecode urlencode usort

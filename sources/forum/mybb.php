@@ -1222,7 +1222,7 @@ class Forum_driver_mybb extends Forum_driver_base
 
         // Set a User COOKIE
         $member_cookie_name = get_member_cookie();
-        cms_setcookie($member_cookie_name, strval($member_id) . '_' . $loginkey, false, true);
+        cms_setcookie($member_cookie_name, strval($member_id) . '_' . $loginkey, 'PERSONALIZATION', false, true);
 
         if (substr($member_cookie_name, 0, 5) != 'cms__') {
             $session_id = $this->db->query_select_value_if_there('sessions', 'sid', ['uid' => $member_id]);
@@ -1240,7 +1240,7 @@ class Forum_driver_mybb extends Forum_driver_base
             }
 
             // Now lets try and set a COOKIE of MyBB Session ID
-            cms_setcookie('sid', $session_id, false, true);
+            cms_setcookie('sid', $session_id, 'ESSENTIAL', false, true);
         }
     }
 

@@ -1665,7 +1665,7 @@ class Forum_driver_cns extends Forum_driver_base
             require_code('users_active_actions');
             $lvt = $this->get_member_row_field($member_id, 'm_last_visit_time');
             if (function_exists('cms_setcookie')) { // May be trying to check in safe mode when doing above require_code, so recurse
-                cms_setcookie('last_visit', ($lvt === null) ? strval(time()) : strval($lvt), true);
+                cms_setcookie('last_visit', ($lvt === null) ? strval(time()) : strval($lvt), 'ANALYTICS', true);
             }
             $new_visit = true;
         } else {

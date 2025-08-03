@@ -911,11 +911,11 @@ class Forum_driver_none extends Forum_driver_base
             $username = $this->get_username($member_id);
         }
 
-        cms_setcookie(get_member_cookie(), $username, false, true);
+        cms_setcookie(get_member_cookie(), $username, 'PERSONALIZATION', false, true);
         $_COOKIE[get_member_cookie()] = $username;
 
         global $SITE_INFO;
-        cms_setcookie(get_pass_cookie(), $SITE_INFO['maintenance_password'], false, true);
+        cms_setcookie(get_pass_cookie(), $SITE_INFO['maintenance_password'], 'PERSONALIZATION', false, true);
     }
 
     /**

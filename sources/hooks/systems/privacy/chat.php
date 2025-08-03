@@ -44,9 +44,11 @@ class Hook_privacy_chat extends Hook_privacy_base
 
             'cookies' => [
                 'software_chat_prefs' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_software_chat_prefs'),
                 ],
                 'last_chat_msg_*' => [
+                    'category' => 'PERSONALIZATION',
                     'reason' => do_lang_tempcode('COOKIE_last_chat_msg'),
                 ],
             ],

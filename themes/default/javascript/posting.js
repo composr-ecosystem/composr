@@ -763,7 +763,7 @@
         }(form)));
 
         // Load via local storage
-        var autosaveValue = $cms.readCookie(encodeURIComponent(getAutosaveUrlStem()));
+        var autosaveValue = $cms.readCookie(encodeURIComponent(getAutosaveUrlStem()), 'PERSONALIZATION');
         if ((autosaveValue !== '') && (autosaveValue !== '0')) {
             if (window.localStorage !== undefined) {
                 var fieldsToDo = {}, fieldsToDoCounter = 0, biggestLengthData = '';
@@ -936,7 +936,7 @@
                 } else {
                     // Was asked to throw the autosave away...
 
-                    $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '0', 0.167/*4 hours*/); // Mark as not wanting to restore from local storage
+                    $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '0', 'PERSONALIZATION', 0.167/*4 hours*/); // Mark as not wanting to restore from local storage
 
                     if (window.localStorage !== undefined) {
                         for (var key2 in fieldsToDo) {
@@ -1157,7 +1157,7 @@
 
         function actuallyAutosave() {
             // Mark it as saved, so the server can clear it out when we submit, signally local storage should get deleted too
-            $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '1', 0.167/*4 hours*/);
+            $cms.setCookie(encodeURIComponent(getAutosaveUrlStem()), '1', 'PERSONALIZATION', 0.167/*4 hours*/);
 
             window.lastAutosave = thisDate;
 

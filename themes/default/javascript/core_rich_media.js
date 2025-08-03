@@ -515,11 +515,11 @@
             document.getElementById(params.randIdOverlay).style.display = 'none';
 
             if (id) {
-                $cms.setCookie('og_' + id, '1', 365);
+                $cms.setCookie('og_' + id, '1', 'PERSONALIZATION', 365);
             }
         });
 
-        if (!id || ($cms.readCookie('og_' + id) !== '1')) {
+        if (!id || ($cms.readCookie('og_' + id, 'PERSONALIZATION') !== '1')) {
             setTimeout(function () {
                 var element, bi;
 

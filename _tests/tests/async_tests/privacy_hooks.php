@@ -13,6 +13,8 @@
  * @package    testing_platform
  */
 
+// TODO: add a test to ensure all cookie names used via cms_setcookie or $cms.setCookie (including non-bundled addons) are defined in a cookies array in a hook
+
 /**
  * Composr test case class (unit testing).
  */
@@ -42,7 +44,7 @@ class privacy_hooks_test_set extends cms_test_case
             $this->assertTrue((isset($info['description']) && (do_lang($info['description'], null, null, null, null, false) !== null)), 'The description property in hook ' . $hook . ' is not a valid language codename.');
 
             foreach ($info['cookies'] as $x) {
-                $this->assertTrue($x === null || is_array($x) && array_key_exists('reason', $x), 'Invalid cookie name in ' . $hook . ' (' . serialize($x) . ')');
+                $this->assertTrue($x === null || is_array($x) && array_key_exists('reason', $x) && array_key_exists('category', $x) && in_array($x['category'], ['ESSENTIAL', 'PERSONALIZATION', 'ANALYTICS', 'MARKETING', 'UNCATEGORIZED']), 'Invalid cookie definition in ' . $hook . ' (' . serialize($x) . ')');
             }
 
             foreach ($info['positive'] as $x) {

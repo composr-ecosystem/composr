@@ -3,7 +3,7 @@
 
     $cms.templates.wMainScreen = function wMainScreen(params, container) {
         $dom.on(container, 'click', '.js-click-set-hidemod-cookie', function (e, el) {
-            $cms.setCookie('hideMod', $cms.isIcon(el.querySelector('.icon'), 'trays/contract') ? '0' : '1');
+            $cms.setCookie('buildr_hide_mods', $cms.isIcon(el.querySelector('.icon'), 'trays/contract') ? '0' : '1', 'PERSONALIZATION');
         });
 
         $dom.on(container, 'click', '.js-click-set-type-edititem', function (e, el) {
