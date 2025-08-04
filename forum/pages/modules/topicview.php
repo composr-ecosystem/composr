@@ -776,7 +776,7 @@ class Module_topicview
                 } else {
                     if (!has_privilege(get_member(), 'vote_in_polls')) {
                         $disable_answers = true;
-                        $footer_message = do_lang_tempcode(is_guest() ? 'GUESTS_CANT_VOTE_IN_POLLS' : 'VOTE_DENIED');
+                        $footer_message = is_guest() ? do_lang_tempcode('GUESTS_CANT_VOTE_IN_POLLS') : do_lang_tempcode('VOTE_DENIED');
                     } else {
                         require_lang('cns_polls');
                         $map = ['page' => 'topicview', 'id' => $id, 'topic_start' => ($start == 0) ? null : $start, 'topic_max' => ($max == $default_max) ? null : $max];
