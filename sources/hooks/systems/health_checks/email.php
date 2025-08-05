@@ -225,10 +225,11 @@ class Hook_health_check_email extends Hook_Health_Check
                 $this->assertTrue($result, 'No valid MX records were found for the [tt]' . $email . '[/tt] e-mail address. You might not receive incoming e-mail. Please check your DNS records and fix accordingly.');
 
                 foreach (array_unique($mail_hosts) as $host) {
-                    $has_dns = @checkdnsrr($host, 'A');
-                    $this->assertTrue($has_dns, 'Every MX record must have a matching A record, but ' . $host . ' (from e-mail address [tt]' . $email . '[/tt]) does not have one. You might not receive incoming e-mail. Please fix accordingly in your DNS records.');
+                    $has_dns_a = @checkdnsrr($host, 'A');
+                    $has_dns_aaaa = @checkdnsrr($host, 'AAAA');
+                    $this->assertTrue(($has_dns_a || $has_dns_aaaa), 'Every MX record must have a matching A or AAAA record, but ' . $host . ' (from e-mail address [tt]' . $email . '[/tt]) does not have one. You might not receive incoming e-mail. Please fix accordingly in your DNS records.');
 
-                    if (!$has_dns) {
+                    if (!$has_dns_a && !$has_dns_aaaa) {
                         continue;
                     }
 
