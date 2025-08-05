@@ -22,7 +22,7 @@ declare(strict_types=1);
  * @package    installer
  */
 
-// Requirements check
+// LEGACY: Requirements check (also needs updating in global3.php)
 if (version_compare(PHP_VERSION, '7.2', '<')) {
     exit('PHP version 7.2 or newer is required');
 }
@@ -3578,12 +3578,11 @@ function confirm_db_credentials(bool $return_connection = false)
 
     // Check max allowed packet if mySQLi
     if (strpos($post_db_type, 'mysql') !== false) {
-        $min = 1024 * 1024 * 16; // 16MB; if you change this value, also change it in the health_check install_env hook.
         $vars = $tmp->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
         foreach ($vars as $var) {
             $current = intval($var['Value']);
-            if ($current < $min) {
-                warn_exit(do_lang_tempcode('MAX_ALLOWED_PACKET_TOO_LOW', integer_format($min), integer_format($current)));
+            if ($current < CMS_MYSQL_MIN_MAX_ALLOWED_PACKET) {
+                warn_exit(do_lang_tempcode('MAX_ALLOWED_PACKET_TOO_LOW', integer_format(CMS_MYSQL_MIN_MAX_ALLOWED_PACKET), integer_format($current)));
             }
         }
     }
