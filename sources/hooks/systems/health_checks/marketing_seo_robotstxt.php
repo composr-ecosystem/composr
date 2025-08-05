@@ -181,10 +181,10 @@ class Hook_health_check_marketing_seo_robotstxt extends Hook_Health_Check
         }
 
         $scripts = [ // Really bad if these get indexed on Google
-            'adminzone/',
+            '/adminzone/',
         ];
         foreach ($scripts as $script) {
-            $url = get_base_url() . '/' . $script;
+            $url = rtrim(get_base_url(), '/') . $script;
             $allowed = $this->robots_allowed($url, 'Googlebot', true);
             $this->assertTrue(!$allowed, 'robots.txt should be blocking [tt]' . $script . '[/tt] because this is a high-security area.');
         }
