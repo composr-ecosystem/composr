@@ -248,8 +248,14 @@ class Hook_health_check_email extends Hook_Health_Check
                         $errno = 0;
                         $errstr = '';
                         $socket = @fsockopen($host, 25, $errno, $errstr, 4.0);
+                        if (!$socket) {
+                            $socket = @fsockopen($host, 587, $errno, $errstr, 4.0);
+                        }
+                        if (!$socket) {
+                            $socket = @fsockopen('ssl://' . $host, 465, $errno, $errstr, 4.0);
+                        }
                         $can_connect = ($socket !== false);
-                        $this->assertTrue($can_connect, 'Could not connect to SMTP server (port 25) for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]); possibly server network is firewalled on this port. You might not be able to send outgoing e-mails.');
+                        $this->assertTrue($can_connect, 'Could not connect to SMTP server (ports 25, 587, and 465 attempted) for [tt]' . $email . '[/tt] address (host=[tt]' . $host . '[/tt]); possibly server network is firewalled on this port. You might not be able to send outgoing e-mails.');
                         if ($can_connect) {
                             fread($socket, 1024);
                             fwrite($socket, 'HELO ' . $domain . "\n");
