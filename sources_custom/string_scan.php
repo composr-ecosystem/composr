@@ -11384,6 +11384,7 @@ function string_scan($lang, $do_guessing = false, $only_exists = true)
         COOKIE_automatic_login
         COOKIE_invisible
         COOKIE_session
+        COOKIE_cc_cookie
         COOKIE_trays
         COOKIE_use_wysiwyg
         COOKIE_client_time

@@ -1101,7 +1101,7 @@
                         acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
                         acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
                         showPreferencesBtn: '{!COOKIE_CONSENT_MANAGE_SETTINGS;^}',
-                        footer: '<a href="{$BASE_URL;,0}/index.php?page=privacy" title="{!PRIVACY;^}">{!PRIVACY;^}</a>'
+                        footer: '<a href="{$BASE_URL;,0}/index.php?page=privacy" title="{!PRIVACY;^}">{!PRIVACY;^}</a> <small><em>{!COOKIE_CONSENT_PRIVACY_EM;^}</em></small>'
                     },
                     preferencesModal: {
                         title: '{!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE;^}',

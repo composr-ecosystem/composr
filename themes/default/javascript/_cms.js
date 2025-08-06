@@ -634,7 +634,7 @@
         if (typeof cookieConsentData['categories'] === 'undefined') {
             return false;
         }
-        if (cookieConsentData['categories'].indexOf(category) < 0) {
+        if (cookieConsentData['categories'].indexOf(cookieCategory) < 0) {
             return false;
         }
 
