@@ -255,15 +255,14 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $php_too_old = version_compare(PHP_VERSION, '7.2', '<'); // LEGACY: Also maintain in tut_webhosting.txt, install.php, restore.php.pre, _standard_dir_files.php
-        $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD', '7.2'));
+        $php_too_old = version_compare(PHP_VERSION, CMS_MIN_SUPPORTED_PHP, '<');
+        $this->assertTrue(!$php_too_old, do_lang('PHP_TOO_OLD', CMS_MIN_SUPPORTED_PHP));
 
-        $max_tested_php_version = '8.3'; // LEGACY: This needs to keep raising (also it is in tut_webhosting.txt, _standard_dir_files.php)
         if (!is_maintained('php')) {
-            $php_too_new = version_compare(PHP_VERSION, $max_tested_php_version . '.1000', '>'); // LEGACY needs maintaining
+            $php_too_new = version_compare(PHP_VERSION, CMS_MAX_SUPPORTED_PHP . '.1000', '>');
             $this->assertTrue(
                 !$php_too_new,
-                '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('PHP_TOO_NEW', escape_html($max_tested_php_version)), escape_html(get_brand_base_url()), escape_html('php')) . '[/html]'
+                '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('PHP_TOO_NEW', escape_html(CMS_MAX_SUPPORTED_PHP)), escape_html(get_brand_base_url()), escape_html('php')) . '[/html]'
             );
         }
     }
@@ -353,27 +352,25 @@ class Hook_health_check_install_env extends Hook_Health_Check
 
         if ($version !== null) {
             if (stripos($version, 'maria') !== false) {
-                $mariadb_too_old = version_compare($version, $minimum_version, '<');
-                $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', $minimum_version, $version));
+                $mariadb_too_old = version_compare($version, CMS_MIN_SUPPORTED_MYSQL_MARIADB, '<');
+                $this->assertTrue(!$mariadb_too_old, do_lang('MARIADB_TOO_OLD', CMS_MIN_SUPPORTED_MYSQL_MARIADB, $version));
 
-                $max_tested_mariadb_version = '10.11'; // LEGACY needs maintaining
                 if (!is_maintained('mariadb')) {
-                    $mariadb_too_new = version_compare($version, $max_tested_mariadb_version . '.1000', '>');
+                    $mariadb_too_new = version_compare($version, CMS_MAX_SUPPORTED_MARIADB . '.1000', '>');
                     $this->assertTrue(
                         !$mariadb_too_new,
-                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MARIADB_TOO_NEW', escape_html($max_tested_mariadb_version)), escape_html(get_brand_base_url()), escape_html('mariadb')) . '[/html]'
+                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MARIADB_TOO_NEW', escape_html(CMS_MAX_SUPPORTED_MARIADB)), escape_html(get_brand_base_url()), escape_html('mariadb')) . '[/html]'
                     );
                 }
             } else {
-                $mysql_too_old = version_compare($version, $minimum_version, '<');
-                $this->assertTrue(!$mysql_too_old, do_lang('MYSQL_TOO_OLD', $minimum_version, $version));
+                $mysql_too_old = version_compare($version, CMS_MIN_SUPPORTED_MYSQL_MARIADB, '<');
+                $this->assertTrue(!$mysql_too_old, do_lang('MYSQL_TOO_OLD', CMS_MIN_SUPPORTED_MYSQL_MARIADB, $version));
 
-                $max_tested_mysql_version = '8.2'; // LEGACY needs maintaining
                 if (!is_maintained('mysql')) {
-                    $mysql_too_new = version_compare($version, $max_tested_mysql_version . '.1000', '>');
+                    $mysql_too_new = version_compare($version, CMS_MAX_SUPPORTED_MYSQL . '.1000', '>');
                     $this->assertTrue(
                         !$mysql_too_new,
-                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MYSQL_TOO_NEW', escape_html($max_tested_mysql_version)), escape_html(get_brand_base_url()), escape_html('mysql')) . '[/html]'
+                        '[html]' . do_lang('WARNING_NON_MAINTAINED', do_lang('MYSQL_TOO_NEW', escape_html(CMS_MAX_SUPPORTED_MYSQL)), escape_html(get_brand_base_url()), escape_html('mysql')) . '[/html]'
                     );
                 }
             }
@@ -407,13 +404,11 @@ class Hook_health_check_install_env extends Hook_Health_Check
             return;
         }
 
-        $min = 1024 * 1024 * 16; // 16MB; if you change this value, also change it in the installer confirm_db_credentials.
-
         if (isset($GLOBALS['SITE_DB']->connection_write)) {
             $vars = $GLOBALS['SITE_DB']->query('SHOW VARIABLES LIKE \'max_allowed_packet\'');
             foreach ($vars as $var) {
                 $current = intval($var['Value']);
-                $this->assertTrue($current >= $min, do_lang('MAX_ALLOWED_PACKET_TOO_LOW', integer_format($min), integer_format($current)));
+                $this->assertTrue($current >= CMS_MYSQL_MIN_MAX_ALLOWED_PACKET, do_lang('MAX_ALLOWED_PACKET_TOO_LOW', integer_format(CMS_MYSQL_MIN_MAX_ALLOWED_PACKET), integer_format($current)));
             }
         }
     }
@@ -507,9 +502,8 @@ class Hook_health_check_install_env extends Hook_Health_Check
             require_code('files');
 
             $disk_space = @disk_free_space(get_file_base());
-            $min_disk_space = 250 * 1024 * 1024;
-            $low_disk_space = ((is_integer($disk_space)) && ($disk_space < $min_disk_space));
-            $this->assertTrue(!$low_disk_space, do_lang('WARNING_DISK_SPACE', clean_file_size($min_disk_space)));
+            $low_disk_space = ((is_integer($disk_space)) && ($disk_space < CMS_MIN_DISK_SPACE));
+            $this->assertTrue(!$low_disk_space, do_lang('WARNING_DISK_SPACE', clean_file_size(CMS_MIN_DISK_SPACE)));
         } else {
             $this->stateCheckSkipped('PHP [tt]disk_free_space[/tt] function not available');
         }

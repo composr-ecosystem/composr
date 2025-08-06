@@ -40,6 +40,11 @@
 					{+END}
 				</tbody>
 			</table>
+			<p class="buttons-group">
+				<span class="buttons-group-inner">
+					<button class="btn btn-primary btn-scr" data-cc="show-preferencesModal"><span>{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE}</span></button>
+				</span>
+			</p>
 		{+END}
 	{+END}
 

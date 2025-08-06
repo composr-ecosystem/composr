@@ -547,8 +547,7 @@
         cookieValue = strVal(cookieValue);
         cookieCategory = strVal(cookieCategory);
 
-        var cookieConsent = $cms.readCookie('cookieconsent_' + cookieCategory);
-        if ((!cookieConsent || (cookieConsent !== 'ALLOW')) && (cookieValue !== '')) {
+        if (!$cms.acceptsCookieCategory(cookieCategory)) {
             return;
         }
 
@@ -592,11 +591,8 @@
         defaultValue = strVal(defaultValue);
         
         // If cookies have not been consented, pretend no cookies are set even if there are old cookies remaining
-        if (cookieName !== 'cookieconsent_' + cookieCategory) {
-            var cookieConsent = $cms.readCookie('cookieconsent_' + cookieCategory, cookieCategory);
-            if (!cookieConsent || (cookieConsent !== 'ALLOW')) {
-                return '';
-            }
+        if ((cookieName !== 'cc_cookie') && ($cms.acceptsCookieCategory(cookieCategory))) {
+            return '';
         }
 
         var cookies = String(document.cookie),
@@ -616,6 +612,33 @@
         }
 
         return decodeURIComponent(cookies.substring(startIdx + cookieName.length + 1, endIdx));
+    };
+
+    /**
+     * @memberof $cms
+     * @param cookieCategory
+     * @returns {boolean}
+     */
+    $cms.acceptsCookieCategory = function acceptsCookieCategory(cookieCategory) {
+        cookieCategory = strVal(cookieCategory);
+
+        var cookieConsent = $cms.readCookie('cc_cookie');
+        if (cookieConsent === '') {
+            return false;
+        }
+
+        var cookieConsentData = JSON.parse(decodeURIComponent(cookieConsent));
+        if (typeof cookieConsentData !== 'object') {
+            return false;
+        }
+        if (typeof cookieConsentData['categories'] === 'undefined') {
+            return false;
+        }
+        if (cookieConsentData['categories'].indexOf(category) < 0) {
+            return false;
+        }
+
+        return true;
     };
 
     /**

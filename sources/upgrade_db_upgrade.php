@@ -593,12 +593,10 @@ function version_specific() : bool
             // Renamed addons (old name => new name), just in case the user did not process file integrity yet
             //  Note that any table modifications etc should be handled in the upgrade code for the NEW addon / module
             //  Note that any non-bundled addons are not handled by the software's own upgrade code, and they should ideally be edited manually if they have tables (using safe mode if needed) or cleaned out using the integrity checker if they don't
-            $renamed_addons = [
-                'unvalidated' => 'validation',
-                'imap' => 'core_imap', // LEGACY: only exists between v11 upgrades
-            ];
+            require_code('addons');
+
             $_out = '';
-            foreach ($renamed_addons as $old_addon => $new_addon) {
+            foreach (CMS_ADDON_REMAPPING_11 as $old_addon => $new_addon) {
                 $_out .= '<li><kbd>' . $old_addon . '</kbd> => <kbd>' . $new_addon . '</kbd></li>';
                 if ($GLOBALS['SITE_DB']->query_select_value_if_there('addons', 'addon_name', ['addon_name' => $new_addon]) === null) {
                     $GLOBALS['SITE_DB']->query_update('addons', ['addon_name' => $new_addon], ['addon_name' => $old_addon]);

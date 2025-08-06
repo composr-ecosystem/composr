@@ -215,10 +215,10 @@
 								<li><a accesskey="z" rel="site_map" href="{$PAGE_LINK*,_SEARCH:sitemap}">{!SITEMAP}</a></li>
 							{+END}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_rules_link}}
-								<li><a data-open-as-overlay="{}" rel="site_rules" accesskey="," href="{$PAGE_LINK*,:rules}">{!RULES}</a></li>
+								<li><a rel="site_rules" accesskey="," href="{$PAGE_LINK*,:rules}">{!RULES}</a></li>
 							{+END}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_privacy_link}}
-								<li><a data-open-as-overlay="{}" rel="site_privacy" accesskey="." href="{$PAGE_LINK*,_SEARCH:privacy}">{!PRIVACY}</a></li>
+								<li><a rel="site_privacy" accesskey="." href="{$PAGE_LINK*,_SEARCH:privacy}">{!PRIVACY}</a></li>
 							{+END}
 							{+START,IF,{$CONFIG_OPTION,bottom_show_feedback_link}}
 								<li><a rel="site_contact" accesskey="'" href="{$PAGE_LINK*,_SEARCH:feedback:redirect={$SELF_URL&,1}}">{!_FEEDBACK}</a></li>

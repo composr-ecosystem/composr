@@ -27,6 +27,35 @@ function init__addons()
 {
     global $ADDON_INFO_CACHE;
     $ADDON_INFO_CACHE = [];
+
+    // LEGACY: Addon name remapping, which needs maintained (old name => new name)
+    if (!defined('CMS_ADDON_REMAPPING')) {
+        define('CMS_ADDON_REMAPPING_10', [
+            'cedi' => 'wiki',
+            'occle' => 'commandr',
+            'ocf_avatars' => 'cns_avatars',
+            'ocf_cartoon_avatars' => 'cns_cartoon_avatars',
+            'ocf_clubs' => 'cns_clubs',
+            'ocf_contactmember' => 'cns_contact_member',
+            'ocf_cpfs' => 'cns_cpfs',
+            'ocf_forum' => 'cns_forum',
+            'ocf_member_avatars' => 'cns_member_avatars',
+            'ocf_member_photos' => 'cns_member_photos',
+            'ocf_member_titles' => 'cns_member_titles',
+            'ocf_multi_moderations' => 'cns_multi_moderations',
+            'ocf_post_templates' => 'cns_post_templates',
+            'ocf_reported_posts' => 'cns_reported_posts',
+            'ocf_signatures' => 'cns_signatures',
+            'ocf_thematic_avatars' => 'cns_thematic_avatars',
+            'ocf_warnings' => 'cns_warnings',
+        ]);
+        define('CMS_ADDON_REMAPPING_11', [
+            'unvalidated' => 'validation',
+            'composr_homesite' => 'cms_homesite',
+            'imap' => 'core_imap',
+        ]);
+        define('CMS_ADDON_REMAPPING', (CMS_ADDON_REMAPPING_10 + CMS_ADDON_REMAPPING_11));
+    }
 }
 
 /**

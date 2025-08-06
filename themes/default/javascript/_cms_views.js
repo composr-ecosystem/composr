@@ -1061,48 +1061,85 @@
             this.initializeGoogleAnalytics();
         }
 
-        // Cookie Consent plugin by Osano - https://www.osano.com/cookieconsent
+        // Cookie Consent plugin by Orestbida - https://cookieconsent.orestbida.com
         if (($cms.runningScript() === 'index') && ($dom.$('meta[http-equiv="Refresh"]') === null) && (window.parent === window)) {
             $cms.requireJavascript('cookie_consent').then(function () {
-                var cookieConsentOptions = {
-                    cookie: {
-                        name: 'cookieconsent',
-                        path: $cms.getCookiePath(),
-                        domain: $cms.getCookieDomain(),
+                $cms.requireCss('cookie_consent');
+
+                var cookieConsentOptions = {};
+                cookieConsentOptions['categories'] = {
+                    ESSENTIAL: {
+                        enabled: true,
+                        readOnly: true
                     },
-                    palette: {
-                        popup: {'background': '#000', 'text': '#FFF', 'link': '#FFF'},
-                        button: {'background': '#FFF', 'text': '#000'},
+                    PERSONALIZATION: {
+                        enabled: true,
+                        readOnly: false
                     },
-                    theme: 'block',
-                    content: {
-                        message: $util.format('{!COOKIE_NOTICE;}', [$cms.getSiteName()]),
-                        link: '{!READ_MORE;}',
-                        href: pageLinkPrivacy,
-                        allow: '{!ALLOW_COOKIES;}',
-                        dismiss: '{!DENY_COOKIES;}',
+                    MARKETING: {
+                        enabled: false,
+                        readOnly: false,
                     },
-                    elements: {
-                        categories: '<ul class="cc-categories">' +
-                            ['ESSENTIAL', 'PERSONALIZATION', 'ANALYTICS', 'MARKETING', 'UNCATEGORIZED'].map(function categoryMap(category, index) {
-                                return `<li class="cc-category">
-                                <input type="checkbox" name="${category}"${(index < 2) ? ' checked="checked"' : ''}/>
-                                <label class="cc-info" for="${category}">${category}</label>
-                                </li>`;
-                            }).join("") + '</ul>',
-                        save: `<p><button class="cc-btn cc-save">Save</button></p>`,
+                    ANALYTICS: {
+                        enabled: true,
+                        readOnly: false
                     },
-                    revokable: true,
-                    type: 'categories', // Required by GDPR
+                    UNCATEGORIZED: {
+                        enabled: true,
+                        readOnly: false
+                    }
                 };
 
-                if ($cms.getCountry()) {
-                    cookieConsentOptions['law'] = {
-                        countryCode: $cms.getCountry(),
-                    };
-                }
+                cookieConsentOptions['language'] = {
+                    default: $cms.userLang().toLowerCase()
+                };
+                cookieConsentOptions['language']['translations'] = {};
+                cookieConsentOptions['language']['translations'][$cms.userLang().toLowerCase()] = {
+                    consentModal: {
+                        title: '{!COOKIE_CONSENT_TITLE;^}',
+                        description: $util.format('{!DESCRIPTION_COOKIE_CONSENT;^}', [$cms.getSiteName()]),
+                        acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
+                        acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
+                        showPreferencesBtn: '{!COOKIE_CONSENT_MANAGE_SETTINGS;^}',
+                        footer: '<a href="{$BASE_URL;,0}/index.php?page=privacy" title="{!PRIVACY;^}">{!PRIVACY;^}</a>'
+                    },
+                    preferencesModal: {
+                        title: '{!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE;^}',
+                        acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
+                        acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
+                        savePreferencesBtn: '{!COOKIE_CONSENT_SAVE_SETTINGS;^}',
+                        closeIconLabel: '{!COOKIE_CONSENT_CANCEL;^}',
+                        sections: [
+                            {
+                                title: 'ESSENTIAL',
+                                linkedCategory: 'ESSENTIAL',
+                                description: '{!DESCRIPTION_COOKIE_CATEGORY_ESSENTIAL;^}'
+                            },
+                            {
+                                title: 'PERSONALIZATION',
+                                linkedCategory: 'PERSONALIZATION',
+                                description: '{!DESCRIPTION_COOKIE_CATEGORY_PERSONALIZATION;^}'
+                            },
+                            {
+                                title: 'MARKETING',
+                                linkedCategory: 'MARKETING',
+                                description: '{!DESCRIPTION_COOKIE_CATEGORY_MARKETING;^}'
+                            },
+                            {
+                                title: 'ANALYTICS',
+                                linkedCategory: 'ANALYTICS',
+                                description: '{!DESCRIPTION_COOKIE_CATEGORY_ANALYTICS;^}'
+                            },
+                            {
+                                title: 'UNCATEGORIZED',
+                                linkedCategory: 'UNCATEGORIZED',
+                                description: '{!DESCRIPTION_COOKIE_CATEGORY_UNCATEGORIZED;^}'
+                            },
+                        ]
+                    }
+                };
 
-                new window.CookieConsent(cookieConsentOptions);
+                CookieConsent.run(cookieConsentOptions);
             });
         }
 

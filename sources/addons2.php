@@ -770,12 +770,8 @@ function has_feature(string $dependency) : bool
     // Normalise
     $dependency = str_replace(' ', '', cms_strtolower_ascii(preg_replace('# (enabled|needed|required)$#', '', $dependency)));
 
-    $remapping = [ // LEGACY: Useful for carrying legacy remappings
-        'unvalidated' => 'validation',
-        'imap' => 'core_imap',
-    ];
-    if (array_key_exists($dependency, $remapping)) {
-        $dependency = $remapping[$dependency];
+    if (array_key_exists($dependency, CMS_ADDON_REMAPPING)) {
+        $dependency = CMS_ADDON_REMAPPING[$dependency];
     }
 
     // Non-bundled addon
