@@ -4052,7 +4052,19 @@ function has_cookies() : bool // Will fail on users first visit, but then will c
  */
 function allowed_cookies(string $category = 'ESSENTIAL') : bool
 {
-    if (!isset($_COOKIE['cookieconsent_' . cms_strtoupper_ascii($category)]) || ($_COOKIE['cookieconsent_' . cms_strtoupper_ascii($category)] != 'ALLOW')) {
+    if (!isset($_COOKIE['cc_cookie'])) {
+        return false;
+    }
+
+    $cookie_consent_data_parsed = urldecode($_COOKIE['cc_cookie']);
+    $cookie_consent_data = @json_decode($cookie_consent_data_parsed, true);
+    if ($cookie_consent_data === false) {
+        return false;
+    }
+    if (!isset($cookie_consent_data['categories'])) {
+        return false;
+    }
+    if (!in_array($category, $cookie_consent_data['categories'])) {
         return false;
     }
 

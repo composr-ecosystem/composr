@@ -76,7 +76,7 @@ This product includes:
  - xsl_mopup.js (public domain)
  - Sew, autocomplete implementation (BSD-like licence / public domain)
  - Modernizr (MIT & BSD-like licences)
- - Osano Cookie Consent (MIT licence)
+ - Orestbida CookieConsent (MIT licence)
  - Invoice template (MIT licence)
  - Browser detection code (http://stackoverflow.com/a/9851769/362006, public domain)
  - Camel case code (http://stackoverflow.com/a/32604073/362006, public domain)

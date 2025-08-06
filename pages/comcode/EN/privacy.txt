@@ -4,4 +4,16 @@ Our privacy policy below explains what data we collect about you, why we collect
 
 [block]main_privacy_policy_auto[/block]
 
+[staff_note]
+If you decide not to use the main_privacy_policy_auto block, you must include a button which will allow users to edit their cookie settings.
+
+Example:
+
+<p class="buttons-group">
+	<span class="buttons-group-inner">
+		<button class="btn btn-primary btn-scr" data-cc="show-preferencesModal"><span>{+START,INCLUDE,ICON}NAME=buttons/proceed{+END} {!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE}</span></button>
+	</span>
+</p>
+[/staff_note]
+
 [i]This policy was last revised on {$DATE_TIME*,{$PRIVACY_POLICY_DATE},0}. Material changes to this policy will be posted as a news update to {$SITE_NAME*}.[/i]
