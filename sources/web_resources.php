@@ -77,7 +77,7 @@ function javascript_enforce(string $j, ?string $theme = null, bool $allow_defer 
 
     // Make sure the JavaScript exists
     if ($theme === null) {
-        if ($GLOBALS['FORUM_DRIVER'] !== null) {
+        if ((isset($GLOBALS['FORUM_DRIVER'])) && ($GLOBALS['FORUM_DRIVER'] !== null)) {
             $theme = @method_exists($GLOBALS['FORUM_DRIVER'], 'get_theme') ? $GLOBALS['FORUM_DRIVER']->get_theme() : 'default';
         } else {
             $theme = 'default';
