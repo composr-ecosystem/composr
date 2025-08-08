@@ -658,7 +658,7 @@ function enforce_captcha(bool $regenerate_on_error = true)
         if (!check_captcha(null, $regenerate_on_error, $error_message)) {
             set_http_status_code(500);
 
-            warn_exit($error_message, false, true);
+            warn_exit($error_message, false);
         }
     }
 }
