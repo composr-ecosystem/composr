@@ -845,8 +845,8 @@ function user_get_id_by_name( $p_username, $p_throw = false ) {
 
     // Composr - Try getting member from plugins
     $t_user = event_signal('EVENT_COMPOSR_USER_GET_ID_BY_NAME', $p_username);
-    if( $t_user !== null ) {
-        return $t_user;
+    if( $t_user === null ) {
+        return false;
     }
 
 	db_param_push();
