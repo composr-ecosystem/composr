@@ -144,7 +144,7 @@ class Hook_privacy_core extends Hook_privacy_base
                 ],
                 [
                     'heading' => do_lang('INFORMATION_STORAGE'),
-                    'action' => do_lang_tempcode('PRIVACY_ACTION_metadata'),
+                    'action' => do_lang_tempcode('PRIVACY_ACTION_metadata', escape_html(get_option('stats_store_time'))),
                     'reason' => do_lang_tempcode('PRIVACY_REASON_metadata'),
                 ],
                 [
