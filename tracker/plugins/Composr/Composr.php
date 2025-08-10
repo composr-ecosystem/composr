@@ -178,6 +178,33 @@ class ComposrPlugin extends MantisPlugin {
             header('Location: ' . $this->cms_sc_invite_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
             exit();
         }
+
+        // Redirect the Mantis select project page (when viewing as Guest) to the Composr login page
+        /* DISABLED: does not work
+        if (is_page_name( 'login_select_proj_page.php' ) && (current_user_get_access_level() <= VIEWER)) {
+            header('Location: ' . $this->cms_sc_login_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
+            exit();
+        }
+        */
+        if (is_page_name( 'login_select_proj_page.php' )) {
+            trigger_error('Reporting issues using the tracker directly is currently broken. Please go to composr.app and then Support > Report Issue or Feature', ERROR );
+        }
+
+        // Redirect to the member profile on Composr if not guest
+        /* DISABLED: does not work
+        if (is_page_name( 'view_user_page.php' )) {
+            require_api('authentication_api.php');
+
+            $user_id = gpc_get_int( 'id', auth_get_current_user_id());
+            if ($user_id !== $this->cms_guest_id) {
+                header('Location: ' . sprintf($this->cms_sc_member_view_url, strval($user_id)));
+                exit();
+            }
+        }
+        */
+        if (is_page_name( 'view_user_page.php' )) {
+            trigger_error('Redirecting tracker member profile to site profile is currently broken. Please view the member profile directly on composr.app.', ERROR );
+        }
     }
 
     function event_display_formatted($e, $text, $is_multiline = true)
@@ -354,28 +381,6 @@ WHERE m.id<>1 AND m.id=' . strval($user) . ' AND m.m_is_perm_banned=0' . $this->
 
                 // This line ensures that the fetched cookie is used in auth_get_current_user_cookie()
                 $g_script_login_cookie = $t_cookie;
-            }
-        }
-
-        /* Now handle redirects that require we have authorized the user first */
-
-        require_api('utility_api.php');
-        require_api('current_user_api.php');
-
-        // Redirect the Mantis select project page (when viewing as Guest) to the Composr login page
-        if (is_page_name( 'login_select_proj_page.php' ) && (current_user_get_access_level() <= VIEWER)) {
-            header('Location: ' . $this->cms_sc_login_url . '?redirect=' . urlencode($this->cms_sc_tracker_url));
-            exit();
-        }
-
-        // Redirect to the member profile on Composr if not guest
-        if (is_page_name( 'view_user_page.php' )) {
-            require_api('authentication_api.php');
-
-            $user_id = gpc_get_int( 'id', auth_get_current_user_id());
-            if ($user_id !== $this->cms_guest_id) {
-                header('Location: ' . sprintf($this->cms_sc_member_view_url, strval($user_id)));
-                exit();
             }
         }
     }
