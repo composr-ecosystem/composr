@@ -187,7 +187,7 @@ class ComposrPlugin extends MantisPlugin {
         }
         */
         if (is_page_name( 'login_select_proj_page.php' )) {
-            trigger_error('Reporting issues using the tracker directly is currently broken. Please go to composr.app and then Support > Report Issue or Feature', ERROR );
+            trigger_error('Reporting issues using the tracker directly is currently broken (see tracker issue 6264). Please go to composr.app and then Support > Report Issue or Feature', ERROR );
         }
 
         // Redirect to the member profile on Composr if not guest
@@ -203,7 +203,7 @@ class ComposrPlugin extends MantisPlugin {
         }
         */
         if (is_page_name( 'view_user_page.php' )) {
-            trigger_error('Redirecting tracker member profile to site profile is currently broken. Please view the member profile directly on composr.app.', ERROR );
+            trigger_error('Redirecting tracker member profile to site profile is currently broken (see tracker issue 6264). Please view the member profile directly on composr.app.', ERROR );
         }
     }
 
