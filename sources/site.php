@@ -2353,12 +2353,6 @@ function log_stats(?string $page_link, int $pg_time)
         return;
     }
 
-    require_code('global3');
-
-    if (!allowed_cookies('ANALYTICS')) {
-        return;
-    }
-
     $time = time();
 
     if ($page_link === null) {
