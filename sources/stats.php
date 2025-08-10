@@ -60,6 +60,10 @@ function find_hook_stats_page_links() : array
  */
 function tracked_redirect_script()
 {
+    if (!allowed_cookies('ANALYTICS')) { // TODO: necessary?
+        return;
+    }
+
     $url = get_param_string('url', null, INPUT_FILTER_URL_GENERAL);
 
     if (!is_our_server(cms_parse_url_safe($url, PHP_URL_HOST))) {
@@ -1632,6 +1636,10 @@ class CMSStatsDatePivot extends CMSStatsFilter
 function log_stats_event(string $event)
 {
     if ((get_option('site_closed') != '0') && (get_option('stats_when_closed') == '0')) {
+        return;
+    }
+
+    if (!allowed_cookies('ANALYTICS')) {
         return;
     }
 
