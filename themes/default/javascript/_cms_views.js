@@ -1064,82 +1064,82 @@
         // Cookie Consent plugin by Orestbida - https://cookieconsent.orestbida.com
         if (($cms.runningScript() === 'index') && ($dom.$('meta[http-equiv="Refresh"]') === null) && (window.parent === window)) {
             $cms.requireJavascript('cookie_consent').then(function () {
-                $cms.requireCss('cookie_consent');
-
-                var cookieConsentOptions = {};
-                cookieConsentOptions['categories'] = {
-                    ESSENTIAL: {
-                        enabled: true,
-                        readOnly: true
-                    },
-                    PERSONALIZATION: {
-                        enabled: true,
-                        readOnly: false
-                    },
-                    MARKETING: {
-                        enabled: false,
-                        readOnly: false,
-                    },
-                    ANALYTICS: {
-                        enabled: true,
-                        readOnly: false
-                    },
-                    UNCATEGORIZED: {
-                        enabled: true,
-                        readOnly: false
-                    }
-                };
-
-                cookieConsentOptions['language'] = {
-                    default: $cms.userLang().toLowerCase()
-                };
-                cookieConsentOptions['language']['translations'] = {};
-                cookieConsentOptions['language']['translations'][$cms.userLang().toLowerCase()] = {
-                    consentModal: {
-                        title: '{!COOKIE_CONSENT_TITLE;^}',
-                        description: $util.format('{!DESCRIPTION_COOKIE_CONSENT;^}', [$cms.getSiteName()]),
-                        acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
-                        acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
-                        showPreferencesBtn: '{!COOKIE_CONSENT_MANAGE_SETTINGS;^}',
-                        footer: '<a href="{$BASE_URL;,0}/index.php?page=privacy" title="{!PRIVACY;^}">{!PRIVACY;^}</a> <small><em>{!COOKIE_CONSENT_PRIVACY_EM;^}</em></small>'
-                    },
-                    preferencesModal: {
-                        title: '{!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE;^}',
-                        acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
-                        acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
-                        savePreferencesBtn: '{!COOKIE_CONSENT_SAVE_SETTINGS;^}',
-                        closeIconLabel: '{!COOKIE_CONSENT_CANCEL;^}',
-                        sections: [
-                            {
-                                title: 'ESSENTIAL',
-                                linkedCategory: 'ESSENTIAL',
-                                description: '{!DESCRIPTION_COOKIE_CATEGORY_ESSENTIAL;^}'
-                            },
-                            {
-                                title: 'PERSONALIZATION',
-                                linkedCategory: 'PERSONALIZATION',
-                                description: '{!DESCRIPTION_COOKIE_CATEGORY_PERSONALIZATION;^}'
-                            },
-                            {
-                                title: 'MARKETING',
-                                linkedCategory: 'MARKETING',
-                                description: '{!DESCRIPTION_COOKIE_CATEGORY_MARKETING;^}'
-                            },
-                            {
-                                title: 'ANALYTICS',
-                                linkedCategory: 'ANALYTICS',
-                                description: '{!DESCRIPTION_COOKIE_CATEGORY_ANALYTICS;^}'
-                            },
-                            {
-                                title: 'UNCATEGORIZED',
-                                linkedCategory: 'UNCATEGORIZED',
-                                description: '{!DESCRIPTION_COOKIE_CATEGORY_UNCATEGORIZED;^}'
-                            },
-                        ]
-                    }
-                };
-
-                CookieConsent.run(cookieConsentOptions);
+                $cms.requireCss(['cookie_consent', 'cookie_consent_override']).then(function () {
+                    var cookieConsentOptions = {};
+                    cookieConsentOptions['categories'] = {
+                        ESSENTIAL: {
+                            enabled: true,
+                            readOnly: true
+                        },
+                        PERSONALIZATION: {
+                            enabled: true,
+                            readOnly: false
+                        },
+                        MARKETING: {
+                            enabled: false,
+                            readOnly: false,
+                        },
+                        ANALYTICS: {
+                            enabled: true,
+                            readOnly: false
+                        },
+                        UNCATEGORIZED: {
+                            enabled: true,
+                            readOnly: false
+                        }
+                    };
+    
+                    cookieConsentOptions['language'] = {
+                        default: $cms.userLang().toLowerCase()
+                    };
+                    cookieConsentOptions['language']['translations'] = {};
+                    cookieConsentOptions['language']['translations'][$cms.userLang().toLowerCase()] = {
+                        consentModal: {
+                            title: '{!COOKIE_CONSENT_TITLE;^}',
+                            description: $util.format('{!DESCRIPTION_COOKIE_CONSENT;^}', [$cms.getSiteName()]),
+                            acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
+                            acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
+                            showPreferencesBtn: '{!COOKIE_CONSENT_MANAGE_SETTINGS;^}',
+                            footer: '<a href="{$BASE_URL;,0}/index.php?page=privacy" title="{!PRIVACY;^}">{!PRIVACY;^}</a> <small><em>{!COOKIE_CONSENT_PRIVACY_EM;^}</em></small>'
+                        },
+                        preferencesModal: {
+                            title: '{!COOKIE_CONSENT_MANAGE_SETTINGS_TITLE;^}',
+                            acceptAllBtn: '{!COOKIE_CONSENT_ACCEPT_ALL;^}',
+                            acceptNecessaryBtn: '{!COOKIE_CONSENT_ACCEPT_ESSENTIAL;^}',
+                            savePreferencesBtn: '{!COOKIE_CONSENT_SAVE_SETTINGS;^}',
+                            closeIconLabel: '{!COOKIE_CONSENT_CANCEL;^}',
+                            sections: [
+                                {
+                                    title: 'ESSENTIAL',
+                                    linkedCategory: 'ESSENTIAL',
+                                    description: '{!DESCRIPTION_COOKIE_CATEGORY_ESSENTIAL;^}'
+                                },
+                                {
+                                    title: 'PERSONALIZATION',
+                                    linkedCategory: 'PERSONALIZATION',
+                                    description: '{!DESCRIPTION_COOKIE_CATEGORY_PERSONALIZATION;^}'
+                                },
+                                {
+                                    title: 'MARKETING',
+                                    linkedCategory: 'MARKETING',
+                                    description: '{!DESCRIPTION_COOKIE_CATEGORY_MARKETING;^}'
+                                },
+                                {
+                                    title: 'ANALYTICS',
+                                    linkedCategory: 'ANALYTICS',
+                                    description: '{!DESCRIPTION_COOKIE_CATEGORY_ANALYTICS;^}'
+                                },
+                                {
+                                    title: 'UNCATEGORIZED',
+                                    linkedCategory: 'UNCATEGORIZED',
+                                    description: '{!DESCRIPTION_COOKIE_CATEGORY_UNCATEGORIZED;^}'
+                                },
+                            ]
+                        }
+                    };
+    
+                    CookieConsent.run(cookieConsentOptions);
+                });
             });
         }
 
