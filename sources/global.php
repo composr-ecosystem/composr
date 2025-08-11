@@ -533,7 +533,7 @@ function call_compiled_code(string $path, string $codename, bool $light_exit, ?b
 
             // Try locking the file in a shared way; allow up to 3 seconds for it to be released if a previous lock exists
             $time = microtime(true);
-            while (flock($file, LOCK_SH | LOCK_NB) === false) {
+            while (!is_file($calling_path) || (flock($file, LOCK_SH | LOCK_NB) === false)) {
                 if ((microtime(true) - $time) > 3.0) {
                     throw new \Exception('Cannot read file ' . $calling_relative_path . '; a lock was not released on the file in a timely manner.');
                 }
