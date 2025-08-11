@@ -854,6 +854,7 @@ function filter_naughty(string $in, bool $preg = false) : string
 {
     if (strpos($in, "\0") !== false) {
         log_hack_attack_and_exit('PATH_HACK');
+        warn_exit(do_lang_tempcode('INVALID_URL'));
     }
 
     if (strpos($in, '..') !== false) {
@@ -865,6 +866,7 @@ function filter_naughty(string $in, bool $preg = false) : string
         if (strpos($in, '..') !== false) {
             log_hack_attack_and_exit('PATH_HACK');
         }
+        
         warn_exit(do_lang_tempcode('INVALID_URL'));
     }
     return $in;
