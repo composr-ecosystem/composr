@@ -195,7 +195,7 @@ function require_code__bootstrap(string $codename)
             // We need to wait (but not too long) for locks to be released before we can include the file
             $time = microtime(true);
             $file = fopen($path, 'r');
-            while (flock($file, LOCK_SH | LOCK_NB) === false) {
+            while (!is_file($path) || (flock($file, LOCK_SH | LOCK_NB) === false)) {
                 if ((microtime(true) - $time) > 5.0) {
                     throw new \Exception('Cannot read file ' . $relative_path . '; a lock was not released on the file in a timely manner.');
                 }
