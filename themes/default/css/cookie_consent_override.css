@@ -1,0 +1,39 @@
+#cc-main {
+	--cc-bg: {$GET,WB};
+	--cc-primary-color: {$GET,button_primary};
+	--cc-secondary-color: {$GET,seed_secondary};
+
+	--cc-btn-primary-bg: {$GET,button_primary};
+	--cc-btn-primary-color: {$GET,button_primary_text};
+	--cc-btn-primary-hover-bg: {$GET,a.hover};
+	--cc-btn-primary-hover-color: {$GET,button_primary_text};
+	--cc-btn-primary-border-color: {$GET,button_primary};
+	--cc-btn-primary-hover-border-color: {$GET,a.hover};
+
+	--cc-btn-secondary-bg: {$GET,area_background};
+	--cc-btn-secondary-hover-bg: {$GET,area_hover_2_background};
+	--cc-btn-secondary-hover-color: {$GET,slightly_seeded_text};
+	--cc-btn-secondary-hover-border-color: {$GET,area_hover_2_background};
+	--cc-btn-secondary-color: {$GET,button_primary};
+   --cc-btn-secondary-border-color: {$GET,area_background};
+
+	--cc-separator-border-color: {$GET,pale_border};
+
+	--cc-toggle-on-bg: {$GET,success_color};
+	--cc-toggle-off-bg: {$GET,danger_color};
+	--cc-toggle-on-knob-bg: {$GET,light_success_background_1};
+	--cc-toggle-off-knob-bg: {$GET,light_error_background_1};
+
+	--cc-toggle-readonly-bg: {$GET,input_disabled_background};
+	--cc-toggle-readonly-knob-bg: {$GET,input_disabled_background};
+
+	--cc-cookie-category-block-bg: {$GET,area_background};
+	--cc-cookie-category-block-border: {$GET,area_background};
+	--cc-cookie-category-block-hover-bg: {$GET,area_hover_2_background};
+	--cc-cookie-category-block-hover-border: {$GET,area_hover_2_background};
+	--cc-cookie-category-expanded-block-hover-bg: {$GET,area_3_background};
+
+	--cc-footer-bg: {$GET,footer_background};
+	--cc-footer-color: {$GET,footer_text};
+	--cc-footer-border-color: {$GET,footer_background};
+}
