@@ -58,7 +58,7 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         }
     }
 
-    if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<|../|\'\s?(AND|OR|UNION)#mi', $val) !== 0)) {
+    if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<|\.\./|\'\s?(AND|OR|UNION)#mi', $val) !== 0)) {
         if ($name === 'page') { // Stop loops
             if ($posted) {
                 $_POST[$name] = '';
