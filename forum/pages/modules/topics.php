@@ -2964,6 +2964,7 @@ class Module_topics
      *
      * @param  ?AUTO_LINK $forum_id The ID of the forum to which the poll is being added (null: it is a private topic)
      * @param  boolean $new_poll Whether we are making a new poll opposed to editing a poll
+     * @param  boolean $poll_is_open Whether the poll is considered currently open
      * @param  BINARY $topic_validated Whether the topic on which this poll is being created is validated
      * @param  SHORT_TEXT $question The poll question
      * @param  array $answers A list of current answers for the poll
@@ -2979,7 +2980,7 @@ class Module_topics
      * @param  BINARY $point_weighting Whether votes will be weighed according to how many points voters have
      * @return Tempcode The Tempcode for the fields
      */
-    protected function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, int $topic_validated = 1, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
+    protected function get_poll_form_fields(?int $forum_id = null, bool $new_poll = true, bool $poll_is_open = true, int $topic_validated = 1, string $question = '', array $answers = [], int $is_private = 0, int $is_open = 1, int $requires_reply = 0, int $minimum_selections = 1, int $maximum_selections = 1, ?int $poll_closing_time = null, int $view_member_votes = 0, int $vote_revocation = 1, int $guests_can_vote = 1, int $point_weighting = 0) : object
     {
         require_lang('cns_polls');
         require_code('cns_polls_action3');
@@ -3061,7 +3062,7 @@ class Module_topics
             if ($new_poll && $_default_options['resultsHidden']) {
                 $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), true, true];
             } else {
-                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), $_default_options['resultsHidden'], $is_private == 1];
+                $options[] = [do_lang_tempcode('POLL_RESULTS_HIDDEN'), 'is_private', '1', do_lang_tempcode('DESCRIPTION_POLL_RESULTS_HIDDEN'), ($_default_options['resultsHidden'] && $poll_is_open), $is_private == 1];
             }
         }
 
@@ -3167,12 +3168,12 @@ class Module_topics
 
         url_default_parameters__enable();
         if (($topic_id === null) && ($forum_id === null)) {
-            $fields->attach($this->get_poll_form_fields(null, true, $validated));
+            $fields->attach($this->get_poll_form_fields(null, true, true, $validated));
         } else {
             if (($forum_id === null) && ($topic_id !== null)) {
                 $forum_id = $GLOBALS['FORUM_DB']->query_select_value('f_topics', 't_forum_id', ['id' => $topic_id]);
             }
-            $fields->attach($this->get_poll_form_fields($forum_id, true, $validated));
+            $fields->attach($this->get_poll_form_fields($forum_id, true, true, $validated));
         }
         url_default_parameters__disable();
 
@@ -4040,6 +4041,8 @@ class Module_topics
         $topic_info = $_topic_info[0];
         $this->handle_topic_breadcrumbs($topic_info['t_forum_id'], $topic_id, $topic_info['t_cache_first_title'], do_lang_tempcode('EDIT_TOPIC_POLL'));
 
+        require_code('cns_polls_action2');
+
         $answers = collapse_1d_complexity('pa_answer', $GLOBALS['FORUM_DB']->query_select('f_poll_answers', ['pa_answer'], ['pa_poll_id' => $poll_id]));
         $question = $poll_info['po_question'];
         $is_private = $poll_info['po_is_private'];
@@ -4053,7 +4056,14 @@ class Module_topics
         $guests_can_vote = $poll_info['po_guests_can_vote'];
         $point_weighting = $poll_info['po_point_weighting'];
         $validated = $topic_info['t_validated'];
-        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, $validated, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
+
+        // FUDGE
+        $_poll_info = [
+            'is_open' => $poll_info['po_is_open'],
+            'closing_time' => $poll_info['po_closing_time']
+        ];
+
+        $fields = $this->get_poll_form_fields($topic_info['t_forum_id'], false, cns_is_poll_open($_poll_info), $validated, $question, $answers, $is_private, $is_open, $requires_reply, $minimum_selections, $maximum_selections, $poll_closing_time, $view_member_votes, $vote_revocation, $guests_can_vote, $point_weighting);
 
         $fields->attach(do_template('FORM_SCREEN_FIELD_SPACER', ['_GUID' => '2ba9cf458b012ee8a12429cbc8b07993', 'TITLE' => do_lang_tempcode('ACTIONS')]));
         $fields->attach(form_input_tick(do_lang_tempcode('ERASE_VOTES'), do_lang_tempcode('DESCRIPTION_ERASE_VOTES'), 'erase_votes', false));
