@@ -675,36 +675,42 @@ function get_value_newer_than(string $name, int $cutoff, bool $elective_or_lengt
  */
 function set_value(string $name, ?string $value, bool $elective_or_lengthy = false, bool $fail_ok = false) : ?string
 {
-    check_for_infinite_loop('set_value', [$name], 1000); // Lenient check to see if we are saving a new value to the same key many, many times
-    check_for_infinite_loop('set_value', [$name, $value], 50); // Stricter check to see if we are saving the same value to the same key several times
+    if ($value === null) {
+        delete_value($name, $elective_or_lengthy);
+        return null;
+    }
+
+    // Bypass execution if we are trying to save the same value
+    if ($elective_or_lengthy) {
+        global $VALUE_OPTIONS_ELECTIVE_CACHE;
+        if (isset($VALUE_OPTIONS_ELECTIVE_CACHE[$name]) && ($VALUE_OPTIONS_ELECTIVE_CACHE[$name] == $value)) {
+            return $value;
+        }
+    } else {
+        global $VALUE_OPTIONS_CACHE;
+        if (isset($VALUE_OPTIONS_CACHE[$name]) && ($VALUE_OPTIONS_CACHE[$name]['the_value'] == $value)) {
+            return $value;
+        }
+    }
+
+    // Infinite loop checks; make sure we are not trying to change the value many times on the same execution
+    check_for_infinite_loop('set_value', [$name], 1000);
+    check_for_infinite_loop('set_value', [$name, $value], 50);
 
     if ($elective_or_lengthy) {
         global $VALUE_OPTIONS_ELECTIVE_CACHE;
-        if ($value === null) {
-            unset($VALUE_OPTIONS_ELECTIVE_CACHE[$name]);
-            $GLOBALS['SITE_DB']->query_delete('values_elective', ['the_name' => $name], '', 1);
-        } else {
-            $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $value;
-            $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
-        }
+        $VALUE_OPTIONS_ELECTIVE_CACHE[$name] = $value;
+        $GLOBALS['SITE_DB']->query_insert_or_replace('values_elective', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
         return $value;
     }
 
     global $VALUE_OPTIONS_CACHE, $SMART_CACHE;
-    if ($value === null) {
-        unset($VALUE_OPTIONS_CACHE[$name]);
-        if ($SMART_CACHE !== null) {
-            $SMART_CACHE->remove('VALUE_OPTIONS', $name);
-        }
-        $GLOBALS['SITE_DB']->query_delete('values', ['the_name' => $name], '', 1);
-    } else {
-        $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
-        $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
-        if ($SMART_CACHE !== null) {
-            $SMART_CACHE->append('VALUE_OPTIONS', $name, $VALUE_OPTIONS_CACHE[$name]);
-        }
-        $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
+    $VALUE_OPTIONS_CACHE[$name]['the_value'] = $value;
+    $VALUE_OPTIONS_CACHE[$name]['date_and_time'] = time();
+    if ($SMART_CACHE !== null) {
+        $SMART_CACHE->append('VALUE_OPTIONS', $name, $VALUE_OPTIONS_CACHE[$name]);
     }
+    $GLOBALS['SITE_DB']->query_insert_or_replace('values', ['date_and_time' => time(), 'the_value' => $value], ['the_name' => $name]);
 
     if (function_exists('persistent_cache_set')) {
         persistent_cache_set('VALUES', $VALUE_OPTIONS_CACHE);
