@@ -178,6 +178,8 @@ class Hook_cns_warnings_ban_ip
         }
 
         $info = [];
+
+        // Check if we previously executed an IP ban on this member through warnings
         foreach ($warning_ids as $warning_id) {
             $row = $GLOBALS['SITE_DB']->query_select_value_if_there('f_warnings_punitive', 'id', ['p_warning_id' => $warning_id, 'p_action' => '_PUNITIVE_IP_BANNED', 'p_reversed' => 0]);
             if ($row !== null) {
@@ -189,27 +191,47 @@ class Hook_cns_warnings_ban_ip
             }
         }
 
+        require_code('lookup');
+
+        $username = null;
+        $member_id = null;
+        $ip = null;
+        $email_address = null;
+        $known_ip_addresses = lookup_user($member_id_of, $username, $member_id, $ip, $email_address);
+
         // Check if maybe the member was IP-banned outside of the warnings system through securitylogging
-        if (count($info) == 0) {
-            require_code('lookup');
+        foreach (array_merge($known_ip_addresses, [['ip' => $ip, 'date_and_time' => time()]]) as $ip_check) {
+            $ban_until = $GLOBALS['SITE_DB']->query_select('banned_ip', ['i_ban_until'], ['i_ban_positive' => 1, 'ip' => $ip_check['ip']]);
+            if (array_key_exists(0, $ban_until)) {
+                $ip_banned = (($ban_until[0]['i_ban_until'] === null) || ($ban_until[0]['i_ban_until'] > time()));
+                if ($ip_banned) {
+                    $info[] = [
+                        'icon' => 'menu/adminzone/security/ip_ban',
+                        'text' => do_lang_tempcode('STANDING_DANGER_IP_TEXT_2'),
+                    ];
+                    break;
+                }
+            }
+        }
 
-            $username = null;
-            $member_id = null;
-            $ip = null;
-            $email_address = null;
-            $known_ip_addresses = lookup_user($member_id_of, $username, $member_id, $ip, $email_address);
+        // Check if any known IP addresses have a high risk of getting banned in the future (risk score is 67% or more at ban threshold)
+        $autoban_enabled = (get_option('autoban') == '1');
+        if ($autoban_enabled) {
+            $hack_threshold = floatval(get_option('hack_ban_threshold'));
 
-            foreach (array_merge($known_ip_addresses, [$ip]) as $ip_check) {
-                $ban_until = $GLOBALS['SITE_DB']->query_select('banned_ip', ['i_ban_until'], ['i_ban_positive' => 1, 'ip' => $ip]);
-                if (array_key_exists(0, $ban_until)) {
-                    $ip_banned = (($ban_until[0]['i_ban_until'] === null) || ($ban_until[0]['i_ban_until'] > time()));
-                    if ($ip_banned) {
-                        $info[] = [
-                            'icon' => 'menu/adminzone/security/ip_ban',
-                            'text' => do_lang_tempcode('STANDING_DANGER_IP_TEXT_2'),
-                        ];
-                        break;
-                    }
+            foreach (array_merge($known_ip_addresses, [['ip' => $ip, 'date_and_time' => time()]]) as $ip_check) {
+                $unbannable = $GLOBALS['SITE_DB']->query_select_value_if_there('unbannable_ip', 'ip', ['ip' => $ip_check['ip']]);
+                if ($unbannable !== null) {
+                    continue;
+                }
+
+                $risk_score = @floatval($GLOBALS['SITE_DB']->query_select_value('hackattack', 'SUM(risk_score)', ['ip' => $ip_check['ip'], 'silent_to_staff_log' => 0]));
+                if (($risk_score !== false) && ($risk_score >= ($hack_threshold * 0.67))) {
+                    $info[] = [
+                        'icon' => 'menu/adminzone/security/ip_ban',
+                        'text' => do_lang_tempcode('STANDING_DANGER_IP_TEXT_3'),
+                    ];
+                    break;
                 }
             }
         }
