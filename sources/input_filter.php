@@ -45,20 +45,22 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
         return;
     }
 
+    $_val = rawurldecode($val); // When running hack checks, we need to ensure we are checking against the decoded input
+
     if (($filters & INPUT_FILTER_JS_URLS) != 0) {
-        if (preg_match('#^\s*(((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)\s*:#i', $val) !== 0) {
+        if (preg_match('#^\s*(((j\s*a\s*v\s*a\s*)|(v\s*b\s*))?s\s*c\s*r\s*i\s*p\s*t)\s*:#i', $_val) !== 0) {
             log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
             $val = '';
             return;
         }
-        if (preg_match('#^\s*(d\s*a\s*t\s*a\s*)\s*:.*,#i', $val) !== 0) {
+        if (preg_match('#^\s*(d\s*a\s*t\s*a\s*)\s*:.*,#i', $_val) !== 0) {
             log_hack_attack_and_exit('SCRIPT_URL_HACK_2', $val);
             $val = '';
             return;
         }
     }
-
-    if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<|\.\./|\'\s?(AND|OR|UNION)#mi', $val) !== 0)) {
+    
+    if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<|\.\./|\'\s?(AND|OR|UNION)#mi', $_val) !== 0)) {
         if ($name === 'page') { // Stop loops
             if ($posted) {
                 $_POST[$name] = '';
@@ -299,6 +301,8 @@ function hard_filter_input_data__filesystem(string &$val)
         '(^|[/\\\\])_config\.php($|\0)',
         '\.\.[/\\\\]',
         '(^|[/\\\\])data_custom[/\\\\].*log.*',
+        '(^|[/\\\\])data_custom[/\\\\]errorlog\.php.*',
+        '(^|[/\\\\])critical_errors[/\\\\].*',
     ];
     $matches = [];
     foreach ($nastiest_path_signals as $signal) {
