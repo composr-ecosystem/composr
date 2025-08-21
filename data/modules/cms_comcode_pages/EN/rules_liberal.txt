@@ -5,16 +5,16 @@ Please follow these simple rules...
 Decorum:
 1) No profanity (swearing) or sexualised language. Some people will be offended by it, and the forums are designed to be a comfortable environment for everybody.
 2) Stay polite and don't intimidate. If someone is not being polite, report the post, don't escalate the situation.
-3) Do not spoil the experience of others for your own petty reasons.
+3) Do not spoil the experience of others for your own gain.
 
 The obvious:
-1) Do not try and impersonate anybody else.
-2) Do not try and hack anybody, or spread viruses.
+1) Do not impersonate anybody else.
+2) Do not attempt to hack anybody (including this site), or spread viruses.
 3) Do not intentionally undermine the privacy of other users, e.g. doxxing.
-4) Do not do any kind of illegal activity, such as promoting illicit drug use, grooming children, or any kind of criminal incitement.
+4) Do not engage in or promote any kind of illegal activity.
 
 Regarding moderation:
- - These rules may be enforced at the discretion of the moderators, with whatever punitive actions considered appropriate (warnings, post deletions, post edits, closing topics, bans, etc).
+ - These rules may be enforced at the discretion of the moderators, with whatever punitive actions considered appropriate.
  - Moderators also have the right to intercede for any reason if they feel it is important to maintain a quality experience for the users.
  - Moderators have the ability to read private content, such as private topics and inline personal posts.
 
@@ -22,7 +22,23 @@ Liability:
 1) It is user's own responsibility to scan content for viruses, etc.
 2) Any user breaking intellectual property laws is personally liable for it.
 3) No warranties are provided.
+4) We do not guarantee the validity or accuracy of any content posted by our members.
 
 [title="2"]Privacy[/title]
 
 Acceptance of these rules implies acceptance of the [page=":privacy"]privacy policy[/page] (which includes details of how this website uses cookies).
+
+[title="2"]Violation[/title]
+
+The staff reserve the right to take action against any content or member in violation of these rules (at the sole interpretation / discretion of the staff). Actions that may be taken include the following:
+ - A warning, issued to you in Private Topics and visible on your profile's 'Standing' tab
+ - Investigation of your account and/or Private Topics
+ - Removal, moving, or editing of the offending content
+ - Revocation of rewards or points earned from offending content or behaviour
+ - Charge of points
+ - Restrictions of site privileges (e.g. probation), temporarily or permanently
+ - Banning of your member account
+ - Banning of associated IP addresses with your account
+ - Reporting of your IP address, username, and/or e-mail address to public spam blocklists such as Stop Forum Spam
+ - Informing webmasters of links you spammed on our site to stop doing business with you
+ - Reporting your conduct to local authorities for criminal investigation

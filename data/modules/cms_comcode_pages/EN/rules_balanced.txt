@@ -18,13 +18,13 @@ Do not post any copyrighted material for which you have no right to do so.
 
 Do not repeatedly use strong/harsh swearing or sexual references.
 
-Do not be too sexually graphic. Do not link to or post pornography, and only mild and non-sexually motivated nudity is allowed.
+Do not link to or post pornography or sexually explicit content.
 
-Staff have the right to edit, censor, delete or otherwise modify any content message they feel is inappropriate, without any warning given to the poster.
+Staff have the right to edit, censor, delete or otherwise modify any content message they feel is inappropriate.
 
-Do not submit any content that you know to contain viruses or commonly exploited security holes.
+Do not submit any content that contains viruses or commonly exploited security holes. You should take care and scan what you are about to upload for viruses before uploading.
 
-Any content submitted to us, will not necessarily be removed by request. We are not bound to remove submitted content and anything submitted should be assumed to be staying on our servers, publicly accessible permanently. By submitting, you are aware of the consequences of this, and take responsibility of it, and may not at any time insist on content being withdrawn.
+We are under no obligation to remove any content submitted to us, even upon request, except what is governed by applicable data protection legislation.
 
 Do not try to bypass the word filter: filtered words are placed in the filter in accordance with guidelines, and obvious misspellings or equally obnoxious alternatives, only serve to work against the wishes of the staff.
 
@@ -40,20 +40,22 @@ Do not spam this website:
 
 Do not intentionally disrupt the enjoyment of this website by other users. 'Enjoyment' has a general meaning for the purposes of this rule -- for example, robust argument in a debate forum would be considered 'enjoyable', as debaters would wish for it.
 
-This website is private property and hence any form of censorship is allowed at the discretion of the staff -- you agree not to consider this website a forum for free speech if the staff consider it breaks the rules.
+This website is private property and hence Freedom of Speech does not apply. Staff have the right to censor anything at their discretion.
+
+Use report links where available, or contact a member of staff directly, if you find content to be in violation of the rules, inaccurate / misleading, or otherwise not in the spirit of this website.
 
 [title="2"]Forum and Chat[/title]
 
-Be respectful of the opinions of other members, and do not discriminate it based on nationality, sexuality, gender, religion or race. Do not flame or degrade other members. If you have a problem with another member's actions, contact a member of staff.
+Be respectful of the opinions of other members, and do not express bigotry towards a protected class such as (but not limited to) nationality, sexuality, gender, ability, religion or race. Do not flame or degrade other members. If you have a problem with another member's actions, contact a member of staff.
 
 [title="2"]Forum[/title]
 
 Do not double post (post consecutively in a topic) on the forum unless...
  - You have new information to add after several days since your previous post was made
- - You are bumping a topic after several days of no replies
+ - You are bumping a topic considered still, or once again, relevant after several days of no replies
  - You are quoting various posts, and feel the need to do so in separate posts
 
-Do not complain in-topic about the subject being too far off-topic or otherwise breaking rules. Use the 'report post' feature to alert a member of staff instead. Leave it to staff to establish what is and is not acceptable posting.
+Do not complain in-topic about the subject being too far off-topic or otherwise breaking rules. Use the 'report' feature to alert a member of staff instead. Leave it to staff to establish what is and is not acceptable posting.
 
 [title="2"]Chat[/title]
 
@@ -61,7 +63,7 @@ In no circumstances may you use the chatrooms to start or continue sexually sugg
 
 [title="2"]Signatures[/title]
 
-Images in your signature should not exceed 50k in size, 468 pixels wide, or 110 pixels tall. For a guideline, this is about five lines of standard-sized text space. Text in your signature should also not exceed more than 5 lines of normal-sized text space.
+Images in your signature should not exceed 50kb in size, 468 pixels wide, or 110 pixels tall. For a guideline, this is about five lines of standard-sized text space. Text in your signature should also not exceed more than 5 lines of normal-sized text space.
 
 Remember that a big signature is not always a good signature. Keep it nice and simple. Feel free to advertise your website if you wish, if the link to it does not itself break site rules.
 
@@ -82,9 +84,17 @@ You may not, unless explicitly given permission by a high-ranking member of staf
 
 Acceptance of these rules implies acceptance of the [page=":privacy"]privacy policy[/page] (which includes details of how this website uses cookies).
 
-
 [title="2"]Violation[/title]
 
-The staff reserve the right to ban any member who breaks any rule, whether the rule is agreed as broken by the alleged offender or not. No warning or explanations need be given.
-
-The staff also reserve the right to change these rules at any time.
+The staff reserve the right to take action against any content or member in violation of these rules (at the sole interpretation / discretion of the staff). Actions that may be taken include the following:
+ - A warning, issued to you in Private Topics and visible on your profile's 'Standing' tab
+ - Investigation of your account and/or Private Topics
+ - Removal, moving, or editing of the offending content
+ - Revocation of rewards or points earned from offending content or behaviour
+ - Charge of points
+ - Restrictions of site privileges (e.g. probation), temporarily or permanently
+ - Banning of your member account
+ - Banning of associated IP addresses with your account
+ - Reporting of your IP address, username, and/or e-mail address to public spam blocklists such as Stop Forum Spam
+ - Informing webmasters of links you spammed on our site to stop doing business with you
+ - Reporting your conduct to local authorities for criminal investigation
