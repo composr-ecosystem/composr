@@ -54,6 +54,8 @@ If you want the homesite telemetry service to delete all telemetry data associat
 
 The page at Admin Zone > Audit > Telemetry status will let you know (via a message at the top) when your site is still registered in the telemetry service. The message disappears when you are not registered anymore.
 
+Note: Your site's telemetry data will also automatically be deleted on the homesite if the homesite is unable to confirm you still have Composr CMS installed for over one year.
+
 [title="2"]Understanding telemetry security (advanced)[/title]
 Telemetry data, particularly relayed errors, can be sensitive in nature as they may contain full server paths and passwords. For this reason, Composr encrypts the data sent to the telemetry service on the homesite for the core developers. And the homesite uses several processes to verify the integrity of the data sent. Anything sent which does not conform to these standards will be rejected with an error.
 

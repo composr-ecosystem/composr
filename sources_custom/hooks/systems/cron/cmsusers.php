@@ -103,6 +103,6 @@ class Hook_cron_cmsusers
             }
 
             $start += $max;
-        } while (count($rows) > 0);
+        } while (!empty($rows));
     }
 }
