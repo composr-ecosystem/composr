@@ -68,12 +68,12 @@ function _cms_rawurlrecode(string $url, bool $tolerate_errors) : string
     $parts = preg_split('#(%[\dA-F]{1,2})#i', $url, -1, PREG_SPLIT_DELIM_CAPTURE);
     foreach ($parts as $i => $part) {
         if ($i % 2 == 0) {
-            $recoded .= $parts[$i];
+            $recoded .= $part;
         } else {
-            if (hexdec(substr($parts[$i], 1)) < 128) {
-                $recoded .= $parts[$i];
+            if (hexdec(substr($part, 1)) < 128) {
+                $recoded .= $part;
             } else {
-                $recoded .= rawurldecode($parts[$i]);
+                $recoded .= rawurldecode($part);
             }
         }
     }
@@ -94,7 +94,7 @@ function _cms_rawurlrecode(string $url, bool $tolerate_errors) : string
  */
 class HarmlessURLCoder
 {
-    private $protected_chars = null;
+    private $protected_chars = [];
 
     /**
      * Constructor.
@@ -157,12 +157,12 @@ class HarmlessURLCoder
         $parts = preg_split('#(%[\dA-F]{1,2})#i', $str, -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($parts as $i => $part) {
             if ($i % 2 == 0) {
-                $decoded .= $parts[$i];
+                $decoded .= $part;
             } else {
-                if (isset($this->protected_chars[$parts[$i]])) {
-                    $decoded .= $parts[$i];
+                if (isset($this->protected_chars[$part])) {
+                    $decoded .= $part;
                 } else {
-                    $decoded .= rawurldecode($parts[$i]);
+                    $decoded .= rawurldecode($part);
                 }
             }
         }
