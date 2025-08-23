@@ -61,13 +61,13 @@ function check_input_field_string(string $name, string &$val, ?bool $posted, int
     }
     
     if ((($filters & INPUT_FILTER_VERY_STRICT) != 0) && (preg_match('#\n|\000|<|\.\./|[\';]\s?(AND|OR|UNION)#mi', $_val) !== 0)) {
-        if ($name === 'page') { // Stop loops
-            if ($posted) {
-                $_POST[$name] = '';
-            } else {
-                $_GET[$name] = '';
-            }
+        // Stop loops
+        if ($posted) {
+            $_POST[$name] = '';
+        } else {
+            $_GET[$name] = '';
         }
+        
         log_hack_attack_and_exit('DODGY_GET_HACK', $name, $val);
         $val = '';
         return;
